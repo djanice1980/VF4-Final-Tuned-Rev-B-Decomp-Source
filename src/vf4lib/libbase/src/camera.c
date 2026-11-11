@@ -977,8 +977,8 @@ void test_cam_pad_vector(int pad, float step, float *vec)
 }
 
 /* 0x0c02d120  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: (camera, step): test_cam_move(0, camera, step), the eye with pad 1; only caller cam_mode_test; part of vf4lib/libbase/src/camera.c
+ * confidence: observed
+ * evidence: (camera, step): test_cam_move(0, camera, step), the eye with pad 1; only caller cam_mode_test; part of vf4lib/libbase/src/camera.c; observed live 2026-11-10: in the harness scenario debug_windows (vertical blank 9697), called by cam_mode_test+0x30 with the game camera and the step 0.0416, it passed both on to test_cam_move with which 0, and test_cam_move read pad 0 (test_cam_pad_vector(0, step)) and stored the camera's eye (+0x0C) from (-0.9068, 5, -3.6683) to (-0.9024, 5, -3.7096), one step of 0.0416, leaving the target alone; in debug_sweep_4 (8197) the pad was idle and the eye was stored unchanged
  * matched: source/vf4lib/libbase/src/camera.c (tools/match/match.py)
  */
 void test_cam_move_eye(camera_state *cam, float step)
@@ -1028,8 +1028,8 @@ void test_cam_move(int which, camera_state *cam, float step)
 }
 
 /* 0x0c02d260  size 0x6e  file by match with source
- * confidence: inferred
- * evidence: with INT_BALL_DISP on and camera mode TEST: draws object 0x46 (obj_draw) scaled 0.1 at the target in the camera view; only caller cam_mode_test; part of vf4lib/libbase/src/camera.c
+ * confidence: observed
+ * evidence: with INT_BALL_DISP on and camera mode TEST: draws object 0x46 (obj_draw) scaled 0.1 at the target in the camera view; only caller cam_mode_test; part of vf4lib/libbase/src/camera.c; observed live 2026-11-10: in the harness scenarios card_debug_windows, debug_windows and debug_sweep_4 (29 calls from cam_mode_test, int_ball_disp read 0 = ON and the camera mode 1 = TEST in each), it set the current matrix to camera_view_mtx and called mtx_translate with the target it had just read from camera +0x18 (-0.819, 5, -4.529 at vertical blank 9766 of card_debug_windows; x -4.353, y 5 at 9697 of debug_windows; x -1.902, y 5.0004 at 8197 of debug_sweep_4), then mtx_scale_xyz with 0.1 and obj_draw(0x46); the condition never went the other way
  * matched: source/vf4lib/libbase/src/camera.c (tools/match/match.py)
  */
 void test_cam_ball_draw(void)

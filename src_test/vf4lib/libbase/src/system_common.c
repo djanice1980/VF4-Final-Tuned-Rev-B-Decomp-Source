@@ -29,8 +29,8 @@ uchar * main_board_id_get(void)
 }
 
 /* 0x0c0267c0  size 0x14  file by match with source
- * confidence: inferred
- * evidence: returns system_param_value +0x28 == 2, the media kind media_board_probe stores (2: a DIMM board); only caller net_log_storage_init, which then takes media_limit_get as its buffer limit; part of vf4lib/libbase/src/system_common.c
+ * confidence: observed
+ * evidence: returns system_param_value +0x28 == 2, the media kind media_board_probe stores (2: a DIMM board); only caller net_log_storage_init, which then takes media_limit_get as its log base (net_log_base) when that is 0x0F000000 or 0x1F000000 and 0x0F000000 otherwise; part of vf4lib/libbase/src/system_common.c; observed live 2026-11-10: in the harness scenario boot (vertical blank 191), called by net_log_storage_init+0x8, it read system_param_value +0x28 = 2, the media kind media_board_probe had stored at vertical blank 125 (on the harness's DIMM answers), and returned 1, after which net_log_storage_init took the DIMM branch (media_limit_get, 100 slots, net_log_local 0); only the equal leg ran: the kind was 2 in all 75 boots
  * same code as main.bin 0c0211e0 (ghidra/TransferFromMain.java)
  * matched: source/vf4lib/libbase/src/system_common.c (tools/match/match.py)
  */

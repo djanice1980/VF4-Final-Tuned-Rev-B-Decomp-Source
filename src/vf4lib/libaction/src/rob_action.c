@@ -375,9 +375,9 @@ void rob_action_step(rob_rec *rob)
 }
 
 /* 0x0c072e60  size 0x50  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0x86
- * evidence: (rob): unless the record at +0x54C has +0x14 of 1 or 3, for a requested type of 6, 7, 8, 10, 12, 13, 17, 22, 24 or 26 (the reactions) clears +0x550 and points +0x54C back at the character's first record ((+0x38) +0x40) and +0x1C8 at (+0x1C4); role of the record unclear; caller rob_action_start; part of vf4lib/libaction/src/rob_action.c
+ * evidence: (rob): unless the record at +0x54C has +0x14 of 1 or 3, for a requested type of 6, 7, 8, 10, 12, 13, 17, 22, 24 or 26 (the reactions) clears +0x550 and points +0x54C back at the character's first record ((+0x38) +0x40) and +0x1C8 at (+0x1C4); +0x550 is the stance number and the record at +0x54C the stance's entry in the character's table: in all 15 resets seen live a rob on stance n (1 to 4) held entry n of the table at (+0x38) +0x40 in +0x54C and entry n of the table at +0x1C4 in +0x1C8; caller rob_action_start; part of vf4lib/libaction/src/rob_action.c; observed live 2026-11-10: in the harness scenario challenge_types_3 (vertical blank 7894), called by rob_action_start for player 1's rob with the request 0x07000261 (type 7, which action_hit_stun_start then took) while the rob was on stance 1 (+0x550 = 1, +0x54C = 0x0C29239C, +0x1C8 = 0x0C174B6C, entry 1 of each table), it stored +0x550 = 0, +0x54C = 0x0C29230C, the first entry of the character's table at (+0x38) +0x40, and +0x1C8 = 0x0C174AAA, the first entry of the table at +0x1C4 (both read from the image); 14 more kept calls in other scenarios (types 7 and 8, stances 1 to 4, mash_3 at 7840 from stance 4) reset the same way, each from entry [stance] of both tables; 8,873 calls took the reset case, the rest stored nothing
  * matched: source/vf4lib/libaction/src/rob_action.c (tools/match/match.py)
  */
 void action_reaction_record_reset(rob_rec *rob)
@@ -761,8 +761,8 @@ void action_lever_start(rob_rec *rob)
 }
 
 /* 0x0c073a00  size 0xbc  file by match with source
- * confidence: inferred
- * evidence: (rob, lever direction): against the opponent's attack record ((+0x34) +0x584): 1 when its byte 0 has bits 0x22; 0 when the rob faces away, its +0x104 timer runs, the attack is not active (bit 1) or has bit 3, its +6 bit 12 with +0x28 >= 0, its +0x2C bits 0x1000020, or its side bits (+0x50 bits 8-9, swapped by its +6 bit 4 and the rob's +0x318 bit 3) miss lever_dir_guard_sides[direction]; else 1; callers action_lever_update and rob_attack_hit_check; role partly unclear; part of vf4lib/libaction/src/rob_action.c
+ * confidence: observed
+ * evidence: (rob, lever direction): against the opponent's attack record ((+0x34) +0x584): 1 when its byte 0 has bits 0x22; 0 when the rob faces away, its +0x104 timer runs, the attack is not active (bit 1) or has bit 3, its +6 bit 12 with the rob's own +0x28 >= 0, its +0x2C bits 0x1000020, or its side bits (+0x50 bits 8-9, swapped by its +6 bit 4 and the rob's +0x318 bit 3) miss lever_dir_guard_sides[direction]; else 1; callers action_lever_update and rob_attack_hit_check; role partly unclear; part of vf4lib/libaction/src/rob_action.c; observed live 2026-11-10: in the harness scenario challenge_types_4 (vertical blank 30090), called by action_lever_update for player 1's rob with direction 3, it read the opponent's attack record ((+0x34) +0x584): byte 0 = 2 (active), the rob's +0x104 = 0, the record's +0x2C = 0 and side bits 1 (+0x50 = 0x8100), swapped twice (the record's +6 = 0x158 has bit 4, the rob's +0x318 = 0x58 has bit 3), met lever_dir_guard_sides[3] = 1 and returned 1; in card_nicknames (20086) side bits 1 missed lever_dir_guard_sides[4] = 2 and it returned 0; each of the 336 calls kept in full (action_lever_update with 3 or 4, rob_attack_hit_check with 1 or 2) returned what the values it read give by the description (157 attack not active, 31 timer running, 18 bit 3, 11 facing away, 5 the +0x2C bits, 12 side misses; 102 returned 1); the first test (bits 0x22) and the +6 bit 12 test never fired
  * matched: source/vf4lib/libaction/src/rob_action.c (tools/match/match.py)
  */
 int lever_guard_check(rob_rec *rob, int dir_arg)

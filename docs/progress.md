@@ -8845,6 +8845,60 @@ A fresh clone was taken through the README's Reproduce steps (extract,
   asm_readable.py 210 of 210 files; check_private_names.py 52 near
   copies; prize_fly_draw rerun, matches.
 
+## 2026-11-10: fourth judged round (the `reached` routines against the fuller log); public snapshot
+
+- **Published**: the tree is public at
+  github.com/djanice1980/VF4-Final-Tuned-Rev-B-Decomp-Source, as one
+  commit with no earlier history (build/agents/release/publish.sh adds
+  one commit per publication). LICENSE is the plain MIT text; what it
+  covers is in NOTICE.md.
+- **The round**: the harness's milestone 4 (158 scenarios, a log that
+  keeps own stores apart and in order, callee arguments and results, and
+  the globals a call read) was judged for the 598 routines that were
+  `reached` and the 47 the game newly entered: 645 routines in ten
+  batches (build/agents/observed4/). Calls the harness itself made to
+  routines were not used as evidence.
+- **Verdicts**: 134 observed (106 of the 598 changed, 28 of the 47 new),
+  510 reached, 1 conflict. The verdict file now has 4,163 observed, 510
+  reached and 73 conflicts on record for 4,746 routines; src/ has 3,988
+  routines observed and 235 named of 6,632.
+- **What decided them**: the new scripted scenarios (mission checks that
+  count, the challenge course's quit by START from real inputs, the
+  older AI's replies to repeated attacks and throws, the rope's physics
+  under a poked switch, boots from saved and damaged backup memory, bad
+  I/O board replies) and, with no new code run, the fuller record
+  (fields past the 256 bytes kept, own stores no longer cut, callees'
+  arguments).
+- **Conflict**: enemy_state_hame calls enemy_state_clear at its entry on
+  every call, so its state and step are zeroed each frame and the ending
+  coded after the step tests is dead code, as the game has it; the
+  description said the state ends when its script is done.
+- **Fault of the original game**: sram_sync_from_bank1 stores the CRC of
+  bank 0's (damaged) data in bank 1 and copies bank 1 over bank 0, so
+  after a repair from bank 1 both banks hold good data under a CRC that
+  matches neither until the next sram_sync_from_bank0, as the game has
+  it.
+- **Text and types**: 46 description and stale-name fixes applied by
+  exact text; level_change_items_rec has its eight item ids (was six,
+  with the last two reached by indexing past a member); move_tcmd_24
+  takes the entry as `short *` like move_tcmd_38; legacy_io_poll's
+  unused third parameter is said.
+- **Rulings made for evenness** (in build/agents/observed4/BRIEF.md): a
+  routine that writes fixed literals to registers is reached, one whose
+  register values are computed and fit the described formula is
+  observed; an unconditional wrapper stays reached unless what it passed
+  or got back is a run-time value with the described meaning; one leg of
+  a comparison is enough when the values seen separate the described
+  sense from its opposite; a described sub-mechanism that ran while the
+  main effect did not is reached.
+- **For the harness's next milestone**:
+  build/agents/observed4/harness_requests.md (a clear that changes bytes
+  is not kept for it; late records carry no reads; the mission, quest
+  and save-copy scenarios still wanted).
+- **Checked**: main.bin 6,632 of 6,632; test.bin 121 of 121;
+  asm_readable.py 210 of 210 files; check_private_names.py 52 near
+  copies; prize_fly_draw rerun, matches.
+
 ## Next
 
 In order of value per effort:
@@ -8854,12 +8908,13 @@ In order of value per effort:
    padding is in a source file, and test.bin matches 121 of 121
    (2026-11-10). The ORIGINAL SHAPE audit is placed: 34 tags are left,
    26 corroborated and 8 assumed (build/agents/shapes/PLACED.md).
-   The observed-live tier is in place (2026-11-10: 3,865 routines
-   observed, 218 named, of 6,632, after three judged rounds);
-   build/agents/observed2/coverage_gaps.md and
-   build/agents/observed3/gaps3.md list what no scenario ran yet, and the
-   598 reached routines are judged again when the harness has scenarios
-   for them. 1,252 routines are code nothing refers to
+   The observed-live tier is in place (2026-11-10: 3,988 routines
+   observed, 235 named, of 6,632, after four judged rounds);
+   build/agents/observed2/coverage_gaps.md,
+   build/agents/observed3/gaps3.md and
+   build/agents/observed4/harness_requests.md list what no scenario ran
+   yet; 510 routines stay reached until the harness has scenarios for
+   them. 1,252 routines are code nothing refers to
    and cannot be observed by running the game. Left here: the to_asm.py
    faults; localtime_r and four tmu0 timer routines kept
    as listings though they look compiled; about 25 hand-written routines

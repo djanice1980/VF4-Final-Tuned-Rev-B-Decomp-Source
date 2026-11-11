@@ -661,8 +661,8 @@ void nyc_light_update(void)
 }
 
 /* 0x0c0b25a0  size 0xba  file by match with source
- * confidence: inferred
- * evidence: (helicopter, unused second argument): under the current matrix draws model 0x1C0070 at (0, 2.35, 0.25) turned half round, model 0x1C0071 there turned by the main rotor angle (+0x3C), and model 0x1C0075 at (0, 2.77, 14.3) turned about X by the tail rotor angle (+0x3E); only caller nyc_light_draw; part of vf4lib/libeffect/src/effect_etc.c
+ * confidence: observed
+ * evidence: (helicopter, unused second argument): under the current matrix draws model 0x1C0070 at (0, 2.35, 0.25) turned half round, model 0x1C0071 there turned by the main rotor angle (+0x3C), and model 0x1C0075 at (0, 2.77, 14.3) turned about X by the tail rotor angle (+0x3E); only caller nyc_light_draw; part of vf4lib/libeffect/src/effect_etc.c; observed live 2026-11-10: in the harness scenario boot (attract mode), called by nyc_light_draw four times a frame with the four nyc_helis records (+0, +0x4C, +0x98, +0xE4 at vertical blank 19702), it drew model 0x1C0070 under a half turn (0x8000), then passed the record's main rotor angle +0x3C to mtx_rot_y_s16 before model 0x1C0071 and its tail rotor angle +0x3E to mtx_rot_x_s16 before model 0x1C0075: 0x2E44 and 0x7C88 for nyc_helis+0xe4 at vertical blank 19951, 0x7C88 and 0x1910 at 20201, 0xBF4A and 0xBE94 for the first record at 19702; the three offsets are literals on its stack and are not in the record
  * matched: source/vf4lib/libeffect/src/effect_etc.c (tools/match/match.py)
  */
 void nyc_heli_draw(nyc_heli *heli, int light)

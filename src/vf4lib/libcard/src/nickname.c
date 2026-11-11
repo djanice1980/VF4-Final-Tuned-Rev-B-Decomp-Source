@@ -714,8 +714,8 @@ bool nickname_champion_check(int side)
 }
 
 /* 0x0c08af40  size 0x22  file by match with source
- * confidence: inferred
- * evidence: (side): 1 when the side is champion_side and win_streak is at least 19; only caller nickname_god_check; part of vf4lib/libcard/src/nickname.c
+ * confidence: observed
+ * evidence: (side): 1 when the side is champion_side and win_streak is at least 19; only caller nickname_god_check; part of vf4lib/libcard/src/nickname.c; observed live 2026-11-10: in the harness scenario card_nicknames, called by nickname_god_check for side 1 (its only 3 calls), it returned 0 twice while champion_side read 0 (vertical blanks 8151 and 15609, win_streak not read) and 0 once (vertical blank 12043) when champion_side read 1, the side asked, and win_streak read 1, below 19; only that leg of the streak test ran: the answer 1 for a streak of 19 or more was not seen
  * matched: source/vf4lib/libcard/src/nickname.c (tools/match/match.py)
  */
 int nickname_god_streak_check(int side)
@@ -1446,8 +1446,8 @@ int nickname_attack_flag2(uint side)
 }
 
 /* 0x0c08c2e0  size 0x6e  file by match with source
- * confidence: inferred
- * evidence: (side) test for the nickname point routines on the side's rob (rob_get): nickname_attack_move without rob +0x30 bit 1 and with byte +0x115 clear, or rob +0x318 bit 5 with (rob +0x584) +0x24 bit 14 and byte +0x114 clear; callers RESPONSE 1 / 2, ROWDY 1 / 2; role unclear; part of vf4lib/libcard/src/nickname.c
+ * confidence: observed
+ * evidence: (side) test for the nickname point routines on the side's rob (rob_get): nickname_attack_move without rob +0x30 bit 1 and with byte +0x115 clear, or rob +0x318 bit 5 with (rob +0x584) +0x24 bit 14 and byte +0x114 clear; callers RESPONSE 1 / 2, ROWDY 1 / 2; role unclear; part of vf4lib/libcard/src/nickname.c; observed live 2026-11-10: in the harness scenario mash_7 (vertical blank 10465, side 0, from nickname_pt_response1) rob 0's +0x30 read 0 and +0x115 read 0, nickname_attack_move returned 1 and it returned 1; in mash_3 (vertical blank 8268, side 0, from nickname_pt_rowdy2) +0x30 read 2, nickname_attack_move was not asked, and it returned 1 on +0x318 = 0x78 (bit 5), (rob +0x584) +0x24 = 0x4009 (bit 14) and +0x114 = 0; with +0x115 = 2 (mash_1, vertical blank 10567), with the +0x584 word 0x801A (mash_6, vertical blank 11345) and with +0x114 = 0x0A (task_versus_2, vertical blank 9952) it returned 0; every full record fits (36 of 3,177 calls returned 1)
  * matched: source/vf4lib/libcard/src/nickname.c (tools/match/match.py)
  */
 int nickname_attack_open(uint side)
@@ -1611,9 +1611,9 @@ int nickname_frame_disadvantage(uint side)
 }
 
 /* 0x0c08c580  size 0xaa  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0xc6
- * evidence: (side) test for the nickname point routines on the side's rob (rob_get): the side's frame difference (rob +0x16A while it is in a state with +0x12 set, or the opponent's remaining recovery +0x0A - +0x2EA during its attack) is -8 or less (the side is free 8 or more frames before the opponent: a frame advantage), and rob +0x20 bits 9 / 24 and the attack-flag bit 1 of the rob and of the rob at +0x34 are clear; only caller THROW 1; part of vf4lib/libcard/src/nickname.c
+ * evidence: (side) test for the nickname point routines on the side's rob (rob_get): the side's frame difference (rob +0x16A while its +0x20 has bit 0 and its stun count +0x12 is not 0, or the opponent's remaining recovery +0x0A - +0x2EA while the opponent's +0x20 has bit 0 and either its +0x324 has bit 14 with +0x20 bit 2 or its +0x2C has bit 5) is -8 or less (the side is free 8 or more frames before the opponent: a frame advantage), and rob +0x20 bits 9 / 24 and the attack-flag bit 1 of the rob and of the rob at +0x34 are clear; only caller THROW 1; part of vf4lib/libcard/src/nickname.c; observed live 2026-11-10: in the harness scenario net_game_vs (vertical blank 7978, side 1, from nickname_pt_throw1) rob 1's +0x20 read 0x801D and +0x12 read 23, it took its +0x16A = -18 and, with +0x30 bit 1 clear in both robs, returned 1; in card_quests_2 (vertical blank 18978, side 1) it took the opponent's +0x0A - +0x2EA = 22 - 31 = -9 (opponent +0x20 = 0x0D, +0x324 = 0x4001) and returned 1; -7 returned 0 (task_versus_3, vertical blank 8276), its own +0x16A = -8 with the opponent's +0x30 = 0x0A returned 0 (task_versus_2, vertical blank 8325) and its own +0x16A = -10 with its +0x20 = 0x209 (bit 9) returned 0 (card_items, vertical blank 28787); all 510 full records fit the description (599 of 138,582 calls returned 1)
  * matched: source/vf4lib/libcard/src/nickname.c (tools/match/match.py)
  */
 int nickname_frame_advantage8(uint side)
@@ -1673,8 +1673,8 @@ bool nickname_rob28_bit20(uint side)
 }
 
 /* 0x0c08c6e0  size 0x26  file by match with source
- * confidence: inferred
- * evidence: (side) test for the nickname point routines on the side's rob (rob_get): rob +0x28 bit 30; callers RESPONSE 0, ROWDY 0-2; role unclear; part of vf4lib/libcard/src/nickname.c
+ * confidence: observed
+ * evidence: (side) test for the nickname point routines on the side's rob (rob_get): rob +0x28 bit 30; callers RESPONSE 0, ROWDY 0-2; role unclear; part of vf4lib/libcard/src/nickname.c; observed live 2026-11-10: in the harness scenario mash_3 (vertical blank 11184, side 1, from nickname_pt_rowdy0) rob 1's +0x28 read 0x40000000 and it returned 1, as for side 0 in mash_1 (vertical blank 13640, rob 0's +0x28 = 0x40000000); with +0x28 = 0 (50 full records) and 0x00800000 (mash_6, vertical blank 9053) it returned 0; 171 of 1,342 calls returned 1
  * matched: source/vf4lib/libcard/src/nickname.c (tools/match/match.py)
  */
 bool nickname_rob28_bit30(uint side)
@@ -1734,8 +1734,8 @@ int nickname_rob584_bit20(uint side)
 }
 
 /* 0x0c08c7c0  size 0x26  file by match with source
- * confidence: inferred
- * evidence: (side) test for the nickname point routines on the side's rob (rob_get): rob +0x28 bit 27; callers THROW 0-2, RETURN 0; role unclear; part of vf4lib/libcard/src/nickname.c
+ * confidence: observed
+ * evidence: (side) test for the nickname point routines on the side's rob (rob_get): rob +0x28 bit 27; callers THROW 0-2, RETURN 0; role unclear; part of vf4lib/libcard/src/nickname.c; observed live 2026-11-10: in the harness scenario mash_8 (vertical blank 9744, side 0, from nickname_pt_return0 and, for the opponent of side 1, from nickname_pt_throw0) rob 0's +0x28 read 0x08000000 and it returned 1, the frame after throw_update_common gave rob 0 (thrown at vertical blank 9734) move 0x454 and its +0x28 went from 0x04000000 to 0x08000000; with +0x28 = 0, 0x04000000, 0x20000000 or 0x40000000, and three other values without bit 27, it returned 0 (213 full records); 42 of 156,550 calls returned 1
  * matched: source/vf4lib/libcard/src/nickname.c (tools/match/match.py)
  */
 int nickname_rob28_bit27(uint side)
@@ -1768,8 +1768,8 @@ int nickname_rob28_bit26(uint side)
 }
 
 /* 0x0c08c840  size 0x48  file by match with source
- * confidence: inferred
- * evidence: (side) test for the nickname point routines on the side's rob (rob_get): attack level (rob +0x287) 6, scaled damage (+0x2A0) below 11, rob +0x324 bit 13 and rob +0x330 bit 1; only caller RESPONSE 2; part of vf4lib/libcard/src/nickname.c
+ * confidence: observed
+ * evidence: (side) test for the nickname point routines on the side's rob (rob_get): attack level (rob +0x287) 6, scaled damage (+0x2A0) below 11, rob +0x324 bit 13 and rob +0x330 bit 1; only caller RESPONSE 2; part of vf4lib/libcard/src/nickname.c; observed live 2026-11-10: in the harness scenario mash_3 (vertical blank 13781, side 1, from nickname_pt_response2 after nickname_attack_guarded held) rob 1's +0x287 read 6, +0x2A0 read 9, +0x324 read 0x6019 (bit 13) and +0x330 read 0x80000002 (bit 1), and it returned 1; with levels 1, 2, 3 and 4 it returned 0 at the first test (19 full records); the two calls on its third path returned 0 at a later test (one is on record, a late one: task_versus_2, vertical blank 9950, side 0, where nickname_low_attack_no6 read level 6 for the same rob in the same frame); 1 of 55 calls returned 1
  * matched: source/vf4lib/libcard/src/nickname.c (tools/match/match.py)
  */
 int nickname_low6_weak_attack(uint side)
@@ -1787,9 +1787,9 @@ int nickname_low6_weak_attack(uint side)
 }
 
 /* 0x0c08c8a0  size 0x36  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0x52
- * evidence: (side) test for the nickname point routines on the side's rob (rob_get): attack level (rob +0x287) 3, 5 or 13 (low levels; attack_guarded_low also takes 6); only caller GUARD 1; part of vf4lib/libcard/src/nickname.c
+ * evidence: (side) test for the nickname point routines on the side's rob (rob_get): attack level (rob +0x287) 3, 5 or 13 (low levels; attack_guarded_low also takes 6); only caller GUARD 1; part of vf4lib/libcard/src/nickname.c; observed live 2026-11-10: in the harness scenario task_versus_4 (vertical blanks 8471, 10083 and 11479, side 0, from nickname_pt_guard1 after nickname_attack_guarded held) rob 0's +0x287 read 3 and it returned 1; with level 6 it returned 0 (mash_3, vertical blank 13781, and task_versus_2, vertical blank 9950), as with levels 1, 2 and 4; levels 5 and 13 were not seen (3 of 55 calls returned 1)
  * matched: source/vf4lib/libcard/src/nickname.c (tools/match/match.py)
  */
 int nickname_low_attack_no6(uint side)

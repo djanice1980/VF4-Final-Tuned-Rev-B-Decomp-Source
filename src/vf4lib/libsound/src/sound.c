@@ -1051,8 +1051,8 @@ void attract_adv_se_play(void)
 }
 
 /* 0x0c079760  size 0x22  file by match with source
- * confidence: inferred
- * evidence: (id): plays the id (sound_play_id) only when the attract sound setting attract_sound_setting (board_config_ptr byte 1) is 1; callers title_init (0x379 B_SE_STAGE_ADV_ADV) and attract_adv_se_play; part of vf4lib/libsound/src/sound.c
+ * confidence: observed
+ * evidence: (id): plays the id (sound_play_id) only when the attract sound setting attract_sound_setting (board_config_ptr byte 1) is 1; callers title_init (0x379 B_SE_STAGE_ADV_ADV) and attract_adv_se_play; part of vf4lib/libsound/src/sound.c; observed live 2026-11-10: in the harness scenario hw_attract_silent (attract_sound_setting poked to 0 after the boot), called by title_init at vertical blank 14277 with id 0x379, it read attract_sound_setting 0 and called nothing; in boot at the same vertical blank with the setting 1 it called sound_play_id(0x379, 0), which put the request word 0x74A9 in the sound ring; 12 of its 13 calls (all from title_init) had the setting 1 and made the call, the one with 0 did not; attract_adv_se_play never called it
  * matched: source/vf4lib/libsound/src/sound.c (tools/match/match.py)
  */
 void attract_sound_play(short id)
@@ -1075,8 +1075,8 @@ void stage_se_slot_off(void)
 }
 
 /* 0x0c0797e0  size 0x12  file by match with source
- * confidence: inferred
- * evidence: clears ambient_programs_set so the next stage_building2_sound_frame first sets the four channels' programs; the start hook (+0xC) of the stage sound record at 0x0C168190 (music bg_vf41b72.bin, effects se_stage_building2.bin); Ghidra has no function here (it starts after the padding of stage_se_slot_off); part of vf4lib/libsound/src/sound.c
+ * confidence: observed
+ * evidence: clears ambient_programs_set so the next stage_building2_sound_frame first sets the four channels' programs; the start hook (+0xC) of the stage sound record at 0x0C168190 (music bg_vf41b72.bin, effects se_stage_building2.bin); Ghidra has no function here (it starts after the padding of stage_se_slot_off); part of vf4lib/libsound/src/sound.c; observed live 2026-11-10: in the harness scenario task_dural_2, called by sound_requests_step (+0xe4, the start hook) at vertical blanks 12279 and 16855 while stage_sound_record was the building2 record 0x0C168190, it cleared ambient_programs_set from 1 to 0, and the next acting stage_building2_sound_frame (vertical blank 12703) made its four snd_cmd_a5_post calls and set the flag back to 1; card_quests_3 (vertical blank 23804) shows the same 1 to 0
  * matched: source/vf4lib/libsound/src/sound.c (tools/match/match.py)
  */
 void stage_building2_sound_start(void)

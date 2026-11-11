@@ -748,8 +748,8 @@ void rob_costume_set_nop(int side, int chara, int costume)
 }
 
 /* 0x0c063960  size 0xce  file by match with source
- * confidence: inferred
- * evidence: (side): for a side whose player record (card_record_get) +0x104 is set and whose rob has state flag 4, rebuilds bits 0-6 of the rob's card flags (+0x1C0) from item_has_79 .. item_has_7f (card item checks 0x79-0x7F through item_has), keeping bits 7 and up; only caller rob_round_reset; part of vf4lib/libaction/src/rob_ctrl.c
+ * confidence: observed
+ * evidence: (side): for a side whose player record (card_record_get) +0x104 is set and whose rob has state flag 4, rebuilds bits 0-6 of the rob's card flags (+0x1C0) from item_has_79 .. item_has_7f (card item checks 0x79-0x7F through item_has), keeping bits 7 and up; only caller rob_round_reset; part of vf4lib/libaction/src/rob_ctrl.c; observed live 2026-11-10: in the harness scenario card_items (vertical blank 7225), called by rob_round_reset for each side with the card record in use (card_records +0x104 = 1) and the rob's flag 4 set (+0x18 = 0x40100005): for side 0 item_has_79, _7a and _7b returned non-zero and _7c to _7f returned 0, and it stored 7 in the rob's +0x1C0 (was 0); for side 1 all seven returned non-zero and it stored 0x7f
  * matched: source/vf4lib/libaction/src/rob_ctrl.c (tools/match/match.py)
  */
 void rob_card_flags_low_set(int side_arg)
@@ -777,8 +777,8 @@ void rob_card_flags_low_set(int side_arg)
 }
 
 /* 0x0c063a60  size 0x8c  file by match with source
- * confidence: inferred
- * evidence: (side): as rob_card_flags_low_set for bits 7 and 8 (card_hdr_ftf_skill_test of the side's card record card_image_get, items 0 and 1), keeping bits 0-6; only caller robs_card_flags_refresh; part of vf4lib/libaction/src/rob_ctrl.c
+ * confidence: observed
+ * evidence: (side): as rob_card_flags_low_set for bits 7 and 8 (card_hdr_ftf_skill_test of the side's card record card_image_get, items 0 and 1), keeping bits 0-6; only caller robs_card_flags_refresh; part of vf4lib/libaction/src/rob_ctrl.c; observed live 2026-11-10: in the harness scenario net_card_real_2 (vertical blank 4296), called by robs_card_flags_refresh for each side with the card record in use and the rob's flag 4 set: for side 0 card_hdr_ftf_skill_test of card_images gave 1 for skill 0 and 0 for skill 1, and it stored 0x80 in the rob's +0x1C0 (was 0); for side 1 (card_images+0x68) the tests gave 0 and 1 and it stored 0x100; the skill bits are those of the scenario's two cards
  * matched: source/vf4lib/libaction/src/rob_ctrl.c (tools/match/match.py)
  */
 void rob_card_flags_high_set(int side_arg)
@@ -2427,7 +2427,7 @@ void move_cmd_05(rob_rec *rob, short *arg)
 
 /* 0x0c066500  size 0x50  file by match with source
  * confidence: inferred
- * evidence: s16 x3: patches the hit row (stun +0x2AA, recovery +0x2B4, reaction +0x2BE)
+ * evidence: s16 x3: patches the hit row (stun +0x2AA, recovery +0x2B4, then capped at the move length +0x2E4, reaction +0x2BE)
  * matched: source/vf4lib/libaction/src/rob_ctrl.c (tools/match/match.py)
  */
 void move_cmd_06_hit_row(rob_rec *rob, short *arg)
@@ -3995,23 +3995,23 @@ void move_tcmd_23(rob_rec *rob, int arg)
 }
 
 /* 0x0c068700  size 0x32  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0x34
- * evidence: 12 bytes: rob +0x64 = u32 +8 when rob +0x1BC compares with s16 +2 as s16 +4 says
+ * evidence: 12 bytes: rob +0x64 = u32 +8 when rob +0x1BC (followup_count) is below s16 +2 (s16 +4 = 1) or above s16 +2 (any other s16 +4); observed live 2026-11-10: in the harness scenario task_trials_3, run by move_timed_run for side 1's rob with the 12-byte entry 03 00 01 00 00 00 00 00 90 12 00 10 (frame 3, s16 +2 = 1, s16 +4 = 0, u32 +8 = 0x10001290): at vertical blank 10498 rob +0x1BC read 0, not above 1, and it returned without a store; at vertical blank 11613 (a late record, its one storing call of 22) it stored 0x10001290 in rob +0x64, which was 0; rob +0x1BC is not in that record
  * matched: source/vf4lib/libaction/src/rob_ctrl.c (tools/match/match.py)
  */
-void move_tcmd_24(rob_rec *rob, int arg)
+void move_tcmd_24(rob_rec *rob, short *arg)
 {
   int c = rob->followup_count;
-  int v = *(short *)(arg + 2);
+  int v = arg[1];
 
-  if (*(short *)(arg + 4) == 1) {
+  if (arg[2] == 1) {
     if (c >= v) return;
   }
   else if (c <= v) {
     return;
   }
-  rob->request.word = *(uint *)(arg + 8);
+  rob->request.word = *(uint *)(arg + 4);
 }
 
 /* 0x0c068740  size 0x1c  file by match with source
@@ -4224,9 +4224,9 @@ void move_tcmd_37_clear_flag318(rob_rec *rob, int arg)
 }
 
 /* 0x0c068b60  size 0x54  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0x72
- * evidence: on stages 2 / 0x11 only, and not in a replay (game_flags bit 13): rob +0x55C = 3, a downward drift of -0.4 / -0.3 until frame s16 +2
+ * evidence: on stages 2 / 0x11 only, and not in a replay (game_flags bit 13): rob +0x55C = 3, a downward drift of -0.4 / -0.3 in all, spread over the frames s16 +0 to s16 +2 (+0x55E = s16 +2, +0x564 = the total divided by s16 +2 - s16 +0 + 1); observed live 2026-11-10: in the harness scenario task_attack_3 (stage 0x11, game_flags 0x11014d: bit 13 clear), run by move_timed_run at vertical blank 9359 with the entry 7, 15, it set rob +0x55C from 0 to 3, +0x55E to 15 and +0x564 to -0.0333 (-0.3 over the 9 frames 7 to 15), and at vertical blank 9361 for the other rob with 10, 20 to 3, 20 and -0.0273 (-0.3 / 11); in task_attack_2 on stage 2 the same entry 10, 20 gave -0.0364 (-0.4 / 11); on stages 3, 5, 11 and 23 it stored nothing, and with game_flags bit 13 set (a replay) it returned before reading the stage
  * matched: source/vf4lib/libaction/src/rob_ctrl.c (tools/match/match.py)
  */
 void move_tcmd_38(rob_rec *rob, short *arg)
@@ -4810,8 +4810,8 @@ void rob_facing_override_clear(rob_rec *rob)
 }
 
 /* 0x0c069960  size 0x3c  file by match with source
- * confidence: inferred
- * evidence: (side, n): 1 when bit n + 7 (n below 25) of the rob's card flags +0x1C0 is set, else 0; callers script_peek_move, rob_flag_pair_draw, script_op_75_if_card_flag, script_op_76_if_not_card_flag, script_op_77_move_if_card_flag; part of vf4lib/libaction/src/rob_ctrl.c
+ * confidence: observed
+ * evidence: (side, n): 1 when bit n + 7 (n below 25) of the rob's card flags +0x1C0 is set, else 0; callers script_peek_move, rob_flag_pair_draw, script_op_75_if_card_flag, script_op_76_if_not_card_flag, script_op_77_move_if_card_flag; part of vf4lib/libaction/src/rob_ctrl.c; observed live 2026-11-10: in the harness scenario net_card_real_2 (vertical blank 4297, the frame after rob_card_flags_high_set stored the flags), called by rob_flag_pair_draw: for side 0, whose +0x1C0 read 0x80, it returned 1 for n 0 and 0 for n 1; for side 1, whose +0x1C0 read 0x100, 0 for n 0 and 1 for n 1; in card_items, with only the low bits set (7 and 0x7f), it returned 0 for both n
  * matched: source/vf4lib/libaction/src/rob_ctrl.c (tools/match/match.py)
  */
 int rob_card_flag_test(uint side, int n_arg)

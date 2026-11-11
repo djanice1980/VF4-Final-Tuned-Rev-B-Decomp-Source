@@ -1170,8 +1170,8 @@ uint stopwatch_usec(void)
 }
 
 /* 0x0c130d80  size 0x24  file by match with source
- * confidence: inferred
- * evidence: the same computation as stopwatch_usec with the result thrown away; called by the game (game_frame_loop); part of the NAOMI library
+ * confidence: observed
+ * evidence: the same computation as stopwatch_usec with the result thrown away; called by the game (game_frame_loop); part of the NAOMI library; observed live 2026-11-10: in the harness scenario boot, called once a frame by game_frame_loop (+0xee), at vertical blank 5593 it read stopwatch_start_count 0xFBA931BC, took 0xFBA8FEE0 from tmu0_count_now, got 13,020 ticks from down_count_elapsed(start, now) and 16,665 from tmu0_ticks_as_usec, the microseconds of one 60 Hz frame since the stopwatch's start (16,666 and 16,665 again at vertical blanks 6604 and 13614), and returned nothing; the count itself is the timer model's
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void stopwatch_usec_dropped(void)

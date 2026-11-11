@@ -1644,8 +1644,8 @@ void mission_strikes_check(int side)
 }
 
 /* 0x0c09aa60  size 0x26  file by match with source
- * confidence: inferred
- * evidence: (side): counts mission_count down while above 0 each time the side lands a throw (throw_landed); the check of mission 1, "投げを ... 回決めろ" (land N throws); nothing in the image calls it directly; it is mission 1's check routine in mission_table (0x0C19BA58); part of vf4lib/libmission/src/mission.c
+ * confidence: observed
+ * evidence: (side): counts mission_count down while above 0 each time the side lands a throw (throw_landed); the check of mission 1, "投げを ... 回決めろ" (land N throws); nothing in the image calls it directly; it is mission 1's check routine in mission_table (0x0C19BA58); part of vf4lib/libmission/src/mission.c; observed live 2026-11-10: in the harness scenario task_missions_1 (mission 1 set by poke, the player throwing by script), mission_frame_check called it each fight frame with side 0; at vertical blank 14478, when throw_landed returned 1, it counted mission_count from 4 to 3, at vertical blank 14640 from 3 to 2; it stored in exactly the 4 of its 3,466 calls in which throw_landed returned 1
  * matched: source/vf4lib/libmission/src/mission.c (tools/match/match.py)
  */
 void mission_throws_check(int side)
@@ -1812,8 +1812,8 @@ void mission_health_check(uint side)
 }
 
 /* 0x0c09ae00  size 0x2a  file by match with source
- * confidence: inferred
- * evidence: (side): counts mission_count down while above 0 when the side won the round (round_winner) with game_flags 0x20 (KO); the check of mission 10, "ＫＯで ... 回勝て" (win N times by KO); nothing in the image calls it directly; it is mission 10's check routine in mission_table (0x0C19BA58); part of vf4lib/libmission/src/mission.c
+ * confidence: observed
+ * evidence: (side): counts mission_count down while above 0 when the side won the round (round_winner) with game_flags 0x20 (KO); the check of mission 10, "ＫＯで ... 回勝て" (win N times by KO); nothing in the image calls it directly; it is mission 10's check routine in mission_table (0x0C19BA58); part of vf4lib/libmission/src/mission.c; observed live 2026-11-10: in the harness scenario task_missions_4 (mission 10 set by poke), called by mission_judge at the round's end with side 0: at vertical blank 17468, with round_winner 0 and game_flags 0x150cad (bit 0x20 set), it counted mission_count from 1 to 0; at vertical blank 15043, with round_winner 1, it stored nothing
  * matched: source/vf4lib/libmission/src/mission.c (tools/match/match.py)
  */
 void mission_ko_win_check(int side)
@@ -1899,8 +1899,8 @@ void mission_air_combo_check(uint side)
 }
 
 /* 0x0c09afc0  size 0x92  file by match with source
- * confidence: inferred
- * evidence: (side): counts each new hit of the opponent's combo (+0x232 changed from mission_last_combo, the side without rob +0x20 bit 20) in mission_combo_hits[side] and sets mission_count to 0 once it reaches the mission's count; restarts with the combo; the check of mission 16, "４連コンボを決めろ" (land a four-hit combo); nothing in the image calls it directly; it is mission 16's check routine in mission_table (0x0C19BA58); part of vf4lib/libmission/src/mission.c
+ * confidence: observed
+ * evidence: (side): counts each new hit of the opponent's combo (+0x232 changed from mission_last_combo, the side without rob +0x20 bit 20) in mission_combo_hits[side] and sets mission_count to 0 once it reaches the mission's count; restarts with the combo; the check of mission 16, "４連コンボを決めろ" (land a four-hit combo); nothing in the image calls it directly; it is mission 16's check routine in mission_table (0x0C19BA58); part of vf4lib/libmission/src/mission.c; observed live 2026-11-10: in the harness scenario task_missions_6 (mission 16 set by poke; the count 4 read from mission_table), called by mission_frame_check each fight frame with side 0: when the opponent's combo hits (rob +0x232) went from 0 to 1 (vertical blank 13698) it stored 1 in mission_combo_hits[0] and in mission_last_combo, at the next hit (vertical blank 14034) 2 in both, and when a combo ended (vertical blank 13728) it put both back to 0; a combo that ran to 4 hits (vertical blanks 14497 to 14542) moved only mission_last_combo, the side's rob +0x20 having bit 20 (0x100009), so mission_combo_hits never reached 4 and the store of 0 in mission_count (+0x68..+0x6c) did not run
  * matched: source/vf4lib/libmission/src/mission.c (tools/match/match.py)
  */
 void mission_four_hit_combo_check(uint side)
@@ -2008,8 +2008,8 @@ void mission_guarded_check(int side)
 }
 
 /* 0x0c09b240  size 0x78  file by match with source
- * confidence: inferred
- * evidence: (side): counts mission_count down while above 0 once per knock-down of the opponent (rob +0x20 bit 11, mission_down_seen[opponent]), cleared when the opponent is up again (+0x20 bits 10 and 18 clear, +0x23A 0); the check of mission 20, "相手を ... 回ダウンさせろ" (knock the opponent down N times); nothing in the image calls it directly; it is mission 20's check routine in mission_table (0x0C19BA58); part of vf4lib/libmission/src/mission.c
+ * confidence: observed
+ * evidence: (side): counts mission_count down while above 0 once per knock-down of the opponent (rob +0x20 bit 11, mission_down_seen[opponent]), cleared when the opponent is up again (+0x20 bits 10 and 18 clear, +0x23A 0); the check of mission 20, "相手を ... 回ダウンさせろ" (knock the opponent down N times); nothing in the image calls it directly; it is mission 20's check routine in mission_table (0x0C19BA58); part of vf4lib/libmission/src/mission.c; observed live 2026-11-10: in the harness scenario task_missions_7 (mission 20 set by poke), called by mission_frame_check each fight frame with side 0: at vertical blank 19048 it counted mission_count from 3 to 2 and set mission_down_seen[1], kept the mark without counting again while the opponent's rob +0x20 had bit 11 (0xc89 at vertical blank 19049) and then bit 18 (0x40009 at vertical blank 19118), cleared the mark at vertical blank 19174, and counted the next two knock-downs from 2 to 1 (vertical blank 21512) and from 1 to 0 (vertical blank 21782)
  * matched: source/vf4lib/libmission/src/mission.c (tools/match/match.py)
  */
 void mission_knockdown_check(uint side)
@@ -2036,8 +2036,8 @@ void mission_knockdown_check(uint side)
 }
 
 /* 0x0c09b2e0  size 0x26  file by match with source
- * confidence: inferred
- * evidence: (side): counts mission_count down while above 0 each time the side lands a strike (strike_landed); the body of mission_strikes_check, the entry's flags 0xA82 make running out a failure; the check of mission 21, "打撃 ... 発未満で勝て" (win with fewer than N strikes); nothing in the image calls it directly; it is mission 21's check routine in mission_table (0x0C19BA58); part of vf4lib/libmission/src/mission.c
+ * confidence: observed
+ * evidence: (side): counts mission_count down while above 0 each time the side lands a strike (strike_landed); the body of mission_strikes_check, the entry's flags 0xA82 make running out a failure; the check of mission 21, "打撃 ... 発未満で勝て" (win with fewer than N strikes); nothing in the image calls it directly; it is mission 21's check routine in mission_table (0x0C19BA58); part of vf4lib/libmission/src/mission.c; observed live 2026-11-10: in the harness scenario task_missions_8 (mission 21 set by poke), called by mission_frame_check each fight frame with side 0: at vertical blank 7834, when strike_landed(0) returned 1, it counted mission_count from 8 to 7, and with the later strikes on down to 2 (vertical blanks 8196, 9458, 11949, 12091, 12135); 9 of its 3,701 calls counted; the failure the entry's flags make of running out was not reached
  * matched: source/vf4lib/libmission/src/mission.c (tools/match/match.py)
  */
 void mission_strike_limit_check(int side)
@@ -2052,8 +2052,8 @@ void mission_strike_limit_check(int side)
 }
 
 /* 0x0c09b320  size 0x26  file by match with source
- * confidence: inferred
- * evidence: (side): counts mission_count down while above 0 each time the side lands a throw (throw_landed); the body of mission_throws_check with the failing flags 0xA82; the check of mission 22, "投げ ... 回未満で勝て" (win with fewer than N throws); nothing in the image calls it directly; it is mission 22's check routine in mission_table (0x0C19BA58); part of vf4lib/libmission/src/mission.c
+ * confidence: observed
+ * evidence: (side): counts mission_count down while above 0 each time the side lands a throw (throw_landed); the body of mission_throws_check with the failing flags 0xA82; the check of mission 22, "投げ ... 回未満で勝て" (win with fewer than N throws); nothing in the image calls it directly; it is mission 22's check routine in mission_table (0x0C19BA58); part of vf4lib/libmission/src/mission.c; observed live 2026-11-10: in the harness scenario task_missions_8 (mission 22 set by poke), called by mission_frame_check each fight frame with side 0, it counted mission_count from 2 to 1 at vertical blank 14501 and, in the second attempt, at vertical blank 17056: the two calls of its 2,712 in which throw_landed returned 1; the failure the entry's flags make of running out was not reached
  * matched: source/vf4lib/libmission/src/mission.c (tools/match/match.py)
  */
 void mission_throw_limit_check(int side)
@@ -2068,8 +2068,8 @@ void mission_throw_limit_check(int side)
 }
 
 /* 0x0c09b360  size 0x5c  file by match with source
- * confidence: inferred
- * evidence: (side): counts mission_count down while above 0 when attack_guarded_high / mid / low report the opponent's attack guarded; the check of mission 23, "攻撃を ... 回ガードしろ" (guard N attacks); nothing in the image calls it directly; it is mission 23's check routine in mission_table (0x0C19BA58); part of vf4lib/libmission/src/mission.c
+ * confidence: observed
+ * evidence: (side): counts mission_count down while above 0 when attack_guarded_high / mid / low report the opponent's attack guarded; the check of mission 23, "攻撃を ... 回ガードしろ" (guard N attacks); nothing in the image calls it directly; it is mission 23's check routine in mission_table (0x0C19BA58); part of vf4lib/libmission/src/mission.c; observed live 2026-11-10: in the harness scenario task_missions_8 (mission 23 set by poke), called by mission_frame_check each fight frame with side 0, it asked the three attack_guarded routines about side 1; at vertical blank 19230, the frame after hit_result_guard resolved side 1's attack as guarded by side 0, attack_guarded_mid(1) returned 1 and it counted mission_count from 7 to 6: the one call of its 3,165 that stored
  * matched: source/vf4lib/libmission/src/mission.c (tools/match/match.py)
  */
 void mission_guard_check(uint side)
@@ -2162,8 +2162,8 @@ void mission_strike_race_check(uint side)
 }
 
 /* 0x0c09b580  size 0xa6  file by match with source
- * confidence: inferred
- * evidence: (side): adds each guarded attack to the guarding side's mission_tally entry (attack_guarded_high / mid / low of the attacker); the check of mission 28, "相手より多くガードしろ" (guard more than the opponent); nothing in the image calls it directly; it is mission 28's check routine in mission_table (0x0C19BA58); part of vf4lib/libmission/src/mission.c
+ * confidence: observed
+ * evidence: (side): adds each guarded attack to the guarding side's mission_tally entry (attack_guarded_high / mid / low of the attacker); the check of mission 28, "相手より多くガードしろ" (guard more than the opponent); nothing in the image calls it directly; it is mission 28's check routine in mission_table (0x0C19BA58); part of vf4lib/libmission/src/mission.c; observed live 2026-11-10: in the harness scenario task_missions_10 (mission 28 set by poke), called by mission_frame_check each fight frame with side 0, it made the six attack_guarded calls (side 1 first, then side 0); at vertical blank 14259, the frame after hit_result_guard resolved side 1's attack as guarded by side 0, attack_guarded_high(1) returned 1 and it raised mission_tally[0], the guarding side's entry, from 0 to 1: the one call of its 3,371 that stored; the add to the other entry (the side's own attack guarded) did not run
  * matched: source/vf4lib/libmission/src/mission.c (tools/match/match.py)
  */
 void mission_guard_race_check(uint side)
@@ -2545,8 +2545,8 @@ int strike_landed(uint side)
 }
 
 /* 0x0c09bf40  size 0x156  file by match with source
- * confidence: inferred
- * evidence: (side): 1 when the side's throw connects: neither rob has +0x28 bit 27, the opponent has rob +0x20 bit 21 and is at its throw frame (motion frame +0x0A 15, or 1 for motions 0xE8D, 0xECA, 0x4A3, 11 for 0xDC3, 0x149C, 0x1360), control_branch_pending_get(opponent) is 0 and the side has one of bits 19-30 of rob +0x2C; callers mission_throws_check, mission_first_hit_check, mission_throw_limit_check; part of vf4lib/libmission/src/mission.c
+ * confidence: observed
+ * evidence: (side): 1 when the side's throw connects: neither rob has +0x28 bit 27, the opponent has rob +0x20 bit 21 and is at its throw frame (motion frame +0x0A 15, or 1 for motions 0xE8D, 0xECA, 0x4A3, 11 for 0xDC3, 11 as well as 15 for 0x149C, 0x1360), control_branch_pending_get(opponent) is 0 and the side has one of bits 19-30 of rob +0x2C; callers mission_throws_check, mission_first_hit_check, mission_throw_limit_check; part of vf4lib/libmission/src/mission.c; observed live 2026-11-10: in the harness scenario task_missions_8 it returned 1 to mission_throw_limit_check at vertical blank 14501 with the opponent's rob +0x20 0x600409 (bit 21), motion 0xDC3 at frame 11, control_branch_pending_get(opponent) 0 and the side's rob +0x2C 0x00800000 (bit 23), having returned 0 at frame 2 of that motion; for other motions it returned 1 at frame 15 (0x7C5 in task_missions_2 at vertical blank 21093) and 0 at frames 2 and 11 (0xEB8 in task_missions_8 at vertical blank 17052, 0x429 in task_missions_1 at vertical blank 14474); 7 of its 6,711 calls returned 1; the frame-1 motions (+0x76..+0x7e) and the +0x28 bit 27 exit did not come up
  * matched: source/vf4lib/libmission/src/mission.c (tools/match/match.py)
  */
 int throw_landed(uint side)
@@ -2588,8 +2588,8 @@ int throw_landed(uint side)
 }
 
 /* 0x0c09c0e0  size 0x40  file by match with source
- * confidence: inferred
- * evidence: while a hit is being resolved ((rob +0x3C) +0x94 == 10): the level (rob +0x287) is 1 or 7; result 10 is the guarded hit: mission 19 ("回ガードされるな", do not get guarded) and mission 23 ("攻撃を ... 回ガードしろ", guard N attacks) count it through these three, and strike_landed does not count it as a strike
+ * confidence: observed
+ * evidence: while a hit is being resolved ((rob +0x3C) +0x20 non-zero) with the result (rob +0x3C) +0x94 == 10: the level (rob +0x287) is 1 or 7; result 10 is the guarded hit: mission 19 ("回ガードされるな", do not get guarded) and mission 23 ("攻撃を ... 回ガードしろ", guard N attacks) count it through these three, as does mission 28 ("相手より多くガードしろ", guard more than the opponent) for its tally, and strike_landed does not count it as a strike; observed live 2026-11-10: in the harness scenario task_missions_10 at vertical blank 14259, the frame after hit_result_guard (attacker side 1, defender side 0, from attack_vs_stand_guard) stored the result 10 in side 1's hit record +0x94, it returned 1 for side 1 to mission_guard_race_check while attack_guarded_mid and attack_guarded_low returned 0 on the same record: its one 1 in 12,900 calls (in task_missions_8 at vertical blank 19230, where the guarded attack was attack_guarded_mid's, it returned 0); the level byte (rob +0x287) itself is not in the record
  * matched: source/vf4lib/libmission/src/mission.c (tools/match/match.py)
  */
 int attack_guarded_high(uint side)
@@ -2613,8 +2613,8 @@ int attack_guarded_high(uint side)
 }
 
 /* 0x0c09c140  size 0x40  file by match with source
- * confidence: inferred
- * evidence: the same for levels 2 and 4
+ * confidence: observed
+ * evidence: the same for levels 2 and 4; observed live 2026-11-10: in the harness scenario task_missions_8 at vertical blank 19230, the frame after hit_result_guard (attacker side 1, defender side 0, from attack_vs_stand_guard) stored the result 10 in side 1's hit record +0x94, it returned 1 for side 1 to mission_guard_check, which counted mission_count from 7 to 6, while attack_guarded_high and attack_guarded_low returned 0 on the same record: its one 1 in 12,900 calls (in task_missions_10 at vertical blank 14259, where the guarded attack was attack_guarded_high's, it returned 0); the level byte (rob +0x287) itself is not in the record
  * matched: source/vf4lib/libmission/src/mission.c (tools/match/match.py)
  */
 int attack_guarded_mid(uint side)

@@ -784,8 +784,8 @@ void level_change_open(void)
   level_change_items.c0_slot3 = 0;
   level_change_items.c1_slot0 = 0;
   level_change_items.c1_slot1 = 0;
-  (&level_change_items.c1_slot0)[2] = 0;
-  (&level_change_items.c1_slot0)[3] = 0;
+  level_change_items.c1_slot2 = 0;
+  level_change_items.c1_slot3 = 0;
   f = card_flags_get(0);
   q = card_record_get(0);
   if ((f & 1) != 0) {
@@ -797,8 +797,8 @@ void level_change_open(void)
       level_change_items.c0_slot3 = item_slot_get(0,0,3);
       level_change_items.c1_slot0 = item_slot_get(0,1,0);
       level_change_items.c1_slot1 = item_slot_get(0,1,1);
-      (&level_change_items.c1_slot0)[2] = item_slot_get(0,1,2);
-      (&level_change_items.c1_slot0)[3] = item_slot_get(0,1,3);
+      level_change_items.c1_slot2 = item_slot_get(0,1,2);
+      level_change_items.c1_slot3 = item_slot_get(0,1,3);
       (&entry_0)[0] = 0;
       (&entry_0)[1] = 0;
       (&entry_0)[2] = 0;

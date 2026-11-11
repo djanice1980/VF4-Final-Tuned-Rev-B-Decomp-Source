@@ -106,8 +106,8 @@ void sram_sync_from_bank0(void)
 }
 
 /* 0x0c04a9c0  size 0x40  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file backup.c: puts a CRC into bank 1 and copies bank 1 over bank 0; sram_check_banks uses it when only bank 1 is good
+ * confidence: observed
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file backup.c: puts the CRC of bank 0's data area (sram_bank0 + 8, the bank that failed its check, not bank 1's own) into bank 1's first word and copies bank 1, data and that word, over bank 0, so both banks are left with good data under a CRC that matches neither until the next sram_sync_from_bank0, as the game has it; sram_check_banks uses it when only bank 1 is good; observed live 2026-11-10: in the harness scenario hw_backup_sram0 (a boot from the SRAM the game saved in hw_backup, with bank 0 damaged), sram_check_banks found only bank 1 good (its data's CRC 0xBAB2 equal to its saved word; bank 0's data gave 0x7BF0), called it and returned 2; it stored a CRC in bank 1's first word at 0xA0200100 and sram_bank_copy(bank 1, bank 0) put bank 1's 0x38 data words over bank 0, the damaged word at 0xA0200020 going from 0xFF back to 0; the CRC it stored was crc16_ccitt(0xA0200010, 0xF0) = 0x7BF0, taken over bank 0's damaged data, so both banks ended with good data under a CRC word 0x7BF0 that matches neither (see the notes)
  * same code as main.bin 0c1158a0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/libam/backup.c (tools/match/match.py)
  */

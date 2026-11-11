@@ -151,8 +151,8 @@ void eeprom_sync_from_a(void)
 }
 
 /* 0x0c115dc0  size 0x34  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file eeprom.c: gives copy B its CRC, copies it over copy A and writes the EEPROM
+ * confidence: observed
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file eeprom.c: gives copy B its CRC, copies it over copy A and writes the EEPROM; observed live 2026-11-10: in the harness scenario hw_backup_eeprom_a (a boot from the EEPROM the game saved in hw_backup, with copy A damaged), eeprom_check_copies found copy A's CRC 0x2420 against its saved 0xC6F0 and copy B good, called it and returned 2; it stored crc16_ccitt(eeprom_copy_b + 2, 16) = 0xC6F0 in copy B's first word (the value already there), eeprom_copy_block(eeprom_copy_b, eeprom_copy_a) put the 18 bytes over copy A (the damaged word +4 from 0x090000FF to 0x09000000) and eeprom_write_image sent the repaired image to the EEPROM through 16 maple_send calls
  * matched: source/sdk/libam/eeprom.c (tools/match/match.py)
  */
 void eeprom_sync_from_b(void)

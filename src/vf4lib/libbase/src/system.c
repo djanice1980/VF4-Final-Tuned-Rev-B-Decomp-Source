@@ -436,9 +436,9 @@ void render_done_wait(void)
 }
 
 /* 0x0c020ce0  size 0xc6  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0xf6
- * evidence: when the I/O error word (input_error_flags_get) is non-zero, stops the game and shows forever, blinking with vblank_count bits 3-4, "I/O BD IS NOT CONNECTED TO NAOMI BD." (bit 0), "COM. ERROR OCCURRED ... BETWEEN NAOMI BD AND I/O BD." (bits 1-2), "I/O BD CONNECTED TO NAOMI BD ... DOES NOT FULFILL THE GAME SPECS." (bit 3) or "unknown error", still serving the TEST switch (test_switch_exit_to_bios) and error_screen_frame; callers game_frame_loop and game_boot; part of vf4lib/libbase/src/system.c
+ * evidence: when the I/O error word (input_error_flags_get) is non-zero, stops the game and shows forever, blinking with vblank_count bits 3-4, "I/O BD IS NOT CONNECTED TO NAOMI BD." (bit 0), "COM. ERROR OCCURRED ... BETWEEN NAOMI BD AND I/O BD." (bits 1-2), "I/O BD CONNECTED TO NAOMI BD ... DOES NOT FULFILL THE GAME SPECS." (bit 3) or "unknown error", still serving the TEST switch (test_switch_exit_to_bios) and error_screen_frame; callers game_frame_loop and game_boot; part of vf4lib/libbase/src/system.c; observed live 2026-11-10: in the harness scenario hw_jvs_errors_ack (the I/O board model answering with a bad acknowledge status), input_error_flags_get returned 2 in game_frame_loop's call at vertical blank 6536 and the routine never returned: sound_all_off, bg_color_set, obj_light_colour_put(1, 1, 1), then 914 rounds of led_blink_update, test_switch_exit_to_bios and error_screen_frame, in 690 of which (three in four, the blink) it drew "COM. ERROR OCCURRED ... BETWEEN NAOMI BD AND I/O BD." at cell (7, 13) in 16 x 16 cells with color 0xFFE0E0E0, until the TEST switch at 7448 left through test_switch_exit_to_bios; in hw_jvs_errors_absent (a board silent from power-on) the word was 9 in game_boot's first wait loop (vertical blank 192) and the text was "I/O BD IS NOT CONNECTED TO NAOMI BD.", bit 0 before bit 3, for the rest of the run (5,626 rounds); the bit 3 message alone and "unknown error" were not shown
  * matched: source/vf4lib/libbase/src/system.c (tools/match/match.py)
  */
 void io_board_error_check(void)

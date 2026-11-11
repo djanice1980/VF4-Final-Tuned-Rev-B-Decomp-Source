@@ -36,9 +36,9 @@ void game_mes_load(int group)
 }
 
 /* 0x0c0336e0  size 0x62  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0x86
- * evidence: (row): 1 when sprite set 7 is loaded (sprite_set_loaded[7]) and any sprite of game_mes_table[row] has its game_mes_loaded bit, else 0; called by prize_banner_draw, prize_banner_winner_draw; part of vf4lib/libbase/src/console.c
+ * evidence: (row): 1 when sprite set 7 is loaded (sprite_set_loaded[7]) and any sprite of game_mes_table[row] has its game_mes_loaded bit, else 0; called by prize_banner_draw, prize_banner_winner_draw; part of vf4lib/libbase/src/console.c; observed live 2026-11-10: in the harness scenario card_prizes (vertical blank 7125, from prize_banner_draw with group 0x26) it read sprite_set_loaded[7] = 1, the group's first sprite 843 (0x34B) at game_mes_table +0x2fc and game_mes_loaded = 0x1C, whose bit 3 (0x34B - 0x348) is set, and returned 1; only this leg ran: all 12,290 calls (card_prizes, card_quests_2, card_quests_3) asked for group 0x26 while it was loaded, and the three 0 answers never ran (43 of 49 instructions)
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 int game_mes_is_loaded(int group)
@@ -2457,8 +2457,8 @@ void mes_layout_draw(int group, float z)
 }
 
 /* 0x0c0390e0  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: (slot): zeroes the slot's counter and state in mes_pop_state, the record mes_letter_pop_draw runs on; every message start calls it before setting its mes_anim_state slot. Callers: round_intro_draw, judge_mes_draw, winner_mes_start, continue_mes_start, continue_mes_draw, gameover_mes_draw, challenger_mes_draw; part of vf4lib/libbase/src/console.c
+ * confidence: observed
+ * evidence: (slot): zeroes the slot's counter and state in mes_pop_state, the record mes_letter_pop_draw runs on; every message start calls it before setting its mes_anim_state slot. Callers: round_intro_draw, judge_mes_draw, winner_mes_start, continue_mes_start, continue_mes_draw, gameover_mes_draw, challenger_mes_draw; part of vf4lib/libbase/src/console.c; observed live 2026-11-10: in the harness scenario settings_options, mes_letter_pop_draw left slot 0 of mes_pop_state at counter 0, state -1 when the first game over's letters had all popped (its stores at vertical blanks 8945 and 8946, still so at 8996), and winner_mes_start's record in the next game (vertical blank 11681) found the slot all zero before its own mes_pop_slot_reset(0) call: only this routine's calls 7 and 8 (round_intro_draw's, between its kept calls 6 at 8864 and 9 at 10804) and 10 lie between, and the only other routine that stores there, mes_letter_pop_draw, never stores state 0; at a later game over (14925) mes_letter_pop_draw was counting down again from 0x50, which it starts only from state 0; the 1,102 kept calls themselves (of 4,465) all stored zeros over zeros, a clearing call not being kept for the bytes it changes
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 void mes_pop_slot_reset(int slot_arg)
@@ -3693,8 +3693,8 @@ uchar console_side_value_get(char side)
 }
 
 /* 0x0c03bda0  size 0x34  file by match with source
- * confidence: inferred
- * evidence: (side, text): copies up to 20 characters of the text into team_names[side] and terminates it; a null text is ignored; callers net_reply_clan_name_apply (the VF.NET reply field it is handed, "" when absent) and sel_chara_init (clears both); card_team_name_draw prints the name after the binary's label "チーム" (team); part of vf4lib/libbase/src/console.c
+ * confidence: observed
+ * evidence: (side, text): copies up to 20 characters of the text into team_names[side] and terminates it; a null text is ignored; callers net_reply_clan_name_apply (the VF.NET reply field it is handed, "" when absent) and sel_chara_init (clears both); card_team_name_draw prints the name after the binary's label "チーム" (team); part of vf4lib/libbase/src/console.c; observed live 2026-11-10: in the harness scenario net_card_real_2 (vertical blank 3557), called by net_reply_clan_name_apply with side 0 and the field of the stand-in server's reply, the text VF4DEBUG, it called strncpy(team_names, text, 20), which changed the first eight bytes of team_names[0] from zero to VF4DEBUG, and stored the terminator at +0x14; for side 1, whose field was empty, the 20 bytes at team_names +0x15 stayed zero and the terminator went to +0x29; sel_chara_init's 293 clearing calls passed the empty text; the null-text test was never taken
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 void team_name_set(char side, char *name)
@@ -4270,9 +4270,9 @@ void emblem_rank_gauge_draw(uint side, uint rank_arg)
 }
 
 /* 0x0c03d2e0  size 0xf8  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0xfa
- * evidence: (side): for a playing side (+0x104 of card_record_get == 1) with card data (+0x1E of the player record): in GAME_ROUND_DISP, GAME_DISP and GAME_JUDGE_DISP (sub-modes 9, 10, 13) draws level_badge_draw, name_plate_draw, emblem_draw and, when net_card_place_matches and bits 8-9 of +0x5C, mark_1to3_draw; in GAME_ROUND_DISP outside msnm_active's state also card_panel_draw with the side's card_panel_timer (+0.05 a frame unless paused, pause_frame_held); then player_plate_item_icons_draw(side); other sub-modes reset the timer; caller mode_game; part of vf4lib/libbase/src/console.c
+ * evidence: (side): for a playing side (+0x104 of card_record_get == 1) with card data (+0x1E of the card image of card_image_get, the body's play id): in GAME_ROUND_DISP, GAME_DISP and GAME_JUDGE_DISP (sub-modes 9, 10, 13) draws level_badge_draw, name_plate_draw, emblem_draw and, when net_card_place_matches and bits 8-9 of the card image's +0x5C, mark_1to3_draw; in GAME_ROUND_DISP outside msnm_active's state also card_panel_draw with the side's card_panel_timer (+0.05 a frame unless paused, pause_frame_held); then player_plate_item_icons_draw(side); other sub-modes reset the timer; caller mode_game; part of vf4lib/libbase/src/console.c; observed live 2026-11-10: in the harness scenario net_card_real_2 (vertical blank 4148, GAME_ROUND_DISP), called by mode_game with side 0, a playing side (card_records +0x104 = 1) with card data (0x77E5 at card_images +0x1E), it called level_badge_draw(0), name_plate_draw(0) and emblem_draw(0), then, net_card_place_matches having returned 1 and the word at +0x5C being 0x2A10 (bits 8-9 = 2), mark_1to3_draw(0, 2), then with msnm_active 0 and pause_frame_held 0 raised card_panel_timer[0] from 0.05 to 0.1 and called card_panel_draw(0, 0.1) and player_plate_item_icons_draw(0); over all runs (3,389,754 calls) the three drawing calls came only in sub-modes 9, 10 and 13 (150,382 times) and card_panel_draw only in sub-mode 9 (36,600), and a side without a card left after the two getters
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 void player_plate_draw(uint side)
@@ -4466,8 +4466,8 @@ else { \
 }
 
 /* 0x0c03de20  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: (1P x, 1P y, 2P x, 2P y): stores the positions console_frame_draw draws the two card icons at (card_icon_pos); callers winner_mes_end (36,446 and 601,446) and prize_fly_draw (every frame, with an offset z on the champion side's x: z + 36,446 and 601,446 for side 0, 36,446 and 601 - z,446 for side 1; z is always 0 as the game has it, so the same places in effect); part of vf4lib/libbase/src/console.c
+ * confidence: observed
+ * evidence: (1P x, 1P y, 2P x, 2P y): stores the positions console_frame_draw draws the two card icons at (card_icon_pos); callers winner_mes_end (36,446 and 601,446) and prize_fly_draw (every frame, with an offset z on the champion side's x: z + 36,446 and 601,446 for side 0, 36,446 and 601 - z,446 for side 1; z is always 0 as the game has it, so the same places in effect); part of vf4lib/libbase/src/console.c; observed live 2026-11-10: in the harness scenario card_quests_3, called by prize_fly_draw in each frame of the prize display (kept at vertical blank 14191) with the places it computes, 36,446 and 601,446, it stored them in the four words of card_icon_pos, and console_frame_draw 26 frames later (14217) read 36,446 and 601,446 there and drew the 1P card icon 8 at 36,446 and the 2P icon 0x10 at 601,446; all 3,238 calls from prize_fly_draw (card_prizes, card_quests_2, card_quests_3) and the 536 from winner_mes_end passed the same four values, so the offset on the champion side's x was 0 every time, and every store put back the values the image starts with
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 void card_icon_pos_set(float p1_x, float p1_y, float p2_x, float p2_y)
@@ -4480,8 +4480,8 @@ void card_icon_pos_set(float p1_x, float p1_y, float p2_x, float p2_y)
 }
 
 /* 0x0c03de60  size 0x46  file by match with source
- * confidence: inferred
- * evidence: when either side has level-change flags (level_change_flags_get: bits the card code sets, 1 and 4 when this match can change the level, 8 when the level rose, 0x10 when it fell) resets level_banner_frame and loads texture set 0x26 (game_mes_load); caller hud_stage_load (console start for a game); part of vf4lib/libbase/src/console.c
+ * confidence: observed
+ * evidence: when either side has level-change flags (level_change_flags_get: bits the card code sets, 1 and 4 when this match can change the level, 8 when the level rose, 0x10 when it fell) resets level_banner_frame and loads texture set 0x26 (game_mes_load); caller hud_stage_load (console start for a game); part of vf4lib/libbase/src/console.c; observed live 2026-11-10: in the harness scenario card_versus_dan (vertical blank 7127), called by hud_stage_load before a match between two cards, level_change_flags_get returned 1 for side 0 and 4 for side 1 and it stored 0 in level_banner_frame and called game_mes_load(0x26); in the next two games of that run (9727, 11142) both flags were 0 and it called nothing more; game_mes_load ran in 10 of the 588 calls (the four card_versus runs; flags 5 and 5 at 12593 of card_versus_top)
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 void level_notice_tex_load(void)
@@ -4498,8 +4498,8 @@ void level_notice_tex_load(void)
 }
 
 /* 0x0c03dec0  size 0x40  file by match with source
- * confidence: inferred
- * evidence: when either side has level-change flags, releases texture set 0x26 (game_mes_free); caller game_round_init; part of vf4lib/libbase/src/console.c
+ * confidence: observed
+ * evidence: when either side has level-change flags, releases texture set 0x26 (game_mes_free); caller game_round_init; part of vf4lib/libbase/src/console.c; observed live 2026-11-10: in the harness scenario card_versus_dan (vertical blank 7732), called by game_round_init with level_change_flags_get 1 for side 0 and 4 for side 1, it called game_mes_free(0x26), which gave back the 0x28000 bytes the set held (sprite_set_vram_used +0x1c 0x28000 -> 0, game_mes_loaded 0x1C -> 0); game_mes_free ran in 10 of the 796 calls, the other 786 found both flags 0 and called nothing more
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 void level_notice_tex_free(void)
@@ -4519,9 +4519,9 @@ void level_notice_tex_free(void)
 }
 
 /* 0x0c03df20  size 0x296  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0x2c4
- * evidence: in GAME MODE, for each playing side (+0x104 == 1) with level-change flags, no message pending (card_message_active) and card status bits 0x01 and 0x80 (card_flags_get), requests console message 0x1B (flag 2), 0x1D (flags 1 and 4), 0x1A (flag 1) or 0x1C (flag 4) through card_message_post; in GAME_STAGE_DISP and GAME_APPOSE_DISP (sub-modes 5, 7), when a side with flags is playing, draws the notice banner (level_notice_parts, the 0xB03-0xB09 frame) and banner_shine_draw with level_banner_frame, counting it on; callers hud_draw, replay_hud_draw, game_appose_disp, game_stage_disp; part of vf4lib/libbase/src/console.c
+ * evidence: in GAME MODE, for each playing side (+0x104 == 1) with level-change flags, no message pending (card_message_active) and card status bits 0x01 and 0x80 (card_flags_get), requests console message 0x1B (flag 2), 0x1D (flags 1 and 4), 0x1A (flag 1) or 0x1C (flag 4) through card_message_post; in GAME_STAGE_DISP and GAME_APPOSE_DISP (sub-modes 5, 7), when a side with flags is playing, draws the notice banner (level_notice_parts, the 0xB03-0xB09 frame) and banner_shine_draw with level_banner_frame, counting it on; callers hud_draw, replay_hud_draw, game_appose_disp, game_stage_disp; part of vf4lib/libbase/src/console.c; observed live 2026-11-10: in the harness scenario card_versus_dan (vertical blank 7128, GAME_STAGE_DISP), called by game_stage_disp with both sides playing (+0x104 = 1), card flags 0x291 and level-change flags 1 and 4, it posted message 0x1A for side 0 and 0x1C for side 1 (card_message_post with -1 frames, card_message_active having returned 0), then drew the banner (sprite_list_put of level_notice_parts at 0.03, the 0xB03 / 0xB08 / 0xB09 frame, 0xB04 to 0xB07, banner_shine_draw) and counted level_banner_frame from 0 to 1; in the replay (8357, flags 9 and 0x14) it posted 0x1A for side 0 and drew no banner; message 0x1B was also posted, once for each side, in other kept calls; the banner calls came in 5,898 of the 1,345,143 calls
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 void level_notice_draw(void)
@@ -4574,8 +4574,8 @@ void level_notice_draw(void)
 }
 
 /* 0x0c03e280  size 0x46  file by match with source
- * confidence: inferred
- * evidence: when either side's level-change flags have bit 8 (the level rose; card code sets it beside storing the new *LEVEL) loads texture set 0x27 (game_mes_load); always resets level_banner_frame; caller winner_mes_start; part of vf4lib/libbase/src/console.c
+ * confidence: observed
+ * evidence: when either side's level-change flags have the value 8 (bit 3) (the level rose; card code sets it beside storing the new *LEVEL) loads texture set 0x27 (game_mes_load); always resets level_banner_frame; caller winner_mes_start; part of vf4lib/libbase/src/console.c; observed live 2026-11-10: in the harness scenario card_versus_dan (vertical blank 8571), called by winner_mes_start after the match that raised side 0's level, level_change_flags_get returned 9 and 0x14 and it called game_mes_load(0x27) and reset level_banner_frame from 604 to 0; after the next match (12230, flags 0 and 0) it only reset the frame count (297 -> 0); game_mes_load ran in 9 of the 506 calls
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 void level_up_tex_load(void)
@@ -4592,8 +4592,8 @@ void level_up_tex_load(void)
 }
 
 /* 0x0c03e2e0  size 0x48  file by match with source
- * confidence: inferred
- * evidence: when either side's flags have bit 8, releases texture set 0x27 (game_mes_free) and clears the word streak_end_flag_set sets; caller winner_mes_end; part of vf4lib/libbase/src/console.c
+ * confidence: observed
+ * evidence: when either side's flags have the value 8 (bit 3), releases texture set 0x27 (game_mes_free) and clears the word streak_end_flag_set sets; caller winner_mes_end; part of vf4lib/libbase/src/console.c; observed live 2026-11-10: in the harness scenario card_versus_dan (vertical blank 8869), called by winner_mes_end with level_change_flags_get 9 and 0x14, it called game_mes_free(0x27), which gave back the set's 0x18000 bytes (sprite_set_vram_used +0x1c 0x18000 -> 0, game_mes_loaded 0x14 -> 0), and streak_end_flag_set(0), which stored 0 over 0; both calls ran in 18 of the 536 calls and in none of the 518 where no flag had the value 8
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 void level_up_tex_free(void)
@@ -4608,8 +4608,8 @@ void level_up_tex_free(void)
 }
 
 /* 0x0c03e340  size 0x18c  file by match with source
- * confidence: inferred
- * evidence: when level_up_banner_due, draws the level-up banner: level_up_parts, the 0xB03-0xB09 frame, the winner's (champion_side) new level as its two level_table sprites at 196/252,192 and sprite 0xB0E after them, and banner_shine_draw with level_banner_frame, counting it on; caller winner_mes_draw (winner display); part of vf4lib/libbase/src/console.c
+ * confidence: observed
+ * evidence: when level_up_banner_due, draws the level-up banner: level_up_parts, the 0xB03-0xB09 frame, the winner's (champion_side) new level as its two level_table sprites at 196/252,192 and sprite 0xB0E after them, and banner_shine_draw with level_banner_frame, counting it on; caller winner_mes_draw (winner display); part of vf4lib/libbase/src/console.c; observed live 2026-11-10: in the harness scenario card_versus_dan (vertical blank 8572), called by winner_mes_draw, level_up_banner_due returned 1 and it drew level_up_parts (sprite_list_put at 0.03), the 0xB03 / 0xB08 / 0xB09 frame and 0xB04 to 0xB07, then for the winner (champion_side 0, level 13 in the card image) the two sprites of level_table[13], 0xA5A at 196,192 and 0xA61 at 252,192, sprite 0xB0E at 312,192 and banner_shine_draw(0, 160, 240, 0), and counted level_banner_frame from 0 to 1 (one more each frame after); it drew in 2,673 of the 125,079 calls, the ones in which level_up_banner_due returned 1
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 void level_up_banner_draw(void)
@@ -4647,9 +4647,9 @@ void level_up_banner_draw(void)
 }
 
 /* 0x0c03e580  size 0x8a  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0xa6
- * evidence: returns 1 when the winner (champion_side) has level-change bit 8, is a playing side (+0x104 of card_record_get; with streak_limit_hit set, streak_end_flag_get also counts) and the mode is GAME MODE / GAME_WINNER_DISP (sub-mode 15); callers level_up_banner_draw and game_winner_disp; part of vf4lib/libbase/src/console.c
+ * evidence: returns 1 when the winner (champion_side) has level-change flag value 8 (bit 3), is a playing side (+0x104 of card_record_get; with streak_limit_hit set, streak_end_flag_get also counts) and the mode is GAME MODE / GAME_WINNER_DISP (sub-mode 15); callers level_up_banner_draw and game_winner_disp; part of vf4lib/libbase/src/console.c; observed live 2026-11-10: in the harness scenario card_versus_dan (vertical blank 8572), called by level_up_banner_draw in GAME_WINNER_DISP with champion_side 0, it got 9 from level_change_flags_get(0) (the value 8 set), read 1 at card_records +0x104 and 3 / 15 from mode_get_main / mode_get_sub and returned 1; after the next match (12232, champion_side 1, flags 0) it returned 0 without asking the mode; in card_streak_limit, with streak_limit_hit 1 and the side no longer playing, it also asked streak_end_flag_get (297 calls); 1 was returned 2,673 times in 125,081 calls
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 int level_up_banner_due(void)
@@ -4844,8 +4844,8 @@ void console_frame_draw(void)
 }
 
 /* 0x0c03ed80  size 0x10  file by match with source
- * confidence: inferred
- * evidence: (frames): stores net_reply_timer; callers net_start_reply_parse and net_end_reply_parse (180 when a VF.NET reply arrives whose id equals the current play id of net_play_id_get, for the start reply only in GAME MODE; set before the reply's "db_stat" is read) and game_winner_disp (0); part of vf4lib/libbase/src/console.c; corrected from the live log 2026-11-10: the three replies carried three different ids, the play ids net_play_id_new makes from the date and time, not a cabinet id
+ * confidence: observed
+ * evidence: (frames): stores net_reply_timer; callers net_start_reply_parse and net_end_reply_parse (180 when a VF.NET reply arrives whose id equals the current play id of net_play_id_get, for the start reply only in GAME MODE; set before the reply's "db_stat" is read) and game_winner_disp (0); part of vf4lib/libbase/src/console.c; corrected from the live log 2026-11-10: the three replies carried three different ids, the play ids net_play_id_new makes from the date and time, not a cabinet id; observed live 2026-11-10: in the harness scenario net_game_vs (vertical blank 3351, GAME_STAGE_DISP), called by net_start_reply_parse on the stand-in server's reply to the start report with 180, it changed net_reply_timer from 0 to 180, and net_messages_draw counted it down by one from the next frame; at 4650 net_end_reply_parse's call set it from 0 to 180 again; 62 of the 63 calls came from the two reply parsers (46 and 16), all of the start parser's in GAME MODE, and game_winner_disp's one call (versus_then_challenge) stored its 0 over 0
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 void net_reply_timer_set(int frames)
@@ -4909,9 +4909,9 @@ void net_status_reply_note(int side, uint timer, uint status, char *id)
 }
 
 /* 0x0c03eea0  size 0x8c  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0xce
- * evidence: for each active net_status record counts the timer down (unless paused, pause_frame_held) and drops it when the timer goes below 0 or the mode is not GAME MODE (except sub-modes 1, 2, 4, 10, which drop it), OVER MODE or INTRUDE MODE; the keep flag is not reset between the two records (see notes); caller net_messages_draw; part of vf4lib/libbase/src/console.c
+ * evidence: for each active net_status record counts the timer down (unless paused, pause_frame_held) and drops it when the timer goes below 0 or the mode is not GAME MODE (except sub-modes 1, 2, 4, 10, which drop it), OVER MODE or INTRUDE MODE; the keep flag is not reset between the two records (see notes); caller net_messages_draw; part of vf4lib/libbase/src/console.c; observed live 2026-11-10: in the harness scenario net_card_real_1, called by net_messages_draw once a frame, it counted the active record's timer (net_status +0x1c) down by one a frame from 180 (vertical blank 3591, GAME_STAGE_DISP; pause_frame_held, mode_get_main and mode_get_sub asked each time) and at 3771, when the count went from 0 to -1, put the timer back to 0 and cleared the active flag (+0x18 1 -> 0); it counted the same way in OVER MODE (6774 to 6954) and for both records at once in net_card_real_2 (+0x1c and +0x3c); with no record active (2,192,213 of 2,194,928 calls) only the two active tests ran; no record was dropped for the mode: the switch went to one case only
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 void net_status_tick(void)
@@ -4955,8 +4955,8 @@ void net_status_tick(void)
 }
 
 /* 0x0c03ef80  size 0x5a  file by match with source
- * confidence: inferred
- * evidence: draws net_status_icon_draw for each active net_status record at x 0 / 552, y 421 with its timer and status; caller net_messages_draw; part of vf4lib/libbase/src/console.c
+ * confidence: observed
+ * evidence: draws net_status_icon_draw for each active net_status record at x 0 / 552, y 421 with its timer and status; caller net_messages_draw; part of vf4lib/libbase/src/console.c; observed live 2026-11-10: in the harness scenario net_card_real_2 (vertical blank 3559), called by net_messages_draw with both net_status records active (timers 178, status 1), it called net_status_icon_draw(0, 178, x 0, y 421, status 1) and net_status_icon_draw(1, 178, x 552, y 421, status 1); with one record active (5942) one call; net_status_icon_draw ran 3,240 times in 2,194,928 calls and never for an inactive record
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 void net_status_icons_draw(void)
@@ -5075,9 +5075,9 @@ void net_vs_parts_draw(void)
 }
 
 /* 0x0c03f320  size 0x48  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0x5e
- * evidence: (text): returns the text's length less one for each byte 0x8E in its first 21 bytes (the EUC-JP lead byte of a half-width kana, which takes one cell for two bytes), as a char; callers name_plate_draw, rank_row_name_count_draw, rank_row_time_draw, rank_row_score_draw; part of vf4lib/libbase/src/console.c
+ * evidence: (text): returns the text's length less one for each byte 0x8E in its first 21 bytes (the EUC-JP lead byte of a half-width kana, which takes one cell for two bytes), as a char; callers name_plate_draw, rank_row_name_count_draw, rank_row_time_draw, rank_row_score_draw; part of vf4lib/libbase/src/console.c; observed live 2026-11-10: in the harness scenario card_challenge (vertical blank 7722), called by name_plate_draw with the text CHALLENGER, it returned 10, and in card_course_end (13064), called by rank_row_time_draw with the ranking name COURSE, 6: strlen's result for a text without the byte 0x8E; an empty name gave 0 (84,965 of 232,884 calls, the attract ranking's rows among them); no text held a 0x8E byte, so the subtraction for a half-width kana (+0x20..+0x28) never ran
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 int euc_text_cells(char *text)
@@ -5659,9 +5659,9 @@ void prize_banner_winner_draw(void)
 }
 
 /* 0x0c040de0  size 0x1f8  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0x2b4
- * evidence: in a VS game with a prize record: draws the prize_kind icon pulsing at 314,436 while prize_fly_state is 0; with the debug bit (debug_info_enabled) also prints per side "1P :" / "2P :" with " アイテム %d 番" (item number, prize_debug_item) and " 賞金 %d" (prize money, prize_debug_money), yellow for the side(s) mission_sides_get names, and the center line "ランク %d" (rank, prize_debug_rank), "アイテム集中" for -1 or "（なし）" (none) for -2; callers hud_draw, replay_hud_draw, winner_mes_draw; part of vf4lib/libbase/src/console.c
+ * evidence: in a VS game with a prize record: draws the prize_kind icon pulsing at 314,436 while prize_fly_state is 0; with the debug bit (debug_info_enabled) also prints per side "1P :" / "2P :" with " アイテム %d 番" (item number, prize_debug_item) and " 賞金 %d" (prize money, prize_debug_money), yellow for the side(s) mission_sides_get names, and the center line "ランク %d" (rank, prize_debug_rank), "アイテム集中" for -1 or "（なし）" (none) for -2; callers hud_draw, replay_hud_draw, winner_mes_draw; part of vf4lib/libbase/src/console.c; observed live 2026-11-10: in the harness scenario card_prizes (vertical blank 7731), called by hud_draw in a VS game (play_style 2) with a prize record (mission_active_get 29), prize_fly_state 0 and prize_kind 1, it took sin_radians(mode_timer 148 / 20 = 7.4) for the pulse and drew sprite 0x3071 at 314,436; at 19027, with prize_kind 0, sprite 0x3070 at the same place; the icon was drawn in 7,628 calls and not in the 3,238 made while prize_fly_state was not 0, and calls without a prize record or outside a VS game left at the first two tests; debug_info_enabled returned 0 every time, so the debug texts (+0xc4..+0x1b6) never ran
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 void prize_hud_draw(void)

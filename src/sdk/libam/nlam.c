@@ -548,8 +548,8 @@ void ledger_to_sram(void)
 }
 
 /* 0x0c1186a0  size 0x26  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlam.c: copies SRAM bank 0's 0x38 words into the credit ledger
+ * confidence: observed
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlam.c: copies SRAM bank 0's 0x38 words into the credit ledger; observed live 2026-11-10: in the harness scenario hw_backup_good (a boot from the SRAM the game saved in hw_backup), called by board_start_core+0x106, it copied the 0x38 words of SRAM bank 0 (sram_ledger_bank = 0xA0200008, from +8) into credit_ledger and word +0x40 went from 0 to 1: the count that credit_try_spend's saturating_increment had raised to 1 at the START of hw_backup (vertical blank 6345) and ledger_to_sram had written to 0xA0200050; in the boots from a blank SRAM it copied zeros over zeros
  * matched: source/sdk/libam/nlam.c (tools/match/match.py)
  */
 void ledger_from_sram(void)

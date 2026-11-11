@@ -28,8 +28,8 @@ int fb_w_ctrl_alpha_cutoff(int cutoff)
 }
 
 /* 0x0c06b9c0  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: (float): writes the absolute value of the float (sign bit cleared) to FPU_CULL_VAL (0x78), both chips; returns 0; callers cull_size_threshold_put and graphics_bring_up; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: observed
+ * evidence: (float): writes the absolute value of the float (sign bit cleared) to FPU_CULL_VAL (0x78), both chips; returns 0; callers cull_size_threshold_put and graphics_bring_up; part of KamuiTL; checked against reference material (not in this repo); observed live 2026-11-10: in the harness scenario boot, called by graphics_bring_up with 0.2 (vertical blank 0) and by cull_size_threshold_put with 0.01 (vertical blank 2), it passed the float's bits to pvr_reg_write_both with offset 0x78 (0x3e4ccccd, then 0x3c23d70a), which the record's register line shows written to 0xa85f8078, and returned 0; both values were positive, so the clearing of the sign bit changed nothing
  * same code as main.bin 0c141980 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/pvr_settings.c (tools/match/match.py)
  */
@@ -162,8 +162,8 @@ int pvr_pal_ram_load_range(int first, int count, uint *words)
 }
 
 /* 0x0c06bc40  size 0x18  file by match with source
- * confidence: inferred
- * evidence: writes its argument to VO_BORDER_COL (0x40), both chips; returns 0; callers vo_border_write_opaque, error_border_and_hang and border_color_by_code_hang (the default fatal error handler); part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: observed
+ * evidence: writes its argument to VO_BORDER_COL (0x40), both chips; returns 0; callers vo_border_write_opaque, error_border_and_hang and border_color_by_code_hang (the default fatal error handler); part of KamuiTL; checked against reference material (not in this repo); observed live 2026-11-10: in the harness scenario boot (vertical blank 1), called by vo_border_write_opaque with color 0xff000000, it passed that value to pvr_reg_write_both with offset 0x40, which the record's register line shows written to 0xa85f8040, and returned 0
  * same code as main.bin 0c141c00 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/pvr_settings.c (tools/match/match.py)
  */

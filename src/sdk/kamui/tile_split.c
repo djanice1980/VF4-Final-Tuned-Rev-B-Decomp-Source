@@ -21,8 +21,8 @@ void tilesplit_check_or_halt(int ok)
 }
 
 /* 0x0c14e780  size 0x3c  file by match with source
- * confidence: inferred
- * evidence: waits until the current ELAN list slot (list_banks, 0x110 bytes each, index bank_render_index) is idle, records the word for the frame being built (frame_split_word_note), resets the ELAN's command input (elan_cmd_input_reset), writes the word to the ELAN tile split register 0xa8800030 and keeps it in tile_split_word; called by tile_split_select and tile_split_columns_only_set; part of KamuiTL
+ * confidence: observed
+ * evidence: waits until the current ELAN list slot (list_banks, 0x110 bytes each, index bank_render_index) is idle, records the word for the frame being built (frame_split_word_note), resets the ELAN's command input (elan_cmd_input_reset), writes the word to the ELAN tile split register 0xa8800030 and keeps it in tile_split_word; called by tile_split_select and tile_split_columns_only_set; part of KamuiTL; observed live 2026-11-10: in the harness scenario boot (vertical blank 1), called by tile_split_select with the word 0x71 that tile_split_restrict had just returned, it found slot 0 of list_banks idle (bank_render_index 0, state word 0), passed 0x71 to frame_split_word_note, called elan_cmd_input_reset, wrote 0x71 to 0xa8800030 itself (the record's register line) and stored 0x71 in tile_split_word, which held 0x71 from the image's initial data; the wait loop did not run
  * matched: source/sdk/kamui/tile_split.c (tools/match/match.py)
  */
 void tile_split_apply(uint word)

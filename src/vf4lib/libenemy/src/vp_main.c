@@ -2710,9 +2710,9 @@ void vp_hame_count_add(vp_work *work)
 }
 
 /* 0x0c059380  size 0x56  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0x58
- * evidence: (vp): takes 1 off the count of vp +0x20 in that table (down to 0). Called by vp_mode_stroke (after a completed action) and vp_mode_guard_success; part of vf4lib/libenemy/src/vp_main.c
+ * evidence: (vp): takes 1 off the count of vp +0x20 in that table (down to 0). Called by vp_mode_stroke (after a completed action) and vp_mode_guard_success; part of vf4lib/libenemy/src/vp_main.c; observed live 2026-11-10: in the harness scenario net_clock (attract fight, vertical blank 10300), called by vp_mode_guard_success with the 2P vp whose remembered move +0x20 was 0x1515, it found that move in the first row of its table (vp_hame_logs+0x100) and took the row's count from 2 to 1; in card_nicknames (vertical blank 21332) the 1P vp's move 0x14B0 matched the second row and its count went from 2 to 1; the other 4,024 calls, from vp_mode_stroke, found 0xFFFF or no matching row and stored nothing; a count already at 0 was never met
  * matched: source/vf4lib/libenemy/src/vp_main.c (tools/match/match.py)
  */
 void vp_hame_count_decay(vp_work *work)
@@ -2739,9 +2739,9 @@ void vp_hame_count_decay(vp_work *work)
 }
 
 /* 0x0c0593e0  size 0x5c  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0x7a
- * evidence: (vp): 1 when the count of vp +0x20 is 8 or more, the frame counter's parity for 1-7, 0 otherwise. Only caller vp_mode_guard_success, which then sets AVOID_HAME (vp +0x2c bit 20) and defends instead of punishing; part of vf4lib/libenemy/src/vp_main.c
+ * evidence: (vp): 1 when the count of vp +0x20 is 8 or more, the frame counter's parity for 1-7, 0 otherwise. Only caller vp_mode_guard_success, which then sets AVOID_HAME (vp +0x2c bit 20) and defends instead of punishing; part of vf4lib/libenemy/src/vp_main.c; observed live 2026-11-10: in the harness scenario card_nicknames (attract fight, vertical blank 21332), called by vp_mode_guard_success with the 1P vp whose move +0x20 was 0x14B0, it found the move in the second row of the table with count 2 and, vp_frame_count being odd (4115), returned 1; vp_mode_guard_success then set bit 20 of vp +0x2C (AVOID_HAME) and vp_hame_count_decay took the count to 1; at vertical blank 21170, the move 0x1510 being in neither row, it returned 0; 2 of the 897 calls returned 1 (the other in net_clock, vertical blank 10300); a count of 8 or more and the 0 of an even frame were not seen
  * matched: source/vf4lib/libenemy/src/vp_main.c (tools/match/match.py)
  */
 uint vp_hame_known(vp_work *work)

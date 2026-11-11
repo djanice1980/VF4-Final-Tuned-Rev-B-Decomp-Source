@@ -143,8 +143,8 @@ void set_guard(heap_block *b)
 }
 
 /* 0x0c0f3bc0  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: returns *guard_addr(b) == '+'
+ * confidence: observed
+ * evidence: returns *guard_addr(b) == '+'; observed live 2026-11-10: in the harness scenario boot (vertical blank 6202, from check_block+0x30 for the block at gz_heap_area+0xb360) guard_addr returned gz_heap_area+0xb3cc, the byte read there was 0x2B ('+') and it returned 1; only the intact leg ran: all 877,357 game calls returned 1 (one per check_block call), the guard byte reading '+' in each kept record that shows the read, so the answer 0 for a damaged guard was not seen
  * matched: source/vf4lib/libcore/src/malloc.c (tools/match/match.py)
  */
 int guard_intact(heap_block *b)

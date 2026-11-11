@@ -7,9 +7,9 @@
 #include "vf4ft.h"
 
 /* 0x0c0eb140  size 0x32  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0x4c
- * evidence: (address): returns 1 when the address lies in 0x0C000000-0x0DFFFFFF (main RAM), else reports fatal_at(win_sys.c line 321, "addr <%08x> out of range") and returns 0; called before every pointer the debug windows follow (win_ref_address, win_ref_resolve, win_item_values_access, win_item_row_draw); part of vf4lib/libdebug/src/win_sys.c
+ * evidence: (address): returns 1 when the address lies in 0x0C000000-0x0DFFFFFF (main RAM), else reports fatal_at(win_sys.c line 321, "addr <%08x> out of range") and returns 0; called before every pointer the debug windows follow (win_ref_address, win_ref_resolve, win_item_values_access, win_item_row_draw); part of vf4lib/libdebug/src/win_sys.c; observed live 2026-11-10: in the harness scenario debug_windows (its repeat item_test_all and card_debug_windows the same) every address the debug windows followed lay in main RAM and it returned 1: the 91 kept calls (from win_item_values_access, win_item_row_draw, win_ref_resolve and win_ref_address) carry addresses from 0x0C033600 to 0x0C5B26B8; only the in-range leg ran: all 1,631,836 calls returned 1 and the fatal_at branch (+0x14..+0x24) never ran
  * assert win_sys.c:321: fatal "addr <%08x> out of range"
  * matched: source/vf4lib/libdebug/src/win_sys.c (tools/match/match.py)
  */

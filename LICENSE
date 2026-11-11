@@ -1,18 +1,3 @@
-This repository holds three kinds of material. NOTICE.md says which files
-are which; THIRD-PARTY.md gives the terms of the third kind.
-
-1. The project's own work: the tools, scripts, Ghidra scripts, documents,
-   the status page, and the names, comments, descriptions, type headers
-   and tables the project wrote. The MIT License below covers this.
-2. The reconstructed source of the game program (source/, source_test/,
-   src/, src_test/). The program it expresses belongs to its owners. The
-   MIT License below covers only the project's own annotations in those
-   files; it grants nothing over the program itself. See NOTICE.md.
-3. Code that comes from other projects, under their own terms. See
-   THIRD-PARTY.md.
-
-----------------------------------------------------------------------
-
 MIT License
 
 Copyright (c) 2026 The VF4 Final Tuned reconstruction contributors

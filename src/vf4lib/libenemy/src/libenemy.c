@@ -274,8 +274,8 @@ void enemy_script_clear(void)
 }
 
 /* 0x0c050540  size 0x48  file by match with source
- * confidence: inferred
- * evidence: returns 1 when the opponent's pad (player_input_get with enemy_opp_rob +0 as the pad number) holds none of bits 0-2 (the G, P and K buttons the scripts use), else 0; only caller enemy_level_update, which counts such frames in enemy_pad_idle_frames; part of vf4lib/libenemy/src/libenemy.c
+ * confidence: observed
+ * evidence: returns 1 when the opponent's pad (player_input_get with enemy_opp_rob +0 as the pad number) holds none of bits 0-2 (the G, P and K buttons the scripts use), else 0; only caller enemy_level_update, which counts such frames in enemy_pad_idle_frames; part of vf4lib/libenemy/src/libenemy.c; observed live 2026-11-10: in the harness scenario task_dural_1 (a scripted player 1 against Dural), called by enemy_level_update once a frame for the CPU side, it returned 1 while the opponent's pad word (player_input +0xC, pad 0 from enemy_opp_rob's first byte) was 0 (vertical blank 8569) and on each of its first 173 calls, the frame with only the stick held (7740) among them, and 0 at vertical blank 7743, the frame after player 1 pressed P+G, when that word was 3 (read by player_input_tap_hold_repeat the same frame); enemy_level_update then put enemy_pad_idle_frames from 173 back to 0; 1,457 of the 88,093 calls returned 0, the first of them kept in ai_type_poked and the three task_dural runs, where player 1 presses buttons, and in no other run
  * matched: source/vf4lib/libenemy/src/libenemy.c (tools/match/match.py)
  */
 uint enemy_opponent_pad_idle(void)
@@ -909,9 +909,9 @@ void enemy_repeated_attacks_collect(void)
 }
 
 /* 0x0c0517a0  size 0x14e  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0x154
- * evidence: the throw twin of enemy_repeated_attacks_collect: move ids seen at least three times in the throw history (+0x100) go onto the front of the 8-row repeated-throw list +0x120 that enemy_pick_nagekaeshi looks up; only caller enemy_opponent_moves_record; part of vf4lib/libenemy/src/libenemy.c
+ * evidence: the throw twin of enemy_repeated_attacks_collect: move ids seen at least three times in the throw history (+0x100) go onto the front of the 8-row repeated-throw list +0x120 that enemy_pick_nagekaeshi looks up; only caller enemy_opponent_moves_record; part of vf4lib/libenemy/src/libenemy.c; observed live 2026-11-10: in the harness scenario task_dural_1, called by enemy_opponent_moves_record: at vertical blank 10735, with the opponent's throw 0x997 twice in the throw history (+0x100), it stored nothing; at 12435, with it three times, it shifted the eight rows of the repeated-throw list at +0x120 and put 0x997 in the first (zeros before); at 22928, with it four times and already in the list, it stored nothing; in task_dural_3 (vertical blank 26475) the throw 0x142B went onto the list the same way; 37 calls in all
  * matched: source/vf4lib/libenemy/src/libenemy.c (tools/match/match.py)
  */
 void enemy_repeated_throws_collect(void)
@@ -972,8 +972,8 @@ void enemy_repeated_throws_collect(void)
 }
 
 /* 0x0c051900  size 0x9e  file by match with source
- * confidence: inferred
- * evidence: (situation word): unless bit 26, when the opponent's current move is in the repeated-attack list (the move "HAME", a repeated move, as the state's debug name says) sets enemy_hame_found, attack mode 4, the attack and guard rates to enemy_difficulty_rates[rank_difficult] and the sidestep rate to half of it, clears the guard cool-down and selects state 13 HAME (enemy_state_select); returns the word; only caller enemy_state_choose; part of vf4lib/libenemy/src/libenemy.c
+ * confidence: observed
+ * evidence: (situation word): unless bit 26, when the opponent's current move is in the repeated-attack list (the move "HAME", a repeated move, as the state's debug name says) sets enemy_hame_found, attack mode 4, the attack and guard rates to enemy_difficulty_rates[rank_difficult] and the sidestep rate to half of it, clears the guard cool-down and selects state 13 HAME (enemy_state_select); returns the word; only caller enemy_state_choose; part of vf4lib/libenemy/src/libenemy.c; observed live 2026-11-10: in the harness scenario task_dural_1 (vertical blank 27868), called by enemy_state_choose with the word 0xE0030007 (bit 26 clear) while the opponent's move number 0x8BF was the first row of the repeated-attack list (+0xC0), it set enemy_hame_found, put the attack mode +0x10 from 2 to 4, the attack rate +0x149 and the guard rate +0x14B to 0xB4 (enemy_difficulty_rates[2], rank_difficult being 2) and the sidestep rate +0x14C to 0x5A, half of it, cleared the guard cool-down +0x36 and selected state 13 (enemy_state_select: +0xC from 0 to 13), returning 0xA0030007; 452 of the 27,801 calls selected (task_dural_1 to _3), the others returned the word unchanged; the bit 26 return was never taken
  * matched: source/vf4lib/libenemy/src/libenemy.c (tools/match/match.py)
  */
 uint enemy_pick_hame(uint situation)
@@ -1168,8 +1168,8 @@ uint enemy_pick_kaeshi(uint situation)
 }
 
 /* 0x0c051e40  size 0x26  file by match with source
- * confidence: inferred
- * evidence: (situation word): when the opponent's +0x20 bit 24 is set selects state 9 YOROKE; only caller enemy_state_choose; part of vf4lib/libenemy/src/libenemy.c
+ * confidence: observed
+ * evidence: (situation word): when the opponent's +0x20 bit 24 is set selects state 9 YOROKE; only caller enemy_state_choose; part of vf4lib/libenemy/src/libenemy.c; observed live 2026-11-10: in the harness scenario task_dural_1 (vertical blank 26092), called by enemy_state_choose with the word 0x60018000 while the opponent staggered (its rob +0x20 was 0x1000209, bit 24 set, in action_stun_followup_update's record ten vertical blanks before), it selected state 9: enemy_state_select(0x60018000, 9) stored 9 in +0xC and it returned 0x20018000, and enemy_think ran enemy_state_yoroke the same frame; 3 of the 27,178 calls selected (one in each task_dural run, the same word each time), the others returned the word unchanged
  * matched: source/vf4lib/libenemy/src/libenemy.c (tools/match/match.py)
  */
 uint enemy_pick_yoroke(uint situation)
@@ -1194,8 +1194,8 @@ uint enemy_pick_rise(uint situation)
 }
 
 /* 0x0c051ec0  size 0x44  file by match with source
- * confidence: inferred
- * evidence: (situation word): with bit 13 selects state 7 GACHA (lever mashing) with chance rate +0x14F; only caller enemy_state_choose; part of vf4lib/libenemy/src/libenemy.c
+ * confidence: observed
+ * evidence: (situation word): with bit 13 selects state 7 GACHA (lever mashing) with chance rate +0x14F; only caller enemy_state_choose; part of vf4lib/libenemy/src/libenemy.c; observed live 2026-11-10: in the harness scenario task_dural_3, called by enemy_state_choose with bit 13 set in the word (0xE1012002) and the mash rate +0x14F at 16: at vertical blank 14712 enemy_rand gave 185, not below the rate, and the word came back unchanged; at 14711 it gave 1 and the routine selected state 7 (enemy_state_select stored 7 in +0xC, result 0xA1012002), which enemy_think ran as enemy_state_gacha the same frame; 152 draws and 2 selections in 22,154 calls
  * matched: source/vf4lib/libenemy/src/libenemy.c (tools/match/match.py)
  */
 uint enemy_pick_gacha(uint situation)
@@ -1213,7 +1213,7 @@ uint enemy_pick_gacha(uint situation)
 /* 0x0c051f20  size 0xc4  file by match with source
  * confidence: inferred
  * extent: 0xe0
- * evidence: (situation word): within distance 2.6, when the sidestep counter +0x14E, counted down by one here, wraps below 0 (never with the image's tables: enemy_rates_update reloads it from +0x146, 48 to 240 in all 31 rows of enemy_level_params, every frame before enemy_think runs the pickers, so this routine only ever takes it from the level's value to one less and never selects state 6: its YOKE selection is dead code, as the game has it; all 1,313 logged calls returned at the test): during the opponent's start-up (+4 bit 17) selects state 6 YOKE with chance rate +0x14C and reloads the counter from +0x146; otherwise, unless all three edge distances (rob +0x140 / +0x144 / +0x148) exceed 2.0, when the opponent is down (+0x20 & 0x40C00) the same chance; only caller enemy_state_choose; part of vf4lib/libenemy/src/libenemy.c
+ * evidence: (situation word): within distance 2.6, when the sidestep counter +0x14E, counted down by one here, wraps below 0 (never with the image's tables: enemy_rates_update reloads it from +0x146, 48 to 240 in all 31 rows of enemy_level_params, every frame before enemy_think runs the pickers, so this routine only ever takes it from the level's value to one less and never selects state 6: its YOKE selection is dead code, as the game has it; all 27,279 logged calls returned at the test): during the opponent's start-up (+4 bit 17) selects state 6 YOKE with chance rate +0x14C and reloads the counter from +0x146; otherwise, unless all three edge distances (rob +0x140 / +0x144 / +0x148) exceed 2.0, when the opponent is down (+0x20 & 0x40C00) the same chance; only caller enemy_state_choose; part of vf4lib/libenemy/src/libenemy.c
  * matched: source/vf4lib/libenemy/src/libenemy.c (tools/match/match.py)
  */
 uint enemy_pick_yoke(uint situation)
@@ -1466,7 +1466,7 @@ void enemy_sidestep_pkg_start(int up)
 /* 0x0c052660  size 0x29c  file by match with source
  * confidence: inferred
  * extent: 0x3b4
- * evidence: handler of state 13 "HAME" (the opponent repeats a move): on its first step, when the opponent is low, far in its start-up or the CPU is crouched down, runs a reply from enemy data table 2, 4 (crouching opponent) or 10, a guard script or enemy_sidestep_against_attack; otherwise picks one of 13 replies (crouch punch enemy_script_down_punch, enemy_sidestep_against_attack, enemy_sidestep_pkg_start down / up) or falls back to state 4 GUARD (enemy_state_guard); ends when the script is done, clearing enemy_rates_maxed; reached through enemy_state_funcs[13]; part of vf4lib/libenemy/src/libenemy.c
+ * evidence: handler of state 13 "HAME" (the opponent repeats a move): on its first step, when the opponent's rob +0x20 has bit 6 or 7, it is more than 17 frames before its first active frame, the CPU's rob +0x16A is -10 or less, or situation bit 26 is set within distance 1.8, runs a reply from enemy data table 2, 4 (crouching opponent) or 10, a guard script or enemy_sidestep_against_attack; otherwise picks one of 13 replies (crouch punch enemy_script_down_punch, enemy_sidestep_against_attack, enemy_sidestep_pkg_start down / up) or falls back to state 4 GUARD (enemy_state_guard); calls enemy_state_clear at its entry on every call, so the state and its step are zeroed each frame, it runs only on frames enemy_pick_hame selects it, and the ending coded after the step tests (script done: clear enemy_rates_maxed, enemy_script_clear, enemy_state_clear) is dead code, as the game has it; reached through enemy_state_funcs[13]; part of vf4lib/libenemy/src/libenemy.c; corrected from the live log 2026-11-10: in the harness scenarios task_dural_2 and task_dural_3 it called enemy_state_clear first on all 452 calls (state 13 to 0 also while its script ran, task_dural_2 vertical blank 40325), the step it set to 1 read 0 again the next frame and the ending never ran; the earlier text had the state ending when its script is done
  * matched: source/vf4lib/libenemy/src/libenemy.c (tools/match/match.py)
  */
 void enemy_state_hame(void)
@@ -1756,9 +1756,9 @@ call:
 }
 
 /* 0x0c052fc0  size 0x7a  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0xa0
- * evidence: handler of state 9 "YOROKE" (the opponent staggers): first step, once no script runs: beyond distance 1.8 a dash or crouch dash (enemy_script_forward_twice / enemy_script_down_forward_twice), else enemy_yoroke_script_start; ends when the script is done; reached through enemy_state_funcs[9]; part of vf4lib/libenemy/src/libenemy.c
+ * evidence: handler of state 9 "YOROKE" (the opponent staggers): first step, once no script runs: beyond distance 1.8 a dash or crouch dash (enemy_script_forward_twice / enemy_script_down_forward_twice), else enemy_yoroke_script_start; ends when the script is done; reached through enemy_state_funcs[9]; part of vf4lib/libenemy/src/libenemy.c; observed live 2026-11-10: in the harness scenario task_dural_1, run by enemy_think as state 9 from the frame enemy_pick_yoroke selected it (vertical blank 26092): on that first call, with step 0, no script running (+0x14 0x80000000) and the opponent at distance 1.43 (under 1.8), it cleared the attack cool-down +0x32, set the step +0x130 to 1 and called enemy_yoroke_script_start, which started the script 0x0C16B600; on the next seven frames, the script running, it did nothing, and at 26100, the script done, it called enemy_script_clear and enemy_state_clear; the same in task_dural_2 and task_dural_3 (25 calls: 3 starts, 19 waits, 3 ends); the dash beyond distance 1.8 (+0x3a..+0x52) never ran
  * matched: source/vf4lib/libenemy/src/libenemy.c (tools/match/match.py)
  */
 void enemy_state_yoroke(void)
@@ -1844,8 +1844,8 @@ void enemy_state_rise(void)
 }
 
 /* 0x0c053260  size 0x2c  file by match with source
- * confidence: inferred
- * evidence: handler of state 7 "GACHA": enemy_state_clear, then a one-frame forward (enemy_script_forward_tap) or back (enemy_script_back_tap) tap by game_frame_count parity, which repeated gives the lever mashing; reached through enemy_state_funcs[7]; part of vf4lib/libenemy/src/libenemy.c
+ * confidence: observed
+ * evidence: handler of state 7 "GACHA": enemy_state_clear, then a one-frame forward (enemy_script_forward_tap) or back (enemy_script_back_tap) tap by game_frame_count parity (odd forward, even back), which repeated gives the lever mashing; reached through enemy_state_funcs[7]; part of vf4lib/libenemy/src/libenemy.c; observed live 2026-11-10: in the harness scenario task_dural_3, run by enemy_think as state 7 on the frame enemy_pick_gacha selected it (vertical blank 14711; +0xC was 7 at entry): it called enemy_state_clear (+0xC back to 0) and, game_frame_count being even (8854), started enemy_script_back_tap (the script pointer +0x1C became 0x0C16B028); the same at vertical blank 14747 (frame 8890, even); only these 2 calls, so the forward tap of odd frames (+0x18 on) never ran and the mashing of repeated selections was not seen
  * matched: source/vf4lib/libenemy/src/libenemy.c (tools/match/match.py)
  */
 void enemy_state_gacha(void)
@@ -1966,9 +1966,9 @@ void enemy_state_yoke(void)
 }
 
 /* 0x0c0536e0  size 0xae  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0x174
- * evidence: (0: down, else up): by game_frame_count % 3 the sidestep then P+K+G (enemy_sidestep_pkg_start), a plain sidestep (enemy_script_down_tap / enemy_script_up_tap) or a sidestep then P+G (enemy_script_down_tap_gp / enemy_script_up_tap_gp); only caller enemy_sidestep_against_attack; part of vf4lib/libenemy/src/libenemy.c
+ * evidence: (0: down, else up): by game_frame_count % 3 the sidestep then P+K+G (enemy_sidestep_pkg_start), a plain sidestep (enemy_script_down_tap / enemy_script_up_tap) or a sidestep then P+G (enemy_script_down_tap_gp / enemy_script_up_tap_gp); only caller enemy_sidestep_against_attack; part of vf4lib/libenemy/src/libenemy.c; observed live 2026-11-10: in the harness scenario task_dural_2 (vertical blank 32812), called by enemy_sidestep_against_attack with 0 (down) at game_frame_count 26780, which is 2 modulo 3, it started enemy_script_down_tap_gp, the down sidestep then P+G; its one call: the other five cases (enemy_sidestep_pkg_start, the plain sidesteps, all of the up side) never ran (38 of 87 instructions)
  * matched: source/vf4lib/libenemy/src/libenemy.c (tools/match/match.py)
  */
 void enemy_sidestep_pick(int up)
@@ -2213,8 +2213,8 @@ void enemy_state_revise(void)
 }
 
 /* 0x0c053f80  size 0x34  file by match with source
- * confidence: inferred
- * evidence: a random script of enemy data table 7 for the character (enemy_data_table_get, enemy_script_list_count, enemy_script_start_random); only caller enemy_state_yoroke; part of vf4lib/libenemy/src/libenemy.c
+ * confidence: observed
+ * evidence: a random script of enemy data table 7 for the character (enemy_data_table_get, enemy_script_list_count, enemy_script_start_random); only caller enemy_state_yoroke; part of vf4lib/libenemy/src/libenemy.c; observed live 2026-11-10: in the harness scenario task_dural_1 (vertical blank 26092), called by enemy_state_yoroke for the CPU's Dural (enemy_chara 13): enemy_data_table_get(7, 13) gave the list 0x0C16BD6C, enemy_script_list_count gave 4 (four scripts before enemy_script_stand in the image) and enemy_script_start_random(list, 4) started 0x0C16B600, the list's third entry; the same list and count in task_dural_2 (33651) and task_dural_3 (29767), its 3 calls
  * matched: source/vf4lib/libenemy/src/libenemy.c (tools/match/match.py)
  */
 void enemy_yoroke_script_start(void)
@@ -2515,8 +2515,8 @@ uint enemy_state_select(uint situation, int state)
 }
 
 /* 0x0c054720  size 0x98  file by match with source
- * confidence: inferred
- * evidence: the debug cpu_mot_type routines' first test: returns 1 while the CPU's rob +0x20 bit 6 is set; with ukemi_on_off on and situation bit 8 starts an enemy_ukemi_scripts entry, with gacha_on_off on and bit 13 or rob +0x20 bit 19 a forward / back tap, returning 1 when it did; else 0; callers the enemy_mot_ routines; part of vf4lib/libenemy/src/libenemy.c
+ * confidence: observed
+ * evidence: the debug cpu_mot_type routines' first test: returns 1 while the CPU's rob +0x20 bit 6 is set; with ukemi_on_off on and situation bit 8 starts an enemy_ukemi_scripts entry, with gacha_on_off on and bit 13 or rob +0x20 bit 19 a forward / back tap, returning 1 when it did; else 0; callers the enemy_mot_ routines; part of vf4lib/libenemy/src/libenemy.c; observed live 2026-11-10: in the harness scenario task_attack_1 (cpu_mot_type poked each round), called by enemy_mot_syagami: at vertical blank 8274, with the CPU's rob +0x20 at 0x4C9 (bit 6 set), it returned 1 and enemy_mot_syagami started no script; at 8827, with +0x20 at 0x3018 and ukemi_on_off and gacha_on_off both 0, it returned 0; 6,147 of the 105,969 calls returned 1, all on the bit 6 path (the kept ones from enemy_mot_stand and enemy_mot_syagami); the two debug switches were never on, so the script starts (+0x1e..+0x52, +0x5c..+0x8a) never ran
  * matched: source/vf4lib/libenemy/src/libenemy.c (tools/match/match.py)
  */
 int enemy_mot_debug_override(void)
@@ -2658,8 +2658,8 @@ void enemy_mot_counter_s(void)
 }
 
 /* 0x0c054a00  size 0x18  file by match with source
- * confidence: inferred
- * evidence: cpu_mot_type COUNTER_M (enemy_mot_type_funcs[7]): enemy_counter_run with enemy_counter_m_scripts; reached through the table; part of vf4lib/libenemy/src/libenemy.c
+ * confidence: observed
+ * evidence: cpu_mot_type COUNTER_M (enemy_mot_type_funcs[7]): enemy_counter_run with enemy_counter_m_scripts; reached through the table; part of vf4lib/libenemy/src/libenemy.c; observed live 2026-11-10: in the harness scenario task_attack_1, enemy_side_frame called it on every CPU frame from vertical blank 19437, the frame cpu_mot_type was poked to 7, until the poke to 8 (963 calls), each handing enemy_counter_m_scripts to enemy_counter_run, which at vertical blank 19468, against player 1's scripted attack, started 0x0C16B650 from it: the table's entry for the CPU's character 4, which no row of enemy_counter_s_scripts or enemy_counter_b_scripts holds; in task_attack_3 (character 10, vertical blank 18817) it started that table's 0x0C16B770 and in task_attack_4 (character 14, 19617) 0x0C16B650
  * matched: source/vf4lib/libenemy/src/libenemy.c (tools/match/match.py)
  */
 void enemy_mot_counter_m(void)
@@ -2669,8 +2669,8 @@ void enemy_mot_counter_m(void)
 }
 
 /* 0x0c054a20  size 0x18  file by match with source
- * confidence: inferred
- * evidence: cpu_mot_type COUNTER_B (enemy_mot_type_funcs[8]): enemy_counter_run with enemy_counter_b_scripts; reached through the table; part of vf4lib/libenemy/src/libenemy.c
+ * confidence: observed
+ * evidence: cpu_mot_type COUNTER_B (enemy_mot_type_funcs[8]): enemy_counter_run with enemy_counter_b_scripts; reached through the table; part of vf4lib/libenemy/src/libenemy.c; observed live 2026-11-10: in the harness scenario task_attack_3, enemy_side_frame called it on every CPU frame from vertical blank 21229, the frame cpu_mot_type was poked to 8, each call handing enemy_counter_b_scripts to enemy_counter_run, which at vertical blank 21284, against player 1's scripted attack, started 0x0C16B498 from it: the table's entry for the CPU's character 10 (enemy_counter_m_scripts has 0x0C16B770 there, enemy_counter_s_scripts 0x0C16AFF0); in task_attack_4 (character 14, vertical blank 21279) it started that table's 0x0C16B7F0 and in task_attack_1 (character 4, 20867) 0x0C16B770
  * matched: source/vf4lib/libenemy/src/libenemy.c (tools/match/match.py)
  */
 void enemy_mot_counter_b(void)

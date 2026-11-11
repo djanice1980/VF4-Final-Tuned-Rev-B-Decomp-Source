@@ -178,7 +178,7 @@ void g2_timeout_flag_clear(void)
 /* 0x0c1385a0  size 0x74  file by match with source
  * confidence: inferred
  * extent: 0x92
- * evidence: reads 4 bytes at the address over the G2 bus; returns 1 when that left no G2 timeout (0xa05f6908 bit 27) and the bytes are 'GAPS' (0x53504147), else 0; part of syExtChk
+ * evidence: clears the G2 timeout flag (g2_timeout_flag_clear), then reads one 4-byte word at the address over the G2 bus (g2_cpu_copy_from_bus); returns 1 when the copy succeeded, left no G2 timeout (0xa05f6908 bit 27) and the word is 'GAPS' (0x53504147), else 0 (after a timeout it clears the flag again first); part of syExtChk
  * matched: source/sdk/sy/syextchk.c (tools/match/match.py)
  */
 bool ext_bridge_signature_ok(uint bridge)

@@ -857,7 +857,7 @@ void empty_fn_0c090280(void)
 
 /* 0x0c0902a0  size 0x16  file by match with source
  * confidence: inferred
- * evidence: calls user_back_mark_dirty (the pending table is part of the backup, user_back.c uses 0x0C376924); callers item_pending_expire, item_pending_add, game_judge_init; part of vf4lib/libcard/src/card_item.c
+ * evidence: calls user_back_mark_dirty (the pending table user_back_data.item_pending_table is part of the backup); callers item_pending_expire, item_pending_add, game_judge_init; part of vf4lib/libcard/src/card_item.c
  * matched: source/vf4lib/libcard/src/card_item.c (tools/match/match.py)
  */
 void item_pending_save_mark(void)
@@ -883,7 +883,7 @@ int item_pending_time_now(void)
 
 /* 0x0c090300  size 0x7c  file by match with source
  * confidence: inferred
- * evidence: clears the entries of the pending table at 0x0C376924 (10 x {stamp, card id, 1}, count at +0x78) older than 2879 by item_pending_time_now, re-sorts it (item_pending_sort) and resets the last id (+0x7C = -1) and its count (+0x80) when it is empty; then item_pending_save_mark; only caller game_init; part of vf4lib/libcard/src/card_item.c
+ * evidence: clears the entries of the pending table user_back_data.item_pending_table (10 x {stamp, card id, 1}, count at +0x78) older than 2879 by item_pending_time_now, re-sorts it (item_pending_sort) and resets the last id (+0x7C = -1) and its count (+0x80) when it is empty; then item_pending_save_mark; only caller game_init; part of vf4lib/libcard/src/card_item.c
  * matched: source/vf4lib/libcard/src/card_item.c (tools/match/match.py)
  */
 void item_pending_expire(void)
@@ -911,7 +911,7 @@ void item_pending_expire(void)
 
 /* 0x0c0903a0  size 0x10  file by match with source
  * confidence: inferred
- * evidence: the pending table's entry count (+0x78 of 0x0C376924); only caller item_pending_mark_init; part of vf4lib/libcard/src/card_item.c
+ * evidence: the pending table's entry count (user_back_data.item_pending_table.count); only caller item_pending_mark_init; part of vf4lib/libcard/src/card_item.c
  * matched: source/vf4lib/libcard/src/card_item.c (tools/match/match.py)
  */
 int item_pending_count(void)

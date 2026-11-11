@@ -8,7 +8,7 @@
 
 /* 0x0c136b00  size 0x58  file by match with source
  * confidence: inferred
- * evidence: with interrupts masked, clears the flags word of all 256 hook records (irq_hook_pool, 16 bytes each) and the 0xc0 list heads (irq_hook_heads, one per event code / 16); called by sys_bring_up_buses; part of syChain; checked against reference material (not in this repo)
+ * evidence: with interrupts masked, clears the priority word (+0xc, whose bit 31 marks a record in use) of all 256 hook records (irq_hook_pool, 16 bytes each) and the 0xc0 list heads (irq_hook_heads, one per event code / 16); called by sys_bring_up_buses; part of syChain; checked against reference material (not in this repo)
  * matched: source/sdk/sy/sychain.c (tools/match/match.py)
  */
 void irq_hooks_clear(void)

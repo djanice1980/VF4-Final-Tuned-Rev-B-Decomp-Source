@@ -238,8 +238,8 @@ void play_time_account(void)
 }
 
 /* 0x0c02ebe0  size 0x66  file by match with source
- * confidence: inferred
- * evidence: at boot (game_boot): g1_dma_spin_idle, sram_bank_snapshot into ledger_snapshot, keeps the stored day (user_back_data+0x237c +4) in ledger_baseline_day and six 16-bit ledger counters (snapshot +0x28, +0x2c, +0x38, +0x3c, +0x40, +0x44) as the baseline for ledger_daily_update; part of vf4lib/libbase/src/game_stats.c
+ * confidence: observed
+ * evidence: at boot (game_boot): g1_dma_spin_idle, sram_bank_snapshot into ledger_snapshot, keeps the stored day (user_back_data+0x237c +4) in ledger_baseline_day and six 16-bit ledger counters (snapshot +0x28, +0x2c, +0x38, +0x3c, +0x40, +0x44) as the baseline for ledger_daily_update; part of vf4lib/libbase/src/game_stats.c; observed live 2026-11-10: in the harness scenario hw_backup_good (a boot from the backup RAM that hw_backup saved, in which ledger_daily_update had stored the clock's day 10 at user_back_data +0x2380), called once by game_boot (vertical blank 192) it called g1_dma_spin_idle and sram_bank_snapshot(ledger_snapshot), read 10 at user_back_data +0x2380 and stored it in ledger_baseline_day (0 -> 10), then stored the six 16-bit counters it read at snapshot +0x28, +0x2c, +0x38, +0x3c, +0x40 and +0x44, all 0 in the harness's SRAM bank (zeros over zeros); the same in hw_backup_sram0, hw_backup_sram1 and the three hw_backup_eeprom boots, while in the other 69 boots (an empty backup, or both copies damaged in hw_backup_sramboth) the day stored was 0 over 0
  * matched: source/vf4lib/libbase/src/game_stats.c (tools/match/match.py)
  */
 void ledger_daily_baseline(void)

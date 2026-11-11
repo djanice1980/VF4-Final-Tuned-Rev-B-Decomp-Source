@@ -256,8 +256,8 @@ void stage_task_exec(void)
 }
 
 /* 0x0c0dd1a0  size 0x58  file by match with source
- * confidence: inferred
- * evidence: draws the object list of stage record +0x18 (to -1), raised by 4.0 when match_stage is 6; only caller stage_task_exec (last); part of vf4lib/librobdisp/src/stage.c (file name ours; library inferred from position and callers, see notes)
+ * confidence: observed
+ * evidence: draws the object list of stage record +0x18 (to -1), raised by 4.0 when match_stage is 6; only caller stage_task_exec (last); part of vf4lib/librobdisp/src/stage.c (file name ours; library inferred from position and callers, see notes); observed live 2026-11-10: in the harness scenario stage_rope (the stage poked to 6 at game_mask_init), every call (3,915, one a frame from stage_task_exec+0x2e4; vertical blank 7972 read in full) read match_stage 6 and the list pointer at the stage record +0x18 (0x0C1E2284), called mtx_translate(0, 4, 0) after mtx_push and then obj_draw for the list's 33 entries in order (1 to 32, then 0) up to its -1, and mtx_pop; in every other scenario the list began with -1 and match_stage was not 6, so only mtx_push and mtx_pop ran (obj_draw 129,195 = 33 x 3,915, mtx_translate 3,915)
  * matched: source/vf4lib/librobdisp/src/stage.c (tools/match/match.py)
  */
 void stage_late_objs_draw(void)

@@ -3350,18 +3350,18 @@ void move_tcmd_23(rob_rec *rob, int arg)
   }
 }
 
-void move_tcmd_24(rob_rec *rob, int arg)
+void move_tcmd_24(rob_rec *rob, short *arg)
 {
   int c = rob->followup_count;
-  int v = *(short *)(arg + 2);
+  int v = arg[1];
 
-  if (*(short *)(arg + 4) == 1) {
+  if (arg[2] == 1) {
     if (c >= v) return;
   }
   else if (c <= v) {
     return;
   }
-  rob->request.word = *(uint *)(arg + 8);
+  rob->request.word = *(uint *)(arg + 4);
 }
 
 void move_tcmd_25_set_flag24(rob_rec *rob, int arg)

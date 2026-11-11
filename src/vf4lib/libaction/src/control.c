@@ -1113,7 +1113,7 @@ void control_ctx_rob24_bit0(control_rec *ctrl)
 
 /* 0x0c05e200  size 0x42  file by match with source
  * confidence: inferred
- * evidence: (control): context 4 (rob +0x24 bit 1): button presses run the stance's control-set entry 5 (+0x14). Reached through control_context_funcs; role of the rob bit unclear; part of vf4lib/libaction/src/control.c
+ * evidence: (control): context 4 (rob +0x24 bit 1): copies control_scan_pos to +0x0e on every call, and button presses (input_presses & 0xf) run the stance's control-set entry 5 (+0x14). Reached through control_context_funcs; the rob bit is one a move sets and clears with its timed commands 25 / 26 (move_tcmd_25_set_flag24 / move_tcmd_26_clear_flag24 with bit number 1: in task_attack_3 move_tcmd_26_clear_flag24 cleared it at vertical blank 18148 with the entry frame 110, bit 1, and move_tcmd_25_set_flag24 ran with the entry frame 20, bit 1 at vertical blank 19941); part of vf4lib/libaction/src/control.c
  * matched: source/vf4lib/libaction/src/control.c (tools/match/match.py)
  */
 void control_ctx_rob24_bit1(control_rec *ctrl)
@@ -2604,8 +2604,8 @@ int script_op_43_if_cond_ge(control_rec *ctrl)
 }
 
 /* 0x0c060800  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: move_script_ops[79] (4 bytes, operands b1c h2): condition b1 counter <= h2, else backtrack
+ * confidence: observed
+ * evidence: move_script_ops[79] (4 bytes, operands b1c h2): condition b1 counter <= h2, else backtrack; observed live 2026-11-10: in the harness scenario mash_6 (vertical blank 12115), run by move_script_exec at ctrl_LIO.bin +0x1248 (bytes 4f 08 08 00: opcode 79, b1 8, h2 8), it passed (1, 0) to script_cond, whose record shows the test: row 8 of input_conditions (counter 2, mask 2, inside the control's state 0x08000006) had a counter of 16 in the history entry at the scan position, 16 is not at most 8, and it backtracked (script_backtrack: script_pc from 0x0d04c528 to 0x0d04c574, script_choice_depth 1 to 0) and returned 0; the passing path did not run in its 6 calls
  * matched: source/vf4lib/libaction/src/control.c (tools/match/match.py)
  */
 int script_op_79_if_cond_le(control_rec *ctrl)
@@ -2795,8 +2795,8 @@ int script_op_51_if_rate_ge(control_rec *ctrl)
 }
 
 /* 0x0c060c20  size 0x24  file by match with source
- * confidence: inferred
- * evidence: move_script_ops[52] (8 bytes, operands w4x): state = w4
+ * confidence: observed
+ * evidence: move_script_ops[52] (8 bytes, operands w4x): state = w4; observed live 2026-11-10: in the harness scenario task_trials_3 (vertical blank 10469), run by move_script_exec at ctrl_VAN.bin +0x12d4 (bytes 34 00 00 00 01 00 00 00: opcode 52, w4 1), it set side 0's control state +0x54 from 0x82000001 to 1, advanced script_pc by 8 (0x0d049574 to 0x0d04957c) and returned 0; at vertical blank 11584 the same instruction at +0x12fc took the state from 0x02000001 to 1 (2 calls in all)
  * matched: source/vf4lib/libaction/src/control.c (tools/match/match.py)
  */
 int script_op_52_state_set(control_rec *ctrl)
@@ -2819,9 +2819,9 @@ int script_op_53_state_add(control_rec *ctrl)
 }
 
 /* 0x0c060ca0  size 0x72  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0x8c
- * evidence: ops 54-57: one of the four wall distances (rob +0x12C, wall_dist[b1 & 3]) of the rob or the opponent against a float (le: at most it, else at least it), passing only while the matching wall angle (rob +0x14C, wall_angle[b1 & 3]) is at most 0x1000; returns 1 after advancing 8 bytes, else 0; corrected from the live log 2026-11-10: its op 56 call at frame 4964 (ctrl_SHN.bin +0xf54, b1 2, 2.5) was the test guarding SHN's wall throw, and it returned 0
+ * evidence: ops 54-57: one of the four wall distances (rob +0x12C, wall_dist[b1 & 3]) of the rob or the opponent against a float (le: at most it, else at least it), passing only while the matching wall angle (rob +0x14C, wall_angle[b1 & 3]) is at most 0x1000; returns 1 after advancing 8 bytes, else 0; corrected from the live log 2026-11-10: its op 56 call at frame 4964 (ctrl_SHN.bin +0xf54, b1 2, 2.5) was the test guarding SHN's wall throw, and it returned 0; observed live 2026-11-10: in the harness scenario task_versus_4, called by script_op_56_if_opp_wall_dist_le (opp 1, le 1) at ctrl_SHN.bin +0xf54 (b1 2, float 2.5) for side 0's control: at vertical blank 13860 it read the opponent's wall_dist[2] (robs+0x86c +0x134) as 20.0, above 2.5, and returned 0 without reading the angle; at vertical blank 26009 the distance was 1.91, it went on to the opponent's wall_angle[2] (+0x150), which was 0x1764, above 0x1000, and returned 0 (task_missions_3 at vertical blank 22592 the same with 1.13 and 0x18ae); the passing path (advance 8, return 1) did not run in its 46 calls
  * matched: source/vf4lib/libaction/src/control.c (tools/match/match.py)
  */
 int script_wall_dist(control_rec *ctrl, char opp, char le)
@@ -2885,8 +2885,8 @@ int script_op_55_if_wall_dist_ge(control_rec *ctrl)
 }
 
 /* 0x0c060dc0  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: move_script_ops[56] (8 bytes, operands b1 w4f): the opponent's wall distance b1 & 3 (rob +0x12C + 4 n) <= float w4, with its wall angle (rob +0x14C + 2 n) at most 0x1000 (script_wall_dist); corrected from the live log 2026-11-10: at frame 4964 it ran at ctrl_SHN.bin +0xf54 (b1 2, w4 2.5) after `if_bit 0, rob+0x1d0`, guarding SHN's wall throw; script_wall_dist returned 0
+ * confidence: observed
+ * evidence: move_script_ops[56] (8 bytes, operands b1 w4f): the opponent's wall distance b1 & 3 (rob +0x12C + 4 n) <= float w4, with its wall angle (rob +0x14C + 2 n) at most 0x1000 (script_wall_dist); corrected from the live log 2026-11-10: at frame 4964 it ran at ctrl_SHN.bin +0xf54 (b1 2, w4 2.5) after `if_bit 0, rob+0x1d0`, guarding SHN's wall throw; script_wall_dist returned 0; observed live 2026-11-10: in the harness scenario task_versus_4, run by move_script_exec at ctrl_SHN.bin +0xf54 (bytes 38 02 00 00 00 00 20 40: opcode 56, b1 2, w4 2.5) for side 0: its script_wall_dist call (opp 1, le 1) read the opponent's wall distance 2 as 20.0 at vertical blank 13860, and as 1.91 with the opponent's wall angle 2 at 0x1764 at vertical blank 26009, returned 0 both times, and it backtracked through script_backtrack and returned 0; script_wall_dist returned 0 on all 46 calls, so the passing path did not run
  * matched: source/vf4lib/libaction/src/control.c (tools/match/match.py)
  */
 int script_op_56_if_opp_wall_dist_le(control_rec *ctrl)

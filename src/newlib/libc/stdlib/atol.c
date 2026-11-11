@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c1592e0  size 0x16  file by match with source
- * confidence: inferred
- * evidence: (string): strtol(string, 0, 10); newlib's atoi and atol compile to this same code, and the callers need a long return (an int return reorders net_power_on_reply_parse's literal pool), so it is atol (newlib's atol.c); 17 callers (the network and HTTP code: http_client_url_parse, http_url_split, http_client_body_read ...); part of newlib/libc/stdlib/atol.c
+ * confidence: observed
+ * evidence: (string): strtol(string, 0, 10); newlib's atoi and atol compile to this same code, and the callers need a long return (an int return reorders net_power_on_reply_parse's literal pool), so it is atol (newlib's atol.c); 17 callers (the network and HTTP code: http_client_url_parse, http_url_split, http_client_body_read ...); part of newlib/libc/stdlib/atol.c; observed live 2026-11-10: in the harness scenario net_boot (vertical blanks 210 and 212), given the stand-in server's reply text, http_client_body_read passed the string "308" and got 308, and naominet_poweron_reply_parse passed "2004&month=11&day=10&hour=7..." and got 2004 (then 11, 10, 7, 18, 31 for the fields after it), each through one strtol(string, 0, 10); in net_cards_1 (vertical blank 3403) net_reply_card_id_apply passed "123456" and got 0x1E240
  * matched: source/newlib/libc/stdlib/atol.c (tools/match/match.py)
  */
 long atol(char *str)

@@ -1707,7 +1707,7 @@ void move_tcmd_20_adjust_177_if(rob_rec *rob, int arg); /* 0x0c0680c0 */
 void move_tcmd_21_adjust_177_opponent(rob_rec *rob, int arg); /* 0x0c068160 */
 void move_tcmd_22_approach(rob_rec *rob, int arg); /* 0x0c068200 */
 void move_tcmd_23(rob_rec *rob, int arg); /* 0x0c068560 */
-void move_tcmd_24(rob_rec *rob, int arg); /* 0x0c068700 */
+void move_tcmd_24(rob_rec *rob, short *arg); /* 0x0c068700 */
 void move_tcmd_25_set_flag24(rob_rec *rob, int arg); /* 0x0c068740 */
 void move_tcmd_26_clear_flag24(rob_rec *rob, int arg); /* 0x0c068760 */
 void move_tcmd_27_set_flag28(rob_rec *rob, int arg); /* 0x0c068780 */

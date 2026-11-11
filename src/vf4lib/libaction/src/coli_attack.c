@@ -2091,8 +2091,8 @@ void hit_params_custom_load(rob_rec *rob)
 }
 
 /* 0x0c071fe0  size 0x22  file by match with source
- * confidence: inferred
- * evidence: (rob): clears the 16-entry ring of attacking moves at +0x252 that attack_connect fills (move id per hit) and its index +0x222; caller rob_state_flags_update; part of vf4lib/libaction/src/coli_attack.c
+ * confidence: observed
+ * evidence: (rob): clears the 16-entry ring of attacking moves at +0x252 that attack_connect fills (move id per hit) and its index +0x222; caller rob_state_flags_update; part of vf4lib/libaction/src/coli_attack.c; observed live 2026-11-10: in the harness scenario stage_rope (vertical blank 7894), called by rob_state_flags_update for side 0's rob, it cleared the ring at +0x252, whose first entry held 0x0d2d (stored by attack_connect at vertical blank 7836, which also took the index from 0 to 1), and set the index +0x222 from 1 to 0; in the other 1,299 kept calls ring and index were already zero
  * matched: source/vf4lib/libaction/src/coli_attack.c (tools/match/match.py)
  */
 void attack_history_clear(rob_rec *rob)

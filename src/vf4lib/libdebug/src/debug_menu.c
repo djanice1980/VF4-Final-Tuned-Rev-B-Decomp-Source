@@ -27,8 +27,8 @@ int led_blink_pattern(void)
 }
 
 /* 0x0c0ed7e0  size 0x28  file by match with source
- * confidence: inferred
- * evidence: (byte): led_latch_byte(byte) unless rom_dma_busy() reports a transfer in progress; callers led_blink_update and game_boot; part of vf4lib/libdebug/src/debug_menu.c
+ * confidence: observed
+ * evidence: (byte): led_latch_byte(byte) unless rom_dma_busy() reports a transfer in progress; callers led_blink_update and game_boot; part of vf4lib/libdebug/src/debug_menu.c; observed live 2026-11-10: in the harness scenario hw_jvs_errors_ack, called once per vertical blank by led_blink_update, it passed the pattern byte it was given on to led_latch_byte: 0xAA at vertical blank 6536 (the LED register 0xA05F7068 was then written 0xFFFFFF55 by led_latch_inverted) and 0x55 at 6544 (written 0xFFFFFFAA); 10,754 of its 10,829 calls came from led_blink_update (the error screens of hw_jvs_errors_absent, hw_jvs_errors_ack and the three net_board_comms runs) and 75 from game_boot with the literal 0x55; rom_dma_busy (the harness's model) reported idle every time, so the busy case never ran
  * matched: source/vf4lib/libdebug/src/debug_menu.c (tools/match/match.py)
  */
 void led_write_if_idle(value) char value;
@@ -832,7 +832,7 @@ void mothead_sound_init(void)
 
 /* 0x0c0eeaa0  size 0xec  file by match with source
  * confidence: inferred
- * evidence: the "MOTHEAD_SOUND" window's draw callback (+0x34, every frame while shown): for the character rob, clears the fired bits (mothead_voice_played voice, mothead_sound_played sound) when its +0x318 bit 0x20 is set, then for each of 8 rows whose frame (cv_coma[i], snd_coma[i]) equals the character's frame (+0x0A) and whose bit is not yet set, sets the bit and plays the voice (rob_voice_request with the table cv_type_voices by cv_type[i]) or the sound (sound_request with snd_type_sounds by snd_type[i]); the type ranges are checked against CV_WAZA_1 and SD_GUARD; part of vf4lib/libdebug/src/debug_menu.c
+ * evidence: the "MOTHEAD_SOUND" window's draw callback (+0x34, every frame while shown): for the character rob, clears the fired bits (mothead_voice_played voice, mothead_sound_played sound) when its +0x318 bit 0x20 is set, then for each of 8 rows whose frame (cv_coma[i], snd_coma[i]) is above 0 and equals the character's frame (+0x0A) and whose bit is not yet set, sets the bit and plays the voice (rob_voice_request with the table cv_type_voices by cv_type[i]) or the sound (sound_request with snd_type_sounds by snd_type[i]); the type ranges are checked against CV_WAZA_1 and SD_GUARD; part of vf4lib/libdebug/src/debug_menu.c
  * matched: source/vf4lib/libdebug/src/debug_menu.c (tools/match/match.py)
  */
 void mothead_sound_play(void)
@@ -972,7 +972,7 @@ void debug_malloc_update(win_rec *w)
 
 /* 0x0c0eedc0  size 0x17e  file by match with source
  * confidence: inferred
- * evidence: the "LEVEL_CHANGE" window's open callback (window record 0x0C324E18 +0x1C): clears debug_dan_i and the eight item bytes 0x0C322D4C-0x0C322D53, then for a player-0 card (card_flags_get(0) bits 0 and 7) copies the card's dan (card_record_get(0) +4) to debug_dan_i, reads the 2 x 4 item ids with item_slot_get, and finds each id's position in the character's per-slot item lists (level_item_lists, counts level_item_counts, by card_record_char_get(0)) for the menu indices entry_0; part of vf4lib/libdebug/src/debug_menu.c
+ * evidence: the "LEVEL_CHANGE" window's open callback (window record 0x0C324E18 +0x1C): clears debug_dan_i and the eight item bytes of level_change_items, then for a player-0 card (card_flags_get(0) bits 0 and 7) copies the card's dan (card_record_get(0) +4) to debug_dan_i, reads the 2 x 4 item ids with item_slot_get, and finds each id's position in the character's per-slot item lists (level_item_lists, counts level_item_counts, by card_record_char_get(0)) for the menu indices entry_0; part of vf4lib/libdebug/src/debug_menu.c
  * matched: source/vf4lib/libdebug/src/debug_menu.c (tools/match/match.py)
  */
 void level_change_open(void)
@@ -996,8 +996,8 @@ void level_change_open(void)
   level_change_items.c0_slot3 = 0;
   level_change_items.c1_slot0 = 0;
   level_change_items.c1_slot1 = 0;
-  (&level_change_items.c1_slot0)[2] = 0;
-  (&level_change_items.c1_slot0)[3] = 0;
+  level_change_items.c1_slot2 = 0;
+  level_change_items.c1_slot3 = 0;
   f = card_flags_get(0);
   q = card_record_get(0);
   if ((f & 1) != 0) {
@@ -1009,8 +1009,8 @@ void level_change_open(void)
       level_change_items.c0_slot3 = item_slot_get(0,0,3);
       level_change_items.c1_slot0 = item_slot_get(0,1,0);
       level_change_items.c1_slot1 = item_slot_get(0,1,1);
-      (&level_change_items.c1_slot0)[2] = item_slot_get(0,1,2);
-      (&level_change_items.c1_slot0)[3] = item_slot_get(0,1,3);
+      level_change_items.c1_slot2 = item_slot_get(0,1,2);
+      level_change_items.c1_slot3 = item_slot_get(0,1,3);
       (&entry_0)[0] = 0;
       (&entry_0)[1] = 0;
       (&entry_0)[2] = 0;
@@ -1040,7 +1040,7 @@ void level_change_open(void)
 
 /* 0x0c0eef80  size 0x174  file by match with source
  * confidence: inferred
- * evidence: the "LEVEL_CHANGE" window's focused update (+0x24): for a player-0 card while character 0's +0x18 bit 0 is set, clamps the eight menu indices entry_0... below the character's list lengths (level_item_counts) and turns them back into item ids in 0x0C322D4C-0x0C322D53; part of vf4lib/libdebug/src/debug_menu.c
+ * evidence: the "LEVEL_CHANGE" window's focused update (+0x24): for a player-0 card while character 0's +0x18 bit 0 is set, clamps the eight menu indices entry_0... below the character's list lengths (level_item_counts) and turns them back into item ids in level_change_items; part of vf4lib/libdebug/src/debug_menu.c
  * matched: source/vf4lib/libdebug/src/debug_menu.c (tools/match/match.py)
  */
 void level_change_update(void)

@@ -1095,7 +1095,7 @@ void card_presence_update(int side)
 
 /* 0x0c082b00  size 0x24  file by match with source
  * confidence: inferred
- * evidence: (player): for a unit the game does not use, queues request 0xDA (card_unlock_start) when card_status byte 1, the lock byte, is 1, so it would unlock a locked unit (from the code: in the 120 judged logs no unused unit ever reported its lock byte 1 and card_unlock_start was never called from it in 2,056,975 calls); only caller card_modes_frame; part of vf4lib/libcard/src/card_mode.c
+ * evidence: (player): for a unit the game does not use, queues request 0xDA (card_unlock_start) when card_status byte 1, the lock byte, is 1, so it would unlock a locked unit (from the code: in the 169 judged logs no unused unit ever reported its lock byte 1 and card_unlock_start was never called from it in 3,320,815 calls); only caller card_modes_frame; part of vf4lib/libcard/src/card_mode.c
  * matched: source/vf4lib/libcard/src/card_mode.c (tools/match/match.py)
  */
 void card_unused_unit_cmd_da(int side)
@@ -1140,8 +1140,8 @@ void card_unit_cmd_pick(int side)
 }
 
 /* 0x0c082c40  size 0x58  file by match with source
- * confidence: inferred
- * evidence: (player): with the card state block card_service_state_get: when (its first byte is 0 in play_style 1, or its word +4 is -1) and the word is not 3, takes the card out of play (+0x104 = 0) and clears card_flags bit 0x80; role unclear; only caller card_modes_frame; part of vf4lib/libcard/src/card_mode.c
+ * confidence: observed
+ * evidence: (player): with the card state block card_service_state_get: when (its first byte is 0 in play_style 1, or its word +4 is -1) and the word is not 3, takes the card out of play (+0x104 = 0) and clears card_flags bit 0x80; the word is set to -1 by card_wait_check, seen in the harness scenario card_settings when the reception's closing time passed during a game (the word had been 3 until then); only caller card_modes_frame; part of vf4lib/libcard/src/card_mode.c; observed live 2026-11-10: in the harness scenario card_settings (the reception's closing time passing during a game, play_style 1 and the state block's first byte 0), called by card_modes_frame for each side, it stored nothing in the 560 calls made while the state word was 3 (vertical blanks 11774 to 12053); at 12054, card_wait_check having set the word to -1 the frame before, its call for side 0 cleared bit 0x80 of card_flags[0] (0x291 -> 0x211) and stored 0 at card_records +0x104, which was already 0 (card_presence_update read 0 there at 11960: the card had left play); side 1, with no card, got zeros over zeros; the dropping branch ran in no other run, and nowhere did it take a playing card out of play
  * matched: source/vf4lib/libcard/src/card_mode.c (tools/match/match.py)
  */
 void card_drop_on_state(int side)

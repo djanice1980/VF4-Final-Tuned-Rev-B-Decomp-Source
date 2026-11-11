@@ -27,8 +27,8 @@ void device_bringup_noop(void)
 }
 
 /* 0x0c14a1e0  size 0x12  file by match with source
- * confidence: inferred
- * evidence: (offset, value): stores value at 0xA05F8000 + offset, the core registers of the first graphics chip, and returns 1; callers vo_blank_per_chip, spg_timing_load (display timing); part of KamuiTL
+ * confidence: observed
+ * evidence: (offset, value): stores value at 0xA05F8000 + offset, the core registers of the first graphics chip, and returns 1; callers vo_blank_per_chip, spg_timing_load (display timing); part of KamuiTL; observed live 2026-11-10: in the harness scenario boot (vertical blank 0), called by spg_timing_load with offset 0xd0 and value 0x100, it wrote 0x100 to 0xa05f80d0 (the record's register line: the first chip's base 0xa05f8000 plus the offset) and returned 1; the same in each of the 75 runs that boot
  * matched: source/sdk/kamui/chip_access.c (tools/match/match.py)
  */
 int pvr_reg_write_first(int offset, uint value)
@@ -38,8 +38,8 @@ int pvr_reg_write_first(int offset, uint value)
 }
 
 /* 0x0c14a200  size 0x12  file by match with source
- * confidence: inferred
- * evidence: (offset, value): stores value at 0xA25F8000 + offset, the core registers of the second graphics chip, and returns 1; callers vo_blank_per_chip, spg_timing_load (display timing); part of KamuiTL
+ * confidence: observed
+ * evidence: (offset, value): stores value at 0xA25F8000 + offset, the core registers of the second graphics chip, and returns 1; callers vo_blank_per_chip, spg_timing_load (display timing); part of KamuiTL; observed live 2026-11-10: in the harness scenario boot (vertical blank 0), called by spg_timing_load with offset 0xd0 and value 0 right after pvr_reg_write_first had written 0x100 to 0xa05f80d0, it wrote 0 to 0xa25f80d0 (the record's register line: the second chip's base 0xa25f8000 plus the offset) and returned 1; the same in each of the 75 runs that boot
  * matched: source/sdk/kamui/chip_access.c (tools/match/match.py)
  */
 int pvr_reg_write_second(int offset, uint value)

@@ -34,7 +34,7 @@ void sys_bring_up_vectors_timer(void)
 
 /* 0x0c1380a0  size 0x1e  file by match with source
  * confidence: inferred
- * evidence: irq_hooks_clear, g2_subsystem_start(0), ext_devices_probe; called by the start-up code right after sys_bring_up_vectors_timer; part of syHw; checked against reference material (not in this repo)
+ * evidence: irq_hooks_clear, g2_subsystem_start(0), ext_devices_probe; called by the start-up code (hardware_boot) after sys_bring_up_vectors_timer, board_prestart, board_config_ptr and naomi2_lib_start, with interrupts masked again; part of syHw; checked against reference material (not in this repo)
  * matched: source/sdk/sy/syhw.c (tools/match/match.py)
  */
 void sys_bring_up_buses(void)

@@ -1087,9 +1087,9 @@ void chain_node_sag_apply(float *point, float *old, float *neighbour, float leng
 }
 
 /* 0x0c0da560  size 0x1fe  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0x24c
- * evidence: (rottype, local direction): osage_node_rotate for the 0x68-node chains with the limit from chain_limit and two more types: 4 (x then z, z as 0x4000 - angle) and 5 (x then y); returns nothing; callers rope_update, chain_node_init, chain_node_calc; part of vf4lib/librobdisp/src/osage.c
+ * evidence: (rottype, local direction): osage_node_rotate for the 0x68-node chains with the limit from chain_limit and two more types: 4 (x then z, z as 0x4000 - angle) and 5 (x then y, y as 0x4000 - angle); returns nothing; callers rope_update, chain_node_init, chain_node_calc; part of vf4lib/librobdisp/src/osage.c; observed live 2026-11-10: in the harness scenario stage_rope (rope_stage_on poked on in each frame), called by rope_update+0x1dc with type 0 and the next link's position in the first rob's bone space: for direction (-0.7564, 0.5040, -3.0379) at vertical blank 8030 it took the y angle atan2_s16(3.0379, -0.7564) = 18929 (104.0 degrees) and the z angle atan2_s16(0.5040, 3.1306) = 1664 (9.1 degrees; 3.1306 is the length in the x-z plane), read chain_limit as 0 (no clamp) and turned the current matrix by y then z (mtx_rot_y_s16, mtx_rot_z_s16), after which the matrix's x axis lay along that direction; all 76,200 game calls took case 0, types 1 to 5 and the limit were not exercised
  * matched: source/vf4lib/librobdisp/src/osage.c (tools/match/match.py)
  */
 void chain_node_rotate(int rot_type,float *dir)
@@ -1833,8 +1833,8 @@ void cloth_link_constrain(float *point, float *old, float *neighbour, float leng
 }
 
 /* 0x0c0dbae0  size 0x60  file by match with source
- * confidence: inferred
- * evidence: (point, center, radius): when the point is farther than radius from center, moves it onto the sphere (scale by radius x 1/sqrt(d^2), fsrra); callers cloth_link_constrain, rope_link_step, chain_node_init, chain_node_calc, chain_node_sag_apply; the C twin of point_dist_clamp_asm; part of vf4lib/librobdisp/src/osage.c
+ * confidence: observed
+ * evidence: (point, center, radius): when the point is farther than radius from center, moves it onto the sphere (scale by radius x 1/sqrt(d^2), fsrra); callers cloth_link_constrain, rope_link_step, chain_node_init, chain_node_calc, chain_node_sag_apply; the C twin of point_dist_clamp_asm; part of vf4lib/librobdisp/src/osage.c; observed live 2026-11-10: in the harness scenario stage_rope (rope_stage_on poked on in each frame), call 1 (vertical blank 8030, from rope_link_step+0x84) got the point (37.8, 5.5, 0), the center (3.1095, 4.0, 0.4015) and radius 0.02 and moved the point to (3.12951, 4.000864, 0.40129), 0.02 from the center on the line to the old point; call 345 (vertical blank 8032), with the point 0.0192 from its center, stored nothing; 58,911 calls moved the point and 16,689 left it
  * matched: source/vf4lib/librobdisp/src/osage.c (tools/match/match.py)
  */
 void point_dist_clamp(float *point,float *center,float radius)

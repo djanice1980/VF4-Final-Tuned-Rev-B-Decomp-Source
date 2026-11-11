@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c1411a0  size 0x60  file by match with source
- * confidence: inferred
- * evidence: writes the kept frame buffer register values to both graphics chips at once (through pvr_reg_write_both, the 0xA85F8000 window): FB_X_CLIP and FB_Y_CLIP (0x68/0x6c), FB_R_SIZE (0x5c), FB_W_LINESTRIDE (0x4c), Y_COEFF (0x118), SCALER_CTL (0xf4), FB_W_CTRL (0x48), FB_R_CTRL (0x44) with its display-enable bit cleared and VO_CONTROL (0xe8) with the blank bit (8) set; called by display_timing_and_fb_program and fb_rebuild_dither_aa after they change the display; part of KamuiTL
+ * confidence: observed
+ * evidence: writes the kept frame buffer register values to both graphics chips at once (through pvr_reg_write_both, the 0xA85F8000 window): FB_X_CLIP and FB_Y_CLIP (0x68/0x6c), FB_R_SIZE (0x5c), FB_W_LINESTRIDE (0x4c), Y_COEFF (0x118), SCALER_CTL (0xf4), FB_W_CTRL (0x48), FB_R_CTRL (0x44) with its display-enable bit cleared and VO_CONTROL (0xe8) with the blank bit (8) set; called by display_timing_and_fb_program and fb_rebuild_dither_aa after they change the display; part of KamuiTL; observed live 2026-11-10: in the harness scenario boot (vertical blank 0), called by display_timing_and_fb_program, it read nine kept words of gfx_state (+0x2ac 0x027f0000, +0x2b0 0x01df0000, +0x2b8 0x00177d3f, +0x2bc 0xa0, +0x2f4 0x8040, +0x2f8 0x400, +0x2c4 9, +0x2c0 0x00800005, +0x2fc 0x00160000) and passed them to nine pvr_reg_write_both calls for offsets 0x68, 0x6c, 0x5c, 0x4c, 0x118, 0xf4, 0x48, 0x44 and 0xe8 in that order: the first seven unchanged, FB_R_CTRL as 0x00800004 (bit 0 cleared) and VO_CONTROL as 0x00160008 (bit 3 set); the record's register line has those values at 0xa85f8068 to 0xa85f80e8
  * matched: source/sdk/kamui/display.c (tools/match/match.py)
  */
 void fb_regs_reload_blanked(void)

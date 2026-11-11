@@ -1891,8 +1891,8 @@ int stage_random_pick(void)
 }
 
 /* 0x0c04d180  size 0x14  file by match with source
- * confidence: inferred
- * evidence: Clears sel_card_event_done[0..1]. Called by sel_chara_init; part of vf4lib/libbase/src/select.c
+ * confidence: observed
+ * evidence: Clears sel_card_event_done[0..1]. Called by sel_chara_init; part of vf4lib/libbase/src/select.c; observed live 2026-11-10: in the harness scenario card_versus_top (vertical blank 11848), called by sel_chara_init at the start of the second character select, it changed the two words of sel_card_event_done from 1, 1 (set by sel_card_event_once at 6638 and 6639 of the first select) to 0, 0, and sel_card_event_once then sent a new select request at 12134; its first two calls of the run (6349, 6417) stored zeros over zeros
  * matched: source/vf4lib/libbase/src/select.c (tools/match/match.py)
  */
 void sel_card_event_reset(void)
@@ -1903,8 +1903,8 @@ void sel_card_event_reset(void)
 }
 
 /* 0x0c04d1a0  size 0x4c  file by match with source
- * confidence: inferred
- * evidence: (player): once per select (sel_card_event_done), when the card flags have bits 1 and 0x80, calls net_select_request_send(player), which posts cmd=select with the card's access code and card id: one select request per select, seen with the network board model 2026-11-10. Called by sel_chara_choose_step; part of vf4lib/libbase/src/select.c
+ * confidence: observed
+ * evidence: (player): once per select (sel_card_event_done), when the card flags have bits 1 and 0x80, calls net_select_request_send(player), which posts cmd=select with the card's access code and card id: one select request per select, seen with the network board model 2026-11-10. Called by sel_chara_choose_step; part of vf4lib/libbase/src/select.c; observed live 2026-11-10: in the harness scenario card_versus_top, called by sel_chara_choose_step for each side in every frame of the select, it sent nothing while card_flags_get returned 0 (vertical blank 6441); at 6638 for side 0 and 6639 for side 1, the flags now 0x291 (bits 1 and 0x80), it called net_select_request_send(side) and set sel_card_event_done[side] from 0 to 1; the next call for side 0 (6639) read the 1 and only asked the flags; 135 requests in 44,383 calls
  * matched: source/vf4lib/libbase/src/select.c (tools/match/match.py)
  */
 void sel_card_event_once(int side)

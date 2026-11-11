@@ -348,8 +348,8 @@ int cns_nn_game_kind_valid(uint kind, int level)
 }
 
 /* 0x0c0228c0  size 0x2a  file by match with source
- * confidence: inferred
- * evidence: (kind, level): 1 for kind 8; else 1 only for a level 1-7 with a kind up to 6; only caller cns_nn_winner_show; part of vf4lib/libbase/src/cns_nickname.c
+ * confidence: observed
+ * evidence: (kind, level): 1 for kind 8; else 1 only for a level 1-7 with a kind up to 6; only caller cns_nn_winner_show; part of vf4lib/libbase/src/cns_nickname.c; observed live 2026-11-10: in the harness scenario card_nicknames (vertical blank 8570, and again at 16028), called by cns_nn_winner_show+0x3e with kind 3 and level 1 from the poked nickname records, it returned 1 and cns_nn_winner_show went on to set the winner flag and build the plate (sprite_set_file_load, cns_nn_plate_build); only the accepting leg ran, with a kind under 6 and a level at the low end of 1-7: kind 8, a level outside 1-7 and a kind above 6 were never passed
  * matched: source/vf4lib/libbase/src/cns_nickname.c (tools/match/match.py)
  */
 bool cns_nn_winner_kind_valid(uint kind, int level)

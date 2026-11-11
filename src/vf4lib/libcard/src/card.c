@@ -1787,8 +1787,8 @@ void card_image_streak_restore(int side, int exp, int point)
 }
 
 /* 0x0c088020  size 0x3a  file by match with source
- * confidence: inferred
- * evidence: 1 unless one of the two level_change_flags has bit 0 (a win raises the level) or bit 2 (a loss lowers it); level_result_20_up changes nothing without such a stake; callers level_result_20_up, card_image_win_count; part of vf4lib/libcard/src/card.c (by code order after the last card.c assert, before nickname.c; called from card.c's level code and sharing its .data run 0x0C2A01FC-0x0C2A0227; see notes)
+ * confidence: observed
+ * evidence: 1 unless one of the two level_change_flags has bit 0 (a win raises the level) or bit 2 (a loss lowers it); level_result_20_up changes nothing without such a stake; callers level_result_20_up, card_image_win_count; part of vf4lib/libcard/src/card.c (by code order after the last card.c assert, before nickname.c; called from card.c's level code and sharing its .data run 0x0C2A01FC-0x0C2A0227; see notes); observed live 2026-11-10: in the harness scenario card_versus_top (vertical blank 8173, GAME_JUDGE_INIT), called by level_result_20_up, it read level_change_flags 1 and 4 (the next call 9 and 4) and returned 0: a stake present gives 0; only this leg ran, all 15 calls (card_versus_top, card_versus_high; level_result_20_up and card_image_win_count) were made with a stake set and the answer 1 for no stake was never produced
  * matched: source/vf4lib/libcard/src/card.c (tools/match/match.py)
  */
 byte level_change_flags_none(void)
@@ -2816,8 +2816,8 @@ ushort card_syu_bits_get(byte side)
 }
 
 /* 0x0c0896e0  size 0x52  file by match with source
- * confidence: inferred
- * evidence: returns 1 unless card_syu_bits_get is 2 for both sides; callers level_result_20_up, card_loss_apply, level_promotion_due, level_change_flags_side (levels 28 / 29 change only when both are 2); role unclear; part of vf4lib/libcard/src/card.c
+ * confidence: observed
+ * evidence: returns 1 unless card_syu_bits_get is 2 for both sides; callers level_result_20_up, card_loss_apply, level_promotion_due, level_change_flags_side (levels 28 / 29 change only when both are 2); role unclear; part of vf4lib/libcard/src/card.c; observed live 2026-11-10: in the harness scenario card_versus_top (vertical blank 6780, from card_loss_apply; also from level_change_flags_side at 7103 and level_result_20_up at 8173 and 13669) it called card_syu_bits_get for side 0 and side 1, got 2 and 2, and returned 0: both sides 2 gives 0; only this leg ran, all 19 calls were in that scenario with both cards at 2 and the answer 1 was never produced
  * matched: source/vf4lib/libcard/src/card.c (tools/match/match.py)
  */
 int card_syu_not_both_2(void)

@@ -387,8 +387,8 @@ void msn_text_tag_run(char *tag, float *box, float *pos, float *next)
 }
 
 /* 0x0c0ada20  size 0x4a  file by match with source
- * confidence: inferred
- * evidence: (box, position, x reached): notes the line width, counts the line, x back to the box's left plus padding and offset, y down by the line height (box +0x18); callers msn_text_advance and msn_text_tag_run; part of vf4lib/libmission/src/msnm_text.c
+ * confidence: observed
+ * evidence: (box, position, x reached): notes the line width, counts the line, x back to the box's left plus padding and offset, y down by the line height (box +0x18); callers msn_text_advance and msn_text_tag_run; part of vf4lib/libmission/src/msnm_text.c; observed live 2026-11-10: in the harness scenario task_trials_3 (the quit prompt's text, msn_quit_box: left 184, padding 16, line height 16), called by msn_text_tag_run for a line break tag with the position and x reached 440: it handed 440 to msn_text_width_note, msn_text_line_count_add took the line count from 1 to 2, x went back to 200 (184 + 16 + offset 0) and y from 170 to 186; in task_trials_1 (msn_panel_box: left 0, padding 16, line height 20, layout offset 128) x became 144 and y went from 326 to 346; all 2,650 calls came from msn_text_tag_run, the call in msn_text_advance (a line too wide) never ran
  * matched: source/vf4lib/libmission/src/msnm_text.c (tools/match/match.py)
  */
 void msn_text_newline(float *box, float *pos, float x_reached)
@@ -585,8 +585,8 @@ void msn_text_width_note(float x)
 }
 
 /* 0x0c0ade20  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: adds 1.0 to the line count (state +0x34); only caller msn_text_newline; part of vf4lib/libmission/src/msnm_text.c
+ * confidence: observed
+ * evidence: adds 1.0 to the line count (state +0x34); only caller msn_text_newline; part of vf4lib/libmission/src/msnm_text.c; observed live 2026-11-10: in the harness scenario task_trials_3 (vertical blank 13253, GAME_WINNER_DISP), called by msn_text_newline+0x16 three times running, it raised the float at msn_text_state +0x34 (reached through msn_text_state_ptr) from 0 to 1, 1 to 2 and 2 to 3, one per newline; in task_trials_1 (vertical blank 39072) and task_trials_2 (41404) it went 0 to 1 and 1 to 2 within the frame and began from 0 again in the next frame; all 2,650 calls came from msn_text_newline
  * matched: source/vf4lib/libmission/src/msnm_text.c (tools/match/match.py)
  */
 void msn_text_line_count_add(void)

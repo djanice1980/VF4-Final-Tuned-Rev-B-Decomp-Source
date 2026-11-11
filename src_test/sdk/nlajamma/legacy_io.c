@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c051d80  size 0x232  file by match with source
- * confidence: inferred
- * evidence: reads the old (pre-JVS) I/O board through legacy_io_transfer; checked against reference material (not in this repo); returns int: its caller frame_io_update calls it through r0 (ghidra/returns.tsv), as for a function declared to return a value, and matches only so
+ * confidence: observed
+ * evidence: reads the old (pre-JVS) I/O board through legacy_io_transfer and rebuilds from its 16 input bytes (the three switch bytes inverted) the reply a JVS node would give, in jvs_reply_data[0] with the report offsets 0, 6 and 0xB at jvs_reply_offset[0] +0x80: switches at +1 to +5, the two coin words at +7 and +9, the eight analog bytes at +0xC to +0x1A; stores (system byte & 3) | (system bit 3) << 4 in *credit_io; the third parameter coins is never read or written (the prototype is the shape frame_io_update calls, shared with jvs_read_node), so coins[0] stays 0 on the old I/O path; checked against reference material (not in this repo); returns int: its caller frame_io_update calls it through r0 (ghidra/returns.tsv), as for a function declared to return a value, and matches only so; observed live 2026-11-10: in the harness scenario hw_jvs_errors_absent (an I/O board silent from power-on, so no JVS node was found), called once by jvs_bus_setup (+0x21a) and then by every one of the 5,806 frame_io_update calls with node 0, it ran legacy_io_transfer and from the 16 input bytes that returned (all 0xFF, the board model's answer for nothing pressed) built node 0's reply in jvs_reply_data: report bytes 1 at +0, +6 and +0xB with their offsets 0, 6 and 0xB stored at jvs_reply_offset +0x80, switch and coin bytes 0 (the inverted inputs) and the eight analog bytes 0xFF at +0xC, +0xE ... +0x1A, and stored 0 in *credit_io; it never wrote through coins
  * same code as main.bin 0c11cc60 (ghidra/TransferFromMain.java)
  * matched: source/sdk/nlajamma/legacy_io.c (tools/match/match.py)
  */
@@ -64,8 +64,8 @@ int legacy_io_poll(int node, int *credit_io, int *coins)
 }
 
 /* 0x0c051fe0  size 0x5e  file by match with source
- * confidence: inferred
- * evidence: sets the old I/O port directions (0x77) and gives node 0 a fixed description: ID string, 2 players, 11 switches, 2 switch bytes, 2 coin slots, 8 analog channels; checked against reference material (not in this repo)
+ * confidence: observed
+ * evidence: sets the old I/O port directions (0x77) and gives node 0 a fixed description: ID string, 2 players, 11 switches, 2 switch bytes, 2 coin slots, 8 analog channels; also clears legacy_io_meter_bits, legacy_io_out_byte2 and legacy_io_out_byte3 and node 0's cmd_format_version; the ID string is mie_ident_text, copied up to its end or 0x80 characters; returns the number of characters copied (48 for the text seen live); checked against reference material (not in this repo); observed live 2026-11-10: in the harness scenario hw_jvs_errors_absent (an I/O board silent from power-on), called once by jvs_bus_setup (+0x202) at boot when no JVS node had answered, it copied the 48 characters of mie_ident_text ("315-6149 COPYRIGHT SEGA ENTERPRISES CO,LTD. ", the MIE model's text that legacy_io_start had kept) and their end into jvs_nodes[0].id, stored 2, 11, 2, 2, 8 at jvs_nodes +0x94 to +0x98 (players, switches, switch bytes, coin slots, analog channels) over zeros and 0x77 in legacy_io_direction (over the 0x77 already there), and returned 48; legacy_io_poll then served node 0 on every frame
  * same code as main.bin 0c11cec0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/nlajamma/legacy_io.c (tools/match/match.py)
  */

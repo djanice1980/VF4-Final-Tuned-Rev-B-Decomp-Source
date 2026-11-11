@@ -97,8 +97,8 @@ void * irq_handler_swap(int code, void *handler)
 }
 
 /* 0x0c029f80  size 0x38  file by match with source
- * confidence: inferred
- * evidence: (offset, value): sets the cartridge port address (0xA05F7000 high half with rom_port_mode_bits, rom_port_bank_bit and 0x8000, 0xA05F7004 low half) and writes value as two 16-bit halves to 0xA05F7008; returns 0; part of vf4lib/libcore/src/sffs.c
+ * confidence: observed
+ * evidence: (offset, value): sets the cartridge port address (0xA05F7000 high half with rom_port_mode_bits, rom_port_bank_bit and 0x8000, 0xA05F7004 low half with bit 0 cleared) and writes value as two 16-bit halves, the low half first, to 0xA05F7008; returns 0; part of vf4lib/libcore/src/sffs.c; observed live 2026-11-10: in the harness scenario boot_net_off (vertical blank 193, the first calls of dimm_write for net_log_write), given offset 0x0F004000 and value 0x34303032 with rom_port_mode_bits 0x2000 and rom_port_bank_bit 0, it wrote 0xAF00 to 0xA05F7000 (0x2000 | 0x8000 | the offset's high half 0x0F00), 0x4000 to 0xA05F7004 and left 0x3430, the value's high half, as the last write to 0xA05F7008; the next call (offset 0x0F004004, value 0x2D31312D) wrote 0x4004 and 0x2D31; it returned 0 on all 207,922 calls (the registers are the harness's port model; the values written are the game's)
  * same code as main.bin 0c0f2740 (ghidra/TransferFromMain.java)
  * matched: source/vf4lib/libcore/src/sffs.c (tools/match/match.py)
  */
@@ -875,8 +875,8 @@ int dimm_ftell(dimm_file *fp)
 }
 
 /* 0x0c02b180  size 0x26  file by match with source
- * confidence: inferred
- * evidence: -1 if the handle is closed, pos is below start, or pos is at or past end (pos == end is refused too; dimm_fseek and dimm_ftell refuse only pos > end); 0 otherwise; called right after dimm_fopen()
+ * confidence: observed
+ * evidence: -1 if the handle is closed, pos is below start, or pos is at or past end (pos == end is refused too; dimm_fseek and dimm_ftell refuse only pos > end); 0 otherwise; called right after dimm_fopen(); observed live 2026-11-10: in the harness scenario boot (vertical blank 10, from read_file_pio, the handle dimm_files) it read size 0x300000, pos 0x09400100, start 0x09400100 and end 0x09700100 and returned 0: an open handle whose pos equals start is not refused; only the accepting leg ran: all 20,497 game calls (read_file and read_file_pio, right after dimm_fopen) returned 0, each of the 946 full records with pos equal to start and below end, so none of the three refusals was seen
  * same code as main.bin 0c0f3940 (ghidra/TransferFromMain.java)
  * matched: source/vf4lib/libcore/src/sffs.c (tools/match/match.py)
  */

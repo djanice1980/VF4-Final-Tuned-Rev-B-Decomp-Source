@@ -6,6 +6,10 @@ Sega; it is used here only to say which program the project studies.
 
 ## What is in the repository, and under what terms
 
+`LICENSE` is the MIT License. It covers the first row of this table only:
+the project's own work. It grants nothing over the game program, and the
+code from other projects keeps its own terms.
+
 | Material | Where | Terms |
 |----------|-------|-------|
 | The project's own work: tools, scripts, Ghidra scripts, documents, the status page; the names, comments, descriptions, type headers and tables the project wrote | `tools/`, `ghidra/`, `docs/`, `progress/`, `README.md`, and the annotations in the source trees | MIT License (`LICENSE`) |

@@ -130,8 +130,8 @@ uint load_req(char *name, void *dst, uint size)
 }
 
 /* 0x0c0f4d00  size 0x58  file by match with source
- * confidence: inferred
- * evidence: gz_stream_clear, load_pending = 0, then for each of the 32 load_slots state = LOAD_FREE, done = 0 and the name "init" (snprintf)
+ * confidence: observed
+ * evidence: gz_stream_clear, load_pending = 0, then for each of the 32 load_slots state = LOAD_FREE, done = 0 and the name "init" (snprintf); observed live 2026-11-10: in the harness scenario boot (vertical blank 10, from file_system_init, as in each of the 75 boots) it called gz_stream_clear and then snprintf 32 times, once for each slot's name (load_slots +4 + 0x58 x n, size 64), each returning 4 and putting the name "init" over zeros; its own stores (load_pending and each slot's state and done) were zeros over zeros in fresh memory
  * matched: source/vf4lib/libcore/src/load.c (tools/match/match.py)
  */
 void load_init(void)

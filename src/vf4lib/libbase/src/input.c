@@ -24,9 +24,9 @@ void button_word_update(button_word *word, uint now)
 }
 
 /* 0x0c048660  size 0xfe  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0x120
- * evidence: (no arguments): JVS bus set-up (jvs_bus_setup), coin_state_clear, clears both boards' button records, coin and error counters, jvs_error_counts_clear, then keeps the JVS node count in jvs_board_count with the error bits of input_error_flags: bit 0 no I/O board or more than two, bit 3 a first board with fewer than 9 switches per player (jvs_nodes[1].switches[1], the count the node reported; switches[2] is the bytes per player); jvs_board_status becomes (1, 1) with one board, (2, 1) with two (role unclear); clears input_enabled last; only caller hardware_boot (start-up); part of vf4lib/libbase/src/input.c
+ * evidence: (no arguments): JVS bus set-up (jvs_bus_setup), coin_state_clear, clears both boards' button records, coin and error counters, jvs_error_counts_clear, then keeps the JVS node count in jvs_board_count with the error bits of input_error_flags: bit 0 no I/O board or more than two, bit 3 a first board with fewer than 9 switches per player (jvs_nodes[1].switches[1], the count the node reported; switches[2] is the bytes per player); jvs_board_status becomes (1, 1) with one board, (2, 1) with two (role unclear); clears input_enabled last; only caller hardware_boot (start-up); part of vf4lib/libbase/src/input.c; observed live 2026-11-10: in the harness scenario boot (the I/O board model answering as one board), called once by hardware_boot, after jvs_bus_setup, coin_state_clear and jvs_error_counts_clear it read jvs_node_count 1 and stored 1 in jvs_board_count, read 13 switches per player at jvs_nodes +0x141 (the model's answers), left input_error_flags 0 and set jvs_board_status to (1, 1); in hw_jvs_errors_absent (the board silent from power-on) it read a node count of 0, stored 0 in jvs_board_count, left jvs_board_status (0, 0) and set input_error_flags to 1 and then, the switch count read being 0, to 9, the value io_board_error_check then got from input_error_flags_get; the clears before it stored zeros over zeros and input_enabled 0 over 0; the two-board path (+0xc0..+0xd4, +0xe0..+0xf4) never ran
  * matched: source/vf4lib/libbase/src/input.c (tools/match/match.py)
  */
 void input_init(void)
@@ -106,8 +106,8 @@ void input_read(void)
 }
 
 /* 0x0c048880  size 0x10  file by match with source
- * confidence: inferred
- * evidence: (no arguments): returns input_error_flags; only caller io_board_error_check (the I/O BD error screens); part of vf4lib/libbase/src/input.c
+ * confidence: observed
+ * evidence: (no arguments): returns input_error_flags; only caller io_board_error_check (the I/O BD error screens); part of vf4lib/libbase/src/input.c; observed live 2026-11-10: in the harness scenario hw_jvs_errors_absent (vertical blank 192), called by io_board_error_check, it returned 9, the value input_init had left in input_error_flags at that boot (bits 0 and 3, the board model silent), and in hw_jvs_errors_ack (6536) it returned 2 after the board model's bad acknowledge status, the value jvs_node_error_check's next kept record shows in input_error_flags (2 over 2 at 6558; the store that set it is not in a kept record); the other 2,489,165 calls returned 0
  * matched: source/vf4lib/libbase/src/input.c (tools/match/match.py)
  */
 uint input_error_flags_get(void)

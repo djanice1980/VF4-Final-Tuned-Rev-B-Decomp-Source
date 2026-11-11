@@ -1109,8 +1109,8 @@ void rob_ring_out_kind1(rob_rec *rob)
 }
 
 /* 0x0c06d700  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: (rob): rob_ring_out_start with the stage's entry +8 (+4 more when +0x20 bit 23) and no side probe; action 2 of rob_floor_check; part of vf4lib/libaction/src/rob_coli.c
+ * confidence: observed
+ * evidence: (rob): rob_ring_out_start with the stage's entry +8 (+4 more when +0x20 bit 23) and no side probe; action 2 of rob_floor_check; part of vf4lib/libaction/src/rob_coli.c; observed live 2026-11-10: in the harness scenario task_attack_3 (vertical blank 13545), called by rob_floor_check for side 1's rob (+0x20 = 0x4c9, bit 23 clear), it called rob_ring_out_start with the table 0x0C29FE70, which is the stage's ring-out entry 0x0C29FE68 (read through stage_cur) plus 8, and side_test 0; that call requested the move 0x0C010174 in +0x68 (0x176, 0x174 are the two words at the table) and rob_ring_out_set set game_flags 0x48; the +4 step for bit 23 did not run (1 call)
  * matched: source/vf4lib/libaction/src/rob_coli.c (tools/match/match.py)
  */
 void rob_ring_out_kind2(rob_rec *rob)

@@ -113,9 +113,9 @@ void msnm_disp_scene0_free(void)
 }
 
 /* 0x0c0a7dc0  size 0x16e  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0x1a2
- * evidence: (quit record {choice, frames}): the quit prompt: lights panel 6 (YES, choice 0) or 7 (NO) with color_pulse_mix of the frame count and grays the other (0xff808080), draws the window text msn_quit_text (the EUC-JP message at 0x0C23983C that asks whether to stop challenge mode, with YES / NO) through msn_text_box_draw, then msn_quit_time_label (full-width "TIME:") and the seconds left as one or two full-width digits (msn_wide_digits, formats "  %s" / "%s%s"), flashing (color_pulse_mix rate 3) below 4 seconds; only reference the data word msnm_result_draw+0x258; part of vf4lib/libmission/src/msnm_disp.c
+ * evidence: (quit record {choice, frames}): the quit prompt: lights custom text color 6 (the tag COL_CUSTOM1 around YES in the message; choice 0) or 7 (COL_CUSTOM2, around NO) with color_pulse_mix of the frame count and grays the other (0xff808080), draws the window text msn_quit_text (the EUC-JP message at 0x0C23983C that asks whether to stop challenge mode, with YES / NO) through msn_text_box_draw, then msn_quit_time_label (full-width "TIME:") and the seconds left as one or two full-width digits (msn_wide_digits, formats "  %s" / "%s%s"), flashing (color_pulse_mix rate 3) below 4 seconds; only caller msnm_result_draw (result state 9, every frame the prompt is open); part of vf4lib/libmission/src/msnm_disp.c; observed live 2026-11-10: in the harness scenario task_trials_3 (57 calls from msnm_result_draw while the quit prompt was open, from vertical blank 13253): with choice 1 (NO) it set custom color 6 to gray 0xff808080 and color 7 to color_pulse_mix of the timer, and after the choice moved to 0 (YES) color 6 to the pulse and 7 to gray; it drew msn_quit_text in msn_quit_box through msn_text_box_draw, the label msn_quit_time_label at (328, 158) and, with 1,200 frames left, the two wide digits 2 and 0 (format %s%s, sprintf returned 4) at (408, 158) in white; the one-digit form and the flashing below 4 seconds did not run (the timer was still above 1,140 when YES was taken)
  * matched: source/vf4lib/libmission/src/msnm_disp.c (tools/match/match.py)
  */
 void msnm_quit_confirm_draw(msnm_quit_rec *quit)
@@ -1558,9 +1558,9 @@ char * msn_combo_cmd_get(int list, char chara)
 }
 
 /* 0x0c0ab100  size 0x64  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0x7e
- * evidence: (slot 0-2, character, mission parameter, the try's setting record): the command text for tag hyper1-3: the setting record's +0xc + slot x 4 picks the kind and +0x1c + slot x 4 the entry; character 12 with parameter 0 uses the table msn_hyper_cmds_stance by kind, else kind 0 / 2 / 1 the per-character tables msn_hyper_cmds_0 / msn_hyper_cmds_2 / msn_hyper_cmds_1; only caller msn_text_tag_format; part of vf4lib/libmission/src/msnm_disp.c
+ * evidence: (slot 0-2, character, mission parameter, the try's setting record): the command text for tag hyper1-3: the setting record's +0xc + slot x 4 picks the kind and +0x1c + slot x 4 the entry; character 12 with parameter 0 uses the table msn_hyper_cmds_stance by kind, else kind 0 / 2 / 1 the per-character tables msn_hyper_cmds_0 / msn_hyper_cmds_2 / msn_hyper_cmds_1 (any other kind, such as the -1 of an unfilled slot, is left with msn_hyper_cmds_0); only caller msn_text_tag_format; part of vf4lib/libmission/src/msnm_disp.c; observed live 2026-11-10: in the harness scenarios task_trials_1 and task_trials_2 (17,642 calls from msn_text_tag_format for the tags hyper1 and hyper2, parameter 0), with the setting record msnm_try_hyper_pick had filled: for character 11, slot 0 (kind 0, entry 0) returned 0x0C238E1C = msn_hyper_cmds_0[11][0] and slot 1 (kind 2, entry 0) returned 0x0C238F00 = msn_hyper_cmds_2[11][0]; for character 2, slot 0 (kind 0, entry 3) returned 0x0C238E28 = msn_hyper_cmds_0[2][3] and slot 1 (kind 2, entry 1) returned 0x0C239980 = msn_hyper_cmds_2[2][1] (command texts such as <CMD_3K+G>, checked in the image); slot 2, kind 1 and the character 12 table did not run
  * matched: source/vf4lib/libmission/src/msnm_disp.c (tools/match/match.py)
  */
 char * msn_hyper_cmd_get(int slot, int chara_no, int para, msnm_try_setting_rec *setting)
@@ -2636,8 +2636,8 @@ void chlg_chara_icon_draw(int chara)
 }
 
 /* 0x0c0acec0  size 0x2a  file by match with source
- * confidence: inferred
- * evidence: (next mission, its setting record, both unused): display work +0x148 = the branch (the mission work (*msnm_work) +0x65c) + the route choice (+0x800); callers msnm_intro_draw, msnm_result_step, chlg_route_preview_reset; part of vf4lib/libmission/src/msnm_disp.c
+ * confidence: observed
+ * evidence: (next mission, its setting record, both unused): display work +0x148 = the branch (the mission work (*msnm_work) +0x65c) + the route choice (+0x800); callers msnm_intro_draw, msnm_result_step, chlg_route_preview_reset; part of vf4lib/libmission/src/msnm_disp.c; observed live 2026-11-10: in the harness scenario task_trials_1 it stored the branch plus the route choice in msnm_disp_state+0x148: called by msnm_result_step on a stick press at the route choice (down held, vertical blank 12107) with msnm_column_get 0 and the choice (+0x800) 1 it stored 1 over 0, and from msnm_intro_draw at later levels 3 (column 2 + 1, vertical blank 17638), 4 (3 + 1, 39331) and 5 (4 + 1, 45666); task_trials_2 shows the same (1 at vertical blank 24465)
  * matched: source/vf4lib/libmission/src/msnm_disp.c (tools/match/match.py)
  */
 void chlg_route_cursor_set(msnm_try_rec *next_mission, msnm_try_setting_rec *next_setting)

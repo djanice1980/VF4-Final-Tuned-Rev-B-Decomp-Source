@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c139580  size 0x16  file by match with source
- * confidence: inferred
- * evidence: (idle): stores 1 in *idle when bit 0 of the Holly FIFO status (0xa05f688c, the AICA FIFO) is clear, else 0; returns 0; used by aica_fifo_spin_until_idle; part of the G2 low-level object; checked against reference material (not in this repo)
+ * confidence: observed
+ * evidence: (idle): stores 1 in *idle when bit 0 of the Holly FIFO status (0xa05f688c, the AICA FIFO) is clear, else 0; returns 0; used by aica_fifo_spin_until_idle; part of the G2 low-level object; checked against reference material (not in this repo); observed live 2026-11-10: in the harness scenario boot (vertical blank 125, call 1), called by aica_fifo_spin_until_idle with a pointer to that routine's stack byte (0x0DFFBF10), it read the FIFO status 0xA05F688C as 0 (the harness model's answer: bit 0 clear), stored 1 in the byte and returned 0, and the caller left its poll loop after that one call and raised aica_fifo_waits from 0 to 1; only the idle leg ran: in all 5,238,521 calls (one per aica_fifo_spin_until_idle call, hw_sound_stall included) the status read 0 and the value stored was 1, over a byte that already read 1 from the G2 FIFO poll made just before with the same stack byte, so the busy answer (0) was never seen
  * matched: source/sdk/sy/g2_lowlevel.c (tools/match/match.py)
  */
 int aica_fifo_idle_flag(byte *idle)

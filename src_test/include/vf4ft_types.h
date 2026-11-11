@@ -5726,6 +5726,8 @@ struct level_change_items_rec {
     undefined1 c0_slot3;
     undefined1 c1_slot0;
     undefined1 c1_slot1;
+    undefined1 c1_slot2;
+    undefined1 c1_slot3;
 };
 
 typedef char charf;

@@ -154,8 +154,8 @@ bool snd_ram_copy_busy(void)
 }
 
 /* 0x0c111400  size 0x84  file by match with source
- * confidence: inferred
- * evidence: (bank image, slot, slot size or 0): the checks before a bank is inserted: -1 for slot 8 or above, -2 unless the image starts with "DTPK" (dtpk_magic), -3 when the slot already holds a bank (dtpk_slot_table id not -1), -6 when a slot size is given that is not a multiple of 4 or is smaller than the image's size word (+8), -4 when the bytes in use (dtpk_bytes_used) plus that size pass the driver's free bank space (sound RAM word 0x00800088), -5 while a background job is running (dtpk_job word not 0); 0 when it may go ahead; callers dtpk_insert_copy, dtpk_insert_copy_sized, dtpk_insert_bg_begin, dtpk_insert_sized_bg_begin; checked against reference material (not in this repo); part of libsnd
+ * confidence: observed
+ * evidence: (bank image, slot, slot size or 0): the checks before a bank is inserted: -1 for slot 8 or above, -2 unless the image starts with "DTPK" (dtpk_magic), -3 when the slot already holds a bank (dtpk_slot_table id not -1), -6 when a slot size is given that is not a multiple of 4 or is smaller than the image's size word (+8), -4 when the bytes in use (dtpk_bytes_used) plus that size pass the driver's free bank space (sound RAM word 0x00800088), -5 while a background job is running (dtpk_job word not 0); 0 when it may go ahead; callers dtpk_insert_copy, dtpk_insert_copy_sized, dtpk_insert_bg_begin, dtpk_insert_sized_bg_begin; checked against reference material (not in this repo); part of libsnd; observed live 2026-11-10: in the harness scenario boot (vertical blanks 125 to 159, eight calls from dtpk_insert_sized_bg_begin+0x24, as in each of the 75 boots) the pass leg of every test ran on real values and it returned 0: slots 0 to 7, images beginning DTPK (compared byte by byte with dtpk_magic), the slot's id in dtpk_slot_table read as -1 (empty), slot sizes that are multiples of 4 and above the image's size word (0x80000 against 0x781A0 for slot 0, 0x280000 against 0x269280 for slot 1), dtpk_bytes_used 0 and then 0x80000 (it had risen by slot 0's size) and the job word 0; no refusal was seen in a game call (the -2 results are harness calls, not used), and the free-space word it compares with (0x7F0000) is the harness sound model's
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int dtpk_insert_check(char *image, uint slot, uint slot_size)
@@ -186,8 +186,8 @@ int dtpk_insert_check(char *image, uint slot, uint slot_size)
 }
 
 /* 0x0c1114a0  size 0x64  file by match with source
- * confidence: inferred
- * evidence: (bank image, slot): the checks before a bank is written over an existing one: -1 for slot 8 or above, -2 without the "DTPK" magic, -3 when the slot is empty, -4 when the image's size word (+8) is larger than the slot's size, -5 while a background job runs; 0 otherwise; callers dtpk_overwrite_copy and dtpk_overwrite_bg_begin; checked against reference material (not in this repo); part of libsnd
+ * confidence: observed
+ * evidence: (bank image, slot): the checks before a bank is written over an existing one: -1 for slot 8 or above, -2 without the "DTPK" magic, -3 when the slot is empty, -4 when the image's size word (+8) is larger than the slot's size, -5 while a background job runs; 0 otherwise; callers dtpk_overwrite_copy and dtpk_overwrite_bg_begin; checked against reference material (not in this repo); part of libsnd; observed live 2026-11-10: in the harness scenario attract_demos (vertical blank 6353, from dtpk_overwrite_bg_begin+0x18) the pass leg of every test ran on real values and it returned 0: slot 2, sound_pack_header beginning DTPK, the slot's id in dtpk_slot_table +0x18 read as 37 (a bank is there, not -1), the image's size word 0x79CE0 not above the slot's size 0x80000 (dtpk_slot_table +0x20), the job word 0; the same for slot 6 (id 0, 0x98F00 against 0x113000) and, in ai_type_poked, slot 7 (id 10, 0x14BA00 against 0x150000); the slot sizes it read (0x80000, 0x113000, 0x150000 for slots 2, 6, 7) are the sizes dtpk_insert_check was given for those slots at boot, and where the insert check passed only empty slots this one passed only filled ones; no refusal was seen in 4,584 game calls
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int dtpk_overwrite_check(char *image, uint slot)

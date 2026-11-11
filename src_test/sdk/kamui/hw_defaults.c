@@ -120,8 +120,8 @@ int pvr_regs_defaults_and_vram_clear(void)
 }
 
 /* 0x0c071940  size 0x6c  file by match with source
- * confidence: inferred
- * evidence: loads the fog defaults: density 0xFF07 (0x...5f80b8), both fog colors 0x7F7F7F (0xb0/0xb4) and the 128-entry fog table (0x...5f8200) with a falling ramp (0xFFFE, 0xFEFD, ...: entry n has the high byte 0xFF - n and the low byte 0xFE - n); caller chips_pool_irq_set_up; part of KamuiTL
+ * confidence: observed
+ * evidence: loads the fog defaults: density 0xFF07 (0x...5f80b8), both fog colors 0x7F7F7F (0xb0/0xb4) and the 128-entry fog table (0x...5f8200) with a falling ramp (0xFFFE, 0xFEFD, ...: entry n has the high byte 0xFF - n and the low byte 0xFE - n); caller chips_pool_irq_set_up; part of KamuiTL; observed live 2026-11-10: in the harness scenario boot (vertical blank 0), called by chips_pool_irq_set_up, it made 131 pvr_reg_write_both calls: 0xff07 to offset 0xb8, 0x7f7f7f to 0xb4 and to 0xb0, then the table from offset 0x200 up in steps of 4 with 0xfffe, 0xfefd, 0xfdfc and so on (the first 37 entries are in its record one by one; the run's hardware table has 0xc0bf as the first value written to 0xa85f82fc, entry 63, and 0x807f to 0xa85f83fc, entry 127), which is the ramp the description gives
  * same code as main.bin 0c147900 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/hw_defaults.c (tools/match/match.py)
  */

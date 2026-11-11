@@ -141,8 +141,8 @@ void msnm_side_keep(int side)
 }
 
 /* 0x0c09fda0  size 0x16  file by match with source
- * confidence: inferred
- * evidence: returns byte +0x820 of the msnm work; alt_mode_match_next goes on to the next match when it is 0; it is the quit-chosen byte (+0xC of the quit record at work +0x814, quit.chosen in the matched source): msnm_quit_confirm_step sets it to 1 when YES is taken at the quit prompt and msnm_quit_rec_clear clears it, so alt_mode_match_next ends the game when the player chose to quit; part of vf4lib/libmission/src/msnm.c
+ * confidence: observed
+ * evidence: returns byte +0x820 of the msnm work; alt_mode_match_next goes on to the next match when it is 0; it is the quit-chosen byte (+0xC of the quit record at work +0x814, quit.chosen in the matched source): msnm_quit_confirm_step sets it to 1 when YES is taken at the quit prompt and msnm_quit_rec_clear clears it, so alt_mode_match_next ends the game when the player chose to quit; part of vf4lib/libmission/src/msnm.c; observed live 2026-11-10: in the harness scenario task_trials_3, one frame after msnm_quit_confirm_step set the quit-chosen byte (msnm_work_area+0x820, 0 to 1, vertical blank 13310) on YES at the quit prompt, it returned 1 to alt_mode_match_next (vertical blank 13311), which then asked for main mode 5 (mode_req_main, the game over mode) and not for the next match; its other 71 calls (the other course scenarios) returned 0 and the course went on
  * matched: source/vf4lib/libmission/src/msnm.c (tools/match/match.py)
  */
 uchar msnm_quit_chosen_get(void)
@@ -1436,8 +1436,8 @@ int msnm_rule_get(void)
 }
 
 /* 0x0c0a1e60  size 0x32  file by match with source
- * confidence: inferred
- * evidence: (side): 1 when the rule is 10 and the side is not the player's, else 0; callers move_tcmd_15_damage_tick, thrown_update_common; part of vf4lib/libmission/src/msnm.c
+ * confidence: observed
+ * evidence: (side): 1 when the rule is 10 and the side is not the player's, else 0; callers move_tcmd_15_damage_tick, thrown_update_common; part of vf4lib/libmission/src/msnm.c; observed live 2026-11-10: in the harness scenario task_trials_2, while msnm_rule_get returned 10 (a trial under rule 10; the player's side byte msnm_work_area+1 was 0), its call from thrown_update_common with side 1 returned 1 (vertical blank 20519), and the nine calls that found rule 10 with the player's own side returned 0 (one of them in the same run at vertical blank 22795, side 0, from move_tcmd_15_damage_tick); the other 1,111 calls found another rule and returned 0
  * matched: source/vf4lib/libmission/src/msnm.c (tools/match/match.py)
  */
 int msnm_rule10_cpu_check(char side)
@@ -2631,8 +2631,8 @@ void msnm_menu_timers_step(void)
 }
 
 /* 0x0c0a3b40  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: (quit record): clears the hold counter +8, the quit-chosen byte +0xc and the prompt-open byte +0xd of the quit record (mission state +0x814); callers msnm_result_start and msnm_work_reset; part of vf4lib/libmission/src/msnm.c
+ * confidence: observed
+ * evidence: (quit record): clears the hold counter +8, the quit-chosen byte +0xc and the prompt-open byte +0xd of the quit record (mission state +0x814); callers msnm_result_start and msnm_work_reset; part of vf4lib/libmission/src/msnm.c; observed live 2026-11-10: in the harness scenario task_trials_3, called by msnm_work_reset at the game over that followed YES at the quit prompt (vertical blank 13312), it cleared the hold counter +8 from 181 to 0 and the quit-chosen byte +0xc and the prompt-open byte +0xd from 1 to 0 (msnm_work_area+0x81c..+0x821); its other kept calls (msnm_work_reset and msnm_result_start) stored 0 over 0
  * matched: source/vf4lib/libmission/src/msnm.c (tools/match/match.py)
  */
 void msnm_quit_rec_clear(msnm_quit_rec *quit)
@@ -2644,8 +2644,8 @@ void msnm_quit_rec_clear(msnm_quit_rec *quit)
 }
 
 /* 0x0c0a3b60  size 0x18  file by match with source
- * confidence: inferred
- * evidence: (quit record): opens the quit prompt: choice +0 = 1 (NO, the second panel msnm_quit_confirm_draw lights), timer +4 = 1200 frames, prompt-open byte +0xd = 1 (which stops msnm_quit_hold_check); only reference msnm_result_step's literal pool; part of vf4lib/libmission/src/msnm.c
+ * confidence: observed
+ * evidence: (quit record): opens the quit prompt: choice +0 = 1 (NO, the second of the two custom text colors msnm_quit_confirm_draw lights), timer +4 = 1200 frames, prompt-open byte +0xd = 1 (which stops msnm_quit_hold_check); only caller msnm_result_step (result state 4, the route choice, in the frame msnm_quit_hold_check returns 1; the state then becomes 9); part of vf4lib/libmission/src/msnm.c; observed live 2026-11-10: in the harness scenario task_trials_3, called by msnm_result_step in the frame msnm_quit_hold_check returned 1 (vertical blank 13253), it stored choice +0 = 1, timer +4 = 1200 and the prompt-open byte +0xd = 1 over zeros; from the next frame msnm_quit_confirm_step counted the timer down from 1200 and msnm_quit_confirm_draw lit the second color (NO) for choice 1 and drew 20 seconds left, and msnm_quit_hold_check was not called again
  * matched: source/vf4lib/libmission/src/msnm.c (tools/match/match.py)
  */
 void msnm_quit_confirm_open(msnm_quit_rec *quit)
@@ -2657,8 +2657,8 @@ void msnm_quit_confirm_open(msnm_quit_rec *quit)
 }
 
 /* 0x0c0a3b80  size 0x52  file by match with source
- * confidence: inferred
- * evidence: (quit record): unless the prompt is open (+0xd), counts the frames the player holds input bit 0x8000 (player_input_get(side) +0x14) in +8, resetting on release, and returns 1 once it passes 180 (the hold that brings up the quit prompt); only reference msnm_result_step's literal pool; part of vf4lib/libmission/src/msnm.c
+ * confidence: observed
+ * evidence: (quit record): unless the prompt is open (+0xd), counts the frames the player holds input bit 0x8000 (player_input_get(side) +0x14) in +8, resetting on release, and returns 1 once it passes 180 (the hold that brings up the quit prompt); only caller msnm_result_step (result state 4, the route choice, every frame); part of vf4lib/libmission/src/msnm.c; observed live 2026-11-10: in the harness scenario task_trials_3, with START held through the route choice (player_input +0x14 = 0x8000), its 181 calls from msnm_result_step (vertical blanks 13073 to 13253) raised the counter +8 by one each, from 0 to 181, returning 0 for 180 calls and 1 on the call that took it past 180, after which the quit prompt opened; the 58,513 calls of the other scenarios had the bit clear, stored 0 and returned 0; the early return for an open prompt (+0xd) never ran
  * matched: source/vf4lib/libmission/src/msnm.c (tools/match/match.py)
  */
 int msnm_quit_hold_check(msnm_quit_rec *quit)
@@ -2677,9 +2677,9 @@ int msnm_quit_hold_check(msnm_quit_rec *quit)
 }
 
 /* 0x0c0a3be0  size 0xc6  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0xe0
- * evidence: (quit record): one frame of the quit prompt: input 0x20 / 0x10 (msnm_menu_input_check) moves the choice +0 to 0 (YES) / 1 (NO) with sound 0x3af (sound_play_id) on a change; a press of 0xf takes it: NO returns 4, YES plays sound 0x3ae, sets the quit-chosen byte +0xc and returns 10 (first card_money_add(side, 50) when the try was cleared, state +0x18 == 2); when the timer +4 has run out returns 4, otherwise 9; the timer counts down each call; only reference msnm_result_step's literal pool; part of vf4lib/libmission/src/msnm.c
+ * evidence: (quit record): one frame of the quit prompt: input 0x20 / 0x10 (msnm_menu_input_check) moves the choice +0 to 0 (YES) / 1 (NO) with sound 0x3af (sound_play_id) on a change; a press of 0xf takes it: NO returns 4, YES plays sound 0x3ae, sets the quit-chosen byte +0xc and returns 10 (first card_money_add(side, 50) when the try was cleared, state +0x18 == 2); when the timer +4 has run out returns 4, otherwise 9; the timer counts down each call; only caller msnm_result_step (result state 9, every frame; the value returned becomes the next state); part of vf4lib/libmission/src/msnm.c; observed live 2026-11-10: in the harness scenario task_trials_3 (57 calls from msnm_result_step, vertical blanks 13254 to 13310) the timer +4 went down by one a call from 1200 and it returned 9; with the stick held left msnm_menu_input_check(0x20) gave 1 and the choice +0 went from 1 to 0 with sound 0x3af (vertical blank 13290); with P pressed on choice 0 (YES) it played sound 0x3ae, set the quit-chosen byte +0xc to 1 and returned 10 (vertical blank 13310); the move to NO, the NO answer, the time-out and card_money_add (state +0x18 was not 2) did not run
  * matched: source/vf4lib/libmission/src/msnm.c (tools/match/match.py)
  */
 int msnm_quit_confirm_step(msnm_quit_rec *quit)
@@ -2975,8 +2975,8 @@ msnm_combo_variant_rec * msnm_combo_variant_get(int variant, char chara)
 }
 
 /* 0x0c0a4300  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (character): msnm_target_moves[character] (a short list, 0 ends); only caller msnm_try_variant_pick; part of vf4lib/libmission/src/msnm.c
+ * confidence: observed
+ * evidence: (character): msnm_target_moves[character] (a short list, 0 ends); only caller msnm_try_variant_pick; part of vf4lib/libmission/src/msnm.c; observed live 2026-11-10: in the harness scenario task_trials_1, called once by msnm_try_variant_pick with character 11 (vertical blank 22614, a trial of type 0x37 being picked), it returned 0x0C19C938, which is entry 11 of msnm_target_moves in the image and points at the list 0x1058, 0x0035, 0x104F, 0; msnm_try_variant_pick then returned 2, an index below the list's three moves, and msnm_target_move_setup later stored 0x104F, the list's third move, at display +0x440 (vertical blank 23990)
  * matched: source/vf4lib/libmission/src/msnm.c (tools/match/match.py)
  */
 uchar * msnm_target_moves_get(int chara)

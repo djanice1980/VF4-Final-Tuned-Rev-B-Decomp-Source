@@ -508,8 +508,8 @@ void title_init(void)
 }
 
 /* 0x0c0254a0  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: draws "AUSTRALIAN VERSION" at (16, 36) with sprite_font_text_put when system_param_country_get (the country, system_common.c assert system_param_value.initialized_country) returns 4; only caller title_disp; part of vf4lib/libbase/src/mode.c
+ * confidence: observed
+ * evidence: draws "AUSTRALIAN VERSION" at (16, 36) with sprite_font_text_put when system_param_country_get (the country, system_common.c assert system_param_value.initialized_country) returns 4; only caller title_disp; part of vf4lib/libbase/src/mode.c; observed live 2026-11-10: in the harness scenario country_4 (the harness booted as region 4; the title reached by the attract sequence before any poke), system_param_country_get returned 4 and it called sprite_font_text_put(ascii_font, the text, 16, 36) in each of the 960 title_disp frames (from vertical blank 13677), which queued 18 sprites, one for each character of "AUSTRALIAN VERSION", from (16, 36) with the cells of A and U first; in the nine other scenarios that showed the title (10,597 calls, country_1 to country_3 among them) the country was not 4 and sprite_font_text_put was never called
  * matched: source/vf4lib/libbase/src/mode.c (tools/match/match.py)
  */
 void australia_notice_draw(void)

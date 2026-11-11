@@ -237,8 +237,8 @@ void load_poly_bg_service(void)
 }
 
 /* 0x0c0e90c0  size 0x6c  file by match with source
- * confidence: inferred
- * evidence: (no arguments): cancels the background loads: clears poly_queue_busy and every entry's state, would free the bank of the entry at poly_queue_cur when its state is not 0 and its bank is above 0 (objbank_free), a branch that can never be taken because every state has just been cleared (it would also skip bank 0), as the game has it, resets the model copy (mdl_copy_reset), the bank texture load (objbank_tex_load_reset) and the texture tuning (txn_tune_reset), the queue cursors and the current txn list; only caller loads_cancel_all; part of vf4lib/libpoly/src/load_poly_bg.c
+ * confidence: observed
+ * evidence: (no arguments): cancels the background loads: clears poly_queue_busy and every entry's state, would free the bank of the entry at poly_queue_cur when its state is not 0 and its bank is above 0 (objbank_free), a branch that can never be taken because every state has just been cleared (it would also skip bank 0), as the game has it, resets the model copy (mdl_copy_reset), the bank texture load (objbank_tex_load_reset) and the texture tuning (txn_tune_reset), the queue cursors and the current txn list; only caller loads_cancel_all; part of vf4lib/libpoly/src/load_poly_bg.c; observed live 2026-11-10: in the harness scenario country_1 (vertical blank 15389, from loads_cancel_all+0xe at the change to the select mode, START held, with a load still queued) it cleared poly_queue_busy from 4 to 0, entry 2's state (poly_queue +0x22C) from 2 to 0 and the cursors poly_queue_cur / poly_queue_next from 2 / 3 to 0 / 0, writing 0 to the other 31 states, then called mdl_copy_reset, objbank_tex_load_reset, txn_tune_reset and txn_list_current_clear; it read poly_queue_cur 2 and that entry's state after the clear, 0, so objbank_free was not called, as the description says it cannot be (never in 703 calls); the same with busy 0xC and two entries in card_challenge (vertical blank 6286)
  * matched: source/vf4lib/libpoly/src/load_poly_bg.c (tools/match/match.py)
  */
 void poly_queue_reset(void)

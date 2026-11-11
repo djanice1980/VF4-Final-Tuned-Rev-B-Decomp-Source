@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c138d60  size 0x4e  file by match with source
- * confidence: inferred
- * evidence: (mode, stack): with interrupts masked sets the instruction cache invalidate bit (CCR 0x800); when mode is 0x80000000 hands the stack to irq_stack_switch; then sr_bl_clear; called by both start-up sequences with the .data words startup_stack_mode/startup_irq_stack (both 0 in this game); part of syInt; checked against reference material (not in this repo)
+ * confidence: observed
+ * evidence: (mode, stack): with interrupts masked sets the instruction cache invalidate bit (CCR 0x800); when mode is 0x80000000 hands the stack to irq_stack_switch; then sr_bl_clear; called by both start-up sequences with the .data words startup_stack_mode/startup_irq_stack (both 0 in this game); part of syInt; checked against reference material (not in this repo); observed live 2026-11-10: in the harness scenario boot (vertical blank 0; the same in each of the 75 boots), called by sys_bring_up_vectors_timer with mode 0 and stack 0 (the caller's record shows it read startup_stack_mode and startup_irq_stack as 0), it read the cache control register (0xFF00001C) as 0x105, the word the game's own _start had written there, and wrote back 0x905, the same word with the instruction cache invalidate bit 0x800 set; the mode not being 0x80000000 it did not call irq_stack_switch (never called in any run), and it then called sr_bl_clear once; the mode 0x80000000 branch never ran
  * matched: source/sdk/sy/syint.c (tools/match/match.py)
  */
 void ic_flush_and_unblock(int mode, uint stack)

@@ -5126,6 +5126,8 @@ typedef struct level_change_items_rec {
     undefined1 c0_slot3;
     undefined1 c1_slot0;      /* +0x4: costume 1 */
     undefined1 c1_slot1;
+    undefined1 c1_slot2;
+    undefined1 c1_slot3;
 } level_change_items_rec;
 
 /* the frame-check tool's record: flags, the saved state of both characters, the reaction row and guard/hit case. */

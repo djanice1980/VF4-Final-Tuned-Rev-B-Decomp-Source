@@ -21,8 +21,8 @@ void sram_save_zero(int n, uchar *dst)
 }
 
 /* 0x0c116be0  size 0x30  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file userbkup.c: reads the two 16-byte headers of the game's SRAM area (0xa02001f8 and 0xa0200208: CRC, size, padded size) into RAM
+ * confidence: observed
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file userbkup.c: reads the two 16-byte headers of the game's SRAM area (0xa02001f8 and 0xa0200208: CRC, size, padded size) into RAM; observed live 2026-11-10: in the harness scenario hw_backup_good (a boot from the SRAM the game saved in hw_backup), called by sram_save_load+0x60, it stored 32 bytes in sram_save_header_a and sram_save_header_b: CRC 0xCD69, size 0x32D4 and padded size 0x32D4 in each, the header words sram_save_store had written in hw_backup at vertical blank 9101, and the CRC that crc16_ccitt then gave for each copy read; in the 69 boots from a blank or wiped SRAM it stored zeros
  * matched: source/sdk/libam/userbkup.c (tools/match/match.py)
  */
 void sram_save_read_headers(void)
@@ -342,8 +342,8 @@ void sram_save_store_range(int offset, int n)
 }
 
 /* 0x0c116fe0  size 0x24  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file userbkup.c: reads the first SRAM copy (size in bytes, copied in words) into a buffer
+ * confidence: observed
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file userbkup.c: reads the first SRAM copy (size in bytes, copied in words) into a buffer; observed live 2026-11-10: in the harness scenario hw_backup_good, called by sram_save_load+0xa6 with size 0x32D4 and user_back_data, it filled the zeroed buffer with 13,012 bytes in 3,253 word stores, beginning 0x20040530, 0x00010200, 0x02010104, the bytes user_back_data held when hw_backup saved it (sram_save_write_copy_b's read at vertical blank 9091), and crc16_ccitt over the buffer then gave 0xCD69, header A's CRC; the same in the five other boots from that SRAM with a save in it
  * matched: source/sdk/libam/userbkup.c (tools/match/match.py)
  */
 void sram_save_read_copy_a(uint size, uint *dst)
@@ -352,8 +352,8 @@ void sram_save_read_copy_a(uint size, uint *dst)
 }
 
 /* 0x0c117020  size 0x28  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file userbkup.c: reads the second SRAM copy into a buffer
+ * confidence: observed
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file userbkup.c: reads the second SRAM copy into a buffer; observed live 2026-11-10: in the harness scenario hw_backup_good, called by sram_save_load+0xbe after copy A had passed its check, with size 0x32D4 and user_back_data, it made 3,253 word stores (13,012 bytes) of the saved data (0x20040530, 0x00010200, 0x02010104 ...) and crc16_ccitt over the buffer then gave 0xCD69, header B's CRC; the two copies held the same bytes in every such boot, so its stores rewrote what copy A's read had left and the record does not tell the second copy from the first
  * matched: source/sdk/libam/userbkup.c (tools/match/match.py)
  */
 void sram_save_read_copy_b(uint size, uint *dst)

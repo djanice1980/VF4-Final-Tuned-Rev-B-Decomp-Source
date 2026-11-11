@@ -7,9 +7,9 @@
 #include "vf4ft.h"
 
 /* 0x0c0a4320  size 0x164  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0x186
- * evidence: (rules, hyper set, player character): sets the four type/index pairs at rules +0xc / +0x1c to -1, counts the moves of each of the three types (msnm_hyper_mot_get until 0), asserts type 0 has some (msnm_func.c:751 "type_max[MSNM_TRY_HYPER_TYPE_A] > 0"), takes a random type-0 move first, then fills up to msnm_hyper_counts[set] picks of random types and moves (msnm_random_unit) skipping moves already chosen; only caller msnm_try_pick (try type 0x3e); part of vf4lib/libmission/src/msnm_func.c
+ * evidence: (rules, hyper set, player character): sets the four type/index pairs at rules +0xc / +0x1c to -1, counts the moves of each of the three types (msnm_hyper_mot_get until 0), asserts type 0 has some (msnm_func.c:751 "type_max[MSNM_TRY_HYPER_TYPE_A] > 0"), takes a random type-0 move first, then fills up to msnm_hyper_counts[set] picks of random types and moves (msnm_random_unit) skipping moves already chosen; only caller msnm_try_pick (try type 0x3e); part of vf4lib/libmission/src/msnm_func.c; observed live 2026-11-10: in the harness scenarios task_trials_1 and task_trials_2, called by msnm_try_pick with the setting record, set 0 and characters 11 and 2: it stored -1 in the four kinds (+0xc) and the four entries (+0x1c), counted the three types with msnm_hyper_mot_get until 0 (2, 12 and 2 moves for character 11; 4, 10 and 2 for character 2), took entry int(random x count) of type 0 first (0.36 x 2 = 0; 0.85 x 4 = 3) and, msnm_hyper_counts[0] being 2, one more pick from two further random numbers, the type and then the entry (type 2 entry 0; type 2 entry 1), kept after its move was compared with the first one's, leaving kinds {0, 2, -1, -1}; the picked moves were later the row moves msnm_try_62_frame_all_entries compared against (0x10DB and 0x1124 in task_trials_1); the assertion, a repeated move and an empty type did not occur
  * assert msnm_func.c:751: type_max[MSNM_TRY_HYPER_TYPE_A] > 0
  * matched: source/vf4lib/libmission/src/msnm_func.c (tools/match/match.py)
  */
@@ -70,9 +70,9 @@ void msnm_try_hyper_pick(msnm_try_setting_rec *setup, int set, int chara)
 }
 
 /* 0x0c0a44e0  size 0x5a  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0x8a
- * evidence: (character, type, set): the move table for character 12 in set 0 is msnm_hyper_mots_chara12[type]; otherwise type 0 / 2 / 1 give msnm_hyper_mots_type0 / _type2 / _type1[character]; 0 for another type; only caller msnm_hyper_mot_get; part of vf4lib/libmission/src/msnm_func.c
+ * evidence: (character, type, set): the move table for character 12 in set 0 is msnm_hyper_mots_chara12[type]; otherwise type 0 / 2 / 1 give msnm_hyper_mots_type0 / _type2 / _type1[character]; 0 for another type; only caller msnm_hyper_mot_get; part of vf4lib/libmission/src/msnm_func.c; observed live 2026-11-10: in the harness scenarios task_trials_1 and task_trials_2 (46 calls from msnm_hyper_mot_get, set 0): for character 11 types 0, 1 and 2 returned 0x0C19DB16, 0x0C19DB22 and 0x0C19DB1C, and for character 2 they returned 0x0C19D9AC, 0x0C19D9BC and 0x0C19D9B6, which are entries 11 and 2 of msnm_hyper_mots_type0, _type1 and _type2 in the image; the character 12 tables and the 0 for another type did not run
  * matched: source/vf4lib/libmission/src/msnm_func.c (tools/match/match.py)
  */
 ushort *msnm_hyper_mot_table_get(char char_num, int type, int set)
@@ -93,8 +93,8 @@ ushort *msnm_hyper_mot_table_get(char char_num, int type, int set)
 }
 
 /* 0x0c0a4580  size 0x64  file by match with source
- * confidence: inferred
- * evidence: (character, type, index, set): asserts the character is 0-15 (msnm_func.c:823 "char_num >= 0 && char_num <= 15") and the table exists (msnm_func.c:825 "mot_tbl"), returns the index-th u16 move of msnm_hyper_mot_table_get; callers msnm_cmd_list_setup and msnm_try_hyper_pick; part of vf4lib/libmission/src/msnm_func.c
+ * confidence: observed
+ * evidence: (character, type, index, set): asserts the character is 0-15 (msnm_func.c:823 "char_num >= 0 && char_num <= 15") and the table exists (msnm_func.c:825 "mot_tbl"), returns the index-th u16 move of msnm_hyper_mot_table_get; callers msnm_cmd_list_setup and msnm_try_hyper_pick; part of vf4lib/libmission/src/msnm_func.c; observed live 2026-11-10: in the harness scenarios task_trials_1 and task_trials_2 (46 calls: msnm_try_hyper_pick 42, msnm_cmd_list_setup 4) it returned the index-th u16 of the table msnm_hyper_mot_table_get gave: for character 11 type 0 the indexes 0, 1, 2 gave 0x10DB, 0x112C, 0, which are the words at 0x0C19DB16 in the image, and for character 2 type 0 the indexes 0 to 4 gave 0x0A17, 0x0A37, 0x0A43, 0x0A4E, 0 (at 0x0C19D9AC); neither assertion fired
  * assert msnm_func.c:823: char_num >= 0 && char_num <= 15
  * assert msnm_func.c:825: mot_tbl
  * matched: source/vf4lib/libmission/src/msnm_func.c (tools/match/match.py)
@@ -1771,8 +1771,8 @@ void msnm_try_56_round(rob_rec *rob, rob_rec *opp, int try_rec, int progress)
 }
 
 /* 0x0c0a6de0  size 0x28  file by match with source
- * confidence: inferred
- * evidence: frame judge of try type 57: sets progress +0x20 to 1 when msnm_rob_phase_watch(opponent, progress) reports; reached only through msnm_try_types; part of vf4lib/libmission/src/msnm_func.c
+ * confidence: observed
+ * evidence: frame judge of try type 57: sets progress +0x20 to 1 when msnm_rob_phase_watch(opponent, progress) reports; reached only through msnm_try_types; part of vf4lib/libmission/src/msnm_func.c; observed live 2026-11-10: in the harness scenario task_trials_1 (a trial of type 57, 2,571 calls from msnm_disp) it called msnm_rob_phase_watch with the opponent's rob (robs+0x86c) and the progress record each frame; on the two frames the watch returned 1 (vertical blanks 48368 and 48921) it stored 1 in progress +0x20 (msnm_work_area+0xa8, 0 to 1 the first time), and on the other 2,569, where the watch returned 0, it stored nothing
  * matched: source/vf4lib/libmission/src/msnm_func.c (tools/match/match.py)
  */
 void msnm_try_57_frame(rob_rec *rob, rob_rec *opp, int try_rec, int progress)
@@ -1843,9 +1843,9 @@ void msnm_try_62_frame_all_entries(rob_rec *rob, rob_rec *opp, int try_rec, int 
 }
 
 /* 0x0c0a6f60  size 0x88  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0xc6
- * evidence: frame judge of try type 61 (0x3d): runs msnm_try_61_kind0_step, _kind1_step or _kind2_step by word 0 of the pattern record at display +0x448 (msnm_pattern_recs[chara], set by msnm_cmd_list_setup); reached only through msnm_try_types; part of vf4lib/libmission/src/msnm_func.c
+ * evidence: frame judge of try type 61 (0x3d): runs msnm_try_61_kind0_step, _kind1_step or _kind2_step by word 0 of the pattern record at display +0x448 (msnm_pattern_recs[chara], set by msnm_cmd_list_setup); reached only through msnm_try_types; part of vf4lib/libmission/src/msnm_func.c; observed live 2026-11-10: in the harness scenario task_trials_2 (a trial of type 61 with the player's character 2, 1,653 calls from msnm_disp) the pattern record at display +0x448 was 0x0C19C994, entry 2 of msnm_pattern_recs in the image, whose word 0 is 0, and each call ran msnm_try_61_kind0_step with the display record, that pattern, the two robs, the try and the progress record; msnm_try_61_kind1_step and msnm_try_61_kind2_step were never called (no pattern of kind 1 or 2 came up)
  * matched: source/vf4lib/libmission/src/msnm_func.c (tools/match/match.py)
  */
 void msnm_try_61_frame(rob_rec *rob, rob_rec *opp, int try_rec, int progress)
@@ -2105,8 +2105,8 @@ void msnm_try_count_up(char side, int try_rec, int *progress)
 }
 
 /* 0x0c0a75a0  size 0x10  file by match with source
- * confidence: inferred
- * evidence: (progress): count (+0) = 0; callers msnm_try_25_frame and msnm_try_32_frame; part of vf4lib/libmission/src/msnm_func.c
+ * confidence: observed
+ * evidence: (progress): count (+0) = 0; callers msnm_try_25_frame and msnm_try_32_frame; part of vf4lib/libmission/src/msnm_func.c; observed live 2026-11-10: in the harness scenario challenge_types_4 (try type poked to 32), within one round the count at progress +0 (msnm_work_area+0x88) was 2 when msnm_try_32_frame returned at vertical blank 28120 and 0 when its call at vertical blank 28512 returned, the call in which it called msnm_try_count_clear and itself stored only the phase; nothing else that zeroes the count ran in between (the values are from the bytes behind msnm_try_32_frame's progress argument; the clear's own record of that call was not kept, and its four kept calls stored 0 over 0)
  * matched: source/vf4lib/libmission/src/msnm_func.c (tools/match/match.py)
  */
 void msnm_try_count_clear(int *progress)

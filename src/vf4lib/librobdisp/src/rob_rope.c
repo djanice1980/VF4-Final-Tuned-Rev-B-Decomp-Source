@@ -40,8 +40,8 @@ void rope_init(void)
 }
 
 /* 0x0c0ce1e0  size 0x5c  file by match with source
- * confidence: inferred
- * evidence: (position, a, b, length): adds to the position a pull along b - a of size -(b - a).y x gravity (rope_cloth_gravity) / length (vec3_set_length); only caller rope_link_step; part of vf4lib/librobdisp/src/rob_rope.c
+ * confidence: observed
+ * evidence: (position, a, b, length): adds to the position a pull along b - a of size -(b - a).y x gravity (rope_cloth_gravity) / length (vec3_set_length); only caller rope_link_step; part of vf4lib/librobdisp/src/rob_rope.c; observed live 2026-11-10: in the harness scenario stage_rope (the rope switch rope_stage_on poked on in each frame), call 4,000 (vertical blank 8045, from rope_link_step+0x66) got a link's position (3.31166, 4.15276, 0.47619), its old position (y 4.24571), the previous link's old position (y 4.26039) and length 0.02: it asked vec3_set_length for -0.0021981 = -(0.01468 x rope_cloth_gravity 0.0029944) / 0.02 along b - a (0.02 long) and added that to the position (now 3.31305, 4.15115, 0.47675); calls 16,000 and 32,000 fit the same formula, and in the first frame, with all links level, the size was -0 and the position did not change
  * matched: source/vf4lib/librobdisp/src/rob_rope.c (tools/match/match.py)
  */
 void rope_tension_add(float *pos, float *from, float *to, float length)
@@ -87,9 +87,9 @@ void rope_grips_update(void)
 }
 
 /* 0x0c0ce320  size 0xe2  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0xfe
- * evidence: (link, neighbor): for a free link: adds the velocity, the tension toward the next and previous links (rope_tension_add), keeps the distance to the neighbor (point_dist_clamp), takes the new velocity from the move and either applies gravity or stops on the floor at y 4.01 (horizontal speed cleared, vertical speed reversed x 0.9); only caller rope_update; part of vf4lib/librobdisp/src/rob_rope.c
+ * evidence: (link, neighbor): for a free link: adds the velocity, the tension toward the next and previous links (rope_tension_add), keeps the distance to the neighbor (point_dist_clamp), takes the new velocity from the move and either applies gravity or stops on the floor at y 4.01 (horizontal speed cleared, vertical speed reversed x 0.9); only caller rope_update; part of vf4lib/librobdisp/src/rob_rope.c; observed live 2026-11-10: in the harness scenario stage_rope (rope_stage_on poked on in each frame), at vertical blank 8030 rope_update called it for link 126 with neighbor 127 (fixed, state 2, at 3.1095, 4.0, 0.4015): it added the velocity (vec3_add_to), called rope_tension_add toward the next and the previous link's old positions with the link's two lengths 0.02, point_dist_clamp with the neighbor's position and 0.02 (the link came from 37.8, 5.5, 0 to 3.1295, 4.000864, 0.4013), took the velocity as position less old position (vec3_sub) and, being under 4.01, was put on y 4.01 with x and z speed 0 and y speed 1.3492 = 0.9 x 1.4991; the next call (link 125, at y 4.0109) took the other branch and lowered the y speed by rope_cloth_gravity (-1.489134 -> -1.492128); the 600 calls for a fixed link (state 2, one a frame) returned at the first test
  * matched: source/vf4lib/librobdisp/src/rob_rope.c (tools/match/match.py)
  */
 void rope_link_step(rope_link *link, rope_link *neighbour)
@@ -122,9 +122,9 @@ void rope_link_step(rope_link *link, rope_link *neighbour)
 }
 
 /* 0x0c0ce440  size 0x21a  file by match with source
- * confidence: inferred
+ * confidence: observed
  * extent: 0x228
- * evidence: while rope_stage_on is set: rope_grips_update, frees the inner links, fixes the first and last links at bone rope_anchor_bone of the two robs and the gripped links at the gripping bones, steps the links (rope_link_step) forwards or backwards on alternate frames (rope_frame), keeps the old positions and builds each link's matrix pointing at the next (chain_node_rotate) in the first rob's bone space; only caller rob_effect_exec; part of vf4lib/librobdisp/src/rob_rope.c
+ * evidence: while rope_stage_on is set: rope_grips_update, frees the inner links, fixes the first and last links at bone rope_anchor_bone of the two robs and the gripped links at the gripping bones, steps the links (rope_link_step) forwards or backwards on alternate frames (rope_frame), keeps the old positions and builds each link's matrix pointing at the next (chain_node_rotate) in the first rob's bone space; only caller rob_effect_exec; part of vf4lib/librobdisp/src/rob_rope.c; observed live 2026-11-10: in the harness scenario stage_rope (stage 6; rope_stage_on poked on in each of 600 frames from vertical blank 8030, every other call returned at the test) each call ran rope_grips_update, wrote state 1 to links 1 to 126, put link 0 at (1.8271, 4.0, -0.0654) and link 127 at (3.1095, 4.0, 0.4015), the translations of the two robs' bone 0 matrices (rope_anchor_bone read 0), called rope_link_step 127 times, from link 126 down with neighbor i + 1 when rope_frame was even (0 and 2 at vertical blanks 8030 and 8032) and from link 1 up with neighbor i - 1 when odd (8031; 300 calls each way), copied each position to the old position and stored 127 link matrices (vec_to_local_into, chain_node_rotate with type 0, mtx_store_wordwise, mtx_translate, 127 each); no rob had a grip, so the gripped-link part (+0xa0..+0xd4, +0xde..+0x11a) never ran
  * matched: source/vf4lib/librobdisp/src/rob_rope.c (tools/match/match.py)
  */
 void rope_update(void)
@@ -180,8 +180,8 @@ void rope_update(void)
 }
 
 /* 0x0c0ce6c0  size 0xb8  file by match with source
- * confidence: inferred
- * evidence: while rope_stage_on is set: for each pair of present links draws model rope_link_model under the link matrix scaled by rope_link_length (and a debug line between them when rope_lines_show is set); only caller rob_extras_draw; part of vf4lib/librobdisp/src/rob_rope.c
+ * confidence: observed
+ * evidence: while rope_stage_on is set: for each pair of present links draws model rope_link_model under the link matrix scaled by rope_link_length (and a debug line between them when rope_lines_show is set); only caller rob_extras_draw, which runs once for each rob drawn, so with both robs shown the rope is sent twice a frame (as the game has it); part of vf4lib/librobdisp/src/rob_rope.c; observed live 2026-11-10: in the harness scenario stage_rope (rope_stage_on poked on in each frame), call 1,272 (vertical blank 8030, from rob_extras_draw+0x3a) read the states of the 128 links (all present), and for each of the 127 pairs took the pushed matrix (mtx_peek_pushed), multiplied by the link's own matrix (rope_links +0x30, +0xA0, ... 0x70 apart), stored rope_link_length 0.02 into rope_link_scale and scaled by it, and drew model 0x44, the value read from rope_link_model (obj_draw x127, whose stores went into the ELAN list); rope_lines_show read 0, so the debug line was never drawn; it ran once for each rob drawn, 1,200 times in the 600 frames; without the switch all the other calls returned at the test
  * matched: source/vf4lib/librobdisp/src/rob_rope.c (tools/match/match.py)
  */
 void rope_draw(void)
