@@ -8230,9 +8230,9 @@ int inflate_flush(inflate_blocks_state *s, z_streamp z, int r); /* 0x0c1578e0 */
 int inflate_fast(uInt bl, uInt bd, inflate_huft *tl, inflate_huft *td, inflate_blocks_state *s, z_streamp z); /* 0x0c1579e0 */
 uLong adler32(uLong adler, const Bytef *buf, uInt len); /* 0x0c157d40 */
 float asinf(float x); /* 0x0c157ea0 */
-void asin(float x); /* 0x0c157f60 */
+float asin(float x); /* 0x0c157f60 */
 int isnanf(float x); /* 0x0c157f80 */
-void isnan(float x); /* 0x0c157fc0 */
+int isnan(float x); /* 0x0c157fc0 */
 float sinf(float x); /* 0x0c157fe0 */
 float sin(float x); /* 0x0c158100 */
 int matherr(math_error_rec *error); /* 0x0c158120 */
@@ -8243,11 +8243,11 @@ int __ieee754_rem_pio2f(float *out, float value, float unused); /* 0x0c158500 */
 float __ieee754_sqrtf(float x); /* 0x0c1587a0 */
 int __kernel_rem_pio2f(float *x, float *y, int e0, int nx, int prec, const int *ipio2); /* 0x0c158880 */
 float floorf(float x); /* 0x0c158f40 */
-void floor(float x); /* 0x0c159040 */
+float floor(float x); /* 0x0c159040 */
 float scalbnf(float x, int n); /* 0x0c159060 */
-void scalbn(int n, float x); /* 0x0c159160 */
+float scalbn(float x, int n); /* 0x0c159160 */
 float copysignf(float x, float y); /* 0x0c159180 */
-void copysign(float x, float y); /* 0x0c1591c0 */
+float copysign(float x, float y); /* 0x0c1591c0 */
 void __movstr_i4_odd(void *dst,void *src,int pairs); /* 0x0c1591e8 */
 void __movstr_i4_even(void *dst,void *src,int pairs); /* 0x0c159212 */
 void __movstrSI12_i4(int dst,int src); /* 0x0c159220 */
@@ -8281,7 +8281,7 @@ int sscanf();
 #else
 int sscanf(char *str, char *format, ...); /* 0x0c159e00 */
 #endif
-void sscanf_counted(char *str, uint *count, char *format, ...); /* 0x0c159e80 */
+int sscanf_counted(char *str, uint *count, char *format, ...); /* 0x0c159e80 */
 #if defined(NOPROTO_strcat)
 #elif defined(KRPROTO_strcat)
 char * strcat();

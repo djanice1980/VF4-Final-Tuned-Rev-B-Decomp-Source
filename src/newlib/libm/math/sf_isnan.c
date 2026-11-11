@@ -8,7 +8,7 @@
 
 /* 0x0c157f80  size 0x1c  file by match with source
  * confidence: named
- * evidence: newlib's libm/math/sf_isnan.c compiles to these bytes in 1.8.2, 1.9.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py)
+ * evidence: newlib's libm/math/sf_isnan.c compiles to these bytes in 1.8.2, 1.9.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py); exercised 2026-11-10: called by the harness with 1.0 it returned 0, with a NaN (bits 0xFFC00000) 1, with +infinity (0x7F800000) 0 and with -infinity 0
  * matched: source/newlib/libm/math/sf_isnan.c (tools/match/match.py)
  */
 int isnanf(float x)
@@ -23,13 +23,12 @@ int isnanf(float x)
 }
 
 /* 0x0c157fc0  size 0x12  file by match with source
- * confidence: inferred
- * evidence: (x): returns isnanf(x), the 32-bit-double entry point of newlib's sf_isnan.c; nothing in the image calls it; part of newlib/libm/math/sf_isnan.c
+ * confidence: exercised
+ * evidence: (x): returns isnanf(x), the 32-bit-double entry point of newlib's sf_isnan.c; nothing in the image calls it; part of newlib/libm/math/sf_isnan.c; exercised 2026-11-10: called by the harness with 1.0 it returned 0 in r0, with a NaN (bits 0xFFC00000) 1 and with +infinity 0, each through one call of isnanf
  * matched: source/newlib/libm/math/sf_isnan.c (tools/match/match.py)
  */
-void isnan(float x)
+int isnan(float x)
 {
-  isnanf(x);
-  return;
+  return isnanf(x);
 }
 

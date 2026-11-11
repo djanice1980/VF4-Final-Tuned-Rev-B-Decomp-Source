@@ -23,15 +23,18 @@ int sscanf(char *str, char *format, ...)
 }
 
 /* 0x0c159e80  size 0x5c  file by match with source
- * confidence: inferred
- * evidence: (string, length in/out, format, ...): vsscanf_counted(string, length, format, ap): scans at most *length characters and stores how many it used; nothing in the image calls it; part of libc/stdio/sscanf.c
+ * confidence: exercised
+ * evidence: (string, length in/out, format, ...): vsscanf_counted(string, length, format, ap): scans at most *length characters and stores how many it used; nothing in the image calls it; part of libc/stdio/sscanf.c; exercised 2026-11-10: called by the harness with the text "42 17 zz", the format "%d %d" and two int addresses as the variable arguments: with the length word 4 it stored 42 and 1 and left the length 4; with 100 it stored 42 and 17 and left the length 5; with 1 it stored 4, left the second int untouched and the length 1
  * variadic: 3 named int, 0 named float arguments (from the registers its prologue stores)
  * matched: source/libc/stdio/sscanf.c (tools/match/match.py)
  */
-void sscanf_counted(char *str, uint *count, char *format, ...)
+int sscanf_counted(char *str, uint *count, char *format, ...)
 {
   va_list ap;
+  int r;
+
   __builtin_stdarg_start(ap, format);
-  vsscanf_counted(str, count, format, ap);
+  r = vsscanf_counted(str, count, format, ap);
+  return r;
 }
 

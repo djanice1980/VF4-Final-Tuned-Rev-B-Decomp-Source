@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c15d5a0  size 0x30  file by match with source
- * confidence: inferred
- * evidence: (numerator, denominator): quotient and remainder as one 8-byte record in r0 / r1, the quotient moved up by one and the remainder down when the numerator is not negative and the remainder came out negative; caller validate_structure (mktime's field normalizing); part of newlib/libc/stdlib/div.c
+ * confidence: exercised
+ * evidence: (numerator, denominator): quotient and remainder as one 8-byte record in r0 / r1, the quotient moved up by one and the remainder down when the numerator is not negative and the remainder came out negative; caller validate_structure (mktime's field normalizing); part of newlib/libc/stdlib/div.c; exercised 2026-11-10: called by the harness, div(7, 2) returned r0 = 3 and r1 = 1, div(-7, 2) -3 and -1, div(7, -2) -3 and 1, div(100, 7) 14 and 2, and div(-100, -7) 14 and -2
  * matched: source/newlib/libc/stdlib/div.c (tools/match/match.py)
  */
 div_t div(int num, int denom)

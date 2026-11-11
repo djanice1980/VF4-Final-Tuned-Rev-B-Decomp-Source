@@ -6,7 +6,7 @@
 //                          removed first (address, evidence); test.bin's
 //                          in ghidra/bogus_entries_test.tsv
 //   ghidra/symbols/*.tsv   address, kind (data | function), C declaration,
-//                          confidence (named | observed | inferred), evidence
+//                          confidence (named | observed | exercised | inferred), evidence
 //
 // data rows: the declaration's type is created at the address and the name
 // becomes the primary label; a bare name only labels the address (the data

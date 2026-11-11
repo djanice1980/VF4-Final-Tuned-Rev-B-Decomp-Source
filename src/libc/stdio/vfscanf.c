@@ -32,7 +32,7 @@ int scan_stream_refill(scan_stream_rec *stream)
 
 /* 0x0c15c1a0  size 0x86  file by match with source
  * confidence: inferred
- * evidence: (buffer, size, count, string stream): copies size x count bytes out of the stream with memcpy, refilling with scan_stream_refill, and returns the whole items read (the fread of the scanner, for %c); caller scanf_core; part of libc/stdio/vfscanf.c
+ * evidence: (buffer, size, count, string stream): the fread of the scanner, for %c: until size x count bytes are copied it calls scan_stream_refill and stops when that fails, else copies with memcpy what the stream then holds (at most what is still wanted), and returns the whole items copied; as the game has it the refill comes before the first copy and discards what the stream holds, so on a plain string stream nothing is copied, the stream is left at end of input and 0 comes back (a %c conversion ends the scan as an input failure), and only when a character was pushed back into the stream's small buffer does it copy, from the saved position (the pushed-back character itself is dropped); caller scanf_core; part of libc/stdio/vfscanf.c; record as the game has it: %c does not work in this scanner (scan_stream_read refills before it copies); the image's own sscanf calls use no %c ("%d" in debug_menu.c, "%63s %d ..." in chara_load.c, net_hex_byte_format in network.c), so nothing in the game meets it
  * matched: source/libc/stdio/vfscanf.c (tools/match/match.py)
  */
 uint scan_stream_read(char *dst, int elem_size, int count, scan_stream_rec *stream)
@@ -596,9 +596,9 @@ match_failure:
 }
 
 /* 0x0c15d0a0  size 0x9a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xf2
- * evidence: (256-byte table, format after '['): fills the table for a %[ set: a leading '^' inverts it, ranges a-b are expanded, ']' first in the set is a member; returns the format after the closing ']'; the set builder of newlib's vfscanf; caller scanf_core; part of libc/stdio/vfscanf.c
+ * evidence: (256-byte table, format after '['): fills the table for a %[ set: a leading '^' inverts it, ranges a-b are expanded, ']' first in the set is a member; returns the format after the closing ']'; the set builder of newlib's vfscanf; caller scanf_core; part of libc/stdio/vfscanf.c; exercised 2026-11-10: called by the harness with a 256-byte table and the format text "a-c]xyz" it set only the bytes for 'a', 'b' and 'c' to 1 and returned the address of "xyz"; with "^a-c]q" it set every byte to 1 but those three and returned the address of "q"; with "]x]z" it set the bytes for ']' and 'x' and returned the address of "z"; with "x-]" it set the bytes for 'x' and '-' and returned the address after the ']'
  * matched: source/libc/stdio/vfscanf.c (tools/match/match.py)
  */
 char * scan_charset_build(char *tab, char *fmt)

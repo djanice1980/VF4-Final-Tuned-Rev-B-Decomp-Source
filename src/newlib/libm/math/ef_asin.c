@@ -9,7 +9,7 @@
 /* 0x0c1582e0  size 0x166  file by match with source
  * confidence: named
  * extent: 0x1c0
- * evidence: newlib's libm/math/ef_asin.c compiles to these bytes in 1.8.2 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py)
+ * evidence: newlib's libm/math/ef_asin.c compiles to these bytes in 1.8.2 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py); exercised 2026-11-10: called by the harness with 0.5 it returned 0.5235989, with 0.3 0.3046927, with 1.0 and -1.0 1.5707964 and -1.5707964, and with 2.0 a NaN
  * matched: source/newlib/libm/math/ef_asin.c (tools/match/match.py)
  */
 float __ieee754_asinf(float value)

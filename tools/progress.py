@@ -58,7 +58,8 @@ BODY_END = re.compile(r"^\}", re.M)
 FIELDS = ["time", "label", "commit", "functions", "fn_bytes", "named_bytes", "inferred_bytes",
           "placeholder_bytes", "assert_bytes", "link_bytes", "named_fn", "inferred_fn",
           "globals", "enums", "asserts", "failed", "placeholder_vars", "fpu_warnings", "c_lines",
-          "matched_bytes", "matched_fn", "caller_bytes", "readable_fn", "observed_bytes", "observed_fn"]
+          "matched_bytes", "matched_fn", "caller_bytes", "readable_fn", "observed_bytes", "observed_fn",
+          "exercised_bytes", "exercised_fn"]
 
 
 def extents(src):
@@ -98,7 +99,7 @@ def measure(src):
             # Sega's paths have a src/ level; public libraries (zlib/) are their own top directory
             lib = rel.split("/src/")[0] if "/src/" in rel else (
                 rel.split("/")[0] if "/" in rel and not rel.startswith("_unmapped/") else "(source file unknown)")
-            L = libs.setdefault(lib, {"files": set(), "functions": 0, "bytes": 0, "named": 0, "inferred": 0, "observed": 0,
+            L = libs.setdefault(lib, {"files": set(), "functions": 0, "bytes": 0, "named": 0, "inferred": 0, "observed": 0, "exercised": 0,
                                       "matched": 0, "tree": {}})
             cells = L["tree"].setdefault(rel, [])
             if lib != "(source file unknown)":
@@ -128,7 +129,7 @@ def measure(src):
                         m["readable_fn"] += 1
                 d = DEF_NAME.match(text, h.end())
                 # one treemap cell: name (None for FUN_<address>), address, size, state
-                state = 2 if matched else 1 if conf in ("named", "observed", "inferred") else 0
+                state = 2 if matched else 1 if conf in ("named", "observed", "exercised", "inferred") else 0
                 fn = d.group(1) if d else None
                 cells.append([None if fn in (None, "FUN_" + addr) else fn, int(addr, 16), b, state])
                 m["functions"] += 1
@@ -154,6 +155,12 @@ def measure(src):
                     m["observed_bytes"] += b
                     m["observed_fn"] += 1
                     L["observed"] += 1
+                elif conf == "exercised":
+                    # named from analysis; the game never runs it, and calling it in
+                    # the harness with chosen inputs bore out its description
+                    m["exercised_bytes"] += b
+                    m["exercised_fn"] += 1
+                    L["exercised"] += 1
                 elif conf == "inferred":
                     m["inferred_bytes"] += b
                     m["inferred_fn"] += 1
@@ -224,6 +231,8 @@ def svg_naming_bar(m):
     parts = [
         ("named", "Named from the binary or matched source", m["named_bytes"], "var(--ord-4)"),
         ("observed", "Named from analysis, confirmed in the running game", m["observed_bytes"], "var(--ord-3)"),
+        ("exercised", "Named from analysis, borne out by calling the routine in a harness",
+         m["exercised_bytes"], "var(--ord-25)"),
         ("inferred", "Named from analysis", m["inferred_bytes"], "var(--ord-2)"),
         ("placeholder", "Placeholder name (FUN_…)", m["placeholder_bytes"], "var(--ord-1)"),
         ("none", "Not yet in any function", max(0, CODE_BYTES - m["fn_bytes"]), "var(--rest)"),
@@ -323,7 +332,7 @@ def badges(m):
     items = [
         ("functions", f"{m['functions']:,}"),
         ("placed", f"{pct(m['assert_bytes'] + m['link_bytes'] + m['caller_bytes'], CODE_BYTES):.1f}%"),
-        ("named", f"{pct(m['named_bytes'] + m['observed_bytes'] + m['inferred_bytes'], CODE_BYTES):.2f}%"),
+        ("named", f"{pct(m['named_bytes'] + m['observed_bytes'] + m['exercised_bytes'] + m['inferred_bytes'], CODE_BYTES):.2f}%"),
         ("matching C", f"{pct(m['matched_bytes'], CODE_BYTES):.2f}%"),
         ("globals", f"{m['globals']:,}"),
         ("enums", f"{m['enums']:,}"),
@@ -425,7 +434,7 @@ def render(rows, libs):
         tile("Code placed in an original source file", f"{placed:.1f}%",
              f"from assert paths, link order, callers, strings and known library sources", placed),
         tile("Code with a real function name", f"{named:.2f}%",
-             f"{m['named_fn'] + m['observed_fn'] + m['inferred_fn']:,} of {m['functions']:,} functions", named),
+             f"{m['named_fn'] + m['observed_fn'] + m['exercised_fn'] + m['inferred_fn']:,} of {m['functions']:,} functions", named),
         tile("Code rebuilt from matching C", f"{matched:.3f}%",
              f"{m['matched_fn']:,} functions in source/ compile to the game's bytes", matched),
         tile("Matching source that reads like source", f"{pct(m['readable_fn'], m['matched_fn']):.1f}%",
@@ -434,7 +443,9 @@ def render(rows, libs):
              f"described and its code commented", pct(m['readable_fn'], m['matched_fn'])),
         tile("Code whose name is confirmed", f"{confirmed:.1f}%",
              f"{m['named_fn']:,} functions named by the game's own text or a public library's source, "
-             f"{m['observed_fn']:,} whose description a logged run of the game bore out; the other "
+             f"{m['observed_fn']:,} whose description a logged run of the game bore out. Apart from these, "
+             f"{m['exercised_fn']:,} routines the game never runs were called in a harness with chosen inputs "
+             f"and did what their descriptions say; the other "
              f"{m['inferred_fn']:,} are named from reading the code alone", confirmed),
     ])
     tiles_more = "".join([
@@ -447,7 +458,7 @@ def render(rows, libs):
     ])
     timeline = svg_lines(rows, [
         ("Placed in a source file", lambda r: pct(r["assert_bytes"] + r["link_bytes"] + r["caller_bytes"], CODE_BYTES), "var(--s1)"),
-        ("Real function name", lambda r: pct(r["named_bytes"] + r["observed_bytes"] + r["inferred_bytes"], CODE_BYTES), "var(--s2)"),
+        ("Real function name", lambda r: pct(r["named_bytes"] + r["observed_bytes"] + r["exercised_bytes"] + r["inferred_bytes"], CODE_BYTES), "var(--s2)"),
         ("Matching C", lambda r: pct(r["matched_bytes"], CODE_BYTES), "var(--s3)"),
     ], aria="Percent of code placed in a source file, named, and rebuilt from matching C, over time")
     noise = svg_lines(rows, [("Placeholder variables", lambda r: r["placeholder_vars"], "var(--s1)")],
@@ -458,16 +469,16 @@ def render(rows, libs):
     for lib, L in sorted(libs.items(), key=lambda kv: (kv[0].startswith("("), kv[0])):
         lib_rows.append(
             f"<tr><td>{html.escape(lib)}</td><td class='n'>{L['files'] or '–'}</td>"
-            f"<td class='n'>{L['functions']:,}</td><td class='n'>{L['named'] + L['observed'] + L['inferred']:,}</td>"
-            f"<td class='n'>{pct(L['named'] + L['observed'] + L['inferred'], L['functions']):.1f}%</td>"
-            f"<td class='n'>{L['named'] + L['observed']:,}</td>"
+            f"<td class='n'>{L['functions']:,}</td><td class='n'>{L['named'] + L['observed'] + L['exercised'] + L['inferred']:,}</td>"
+            f"<td class='n'>{pct(L['named'] + L['observed'] + L['exercised'] + L['inferred'], L['functions']):.1f}%</td>"
+            f"<td class='n'>{L['named'] + L['observed']:,}</td><td class='n'>{L['exercised']:,}</td>"
             f"<td class='n'>{L['matched']:,}</td><td class='n'>{pct(L['matched_bytes'], L['bytes']):.1f}%</td>"
             f"<td class='n'>{L['bytes']:,}</td></tr>")
     hist_rows = "".join(
         f"<tr><td>{html.escape(r['time'][:16].replace('T', ' '))}</td><td>{html.escape(r['label'])}</td>"
         f"<td><code>{html.escape(r['commit'])}</code></td><td class='n'>{r['functions']:,}</td>"
         f"<td class='n'>{pct(r['assert_bytes'] + r['link_bytes'] + r['caller_bytes'], CODE_BYTES):.1f}%</td>"
-        f"<td class='n'>{pct(r['named_bytes'] + r['observed_bytes'] + r['inferred_bytes'], CODE_BYTES):.2f}%</td>"
+        f"<td class='n'>{pct(r['named_bytes'] + r['observed_bytes'] + r['exercised_bytes'] + r['inferred_bytes'], CODE_BYTES):.2f}%</td>"
         f"<td class='n'>{pct(r['matched_bytes'], CODE_BYTES):.2f}%</td>"
         f"<td class='n'>{r['globals']:,}</td><td class='n'>{r['enums']:,}</td>"
         f"<td class='n'>{r['placeholder_vars']:,}</td><td class='n'>{r['failed']:,}</td></tr>"
@@ -491,7 +502,7 @@ PAGE = """<!doctype html>
   --page: #f9f9f7; --surface: #fcfcfb; --ink: #0b0b0b; --ink2: #52514e; --muted: #898781;
   --grid: #e1e0d9; --axis: #c3c2b7; --ring: rgba(11,11,11,0.10);
   --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --tm-0: #d6d5cd;
-  --ord-4: #0a2a55; --ord-3: #104281; --ord-2: #2a78d6; --ord-1: #86b6ef; --rest: #e1e0d9;
+  --ord-4: #0a2a55; --ord-3: #104281; --ord-25: #1c5cab; --ord-2: #2a78d6; --ord-1: #86b6ef; --rest: #e1e0d9;
 }}
 @media (prefers-color-scheme: dark) {{
   :root:where(:not([data-theme="light"])) {{
@@ -499,7 +510,7 @@ PAGE = """<!doctype html>
     --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --muted: #898781;
     --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,0.10);
     --s1: #3987e5; --s2: #d95926; --s3: #199e70; --tm-0: #3a3a37;
-    --ord-4: #c6ddf8; --ord-3: #86b6ef; --ord-2: #3987e5; --ord-1: #184f95; --rest: #2c2c2a;
+    --ord-4: #c6ddf8; --ord-3: #86b6ef; --ord-25: #609fea; --ord-2: #3987e5; --ord-1: #184f95; --rest: #2c2c2a;
   }}
 }}
 :root[data-theme="dark"] {{
@@ -507,7 +518,7 @@ PAGE = """<!doctype html>
   --page: #0d0d0d; --surface: #1a1a19; --ink: #f0efec; --ink2: #c3c2b7; --muted: #898781;
   --grid: #2c2c2a; --axis: #383835; --ring: rgba(255,255,255,0.10);
   --s1: #3987e5; --s2: #d95926; --s3: #199e70; --tm-0: #3a3a37;
-  --ord-4: #c6ddf8; --ord-3: #86b6ef; --ord-2: #3987e5; --ord-1: #184f95; --rest: #2c2c2a;
+  --ord-4: #c6ddf8; --ord-3: #86b6ef; --ord-25: #609fea; --ord-2: #3987e5; --ord-1: #184f95; --rest: #2c2c2a;
 }}
 * {{ box-sizing: border-box; }}
 body {{ margin: 0; background: var(--page); color: var(--ink);
@@ -632,7 +643,7 @@ agent separately. The cost and by-hand figures are estimates, not measurements.<
 <p class="lede">Libraries from the original build tree (<code>/p71/prj71p/vf4e2/</code>).</p>
 <div class="tablewrap"><table>
 <thead><tr><th>Library</th><th class="n">Files</th><th class="n">Functions</th><th class="n">Named</th>
-<th class="n">Named %</th><th class="n">Name confirmed</th><th class="n">Matched</th><th class="n">Matched % of bytes</th><th class="n">Bytes</th></tr></thead>
+<th class="n">Named %</th><th class="n">Name confirmed</th><th class="n">Exercised</th><th class="n">Matched</th><th class="n">Matched % of bytes</th><th class="n">Bytes</th></tr></thead>
 <tbody>{lib_rows}</tbody></table></div>
 </section>
 

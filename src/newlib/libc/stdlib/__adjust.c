@@ -7,9 +7,9 @@
 #include "vf4ft.h"
 
 /* 0x0c15d680  size 0x6e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xb2
- * evidence: (mantissa pointer, decimal exponent, negative flag): the signed mantissa scaled by 10 to the exponent with pow10_float (divided for a negative exponent); an exponent above 38 sets lib_errno 34 and returns +/- infinity (float_huge), one below -37 sets it and returns 0; the shape of newlib's __adjust; caller strtod; part of newlib/libc/stdlib/__adjust.c
+ * evidence: (mantissa pointer, decimal exponent, negative flag): the signed mantissa scaled by 10 to the exponent with pow10_float (divided for a negative exponent); an exponent above 38 sets lib_errno 34 and returns +/- infinity (float_huge), one below -37 sets it and returns 0; the shape of newlib's __adjust; caller strtod; part of newlib/libc/stdlib/__adjust.c; exercised 2026-11-10: called by the harness in one sandbox with a float 1.5: (exponent 2, not negative) returned 150, (-2, negative) -0.015, (0, negative) -1.5, (38, not negative) 1.5e38 and (-37, not negative) 1.5e-37 with lib_errno still 0; (39, not negative) returned +infinity and (39, negative) -infinity with lib_errno 34 each time, and (-38, not negative) returned 0 with lib_errno 34
  * matched: source/newlib/libc/stdlib/__adjust.c (tools/match/match.py)
  */
 float strtod_scale(float *acc, int exponent, int negative)

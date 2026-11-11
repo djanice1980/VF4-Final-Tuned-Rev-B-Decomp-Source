@@ -233,7 +233,7 @@ int inflate(z_streamp z, int f)
 /* 0x0c155f20  size 0x7a  file by match with source
  * confidence: named
  * extent: 0x90
- * evidence: zlib 1.1.4 inflate.c: calls adler32 and inflate_set_dictionary
+ * evidence: zlib 1.1.4 inflate.c: calls adler32 and inflate_set_dictionary; exercised 2026-11-10: called by the harness in one sandbox after inflateInit_ on a zeroed stream, with next_in poked to an 18-byte zlib stream (78 f9 7a 06 09 83 ...) made from "quick brown fox jumps the quick" with the dictionary "the quick brown fox jumps": inflate(strm, 0) returned 2 with adler 0x7A060983 and the state's mode 6; inflateSetDictionary(strm, dictionary, 25) returned 0 (adler32 and inflate_set_dictionary called), left mode 7 and adler 1, and inflate(strm, 4) then returned 1 with the 31 bytes of the text in the output. With the dictionary one letter off it returned -3 and left mode 6 and adler unchanged; called before any inflate (mode 0) it returned -2
  * matched: source/zlib/inflate.c (tools/match/match.py)
  */
 int inflateSetDictionary(z_streamp z, const Bytef *dictionary, uInt dictLength)
@@ -259,7 +259,7 @@ int inflateSetDictionary(z_streamp z, const Bytef *dictionary, uInt dictLength)
 /* 0x0c155fc0  size 0xc0  file by match with source
  * confidence: named
  * extent: 0xdc
- * evidence: zlib 1.1.4 inflate.c: calls inflateReset
+ * evidence: zlib 1.1.4 inflate.c: calls inflateReset; exercised 2026-11-10: called by the harness in one sandbox after inflateInit_ on a zeroed stream: with next_in poked to 58 59 00 00 ff ff 5a and avail_in 7 it returned 0, left next_in 6 further, avail_in 1, total_in 6 and the state's mode 7 (one call of inflateReset); with "abcde" and avail_in 5 it returned -3 with avail_in 0, total_in 5, mode 13 and the marker count 0; with avail_in 0 it returned -5; with 00 00 ff and avail_in 3 it returned -3 with the marker count 3, and a second call with one more ff returned 0 with mode 7
  * matched: source/zlib/inflate.c (tools/match/match.py)
  */
 int inflateSync(z_streamp z)

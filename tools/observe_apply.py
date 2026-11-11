@@ -14,6 +14,20 @@ made and judged) against each routine's name and description:
              already compel;
   conflict   the log contradicts the name or the description.
 
+A second kind of verdicts file (ghidra/exercise_verdicts.tsv) is for the
+routines the game never runs: the harness called them itself, with inputs
+a judge chose from the description (build/agents/exercised/BRIEF.md):
+
+  exercised  the results bore out what the description says the code
+             does;
+  untested   no honest test could be made (the reason is the sentence);
+  conflict   the results contradict the description.
+
+An exercised routine gets its sentence ("exercised <date>: ...") and its
+row goes from inferred to exercised: a level below observed, since the
+inputs were the judge's and not the game's. A row that is observed or
+named keeps its level and still gets the sentence.
+
 For an observed routine this appends the observation sentence ("observed
 live <date>: ...") to the evidence of its row in ghidra/symbols/*.tsv and
 raises the row's confidence from inferred to observed. A row that is
@@ -27,7 +41,9 @@ same dated sentence is skipped.
 import glob, os, re, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-DATED = re.compile(r"^observed live (\d{4}-\d{2}-\d{2}): ")
+DATED = {"observed": re.compile(r"^(observed live \d{4}-\d{2}-\d{2}): "),
+         "exercised": re.compile(r"^(exercised \d{4}-\d{2}-\d{2}): ")}
+KINDS = ("observed", "reached", "conflict", "exercised", "untested")
 
 
 def main():
@@ -39,10 +55,12 @@ def main():
     for f in files:
         for line in open(f, encoding="utf-8"):
             p = line.rstrip("\n").split("\t")
-            if len(p) < 4 or p[2] not in ("observed", "reached", "conflict"):
+            if len(p) < 4 or p[2] not in KINDS:
                 continue
-            verdicts[p[0].lower()] = (p[1], p[2], " ".join(p[3].split()), p[4].strip() if len(p) > 4 else "")
+            # a routine can have a verdict of each kind (reached in the game, exercised in the harness)
+            verdicts.setdefault(p[0].lower(), []).append((p[1], p[2], " ".join(p[3].split()), p[4].strip() if len(p) > 4 else ""))
     raised = kept = appended = skipped = 0
+    by = {}
     found = set()
     for path in sorted(glob.glob(os.path.join(ROOT, "ghidra", "symbols", "*.tsv"))):
         lines = open(path, encoding="utf-8").read().split("\n")
@@ -51,23 +69,24 @@ def main():
             p = line.split("\t")
             if len(p) != 5 or p[1] != "function" or p[0] not in verdicts:
                 continue
-            name, verdict, text, _ = verdicts[p[0]]
             found.add(p[0])
-            if verdict != "observed":
-                continue
-            m = DATED.match(text)
-            if not m:
-                sys.exit(f"{p[0]} {name}: the observation does not start 'observed live <date>: '")
-            if f"observed live {m.group(1)}: " in p[4]:
-                skipped += 1
-            else:
-                p[4] = p[4].rstrip().rstrip(";") + "; " + text
-                appended += 1
-            if p[3] == "inferred":
-                p[3] = "observed"
-                raised += 1
-            elif p[3] == "named":
-                kept += 1
+            for name, verdict, text, _ in sorted(verdicts[p[0]], key=lambda v: KINDS.index(v[1])):
+                if verdict not in DATED:
+                    continue
+                m = DATED[verdict].match(text)
+                if not m:
+                    sys.exit(f"{p[0]} {name}: the sentence does not start '{verdict} ... <date>: '")
+                if m.group(1) + ": " in p[4]:
+                    skipped += 1
+                else:
+                    p[4] = p[4].rstrip().rstrip(";") + "; " + text
+                    appended += 1
+                if p[3] == "inferred" or (p[3] == "exercised" and verdict == "observed"):
+                    p[3] = verdict
+                    raised += 1
+                    by[verdict] = by.get(verdict, 0) + 1
+                else:
+                    kept += 1
             new = "\t".join(p)
             if new != line:
                 lines[i] = new
@@ -75,14 +94,14 @@ def main():
         if changed and not dry:
             with open(path, "w", encoding="utf-8") as f:
                 f.write("\n".join(lines))
-    count = {v: sum(1 for x in verdicts.values() if x[1] == v) for v in ("observed", "reached", "conflict")}
-    print(f"{len(verdicts)} verdicts: {count['observed']} observed, {count['reached']} reached, {count['conflict']} conflicts")
-    print(f"{appended} observations appended ({skipped} already there); {raised} rows raised to observed, "
-          f"{kept} named rows keep their level")
+    count = {k: sum(1 for x in verdicts.values() for v in x if v[1] == k) for k in KINDS}
+    print(f"{len(verdicts)} routines with a verdict: " + ", ".join(f"{count[k]} {k}" for k in KINDS if count[k]))
+    print(f"{appended} sentences appended ({skipped} already there); {raised} rows raised "
+          f"({', '.join(f'{n} to {k}' for k, n in sorted(by.items())) or 'none'}), {kept} rows keep their level")
     for a in sorted(set(verdicts) - found):
-        print(f"no symbols row: {a} {verdicts[a][0]} ({verdicts[a][1]})")
-    for a in sorted(a for a, v in verdicts.items() if v[1] == "conflict"):
-        print(f"conflict: {a} {verdicts[a][0]}")
+        print(f"no symbols row: {a} {verdicts[a][0][0]} ({verdicts[a][0][1]})")
+    for a in sorted(a for a, x in verdicts.items() if any(v[1] == "conflict" for v in x)):
+        print(f"conflict: {a} {verdicts[a][0][0]}")
 
 
 if __name__ == "__main__":

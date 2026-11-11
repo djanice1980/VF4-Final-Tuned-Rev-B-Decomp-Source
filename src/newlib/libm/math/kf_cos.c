@@ -8,7 +8,7 @@
 
 /* 0x0c158140  size 0x96  file by match with source
  * confidence: named
- * evidence: newlib's libm/math/kf_cos.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0, 1.11.0, 1.12.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py)
+ * evidence: newlib's libm/math/kf_cos.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0, 1.11.0, 1.12.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py); exercised 2026-11-10: called by the harness with (x, tail) = (0.5, 0) it returned 0.8775826 (cos 0.5), with (0.7, 0) 0.7648422 (cos 0.7) and with (0, 0) 1
  * matched: source/newlib/libm/math/kf_cos.c (tools/match/match.py)
  */
 float __kernel_cosf(float x, float y)

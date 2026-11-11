@@ -8,7 +8,7 @@
 
 /* 0x0c085480  size 0x12  file by match with source
  * confidence: named
- * evidence: newlib's libc/ctype/islower.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0, 1.11.0, 1.12.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py)
+ * evidence: newlib's libc/ctype/islower.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0, 1.11.0, 1.12.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py); exercised 2026-11-10: called by the harness with 'a' it returned 2 (the lower-case bit of ctype_table), with 'A' 0 and with '5' 0
  * same code as main.bin 0c15d320 (ghidra/TransferFromMain.java)
  * matched: source/newlib/libc/ctype/islower.c (tools/match/match.py)
  */

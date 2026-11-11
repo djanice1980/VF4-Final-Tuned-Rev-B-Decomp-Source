@@ -8,7 +8,7 @@
 
 /* 0x0c15d440  size 0x10  file by match with source
  * confidence: named
- * evidence: newlib's libc/ctype/isascii.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0, 1.11.0, 1.12.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py)
+ * evidence: newlib's libc/ctype/isascii.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0, 1.11.0, 1.12.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py); exercised 2026-11-10: called by the harness with 0, 0x41 and 0x7F it returned 1, and with 0x80, 0x100 and -1 0
  * matched: source/newlib/libc/ctype/isascii.c (tools/match/match.py)
  */
 int isascii(int c)

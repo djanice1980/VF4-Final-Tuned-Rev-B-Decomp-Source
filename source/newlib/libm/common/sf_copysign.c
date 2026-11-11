@@ -15,8 +15,7 @@ float copysignf(float x, float y)
   return ux.f;
 }
 
-void copysign(float x, float y)
+float copysign(float x, float y)
 {
-  copysignf(x,y);
-  return;
+  return copysignf(x,y);
 }

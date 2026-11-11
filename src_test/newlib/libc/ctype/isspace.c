@@ -8,7 +8,7 @@
 
 /* 0x0c085560  size 0x12  file by match with source
  * confidence: named
- * evidence: newlib's libc/ctype/isspace.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0, 1.11.0, 1.12.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py)
+ * evidence: newlib's libc/ctype/isspace.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0, 1.11.0, 1.12.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py); exercised 2026-11-10: called by the harness with ' ', 0x09 and 0x0A it returned 8 (the space bit of ctype_table), and with 'a' and '5' 0
  * same code as main.bin 0c15d400 (ghidra/TransferFromMain.java)
  * matched: source/newlib/libc/ctype/isspace.c (tools/match/match.py)
  */

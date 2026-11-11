@@ -43,8 +43,7 @@ float floorf(float x)
   return x;
 }
 
-void floor(float x)
+float floor(float x)
 {
-  floorf(x);
-  return;
+  return floorf(x);
 }

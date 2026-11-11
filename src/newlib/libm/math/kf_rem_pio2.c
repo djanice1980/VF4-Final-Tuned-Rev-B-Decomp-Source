@@ -7,9 +7,9 @@
 #include "vf4ft.h"
 
 /* 0x0c158880  size 0x59e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x6a0
- * evidence: newlib kf_rem_pio2.c's prototype; header pass 4: with this prototype every matched file still matches (trial 5951/5951), __ieee754_rem_pio2f passes tx and two_over_pi (inv_half_pi_bytes) without casts and the newlib text matches with x and ipio2 used as declared (batch 573)
+ * evidence: newlib kf_rem_pio2.c's prototype; header pass 4: with this prototype every matched file still matches (trial 5951/5951), __ieee754_rem_pio2f passes tx and two_over_pi (inv_half_pi_bytes) without casts and the newlib text matches with x and ipio2 used as declared (batch 573); exercised 2026-11-10: called by the harness with x = {250.0}, e0 2, nx 1, prec 2 and inv_half_pi_bytes (the pieces of 1000.0) it returned 5 (637 mod 8) and stored y[0] = -0.5972602 (1000 - 637 pi/2); with x = {195.0, 80.0}, e0 9, nx 2 (the pieces of 100000.0) it returned 6 (63662 mod 8) and stored y[0] = -0.0357564
  * matched: source/newlib/libm/math/kf_rem_pio2.c (tools/match/match.py)
  */
 int __kernel_rem_pio2f(float *x, float *y, int e0, int nx, int prec, const int *ipio2)

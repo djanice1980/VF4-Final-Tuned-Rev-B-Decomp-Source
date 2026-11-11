@@ -7,9 +7,9 @@
 #include "vf4ft.h"
 
 /* 0x0c15d740  size 0x1b2  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x1f6
- * evidence: (string, end pointer): skips white space, takes a sign, digits (accumulated with __ten_mul), a '.', and an e/E exponent, stores the end (the start when nothing converted) and returns the float through strtod_scale; caller atof; part of libc/stdlib/strtod.c
+ * evidence: (string, end pointer): skips white space, takes a sign, digits (accumulated with __ten_mul), a '.', and an e/E exponent, stores the end (the start when nothing converted) and returns the float through strtod_scale; caller atof; part of libc/stdlib/strtod.c; exercised 2026-11-10: called by the harness with the text " -12.5e2xyz" it returned -1250 and stored the address of "xyz" (text + 9) as the end; with "abc" 0 and the end at the start; with "3.25" 3.25 and the end at text + 4; with "5e-1q" 0.5 and text + 4; with "-" 0 and the end at the start; with "1e40" +infinity, lib_errno 34 and the end at text + 4
  * matched: source/libc/stdlib/strtod.c (tools/match/match.py)
  */
 float strtod(char *str, char **end)

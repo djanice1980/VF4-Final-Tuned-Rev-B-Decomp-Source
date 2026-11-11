@@ -8,7 +8,7 @@
 
 /* 0x0c07f920  size 0x14  file by match with source
  * confidence: named
- * evidence: zlib 1.1.4 zutil.c: returns z_errmsg[2 - err] (ERR_MSG); never called, so never disassembled until named here
+ * evidence: zlib 1.1.4 zutil.c: returns z_errmsg[2 - err] (ERR_MSG); never called, so never disassembled until named here; exercised 2026-11-10: called by the harness, zError(0) returned z_errmsg[2] (0x0C218738, the empty text), zError(-2) z_errmsg[4] (0x0C2425DC, "stream error"), zError(1) z_errmsg[1] ("stream end"), zError(2) z_errmsg[0] ("need dictionary"), zError(-5) z_errmsg[7] ("buffer error") and zError(-6) z_errmsg[8], checked against the table's words and the texts in the image
  * same code as main.bin 0c1558e0 (ghidra/TransferFromMain.java)
  * matched: source/zlib/zutil.c (tools/match/match.py)
  */

@@ -7,9 +7,9 @@
 #include "vf4ft.h"
 
 /* 0x0c158220  size 0x6a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x82
- * evidence: header pass 2: with this prototype every matched file still matches (trial 5587/5587) and held callers match without casts
+ * evidence: header pass 2: with this prototype every matched file still matches (trial 5587/5587) and held callers match without casts; exercised 2026-11-10: called by the harness with (x, tail, iy) = (0.5, 0, 0) it returned 0.4794255 (sin 0.5), with (-0.3, 0, 0) -0.2955202, with (0.5, 0.01, 1) 0.4881755 (near sin 0.51 = 0.4881772: the tail counted) and with (0.5, 0.01, 0) 0.4794255 again (the tail left out when iy is 0)
  * matched: source/newlib/libm/math/kf_sin.c (tools/match/match.py)
  */
 float __kernel_sinf(float x, float y, int iy)

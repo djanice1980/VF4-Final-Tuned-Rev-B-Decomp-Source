@@ -67,7 +67,12 @@ public class ExportSource extends GhidraScript {
 		}
 		// the name is from analysis and a logged run of the game confirmed
 		// what the description says (tools/observe_apply.py)
-		return (c != null && c.contains("name: observed")) ? "observed" : "inferred";
+		if (c != null && c.contains("name: observed")) {
+			return "observed";
+		}
+		// the game never runs it; called in the harness with chosen inputs it
+		// did what the description says (tools/observe_apply.py)
+		return (c != null && c.contains("name: exercised")) ? "exercised" : "inferred";
 	}
 
 	// C spelling of a Ghidra type (Ghidra prints a bare default pointer as "pointer")

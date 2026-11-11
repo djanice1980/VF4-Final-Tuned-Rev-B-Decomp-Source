@@ -16,9 +16,12 @@ int sscanf(char *str, char *format, ...)
   return r;
 }
 
-void sscanf_counted(char *str, uint *count, char *format, ...)
+int sscanf_counted(char *str, uint *count, char *format, ...)
 {
   va_list ap;
+  int r;
+
   __builtin_stdarg_start(ap, format);
-  vsscanf_counted(str, count, format, ap);
+  r = vsscanf_counted(str, count, format, ap);
+  return r;
 }

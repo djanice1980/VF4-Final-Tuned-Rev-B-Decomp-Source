@@ -8,7 +8,7 @@
 
 /* 0x0c0855c0  size 0xe  file by match with source
  * confidence: named
- * evidence: newlib's libc/ctype/toascii.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0, 1.11.0, 1.12.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py)
+ * evidence: newlib's libc/ctype/toascii.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0, 1.11.0, 1.12.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py); exercised 2026-11-10: called by the harness with 0xC1 it returned 0x41, with 0x41 0x41, with 0x1FF 0x7F and with -1 0x7F
  * same code as main.bin 0c15d460 (ghidra/TransferFromMain.java)
  * matched: source/newlib/libc/ctype/toascii.c (tools/match/match.py)
  */

@@ -9,7 +9,7 @@
 /* 0x0c159060  size 0xae  file by match with source
  * confidence: named
  * extent: 0xc0
- * evidence: newlib's libm/common/sf_scalbn.c compiles to these bytes in 1.8.2, 1.9.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py)
+ * evidence: newlib's libm/common/sf_scalbn.c compiles to these bytes in 1.8.2, 1.9.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py); exercised 2026-11-10: called by the harness, scalbnf(1.5, 4) returned 24, scalbnf(24.0, -3) 3, scalbnf(1.0, 200) +infinity, scalbnf(-1.0, 200) -infinity and scalbnf(1.0, -200) 0
  * matched: source/newlib/libm/common/sf_scalbn.c (tools/match/match.py)
  */
 float scalbnf(float x, int n)
@@ -45,13 +45,12 @@ float scalbnf(float x, int n)
 }
 
 /* 0x0c159160  size 0x12  file by match with source
- * confidence: inferred
- * evidence: (x, n): returns scalbnf(x, n), the 32-bit-double entry point of newlib's sf_scalbn.c; nothing in the image calls it; part of newlib/libm/common/sf_scalbn.c
+ * confidence: exercised
+ * evidence: (x, n): returns scalbnf(x, n), the 32-bit-double entry point of newlib's sf_scalbn.c; nothing in the image calls it; part of newlib/libm/common/sf_scalbn.c; exercised 2026-11-10: called by the harness with x 1.5 and n 4 it returned 24 in fr0, with 24.0 and -3 3, and with 1.0 and 200 +infinity, each through one call of scalbnf(x, n)
  * matched: source/newlib/libm/common/sf_scalbn.c (tools/match/match.py)
  */
-void scalbn(int n, float x)
+float scalbn(float x, int n)
 {
-  scalbnf(x,n);
-  return;
+  return scalbnf(x,n);
 }
 

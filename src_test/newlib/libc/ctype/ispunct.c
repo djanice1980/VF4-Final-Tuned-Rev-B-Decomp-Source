@@ -8,7 +8,7 @@
 
 /* 0x0c085540  size 0x12  file by match with source
  * confidence: named
- * evidence: newlib's libc/ctype/ispunct.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0, 1.11.0, 1.12.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py)
+ * evidence: newlib's libc/ctype/ispunct.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0, 1.11.0, 1.12.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py); exercised 2026-11-10: called by the harness with '!' it returned 0x10 (the punctuation bit of ctype_table), and with 'a', ' ' and '5' 0
  * same code as main.bin 0c15d3e0 (ghidra/TransferFromMain.java)
  * matched: source/newlib/libc/ctype/ispunct.c (tools/match/match.py)
  */

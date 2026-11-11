@@ -23,9 +23,9 @@ int vsscanf(char *str, char *format, va_list ap)
 }
 
 /* 0x0c15d220  size 0x86  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x9c
- * evidence: (string, length in/out, format, va_list): as vsscanf over at most *length characters (the whole string when the pointer is NULL), storing back how many it consumed; callers sscanf_counted and strbuf_vscanf; part of libc/stdio/vsscanf.c
+ * evidence: (string, length in/out, format, va_list): as vsscanf over at most *length characters (the whole string when the pointer is NULL), storing back how many it consumed; callers sscanf_counted and strbuf_vscanf; part of libc/stdio/vsscanf.c; exercised 2026-11-10: called by the harness with the text "42 17 zz", the format "%d %d" and an argument list of two int addresses (the five words of this compiler's va_list on the stack): with a NULL length it stored 42 and 17 and returned 2; with the length word 2 it stored 42, left the second int untouched, returned 1 and left the length 2; with 4 it stored 42 and 1, returned 2, length 4; with 100 it stored 42 and 17, returned 2 and stored the length 5
  * matched: source/libc/stdio/vsscanf.c (tools/match/match.py)
  */
 int vsscanf_counted(char *str, uint *count, char *format, va_list ap)

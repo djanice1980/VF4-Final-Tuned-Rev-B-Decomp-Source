@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c15d480  size 0x22  file by match with source
- * confidence: inferred
- * evidence: (c): c + 0x20 when isupper(c), else c; nothing in the image calls it; same code as _tolower (0x0C15D500), see notes; part of newlib/libc/ctype/tolower.c
+ * confidence: exercised
+ * evidence: (c): c + 0x20 when isupper(c), else c; nothing in the image calls it; same code as _tolower (0x0C15D500), see notes; part of newlib/libc/ctype/tolower.c; exercised 2026-11-10: called by the harness with 'A' it returned 'a' (0x61), with 'Z' 'z' (0x7A), and with 'a', '5', '[' (0x5B) and '@' (0x40) the character unchanged
  * matched: source/newlib/libc/ctype/tolower.c (tools/match/match.py)
  */
 int tolower(int c)

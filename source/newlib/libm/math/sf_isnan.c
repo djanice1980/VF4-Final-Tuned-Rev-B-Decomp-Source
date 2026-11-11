@@ -17,8 +17,7 @@ int isnanf(float x)
   return (int)((uint)ix >> 31);
 }
 
-void isnan(float x)
+int isnan(float x)
 {
-  isnanf(x);
-  return;
+  return isnanf(x);
 }

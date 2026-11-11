@@ -376,7 +376,7 @@ void send_all_trees(deflate_state *s, int lcodes, int dcodes, int blcodes)
 /* 0x0c154b60  size 0x7e  file by match with source
  * confidence: named
  * extent: 0x8c
- * evidence: zlib 1.1.4 trees.c: calls copy_block
+ * evidence: zlib 1.1.4 trees.c: calls copy_block; exercised 2026-11-10: in one sandbox after deflateInit_(strm, 6, "1.1.4", 56) on a zeroed stream, _tr_stored_block(state, "ABCD", 4, 1) left pending_buf = 01 04 00 fb ff 41 42 43 44 and pending 9, and then (state, "XY", 2, 0) appended 00 02 00 fd ff 58 59 (pending 16), each through one call of copy_block
  * matched: source/zlib/trees.c (tools/match/match.py)
  */
 void _tr_stored_block(deflate_state *s, charf *buf, ulg stored_len, int eof)
@@ -388,7 +388,7 @@ void _tr_stored_block(deflate_state *s, charf *buf, ulg stored_len, int eof)
 /* 0x0c154c00  size 0x1f4  file by match with source
  * confidence: named
  * extent: 0x236
- * evidence: zlib 1.1.4 trees.c: calls bi_flush
+ * evidence: zlib 1.1.4 trees.c: calls bi_flush; exercised 2026-11-10: in one sandbox after deflateInit_(strm, 6, "1.1.4", 56) on a zeroed stream, four calls of _tr_align(state) left pending_buf = 02, then 02 08, then 02 08 20, then 02 08 20 80 00, with pending 1, 2, 3, 5 and bi_valid 2, 4, 6, 0, and last_eob_len 7 (8 before): the 10-bit empty static block each time, flushed by one call of bi_flush
  * matched: source/zlib/trees.c (tools/match/match.py)
  */
 void _tr_align(deflate_state *s)
@@ -444,7 +444,7 @@ void _tr_flush_block(deflate_state *s, charf *buf, ulg stored_len, int eof)
 /* 0x0c1550c0  size 0xc2  file by match with source
  * confidence: named
  * extent: 0xf6
- * evidence: zlib 1.1.4 trees.c: d_buf / l_buf / last_lit / matches / lit_bufsize at 0x169C/0x1690/0x1698/0x16A8/0x1694, _length_code and _dist_code; never called (deflate.c uses the _tr_tally_lit / _tr_tally_dist macros), so never disassembled until named here
+ * evidence: zlib 1.1.4 trees.c: d_buf / l_buf / last_lit / matches / lit_bufsize at 0x169C/0x1690/0x1698/0x16A8/0x1694, _length_code and _dist_code; never called (deflate.c uses the _tr_tally_lit / _tr_tally_dist macros), so never disassembled until named here; exercised 2026-11-10: in one sandbox after deflateInit_(strm, 6, "1.1.4", 56) on a zeroed stream: _tr_tally(state, 0, 0x41) returned 0 and left d_buf[0] = 0, l_buf[0] = 0x41, last_lit 1 and the count of dyn_ltree[0x41] 1; (state, 5, 10) left d_buf[1] = 5, l_buf[1] = 10, last_lit 2, matches 1 and the counts of dyn_ltree[266] and dyn_dtree[4] 1; (state, 300, 0) left d_buf[2] = 300, matches 2 and the counts of dyn_ltree[257] and dyn_dtree[16] 1. With last_lit poked to 0x3FFD (lit_bufsize 0x4000) a call returned 0 (last_lit 0x3FFE) and the next returned 1 (last_lit 0x3FFF)
  * matched: source/zlib/trees.c (tools/match/match.py)
  */
 int _tr_tally(deflate_state *s, unsigned dist, unsigned lc)
@@ -504,7 +504,7 @@ void compress_block(deflate_state *s, ct_data *ltree, ct_data *dtree)
 
 /* 0x0c155680  size 0x6a  file by match with source
  * confidence: named
- * evidence: zlib 1.1.4 trees.c: no calls; called by _tr_flush_block, whose test (the state's data_type == 2) never holds with the default allocator: the state comes zeroed from zcalloc and only this routine writes that byte, as zlib 1.1.4 and the game have it; seen live 2026-11-10: never hit while deflate ran
+ * evidence: zlib 1.1.4 trees.c: no calls; called by _tr_flush_block, whose test (the state's data_type == 2) never holds with the default allocator: the state comes zeroed from zcalloc and only this routine writes that byte, as zlib 1.1.4 and the game have it; seen live 2026-11-10: never hit while deflate ran; exercised 2026-11-10: in one sandbox after deflateInit_(strm, 6, "1.1.4", 56) on a zeroed stream and _tr_tally(state, 0, c) eight times with 'A' and twice with 0x80, set_data_type(state) set the state's data_type byte (+0x1C, 0 before) to 1 (text: 2 is not above 8 / 4); after one more tally of 0x80 it set it to 0 (binary: 3 is above 2); the method byte beside it stayed 8
  * matched: source/zlib/trees.c (tools/match/match.py)
  */
 void set_data_type(deflate_state *s)
@@ -548,7 +548,7 @@ uint bi_reverse(uint code, int len)
 /* 0x0c155740  size 0x68  file by match with source
  * confidence: named
  * extent: 0x74
- * evidence: zlib 1.1.4 trees.c: no calls; called by _tr_align
+ * evidence: zlib 1.1.4 trees.c: no calls; called by _tr_align; exercised 2026-11-10: in one sandbox after deflateInit_(strm, 6, "1.1.4", 56) on a zeroed stream: inside the harness's four calls of _tr_align(state) it was entered with bi_buf 0x0002 and 10 valid bits, 0x0008 and 12, 0x0020 and 14, 0x0080 and 16, and appended 02, 08, 20 and then the two bytes 80 00 to pending_buf, leaving bi_buf 0 and 2, 4, 6 and 0 valid bits; called by the harness directly after the first of them (2 valid bits) it stored nothing
  * matched: source/zlib/trees.c (tools/match/match.py)
  */
 void bi_flush(deflate_state *s)
@@ -585,7 +585,7 @@ void bi_windup(deflate_state *s)
 
 /* 0x0c155840  size 0x74  file by match with source
  * confidence: named
- * evidence: zlib 1.1.4 trees.c: calls bi_windup; last in trees.c
+ * evidence: zlib 1.1.4 trees.c: calls bi_windup; last in trees.c; exercised 2026-11-10: in one sandbox after deflateInit_(strm, 6, "1.1.4", 56) on a zeroed stream: copy_block(state, "WXYZ", 4, 1) left pending_buf = 04 00 fb ff 57 58 59 5a and pending 8; on a fresh state (state, "WXYZ", 3, 0) left 57 58 59 and pending 3; after one _tr_align (pending 02, 2 bits waiting, last_eob_len 7) copy_block(state, "WXYZ", 4, 1) left 02 00 04 00 fb ff 57 58 59 5a, pending 10, bi_valid 0 and last_eob_len 8 (one call of bi_windup each)
  * matched: source/zlib/trees.c (tools/match/match.py)
  */
 void copy_block(deflate_state *s, charf *buf, uint len, int header)

@@ -9,7 +9,7 @@
 /* 0x0c158f40  size 0x8c  file by match with source
  * confidence: named
  * extent: 0xcc
- * evidence: newlib's libm/math/sf_floor.c compiles to these bytes in 1.8.2, 1.9.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py)
+ * evidence: newlib's libm/math/sf_floor.c compiles to these bytes in 1.8.2, 1.9.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py); exercised 2026-11-10: called by the harness, floorf(2.5) returned 2, floorf(-2.5) -3, floorf(-0.5) -1, floorf(0.5) 0, floorf(7.0) 7 and floorf(-7.0) -7
  * matched: source/newlib/libm/math/sf_floor.c (tools/match/match.py)
  */
 float floorf(float x)
@@ -50,13 +50,12 @@ float floorf(float x)
 }
 
 /* 0x0c159040  size 0x12  file by match with source
- * confidence: inferred
- * evidence: (x): returns floorf(x), the 32-bit-double entry point of newlib's sf_floor.c; nothing in the image calls it; part of newlib/libm/math/sf_floor.c
+ * confidence: exercised
+ * evidence: (x): returns floorf(x), the 32-bit-double entry point of newlib's sf_floor.c; nothing in the image calls it; part of newlib/libm/math/sf_floor.c; exercised 2026-11-10: called by the harness, floor(2.5) returned 2 in fr0, floor(-2.5) -3 and floor(-0.5) -1, each through one call of floorf
  * matched: source/newlib/libm/math/sf_floor.c (tools/match/match.py)
  */
-void floor(float x)
+float floor(float x)
 {
-  floorf(x);
-  return;
+  return floorf(x);
 }
 

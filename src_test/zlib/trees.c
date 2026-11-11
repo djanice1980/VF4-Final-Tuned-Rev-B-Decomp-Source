@@ -489,7 +489,7 @@ void compress_block(deflate_state *s, ct_data *ltree, ct_data *dtree)
 
 /* 0x0c07f6c0  size 0x6a  file by match with source
  * confidence: named
- * evidence: zlib 1.1.4 trees.c: no calls; called by _tr_flush_block, whose test (the state's data_type == 2) never holds with the default allocator: the state comes zeroed from zcalloc and only this routine writes that byte, as zlib 1.1.4 and the game have it; seen live 2026-11-10: never hit while deflate ran
+ * evidence: zlib 1.1.4 trees.c: no calls; called by _tr_flush_block, whose test (the state's data_type == 2) never holds with the default allocator: the state comes zeroed from zcalloc and only this routine writes that byte, as zlib 1.1.4 and the game have it; seen live 2026-11-10: never hit while deflate ran; exercised 2026-11-10: in one sandbox after deflateInit_(strm, 6, "1.1.4", 56) on a zeroed stream and _tr_tally(state, 0, c) eight times with 'A' and twice with 0x80, set_data_type(state) set the state's data_type byte (+0x1C, 0 before) to 1 (text: 2 is not above 8 / 4); after one more tally of 0x80 it set it to 0 (binary: 3 is above 2); the method byte beside it stayed 8
  * same code as main.bin 0c155680 (ghidra/TransferFromMain.java)
  * matched: source/zlib/trees.c (tools/match/match.py)
  */
@@ -572,7 +572,7 @@ void bi_windup(deflate_state *s)
 
 /* 0x0c07f880  size 0x74  file by match with source
  * confidence: named
- * evidence: zlib 1.1.4 trees.c: calls bi_windup; last in trees.c
+ * evidence: zlib 1.1.4 trees.c: calls bi_windup; last in trees.c; exercised 2026-11-10: in one sandbox after deflateInit_(strm, 6, "1.1.4", 56) on a zeroed stream: copy_block(state, "WXYZ", 4, 1) left pending_buf = 04 00 fb ff 57 58 59 5a and pending 8; on a fresh state (state, "WXYZ", 3, 0) left 57 58 59 and pending 3; after one _tr_align (pending 02, 2 bits waiting, last_eob_len 7) copy_block(state, "WXYZ", 4, 1) left 02 00 04 00 fb ff 57 58 59 5a, pending 10, bi_valid 0 and last_eob_len 8 (one call of bi_windup each)
  * same code as main.bin 0c155840 (ghidra/TransferFromMain.java)
  * matched: source/zlib/trees.c (tools/match/match.py)
  */

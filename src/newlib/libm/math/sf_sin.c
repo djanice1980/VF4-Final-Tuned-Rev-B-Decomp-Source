@@ -9,7 +9,7 @@
 /* 0x0c157fe0  size 0x8e  file by match with source
  * confidence: named
  * extent: 0xf4
- * evidence: newlib's libm/math/sf_sin.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0, 1.11.0, 1.12.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py)
+ * evidence: newlib's libm/math/sf_sin.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0, 1.11.0, 1.12.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py); exercised 2026-11-10: called by the harness, sinf(-0.5) returned -0.4794255 and sinf(0.0) 0 (through __kernel_sinf alone), sinf(1.0) 0.8414710, sinf(3.0) 0.1411200 and sinf(100.0) -0.5063657 (through __ieee754_rem_pio2f first), and sinf(+infinity) a NaN
  * matched: source/newlib/libm/math/sf_sin.c (tools/match/match.py)
  */
 float sinf(float x)
@@ -34,8 +34,8 @@ float sinf(float x)
 }
 
 /* 0x0c158100  size 0x12  file by match with source
- * confidence: inferred
- * evidence: (x): returns sinf(x), the 32-bit-double entry point of newlib's sf_sin.c; caller item_pending_mark_draw; part of newlib/libm/math/sf_sin.c
+ * confidence: exercised
+ * evidence: (x): returns sinf(x), the 32-bit-double entry point of newlib's sf_sin.c; caller item_pending_mark_draw; part of newlib/libm/math/sf_sin.c; exercised 2026-11-10: called by the harness, sin(1.0) returned 0.8414710, sin(-0.5) -0.4794255, sin(3.0) 0.1411200 and sin(100.0) -0.5063657, each through one call of sinf
  * matched: source/newlib/libm/math/sf_sin.c (tools/match/match.py)
  */
 float sin(float x)

@@ -8,7 +8,7 @@
 
 /* 0x0c15d3a0  size 0x12  file by match with source
  * confidence: named
- * evidence: newlib's libc/ctype/isprint.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0, 1.11.0, 1.12.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py)
+ * evidence: newlib's libc/ctype/isprint.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0, 1.11.0, 1.12.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py); exercised 2026-11-10: called by the harness with '!' it returned 0x10, with 'a' 2, and with ' ' and 0x0A 0
  * matched: source/newlib/libc/ctype/isprint.c (tools/match/match.py)
  */
 int isgraph(int c)
@@ -18,7 +18,7 @@ int isgraph(int c)
 
 /* 0x0c15d3c0  size 0x12  file by match with source
  * confidence: named
- * evidence: newlib's libc/ctype/isprint.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0, 1.11.0, 1.12.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py)
+ * evidence: newlib's libc/ctype/isprint.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0, 1.11.0, 1.12.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py); exercised 2026-11-10: called by the harness with '!' it returned 0x10, with 'a' 2, with ' ' 0x80 (the blank bit, which isgraph leaves out) and with 0x0A 0
  * matched: source/newlib/libc/ctype/isprint.c (tools/match/match.py)
  */
 int isprint(int c)

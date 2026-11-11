@@ -7,9 +7,9 @@
 #include "vf4ft.h"
 
 /* 0x0c15d960  size 0x84  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x86
- * evidence: (character, string stream): pushes a character back: EOF fails; clears end of input; in the stream's own text when it is the character just read, else into a 4-byte push-back buffer in the stream (+0x24), saving the position and count (+0x14, +0x18); returns the character or -1; caller scanf_core; part of libc/stdio/ungetc.c
+ * evidence: (character, string stream): pushes a character back: EOF fails; clears end of input; in the stream's own text when it is the character just read, else into a 4-byte push-back buffer in the stream (+0x24), saving the position and count (+0x14, +0x18); returns the character or -1; caller scanf_core; part of libc/stdio/ungetc.c; exercised 2026-11-10: called by the harness with a stream record poked as vsscanf sets it (text "abcdef", position at text + 2, base at the text, count 4, size 6, flags 0x41, file byte 0xFF, no push-back): with 'b' (the character before the position) it returned 'b', stepped the position back to text + 1 and the count to 5 and left the push-back fields 0; with 'Q' it returned 'Q', put it in the last byte of the buffer (+0x27), set the position to that byte and the count to 1, saved text + 2 and 4 at +0x14 and +0x18 and set +0x1c to 4 and +0x20 to the buffer; with -1 it returned -1 and changed nothing; with the flags poked to 0x51 and 'b' it left them 0x41. Through the scanner (vsscanf_counted, length 100): "%i" on "0xz" stored the length 1 and "%d" on "-" the length 0, with one call of it each ('x' put back in the text, '-' into the buffer)
  * matched: source/libc/stdio/ungetc.c (tools/match/match.py)
  */
 int scan_stream_ungetc(int c, scan_stream_rec *stream)

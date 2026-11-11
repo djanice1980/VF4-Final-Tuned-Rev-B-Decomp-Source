@@ -7,9 +7,9 @@
 #include "vf4ft.h"
 
 /* 0x0c15d600  size 0x52  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x60
- * evidence: (n): 10 to the n as a float: pow10_small[n] for n below 5, else 10 x pow10_float(n - 1) for odd n and the square of pow10_float(n / 2) for even n; the shape of newlib's __exp10; caller strtod_scale (it calls itself); part of newlib/libc/stdlib/__exp10.c
+ * evidence: (n): 10 to the n as a float: pow10_small[n] for n below 5, else 10 x pow10_float(n - 1) for odd n and the square of pow10_float(n / 2) for even n; the shape of newlib's __exp10; caller strtod_scale (it calls itself); part of newlib/libc/stdlib/__exp10.c; exercised 2026-11-10: called by the harness with 0 it returned 1, with 3 1000 and with 4 10000 (pow10_small[0], [3] and [4], no call of itself), with 5 100000 (one call of itself with 4), with 7 1e7 (itself with 6, that one twice with 3), with 10 1e10 (itself twice with 5) and with 38 1e38
  * matched: source/newlib/libc/stdlib/__exp10.c (tools/match/match.py)
  */
 float pow10_float(uint exponent)

@@ -81,7 +81,7 @@ types)
     python3 -I "$root/tools/mode_table.py" "$root/work/main.bin" "$root"
     # mode_table.py writes ghidra/symbols/gen_mode.tsv afresh, without the
     # live observations of its rows: put them back from the verdicts
-    python3 -I "$root/tools/observe_apply.py" "$root/ghidra/live_verdicts.tsv" > /dev/null
+    python3 -I "$root/tools/observe_apply.py" "$root/ghidra/live_verdicts.tsv" "$root/ghidra/exercise_verdicts.tsv" > /dev/null
     hl_run "${proj[@]}" -process main.bin -noanalysis "${common[@]}" -postScript ApplyTypes.java \
         -postScript AssignAggregates.java -postScript AssignPointers.java -postScript AssignFloats.java -postScript AssignSigns.java ;;
 prototypes)

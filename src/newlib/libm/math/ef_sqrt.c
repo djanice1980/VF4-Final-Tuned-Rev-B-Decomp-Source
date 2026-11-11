@@ -9,7 +9,7 @@
 /* 0x0c1587a0  size 0xb4  file by match with source
  * confidence: named
  * extent: 0xbc
- * evidence: newlib's libm/math/ef_sqrt.c compiles to these bytes in 1.8.2, 1.9.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py)
+ * evidence: newlib's libm/math/ef_sqrt.c compiles to these bytes in 1.8.2, 1.9.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py); exercised 2026-11-10: called by the harness with 2.0 it returned 1.4142135, with 9.0 3, with 0.25 0.5, with 0.0 0 and with -1.0 a NaN
  * matched: source/newlib/libm/math/ef_sqrt.c (tools/match/match.py)
  */
 float __ieee754_sqrtf(float x)

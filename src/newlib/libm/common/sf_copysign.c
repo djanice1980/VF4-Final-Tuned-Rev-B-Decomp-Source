@@ -8,7 +8,7 @@
 
 /* 0x0c159180  size 0x20  file by match with source
  * confidence: named
- * evidence: newlib's libm/common/sf_copysign.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0, 1.11.0, 1.12.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py)
+ * evidence: newlib's libm/common/sf_copysign.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0, 1.11.0, 1.12.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py); exercised 2026-11-10: called by the harness, copysignf(3.0, -1.0) returned -3, copysignf(-3.0, 2.0) 3, copysignf(3.0, 2.0) 3 and copysignf(-3.0, -0.5) -3
  * matched: source/newlib/libm/common/sf_copysign.c (tools/match/match.py)
  */
 float copysignf(float x, float y)
@@ -21,13 +21,12 @@ float copysignf(float x, float y)
 }
 
 /* 0x0c1591c0  size 0x12  file by match with source
- * confidence: inferred
- * evidence: (x, y): returns copysignf(x, y), the 32-bit-double entry point of newlib's sf_copysign.c; nothing in the image calls it; part of newlib/libm/common/sf_copysign.c
+ * confidence: exercised
+ * evidence: (x, y): returns copysignf(x, y), the 32-bit-double entry point of newlib's sf_copysign.c; nothing in the image calls it; part of newlib/libm/common/sf_copysign.c; exercised 2026-11-10: called by the harness, copysign(3.0, -1.0) returned -3 in fr0, copysign(-3.0, 2.0) 3 and copysign(3.0, 2.0) 3, each through one call of copysignf
  * matched: source/newlib/libm/common/sf_copysign.c (tools/match/match.py)
  */
-void copysign(float x, float y)
+float copysign(float x, float y)
 {
-  copysignf(x,y);
-  return;
+  return copysignf(x,y);
 }
 

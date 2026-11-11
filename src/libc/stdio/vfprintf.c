@@ -219,9 +219,9 @@ char * printf_digits_round(float fract, int *exponent, char *start, char *end, i
 }
 
 /* 0x0c15b520  size 0x8a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x98
- * evidence: (output, exponent, 'e' or 'E'): writes the exponent letter, its sign and at least two digits, returning the end; the exponent() of the 4.3BSD vfprintf; caller printf_float_digits; part of libc/stdio/vfprintf.c
+ * evidence: (output, exponent, 'e' or 'E'): writes the exponent letter, its sign and at least two digits, returning the end; the exponent() of the 4.3BSD vfprintf; caller printf_float_digits; part of libc/stdio/vfprintf.c; exercised 2026-11-10: called by the harness with a buffer, the exponent 5 and 'e' it wrote "e+05" and returned the buffer + 4; with -123 and 'E' it wrote "E-123" and returned the buffer + 5; with 12 and 'e' "e+12"; with 0 and 'e' "e+00"
  * matched: source/libc/stdio/vfprintf.c (tools/match/match.py)
  */
 char * printf_exponent_put(char *dst, int exponent, int conv)

@@ -9,7 +9,7 @@
 /* 0x0c158500  size 0x20e  file by match with source
  * confidence: named
  * extent: 0x250
- * evidence: newlib's libm/math/ef_rem_pio2.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0, 1.11.0, 1.12.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py)
+ * evidence: newlib's libm/math/ef_rem_pio2.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0, 1.11.0, 1.12.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py); exercised 2026-11-10: called by the harness with a two-float buffer and the value 0.5 it returned 0 and stored 0.5 and 0; with 1.0 it returned 1 and stored -0.5707963 (1 - pi/2); with 3.0 and -3.0 it returned 2 and -2 and stored -0.1415927 and +0.1415927 (3 - pi); with 100.0 it returned 64 and stored -0.5309649 (100 - 32 pi); with 1000.0 and -1000.0 (through __kernel_rem_pio2f with e0 2, nx 1, prec 2 and inv_half_pi_bytes) it returned 5 and -5 (637 mod 8) and stored -0.5972602 and +0.5972602; its third float argument changed nothing (123.0 for 0.0)
  * matched: source/newlib/libm/math/ef_rem_pio2.c (tools/match/match.py)
  */
 int __ieee754_rem_pio2f(float *out, float value, float unused)

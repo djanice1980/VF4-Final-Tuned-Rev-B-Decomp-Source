@@ -7,9 +7,9 @@
 #include "vf4ft.h"
 
 /* 0x0c157ea0  size 0x8e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x90
- * evidence: (x): __ieee754_asinf(x); when |x| > 1 and the error mode math_error_mode is not -1, sets lib_errno to 33 (directly in mode 2, else unless matherr handles it) with the binary's error name "asinf" and returns 0; the shape of newlib's math/wf_asin.c; callers performance_update (the PERFORMANCE window's timing loop) and asin; part of newlib/libm/math/wf_asin.c
+ * evidence: (x): __ieee754_asinf(x); when |x| > 1 and the error mode math_error_mode is not -1, sets lib_errno to 33 (directly in mode 2, else unless matherr handles it) with the binary's error name "asinf" and returns 0; the shape of newlib's math/wf_asin.c; callers performance_update (the PERFORMANCE window's timing loop) and asin; part of newlib/libm/math/wf_asin.c; exercised 2026-11-10: called by the harness, asinf(0.5) returned 0.5235989, asinf(-1.0) -1.5707964 and asinf(0.3) 0.3046927; with math_error_mode 1 as the snapshot has it asinf(2.0) returned 0 and left lib_errno (0 before) at 33 after one call of matherr; with math_error_mode poked to 2 asinf(-1.5) returned 0 with lib_errno 33 and no call of matherr; with it poked to -1 asinf(2.0) returned the NaN of __ieee754_asinf and lib_errno stayed 0
  * matched: source/newlib/libm/math/wf_asin.c (tools/match/match.py)
  */
 float asinf(float x)
@@ -37,12 +37,12 @@ float asinf(float x)
 }
 
 /* 0x0c157f60  size 0x12  file by match with source
- * confidence: inferred
- * evidence: (x): returns asinf(x): with 32-bit doubles (-m4-single-only) the double entry point only forwards, as newlib's wf_asin.c does under its 32-bit-double case; nothing in the image calls it; part of newlib/libm/math/wf_asin.c
+ * confidence: exercised
+ * evidence: (x): returns asinf(x): with 32-bit doubles (-m4-single-only) the double entry point only forwards, as newlib's wf_asin.c does under its 32-bit-double case; nothing in the image calls it; part of newlib/libm/math/wf_asin.c; exercised 2026-11-10: called by the harness, asin(0.5) returned 0.5235989 and asin(-1.0) -1.5707964 in fr0, and asin(2.0) returned 0 and left lib_errno (0 before) at 33, each through one call of asinf with the same argument
  * matched: source/newlib/libm/math/wf_asin.c (tools/match/match.py)
  */
-void asin(float x)
+float asin(float x)
 {
-  ((void (*)(float))asinf)(x);
+  return asinf(x);
 }
 

@@ -34,7 +34,7 @@ float asinf(float x)
     return z;
 }
 
-void asin(float x)
+float asin(float x)
 {
-  ((void (*)(float))asinf)(x);
+  return asinf(x);
 }

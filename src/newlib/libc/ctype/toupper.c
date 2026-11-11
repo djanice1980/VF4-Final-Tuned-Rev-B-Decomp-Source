@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c15d4c0  size 0x22  file by match with source
- * confidence: inferred
- * evidence: (c): c - 0x20 when islower(c), else c; nothing in the image calls it; same code as _toupper (0x0C15D540); part of newlib/libc/ctype/toupper.c
+ * confidence: exercised
+ * evidence: (c): c - 0x20 when islower(c), else c; nothing in the image calls it; same code as _toupper (0x0C15D540); part of newlib/libc/ctype/toupper.c; exercised 2026-11-10: called by the harness with 'a' it returned 'A' (0x41), with 'z' 'Z' (0x5A), and with 'A', '5', '{' (0x7B) and '`' (0x60) the character unchanged
  * matched: source/newlib/libc/ctype/toupper.c (tools/match/match.py)
  */
 int toupper(int c)

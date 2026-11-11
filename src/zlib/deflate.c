@@ -100,7 +100,7 @@ int deflateInit2_(z_streamp strm, int level, int method, int windowBits, int mem
 /* 0x0c152380  size 0xd8  file by match with source
  * confidence: named
  * extent: 0xe2
- * evidence: zlib 1.1.4 deflate.c: calls adler32 and zmemcpy; first in deflate.c after the init functions
+ * evidence: zlib 1.1.4 deflate.c: calls adler32 and zmemcpy; first in deflate.c after the init functions; exercised 2026-11-10: in one sandbox after deflateInit_(strm, 6, "1.1.4", 56) on a zeroed stream, deflateSetDictionary(strm, "hello hello world", 17) returned 0, left the stream's adler at 0x3AA80691 (the Adler-32 of the 17 bytes, by one call of adler32), the text at the start of the window (one memcpy) and strstart and block_start at 17; with "hi" and 2 it returned 0 with adler 0x013B00D2 and left the window and strstart untouched; with a NULL stream or a NULL dictionary it returned -2; after a call of deflate (next_out poked to a buffer, avail_out 100) had moved the status from 42 to 113 it returned -2 and left adler unchanged
  * matched: source/zlib/deflate.c (tools/match/match.py)
  */
 int deflateSetDictionary(z_streamp strm, const Bytef *dictionary, uInt dictLength)
@@ -165,7 +165,7 @@ int deflateReset(z_streamp strm)
 /* 0x0c152520  size 0xc2  file by match with source
  * confidence: named
  * extent: 0xde
- * evidence: zlib 1.1.4 deflate.c: calls deflate(strm, Z_PARTIAL_FLUSH) when the compress function changes
+ * evidence: zlib 1.1.4 deflate.c: calls deflate(strm, Z_PARTIAL_FLUSH) when the compress function changes; exercised 2026-11-10: in one sandbox after deflateInit_(strm, 6, "1.1.4", 56) on a zeroed stream (chain 128, lazy 16, good 8, nice 128), deflateParams(strm, 9, 0) returned 0 and left level 9, chain 4096, lazy 258, good 32, nice 258; then (1, 2) left level 1, strategy 2, chain 4, lazy 4, good 4, nice 8 (the rows of configuration_table); (10, 0) and (3, 3) returned -2 and changed nothing; (-1, 1) left level 6 and strategy 1. With 40 bytes 'a' taken in by deflate(strm, 0) (total_in 40, total_out 2), deflateParams(strm, 9, 0) called nothing and total_out stayed 2, while (strm, 1, 0), which changes deflate_slow for deflate_fast, called deflate once and total_out became 8: 78 9c 4a 4c 24 0e 00 04, which inflates back to the 40 bytes
  * matched: source/zlib/deflate.c (tools/match/match.py)
  */
 int deflateParams(z_streamp strm, int level, int strategy)
@@ -353,7 +353,7 @@ int deflateEnd(z_streamp strm)
 /* 0x0c152a40  size 0x156  file by match with source
  * confidence: named
  * extent: 0x17e
- * evidence: zlib 1.1.4 deflate.c: struct copies of the stream and state (libgcc block move), zmemcpy of window, prev, head and pending_buf, deflateEnd on failure
+ * evidence: zlib 1.1.4 deflate.c: struct copies of the stream and state (libgcc block move), zmemcpy of window, prev, head and pending_buf, deflateEnd on failure; exercised 2026-11-10: in one sandbox after deflateInit_(strm, 6, "1.1.4", 56) on a zeroed stream and deflateSetDictionary(strm, "hello hello world", 17), deflateCopy(dest, strm) returned 0: dest's 56 bytes equaled the source's but for the state pointer; the new state had strm = dest, status 42, strstart 17, a window of its own that held the text, pending_out at its own pending_buf and d_buf and l_buf at that buffer + 0x4000 and + 0xC000 (five calls of zcalloc, four of memcpy); the source state still pointed at the source stream and its own buffers. With a zeroed source stream (no state) or a NULL dest it returned -2
  * matched: source/zlib/deflate.c (tools/match/match.py)
  */
 int deflateCopy(z_streamp dest, z_streamp source)
@@ -569,7 +569,7 @@ void fill_window(deflate_state *s)
 /* 0x0c153040  size 0x17c  file by match with source
  * confidence: named
  * extent: 0x196
- * evidence: zlib 1.1.4 deflate.c: configuration_table[0].func; fill_window, _tr_flush_block, flush_pending
+ * evidence: zlib 1.1.4 deflate.c: configuration_table[0].func; fill_window, _tr_flush_block, flush_pending; exercised 2026-11-10: in one sandbox after deflateInit_(strm, 0, "1.1.4", 56) on a zeroed stream with next_in poked to the 5 bytes "HELLO", avail_in 5, next_out to a buffer and avail_out 100: deflate_stored(state, 4) returned 3, wrote 01 05 00 fa ff 48 45 4c 4c 4f, left avail_out 90, total_out 10, avail_in 0, total_in 5 and adler 0x044C0175 (fill_window, _tr_flush_block, flush_pending); with flush 0 it returned 0, wrote nothing and had the 5 bytes in the window (strstart 5); with flush 4 and avail_out 4 it returned 2, wrote 01 05 00 fa and left 6 bytes pending
  * matched: source/zlib/deflate.c (tools/match/match.py)
  */
 block_state deflate_stored(deflate_state *s, int flush)
@@ -617,7 +617,7 @@ block_state deflate_stored(deflate_state *s, int flush)
 /* 0x0c153200  size 0x31c  file by match with source
  * confidence: named
  * extent: 0x3be
- * evidence: zlib 1.1.4 deflate.c: configuration_table[1-3].func; longest_match, fill_window, _tr_flush_block, flush_pending
+ * evidence: zlib 1.1.4 deflate.c: configuration_table[1-3].func; longest_match, fill_window, _tr_flush_block, flush_pending; exercised 2026-11-10: in one sandbox after deflateInit_(strm, 1, "1.1.4", 56) on a zeroed stream with next_in poked to "abc" ten times (30 bytes), avail_in 30, next_out to a buffer and avail_out 100: deflate_fast(state, 4) returned 3 and wrote the 7 bytes 4b 4c 4a 4e c4 8d 00, a final block that inflates back to the 30 bytes (avail_in 0, total_in 30, total_out 7; fill_window, longest_match, _tr_flush_block, flush_pending); with flush 0 it returned 0 and wrote nothing
  * matched: source/zlib/deflate.c (tools/match/match.py)
  */
 block_state deflate_fast(deflate_state *s, int flush)

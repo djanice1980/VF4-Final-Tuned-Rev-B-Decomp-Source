@@ -8,7 +8,7 @@
 
 /* 0x0c15d5e0  size 0x1c  file by match with source
  * confidence: named
- * evidence: newlib's libc/stdlib/__ten_mu.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0, 1.11.0, 1.12.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py)
+ * evidence: newlib's libc/stdlib/__ten_mu.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0, 1.11.0, 1.12.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py); exercised 2026-11-10: called by the harness with a float 12.0 and the digit 3 it left 123.0 in the float and returned 0, and with 0.5 and 9 it left 14.0
  * matched: source/newlib/libc/stdlib/__ten_mu.c (tools/match/match.py)
  */
 int __ten_mul(float *acc, int digit)

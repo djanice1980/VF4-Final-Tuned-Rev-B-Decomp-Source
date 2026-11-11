@@ -8,7 +8,7 @@
 
 /* 0x0c0854c0  size 0x12  file by match with source
  * confidence: named
- * evidence: newlib's libc/ctype/isalnum.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0, 1.11.0, 1.12.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py)
+ * evidence: newlib's libc/ctype/isalnum.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0, 1.11.0, 1.12.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py); exercised 2026-11-10: called by the harness with '5' it returned 4, with 'a' 2, with 'A' 1 (the digit, lower and upper bits of ctype_table), and with '!' and ' ' 0
  * same code as main.bin 0c15d360 (ghidra/TransferFromMain.java)
  * matched: source/newlib/libc/ctype/isalnum.c (tools/match/match.py)
  */

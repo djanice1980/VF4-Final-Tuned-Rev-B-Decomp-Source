@@ -114,7 +114,7 @@ sure we are of it:
 
 ```c
 /* 0x0C0A1234  libbase/src/mode.c
- * confidence: named   (named | observed | inferred | placeholder)
+ * confidence: named   (named | observed | exercised | inferred | placeholder)
  * Switches the top-level game mode; called from the main loop.
  */
 ```
@@ -123,6 +123,12 @@ sure we are of it:
 - **observed**: the name comes from analysis, and a logged run of the game
   bore out what the description says; the comment ends with what was seen
   (`observed live <date>: ...`). See `docs/live_observation.md`.
+- **exercised**: the name comes from analysis, the game never runs the
+  routine, and calling it in a harness with inputs chosen from the
+  description gave the results the description predicts
+  (`exercised <date>: ...` says what went in and what came out). This
+  tests the description against the code; it says nothing about how or
+  whether the game would use the routine.
 - **inferred**: the name comes from analysis; the evidence is in the comment.
 - **placeholder**: `FUN_0c0a1234`-style, not yet understood.
 

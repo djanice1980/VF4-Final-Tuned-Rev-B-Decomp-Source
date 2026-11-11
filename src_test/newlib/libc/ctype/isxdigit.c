@@ -8,7 +8,7 @@
 
 /* 0x0c085580  size 0x12  file by match with source
  * confidence: named
- * evidence: newlib's libc/ctype/isxdigit.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0, 1.11.0, 1.12.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py)
+ * evidence: newlib's libc/ctype/isxdigit.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0, 1.11.0, 1.12.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py); exercised 2026-11-10: called by the harness with 'f' and 'F' it returned 0x40 (the hex bit of ctype_table), with '7' 4 (the digit bit), and with 'g' and '!' 0
  * same code as main.bin 0c15d420 (ghidra/TransferFromMain.java)
  * matched: source/newlib/libc/ctype/isxdigit.c (tools/match/match.py)
  */

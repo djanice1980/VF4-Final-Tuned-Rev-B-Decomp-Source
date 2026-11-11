@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c15d580  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (string): strtod(string, 0), the float in fr0; newlib's atof and atoff compile to this same code; caller scanf_core (the float conversions); part of newlib/libc/stdlib/atof.c
+ * confidence: exercised
+ * evidence: (string): strtod(string, 0), the float in fr0; newlib's atof and atoff compile to this same code; caller scanf_core (the float conversions); part of newlib/libc/stdlib/atof.c; exercised 2026-11-10: called by the harness with the text "3.25" it returned 3.25 in fr0, with "-125e-1" -12.5, with " 42" 42 and with "abc" 0, each through one call of strtod
  * matched: source/newlib/libc/stdlib/atof.c (tools/match/match.py)
  */
 float atof(char *str)

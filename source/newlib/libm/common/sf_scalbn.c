@@ -38,8 +38,7 @@ float scalbnf(float x, int n)
   return x * 2.9802322388e-08f;
 }
 
-void scalbn(int n, float x)
+float scalbn(float x, int n)
 {
-  scalbnf(x,n);
-  return;
+  return scalbnf(x,n);
 }
