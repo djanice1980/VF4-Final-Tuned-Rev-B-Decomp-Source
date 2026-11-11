@@ -1,0 +1,4 @@
+address	count	stride	name	evidence
+0c1746d4	52	4	move_commands	move_start (0x0C0659E0) calls entry [cmd] for each { arg, cmd } of a move record's +0x08 list
+0c1747a4	46	4	move_timed_commands	0x0C067680 calls entry [cmd] for each { s16 *frame, cmd } of the +0x0C list once the move reaches the frame
+0c29f6cc	80	8	move_script_ops	move_script_exec (0x0C05E760) calls entry [opcode] for each opcode below 0x50 of a move script; each entry is { handler, instruction size }

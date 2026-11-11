@@ -1,0 +1,18 @@
+work/
+build/
+*.bin
+*.dec
+*.chd
+*.pic
+*.gdi
+*.raw
+*.gpr
+*.rep/
+*.sla
+__pycache__/
+private/
+# run logs of the Ghidra passes: what a pass did to this project this time
+ghidra/prototypes.tsv
+ghidra/returns.tsv
+ghidra/signs.tsv
+ghidra/signs_words.tsv

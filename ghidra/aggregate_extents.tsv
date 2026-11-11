@@ -1,0 +1,7 @@
+address	size	evidence
+0c41e010	0x514	gfx_state's own pool word and the GCC split bases from it (+0x7c .. +0x4fc) reach +0x000 .. +0x510 and nothing past it; 0c41e524 (lib_info), 0c41e538 (short_line_timing) and 0c41e53c (render_stats) are reached only from pool words of their own (build/structs/nn2/gfx_reach.py, 2026-11-04); before that this row said 0x580 from the split bases, the last of which, 0c41e58c, is bank_build_index's own address
+0c41fc50	0x130	split bases at +0x7c, +0xbc and +0xfc (0c41fccc, 0c41fd0c, 0c41fd4c; 33 loads); the last piece (52 bytes) ends at +0x130; the pool words past it are plain addresses, and 0c41fd98 (+0x148) is not a split base
+0c450f24	0x164	split bases at +0xbc, +0xfc and +0x13c (0c450fe0, 0c451020, 0c451060; 57 loads); the last piece (36 bytes) ends at +0x160; FUN_0c0a7b20 clears 0x164 bytes from the start and FUN_0c0a8220 reads the char flag at +0x160 (0c451084, also loaded on its own) through the object (w564; header pass 4)
+0c37d804	0x44	DAT_0c37d844 is its field at +0x40: 0c07bc40 reaches it from the object's base (round K 198); no matched code names DAT_0c37d844
+0c3d7828	0x70	a 0x18 header and two 44-byte entries (round L 209: 0c0f0000 matches through a padded struct over it); DAT_0c3d7840..788c are its fields; no matched code names them
+0c3744e8	0x32d4	the backup image, copied as one block by user_back_reset and stored as one by user_back_flush; its own pool word reaches +0x23c2 and the bases at +0xb3c .. +0x243c are GCC split bases ((offset + 4) % 64 == 0); 2026-11-04 (build/structs/nn2/ub_flatten.py)

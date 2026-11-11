@@ -1,0 +1,1805 @@
+test address	main address	name	what
+0c048ea0	0c110a60	irq_render_done_relay	same code, name
+0c32bcec	0c3e0370	irq_last_event	global
+0c3b3880	0c5cab34	irq_slot_fns	global
+0c05b0a0	0c130920	render_config_flag20_off	same code, name
+0c0588c0	0c12d100	xmtrx_from_3x3_packed	same code, name, signature
+0c06b1e0	0c1411a0	fb_regs_reload_blanked	same code, name
+0c081060	0c157020	inflate_trees_bits	same code, name, signature
+0c032b40	0c11ebc0	http_reply_is_packed	same code, name
+0c048490	0c10d170	bump_tri_classify	same code, name, signature
+0c045c50	0c10a930	intensity_strip_send	same code, name, signature
+0c071940	0c147900	fog_regs_defaults	same code, name
+0c0696e0	0c13f6a0	listbuf_list_put_word	same code, name
+0c343fa4	0c41df8c	list_cursor_slot	global
+0c343fa0	0c41df88	list_write_ptrs	global
+0c02b7a0	0c0f6720	naominet_begin	same code, name
+0c3a8840	0c5c3c98	naominet_status	global
+0c04c520	0c117400	eeprom_save_read_copy_b	same code, name
+0c059060	0c12d8a0	vec3_weighted_sum	same code, name, signature
+0c062860	0c138de0	irq_stack_switch	same code, name
+0c09942c	0c32a744	irq_stack_in_use	global
+0c099434	0c32a74c	irq_stack_before	global
+0c059ba0	0c12f420	tex_builtin_bits_into_poly_hdr	same code, name
+0c3b8f04	0c5d4878	tex_fallback_slot	global
+0c033660	0c129120	frame_end_with_targets	same code, name
+0c341b18	0c41bb00	render_busy_flag	global
+0c327b60	0c3dc1b0	last_link_cmd	global
+0c327b88	0c3dc1ec	list_end_extra_mask	global
+0c044cd8	0c1099b8	float_colour_vtx_keep_spec	same code, name, signature
+0c0591a0	0c12d9e0	vec3_length	same code, name
+0c031220	0c11d2a0	ipv4_dotted_format	same code, name
+0c0353a0	0c12bec0	write_ptrs_restore	same code, name
+0c0945b4	0c32a520	write_ptrs_saved	global
+0c327024	0c4174a4	write_ptrs_save	global
+0c0357c0	0c127ac0	list_area_lay_out	same code, name
+0c05cb80	0c132400	text_cell_size_set	same code, name
+0c33dcf8	0c417ce0	text_cell_w	global
+0c33dae8	0c417ad0	text_cell_h	global
+0c049140	0c110d00	irq_slots_install_naomi	same code, name
+0c060480	0c136020	cache_turn_off	same code, name
+ff00001c	ff00001c	cache_control_reg	global
+0c049420	0c110fe0	intc_ipr_level_write	same code, name
+0c094894	0c325a94	irq_ipr_fields	global
+0c05ea80	0c134620	mtx_save_proj_view_x_current	same code, name
+0c342878	0c41c860	mtx_stack_records	global
+0c342a40	0c41ca28	proj_x_model_matrix	global
+0c039e20	0c1018c0	modvol_mode_two_volume	same code, name
+0c327b2c	0c3dc17c	modvol_two_volume	global
+0c06bc60	0c141c20	bg_plane_context_store	same code, name
+0c059540	0c12edc0	texidx_slot_overwrite_from_list	same code, name
+0c05c9e0	0c132260	text_glyph_quad_emit	same code, name
+0c0992ac	0c32a5c0	text_depth	global
+0c0992a8	0c32a5bc	text_rotated	global
+0c3b902c	0c5d49a0	text_glyph_u_table	global
+0c082a00	0c159620	memcpy	same code, name, signature
+0c043c00	0c1088e0	modvol_kept_swap	same code, name, signature
+0c068b80	0c13eb40	strip_hdr_ctrl_bits18_set	same code, name
+0c05a900	0c130180	pcw_user_clip_mode_put	same code, name
+0c33e470	0c418458	vertex_buffer_desc	global
+0c081fa0	0c1592a0	__fixunssfsi	same code, name
+0c05dde0	0c133800	mtx_mul_eye_target_up_flip	same code, name
+0c0689c0	0c13e980	strip_hdr_tex_filter_set	same code, name
+0c03f460	0c104140	obj_put_second_path	same code, name
+0c342970	0c41c958	rect_x_proj_work	global
+0c33dd30	0c417d18	obj_send_header	global
+0c049b60	0c114a40	mie_send_no_data	same code, name
+0c32d6b8	0c3e1d3c	maple_reply	global
+0c32be00	0c3e0484	maple_frame	global
+0c32d508	0c3e1b8c	maple_reply_addr	global
+0c32cb38	0c3e11bc	maple_frame_cursor	global
+0c32d6bc	0c3e1d40	maple_frame_addr	global
+0c049260	0c110e20	irq_tex_overflow_fn_store	same code, name
+0c04c920	0c117800	bios_helper_2c	same code, name
+0c32c934	0c3e0fb8	bios_helper_table	global
+0c06c880	0c142840	surface_memory_return_by_kind	same code, name
+0c027c80	0c08d720	card_format_get	same code, name
+0c06c4a0	0c142460	surface_indexed_piece_to_vram	same code, name
+0c083b40	0c15a840	strncpy	same code, name, signature
+0c06c140	0c142100	pvr_text_ctrl_stride_put	same code, name
+0c036d40	0c129040	bank_ring_replay	same code, name
+0c3273cc	0c415b7c	bank_ring	global
+0c327aac	0c41625c	bank_ring_last	global
+0c344a04	0c41e9ec	bank_render_index	global
+0c3445ac	0c41e594	list_banks	global
+0c3449ec	0c41e9d4	xfer_pending	global
+0c05cb60	0c1323e0	text_flag_bit0_clear	same code, name
+0c0637c0	0c139780	copy_by_pairs_or_words	same code, name
+0c059110	0c12d950	vec3_cross_length	same code, name
+0c037e60	0c0fe940	model_draw_opaque_part	same code, name
+0c0591c0	0c12da00	vec3_sub_from	same code, name, signature
+0c05ad60	0c1305e0	stall_limits_vertex_only	same code, name
+0c0637a0	0c139760	g2_fifo_idle_flag	same code, name
+a05f688c	a05f688c	holly_fifo_status_reg	global
+0c03ac40	0c0fc720	elan_ram_top_reset	same code, name
+0c327b5c	0c3dc1ac	elan_ram_top_after_lists2	global
+0c327b30	0c3dc180	elan_ram_top_after_lists	global
+0c327afc	0c3dc14c	elan_ram_top	global
+0c04c400	0c1172e0	eeprom_save_write_copies	same code, name
+0c3b3a28	0c5cafb8	eeprom_save_buffer	global
+0c3b3a30	0c5cafc0	eeprom_save_padded_size	global
+0c029ac0	0c0f2280	vec_to_local	same code, name
+0c3533f8	0c55dc28	vec_to_local_mtx	global
+0c028d00	0c07fae0	net_log_save	same code, name
+0c04e0c0	0c118fa0	settings_to_eeprom	same code, name
+0c32bcf4	0c3e0378	board_settings	global
+0c32d534	0c3e1bb8	eeprom_board_config	global
+0c32e4c8	0c3e2b4c	coin_settings	global
+0c32d6c4	0c3e1d48	eeprom_coin_config	global
+0c036920	0c128c20	bank_ring_open_next	same code, name
+0c0945e4	0c32a498	bank_ring_index	global
+0c3445a4	0c41e58c	bank_build_index	global
+0c05a7a0	0c130020	vo_border_write_opaque	same code, name
+0c037f60	0c0fea40	model_draw_all_as_translucent	same code, name
+0c341b5c	0c41bb44	poly_header_or_words	global
+0c33dad8	0c417ac0	blend_pair_bits	global
+0c0524c0	0c11fcc0	ctl_request_write_text	same code, name
+0c04d780	0c118660	ledger_to_sram	same code, name
+0c32bd08	0c3e038c	credit_ledger	global
+0c32d6e8	0c3e1d6c	sram_ledger_bank	global
+0c04ca80	0c117960	bios_helper_04	same code, name
+0c02f080	0c0fa000	http_client_body_read_rest	same code, name
+0c04c060	0c116f40	sram_save_store_range	same code, name
+0c3b3a18	0c5cafa8	sram_save_padded_size	global
+0c3b3a10	0c5cafa0	sram_save_buffer	global
+0c3b39f0	0c5caf80	sram_save_header_a	global
+0c3b3a14	0c5cafa4	sram_save_size	global
+0c3b3a00	0c5caf90	sram_save_header_b	global
+0c04c7e0	0c1176c0	bios_coin_config_check	same code, name
+0c062d40	0c1391e0	g2_subsystem_start	same code, name
+0c09943c	0c32a750	g2_version_text	global
+0c099438	0c32a710	g2_state	global
+0c000000	0c000000	main_ram_first_byte	global
+0cffffff	0cffffff	main_ram_last_byte	global
+0c343e70	0c41ddf4	g2dma_all_suspended	global
+0c0710c0	0c147080	vram64_to_32_offset	same code, name
+0c07f740	0c155700	bi_reverse	same code, name, signature
+0c05c300	0c131b80	float_round_away	same code, name
+0c05a2e0	0c12fb60	bg_plane_context_defaults	same code, name
+0c063680	0c139180	g2_fifo_spin_until_idle	same code, name
+0c058fe0	0c12d820	mtx_load_identity	same code, name
+0c05bea0	0c131720	exp_float	same code, name
+0c02df20	0c0f8ea0	http_client_header_add	same code, name
+0c0943e4	0c325564	http_client_header_names	global
+0c07cca0	0c152c60	lm_init	same code, name, signature
+0c08c4c8	0c217088	configuration_table	global
+0c04bc00	0c116ae0	g1_dma_ack_if_idle	same code, name
+a05f7418	a05f7418	g1_dma_status_reg	global
+a05f700c	a05f700c	cart_dma_ctrl_reg	global
+0c04c980	0c117860	bios_helper_0c	same code, name
+0c080ba0	0c156b60	inflate_blocks_sync_point	same code, name, signature
+0c048260	0c10cf40	bump_vtx_keep	same code, name, signature
+0c079f40	0c14ff00	xfer_dma_enqueue	same code, name
+0c3eb67c	0c606ffc	xfer_free_nodes	global
+0c036760	0c128a60	bank_list_tail_swap	same code, name
+0c05c7a0	0c132020	text_depth_set	same code, name
+0c029ce0	0c0f24a0	fatal_record_store	same code, name
+0c304560	0c3d88d8	fatal_record	global
+0c05e2c0	0c133ce0	mtx_mul_plane_flatten	same code, name
+0c032480	0c11e500	http_active_advance	same code, name
+0c3b0a6c	0c5cd15c	http_ring_active	global
+0c3b0a68	0c5cd158	http_ring_tail	global
+0c304990	0c3f16a8	http_slots	global
+0c03cd00	0c0ffa40	vertex_bytes_from_format	same code, name
+0c086d2c	0c211618	vertex_bytes_lo	global
+0c086dac	0c211698	vertex_bytes_hi	global
+0c05b140	0c1309c0	tmu0_restart_at_rate	same code, name
+0c06dce0	0c143ca0	quantize_byte_to_3bit	same code, name
+0c057820	0c125020	peer_area_send	same code, name
+0c33d944	0c41344c	peer_request_state	global
+0c33d030	0c412b38	dimm_busy_word	global
+0c077000	0c14cfc0	ta_memory_defaults_set	same code, name
+0c056e00	0c124600	peer_reply_handler	same code, name
+0c059420	0c12eca0	texidx_tables_wipe	same code, name
+0c09926c	0c32a580	texidx_count	global
+0c33d958	0c417940	texidx_map	global
+0c099270	0c32a584	texidx_bitmap_words	global
+0c33d954	0c41793c	texidx_bitmap	global
+0c0371c0	0c129a00	screen_rect_flat_queue	same code, name
+0c327b68	0c3dc1b8	elan_cmd_write_ptr	global
+0c0683a0	0c13e360	strip_len_code_set	same code, name
+0c049540	0c111100	startup_stack_words_set	same code, name
+0c068280	0c13e240	context_header_select	same code, name
+0c3ba2bc	0c5d5c3c	strip_header_shadow	global
+0c06bbe0	0c141ba0	pvr_pal_ram_load_range	same code, name
+0c026740	0c021160	board_ids_read	same code, name
+0c02a040	0c0f2800	dimm_read_unlocked	same code, name
+0c353480	0c55dcb0	rom_port_mode_bits	global
+0c353484	0c55dcb4	rom_port_bank_bit	global
+a05f7000	a05f7000	cart_control_reg	global
+a05f7004	a05f7004	cart_addr_low_reg	global
+a05f7008	a05f7008	cart_data_reg	global
+0c029ee0	0c0f26a0	g1_bus_release	same code, name
+0c353488	0c55dcb8	g1_bus_hold_count	global
+0c037020	0c12c700	code_jump_patch	same code, name
+0c037068	0c12c748	jump_stub_target	global
+0c037060	0c12c740	jump_stub	global
+0c03706c	0c12c74c	jump_stub_end	global
+0c041912	0c1065f2	lit_vertex_emit	same code, name, signature
+0c06afc0	0c140f80	busy_wait_hook_put	same code, name
+0c099874	0c32ab88	lib_state_ptr	global
+0c031b60	0c11dbe0	http_queued_count	same code, name
+0c0370e0	0c129920	model_part0_call_write_at	same code, name
+0c040920	0c105600	argb_offset_tris_send_near_clip	same code, name, signature
+0c038980	0c0ff460	matrix_cmds_build_vertex_from_pushed	same code, name
+0c3b2af8	0c5c9d7c	matrix_cmds_block	global
+0c099934	0c32ac48	list_end_block_count	global
+0c3b2b00	0c5c9d84	normal_block_scale	global
+0c05d460	0c132e80	lights_stash_and_blackout	same code, name
+0c342674	0c41c65c	light_stash_flags	global
+0c341b64	0c41bb4c	light_table	global
+0c3426b4	0c41c69c	light_stash_colors	global
+0c099384	0c32a698	light_color_black	global
+0c0992c0	0c32a5d4	lights_on_mask	global
+0c0358c0	0c127bc0	tex_target_banks_alloc	same code, name
+0c05b6e0	0c130f60	vertex_area_bytes_get	same code, name
+0c0573a0	0c124ba0	peer_start_put_table	same code, name
+0c3b8be0	0c5d4340	peer_start_table	global
+0c043cc0	0c1089a0	modvol_p_to_newest	same code, name, signature
+0c050c40	0c11bb20	jvs_read_all_coin_counters	same code, name, signature
+0c32f4a0	0c3e3b24	jvs_node_count	global
+0c333514	0c3e7b98	jvs_nodes	global
+0c3349e8	0c3e906c	jvs_coin_counter_last	global
+0c04cac0	0c1179a0	bios_helper_get	same code, name
+0c081920	0c1578e0	inflate_flush	same code, name, signature
+0c030680	0c0fb600	date_to_seconds_1950	same code, name
+0c03ea00	0c1036e0	obj_put_typed_f	same code, name
+0c06e4c0	0c144480	state_release	same code, name
+0c030b00	0c0fba80	naominet_lock_try	same code, name
+0c304588	0c3dbd3c	naominet_lock_flag	global
+0c05b060	0c1308e0	ta_list_sizes_set_up	same code, name
+0c33da74	0c417a5c	holly_rev8_or_later	global
+0c05c380	0c131c00	sin_ang16	same code, name
+0c063700	0c139660	g2dma_suspend_clear	same code, name
+0c029240	0c080020	alab_init	same code, name
+0c3533ec	0c430fb4	alab_step_count	global
+0c30455c	0c37e3ac	alab_disp	global
+0c0667c0	0c13c780	scene_frame_pending_mark	same code, name
+0c06af40	0c140f00	slot5_hook_put	same code, name
+0c035da0	0c1280a0	region_array_one_list_write	same code, name
+0c344028	0c41e010	gfx_state	global
+0c05c7e0	0c132060	text_overlay_setup	same code, name
+0c33dcfc	0c417ce4	text_cursor_x	global
+0c33dcf4	0c417cdc	text_cursor_y	global
+0c33dcec	0c417cd4	text_margin_x	global
+0c3b8fdc	0c5d4950	text_init_word	global
+0c3b8fd8	0c5d494c	text_init_short	global
+0c33dcf0	0c417cd8	text_flags	global
+0c3b8fe0	0c5d4954	text_init_float_a	global
+0c3b8fe4	0c5d4958	text_init_float_b	global
+0c3b8fe8	0c5d495c	text_glyph_step	global
+0c3b9004	0c5d4978	text_font_surface	global
+0c0992b0	0c32a5c4	text_glyph_bitmap	global
+0c05a8c0	0c130140	poly_header_bits16_set	same code, name
+0c043d38	0c108a18	modvol_saved_to_newest	same code, name, signature
+0c03f400	0c1040e0	obj_lit_send_f	same code, name
+0c32bce8	0c3e0338	obj_alt_lighting	global
+0c085560	0c15d400	isspace	same code, name, signature
+0c068bc0	0c13eb80	strip_hdr_ctrl_bits16_set	same code, name
+0c04b740	0c116620	jvs_queue_command_after	same code, name
+0c3b38ec	0c5cae7c	mie_request	global
+0c32bdec	0c3e0470	legacy_io_direction	global
+0c32e510	0c3e2b94	legacy_io_meter_bits	global
+0c32cc1c	0c3e12a0	legacy_io_out_byte2	global
+0c32e4c4	0c3e2b48	legacy_io_out_byte3	global
+0c051a20	0c11c900	coin_state_clear	same code, name, signature
+0c33d01c	0c3f16a0	io_service_buttons	global
+0c33d018	0c3f169c	io_service_buttons_2	global
+0c3b3a70	0c5cb000	coins_pending	global
+0c3b3a60	0c5caff0	coin_meter_timers	global
+0c081f40	0c159240	__sdivsi3_i4	same code, name, signature
+0c057bc0	0c1253c0	dimm_spin_wait	same code, name
+0c05bf20	0c1317a0	float_floor	same code, name
+0c059250	0c12da90	vec3_normalize_nolen	same code, name
+0c0628d0	0c138e50	sr_imask_set	same code, name
+0c03a840	0c1025e0	lights_elan_send_all	same code, name
+0c327af0	0c3dc140	elan_list_enable_mask	global
+0c033b80	0c12a5a0	target_passes_install	same code, name
+0c094538	0c32a4a4	pass_queue_read_base	global
+0c09453c	0c32a4a8	pass_queue_read	global
+0c094540	0c32a4ac	pass_queue_write_base	global
+0c094544	0c32a4b0	pass_queue_write	global
+0c094548	0c32a4b4	pass_current	global
+0c09454c	0c32a4b8	pass_entry_pool_next	global
+0c052180	0c11f980	dimm_net_detach	same code, name
+0c3b3b84	0c5cf2e8	dimm_hook_saved	global
+0c018068	0c018068	dimm_cmd_hook_vector	global
+0c3b3a84	0c5cf1e8	dimm_cmd_handler_table	global
+0c036640	0c128940	bank_lists_store_to_ring	same code, name
+0c042550	0c107230	lit_offset_tris_send	same code, name, signature
+0c3b3250	0c5ca4d0	lit_offset_group_light_mask	global
+0c3b3240	0c5ca4c0	lit_offset_ambient_scaled	global
+0c3b2fc0	0c5ca240	lit_offset_group_colours	global
+0c0520a0	0c11f8a0	dimm_net_attach	same code, name
+0c33d020	0c412b28	dimm_cmd_unhandled	global
+0c05e860	0c134400	proj_from_near_rect	same code, name
+0c3b8ea0	0c5d4800	graphics_work	global
+0c032400	0c11e480	http_head_advance	same code, name
+0c3b0a70	0c5cd160	http_ring_head	global
+0c0260e0	0c048f40	jvs_error_counts_clear	same code, name
+0c345bc8	0c41fbec	jvs_check_frames	global
+0c345bd0	0c41fbf4	jvs_bad_frames	global
+0c345bd8	0c41fbfc	jvs_bad_run	global
+0c0374a0	0c129ce0	screen_unproject_consts_set	same code, name
+0c327acc	0c41626c	scr_half_width	global
+0c327adc	0c41627c	scr_half_height	global
+0c3427b4	0c41c79c	mtx_stack_selected	global
+0c327ad4	0c416274	scr_unproj_x	global
+0c327ad8	0c416278	scr_unproj_y	global
+0c327ac0	0c416260	scr_proj_m00	global
+0c327ad0	0c416270	scr_proj_m11	global
+0c327ac8	0c416268	scr_width_f	global
+0c327ac4	0c416264	scr_height_f	global
+0c025540	0c0483a0	user_back_mark_dirty	same code, name
+0c300104	0c3744e0	user_back_dirty	global
+0c059f40	0c12f7c0	pal_entry_format_select	same code, name
+0c0872d0	0c211eac	pal_hw_format_table	global
+0c070ea0	0c146e60	packed_chunk_record_return	same code, name
+0c3d23a4	0c5edd24	packed_chunk_pool	global
+0c05a920	0c1301a0	display_flag_bits_reapply	same code, name
+0c341b50	0c41bb38	display_state	global
+0c099284	0c32a598	bg_plane_colors	global
+0c3429b0	0c41c998	proj_rect_left	global
+0c342a3c	0c41ca24	proj_rect_top	global
+0c342968	0c41c950	proj_rect_width	global
+0c342a38	0c41ca20	proj_rect_height	global
+0c05d2e0	0c132d00	light_put_color4	same code, name
+0c04cc60	0c117b40	bios_helper_60	same code, name
+0c060060	0c135c00	tmu2_stop	same code, name
+0c045790	0c10a470	typed_send_by_slot	same code, name, signature
+0c06b960	0c141920	fb_w_ctrl_alpha_cutoff	same code, name
+0c060b60	0c136700	cache_prefetch_range	same code, name
+0c05fdc0	0c135960	tmu0_ticks_to_usec	same code, name, signature
+0c05bd80	0c131600	csc_ang16	same code, name
+0c05e520	0c133f40	mtx_rot_axis_s16	same code, name
+0c048140	0c10ce20	bump_vtx_load	same code, name, signature
+0c0585dc	0c12c86c	arctan_ang8_table	global
+0c050c00	0c11bae0	jvs_wait	same code, name, signature
+0c05bd20	0c1315a0	float_ceil	same code, name
+0c07e860	0c154820	build_bl_tree	same code, name, signature
+0c08c678	0c217238	bl_order	global
+0c04f1c0	0c11a0a0	card_queue_c1	same code, name
+0c098a88	0c329c8c	card_queue_len	global
+0c32be0c	0c3e0490	card_queues	global
+0c075ec0	0c14be80	bg_plane_from_tex_intensity_2vol	same code, name
+0c052540	0c11fd40	ctl_call_text	same code, name
+0c33d034	0c412b3c	ctl_call_state	global
+0c04abe0	0c115ac0	eeprom_copy_block	same code, name
+0c0549c0	0c1221c0	ioctl_arg_copy_back	same code, name
+0c3b5bc0	0c5d1320	xfer_recv_bounce	global
+0c07bf60	0c151f20	compress	same code, name, signature
+0c063400	0c1376a0	g2dma_done_isr	same code, name
+a05f6900	a05f6900	irq_status_reg	global
+0c05b9c0	0c131240	acos_ang16	same code, name
+0c035240	0c12bd60	capture_rec_replay	same code, name
+0c02e920	0c0f98a0	http_client_request_set	same code, name
+0c02a9e0	0c0f31a0	dimm_dma_done_release	same code, name
+0c39e928	0c5a9158	dimm_files	global
+0c035360	0c12be80	write_ptrs_save_once	same code, name
+0c07f9e0	0c1559a0	inflateEnd	same code, name, signature
+0c0583a0	0c125ba0	dimm_dma_read	same code, name
+0c059000	0c12d840	mtx_reset_3x3	same code, name
+0c0854a0	0c15d340	isdigit	same code, name, signature
+0c07a280	0c150240	xfer_wait_idle	same code, name
+0c3449fc	0c41e9e4	xfer_current	global
+0c04ce20	0c117d00	coin_config_pack	same code, name
+0c04b200	0c1160e0	jvs_send_unchecked	same code, name
+0c0494c0	0c111080	busy_wait_fn_install	same code, name
+0c039e80	0c101920	elan_regs_quiesce	same code, name
+a880000c	a880000c	elan_cmd_queue_level	global
+0c04cc20	0c117b00	bios_helper_5c	same code, name
+0c02e900	0c0f9880	http_client_timeouts_set	same code, name
+0c04e900	0c1197e0	card_units_poll	same code, name
+0c098a7c	0c329c80	card_poll_count	global
+0c32d470	0c3e1af4	card_units	global
+0c02b960	0c0f68e0	naominet_place_id_get	same code, name
+0c0943bc	0c32553c	naominet_ready	global
+0c3a8830	0c5c3c88	naominet_authed	global
+0c3a8a7c	0c5c3ed4	naominet_place_id	global
+0c04dd00	0c118be0	board_start_no_load	same code, name
+0c024180	0c07aea0	net_auth_request_start	same code, name
+0c3039f8	0c37d848	net_check_log	global
+0c0482c0	0c10cfa0	bump_near_cut_emit	same code, name, signature
+0c047bf0	0c10c8d0	bump_clip_ring	global
+0c048230	0c10cf10	bump_vtx_emit	same code, name, signature
+0c081ee8	0c1591e8	__movstr_i4_odd	same code, name, signature
+0c06f240	0c145200	vram_largest_free_per_half	same code, name
+0c099890	0c32aba4	vram_halves	global
+0c07a740	0c150700	ticket_done_poll	same code, name
+0c344a18	0c41ea00	xfer_done_count	global
+0c0491e0	0c110da0	irq_rom_dma_end_fn_store	same code, name
+0c034dc0	0c12b7e0	pixels_to_argb1555	same code, name
+0c061ae0	0c138060	sys_bring_up_vectors_timer	same code, name
+0c0993fc	0c32a714	startup_stack_mode	global
+0c099400	0c32a718	startup_irq_stack	global
+0c05fc20	0c1357c0	proj_rebuild_rect_proj	same code, name
+0c3b9230	0c5d4ba8	proj_saved_matrix	global
+0c342a84	0c41ca6c	rect_from_clip_matrix	global
+0c3429b8	0c41c9a0	rect_x_proj_matrix	global
+0c02ba20	0c0f69a0	naominet_reply_value_find	same code, name
+0c3a8844	0c5c3c9c	naominet_reply_text	global
+0c049880	0c114760	g1_dma_spin_idle	same code, name
+0c07a060	0c150020	bank_poll_done	same code, name
+0c073d20	0c149ce0	ta_bad_input_irq	same code, name
+0c071180	0c147140	vertex_area_base_size_put	same code, name
+0c06f2c0	0c145280	vram_lists_sort	same code, name
+0c0271c0	0c08cc60	card_write_start	same code, name
+0c303524	0c37e4f4	card_records	global
+0c040780	0c105460	argb_offset_near_vertex_emit	same code, name, signature
+0c3b2c60	0c5c9ee0	argb_offset_clip_ring	global
+0c0451dc	0c109ebc	float_colour_kept_vtx_emit_plain	same code, name, signature
+0c07f940	0c155900	zcalloc	same code, name, signature
+0c048810	0c10d4f0	vertex_colour_strip_near_clip	same code, name, signature
+0c058db0	0c12d5f0	mtx_rot_y_s16	same code, name, signature
+0c05bdc0	0c131640	cos_radians	same code, name
+0c02b140	0c0f3900	dimm_ftell	same code, name
+0c03e5e0	0c1032c0	modvol_instruction_put	same code, name
+0c327cdc	0c3dc32c	modvol_instruction	global
+0c057be0	0c1253e0	dimm_g1_timing_apply	same code, name
+0c01ff24	0c01ff24	bios_g1_dma_timing	global
+0c018064	0c018064	dimm_request_hook_vector	global
+0c01ff1c	0c01ff1c	dimm_bios_word_ff1c	global
+0c074580	0c14a540	pvr_reg_list_write_both	same code, name
+0c04a960	0c115840	sram_sync_from_bank0	same code, name
+0c32c12c	0c3e07b0	sram_bank0	global
+0c32e4c0	0c3e2b44	sram_bank1	global
+0c029200	0c07ffe0	net_version_text_get	same code, name
+0c3033c0	0c37779c	net_ver	global
+0c0868d8	0c187aec	e_net_ver_names	global
+0c068400	0c13e3c0	strip_header_to_list	same code, name
+0c343fa8	0c41df90	strip_list_type	global
+0c099458	0c32a76c	strip_header_word_count	global
+0c09945c	0c32a770	strip_header_words	global
+0c058c50	0c12d490	mtx_negate_xy_axes	same code, name
+0c054b80	0c122380	listen_request_write	same code, name
+0c06e5a0	0c144560	busy_wait_scaled	same code, name
+0c074900	0c14a8c0	bg_plane_from_flat_argb_floats	same code, name
+0c0350a0	0c12bbc0	capture_first_begin	same code, name
+0c0945bc	0c32a528	capture_count	global
+0c327038	0c4174b8	capture_records	global
+0c0945b8	0c32a524	capture_first	global
+0c094590	0c32a4fc	capture_open	global
+0c344014	0c41dffc	list_starts	global
+0c049da0	0c114c80	maple_port_reset	same code, name
+0c0498a0	0c114780	rom_dma_busy	same code, name, signature
+0c04c7a0	0c117680	bios_helpers_install	same code, name
+0c032ac0	0c11eb40	http_body_unpack	same code, name
+0c041ad0	0c1067b0	lit_tris_send_near_clip	same code, name, signature
+0c05dd00	0c133720	mtx_mul_eye_target_up	same code, name
+0c05bfe0	0c131860	rsqrt_float	same code, name
+0c05c9a0	0c132220	text_sprite_header_fill	same code, name
+0c3b8fec	0c5d4960	text_sprite_header	global
+0c03f360	0c104040	obj_alt_lighting_on	same code, name
+0c050840	0c11b720	jvs_update_service_buttons	same code, name, signature
+0c335418	0c3e9a9c	jvs_reply_offset	global
+0c32f4a4	0c3e3b28	jvs_reply_data	global
+0c03fe20	0c104b00	argb_tris_send_near_clip	same code, name, signature
+0c04e9c0	0c1198a0	card_state_reset	same code, name
+0c32d520	0c3e1ba4	card_status	global
+0c051780	0c11c660	jvs_reply_string	same code, name, signature
+0c03ebc0	0c1038a0	obj_light_dir_put	same code, name
+0c0947c8	0c325890	obj_light_dir	global
+0c0947d8	0c3258a0	obj_half_vector	global
+0c0947e8	0c3258b0	obj_view_dir	global
+0c05ffe0	0c135b80	tmu2_underflow_isr	same code, name
+0c3ba298	0c5d5c18	tmu2_done_fn	global
+0c3ba29c	0c5d5c1c	tmu2_done_arg	global
+0c034100	0c12ab20	cpu_ol_background_write	same code, name
+0c32669c	0c416b0c	cpu_ol_target	global
+0c326690	0c416b00	cpu_ol_param_base	global
+0c040200	0c104ee0	argb_offset_tris_send	same code, name, signature
+0c0855a0	0c15d440	isascii	same code, name, signature
+0c05ad80	0c130600	stall_limits_vertex_and_render	same code, name
+0c0765e0	0c14c5a0	objlist_put_black_triangle	same code, name
+0c059c40	0c12f4c0	pal_groups_reset	same code, name
+0c0578e0	0c1250e0	peer_area_send_async	same code, name
+0c068d40	0c13ed00	list_tile_clip_param_write	same code, name
+0c09959c	0c32a8b0	clip_dummy_header	global
+0c0995bc	0c32a8d0	clip_dummy_volume	global
+0c058940	0c12d180	xmtrx_from_words	same code, name, signature
+0c058a60	0c12d2a0	mtx_premul_by	same code, name, signature
+0c063360	0c139540	utlb_entry_low_bits_set	same code, name
+0c04a8a0	0c115780	sram_clear_all	same code, name
+0c034d80	0c12b7a0	texidx_size_get	same code, name
+0c0253e0	0c048240	user_back_defaults_once	same code, name
+0c091090	0c2943c4	user_back_defaults_fixed	global
+0c057c60	0c125460	dimm_board_info_fetch	same code, name
+0c3b8de0	0c5d4540	dimm_board_info	global
+0c01fc04	0c01fc04	dimm_board_id_word	global
+0c01fc14	0c01fc14	dimm_board_word_14	global
+0c01fc18	0c01fc18	dimm_board_word_18	global
+0c01fc20	0c01fc20	dimm_board_word_20	global
+0c01fc24	0c01fc24	dimm_board_word_24	global
+0c01fc28	0c01fc28	dimm_board_word_28	global
+0c01fc2c	0c01fc2c	dimm_board_word_2c	global
+0c086fc8	0c211b8c	dimm_module_sizes	global
+0c01fc40	0c01fc40	dimm_board_extra	global
+0c33d950	0c413458	dimm_last_status	global
+0c037360	0c129ba0	screen_sprite_textured_queue	same code, name
+0c0628c0	0c138e40	sr_bl_clear	same code, name, signature
+0c04bfa0	0c116e80	sram_save_write_range_b	same code, name
+0c05d500	0c132f20	lights_unstash	same code, name
+0c07ba60	0c151a20	elan_d0_set_for_list	same code, name
+0c099938	0c32ac4c	elan_reg_d0_value	global
+a88000d0	a88000d0	elan_reg_d0	global
+0c04cba0	0c117a80	bios_helper_54	same code, name
+0c03eec0	0c103ba0	obj_sphere_visible_near_far	same code, name
+0c342a80	0c41ca68	proj_x_factor_px	global
+0c342b08	0c41caf0	proj_y_factor_px	global
+0c0993e8	0c32a6fc	proj_rect_px_width	global
+0c0993ec	0c32a700	proj_rect_px_height	global
+0c075960	0c14b920	bg_plane_from_flat_packed_2vol	same code, name
+0c05d220	0c132c40	spot_cone_set_radians	same code, name
+0c05b480	0c130d00	down_count_elapsed	same code, name
+0c07a2c0	0c150280	frame_split_word_note	same code, name
+0c063560	0c1390c0	g2dma_suspend_clear_all	same code, name
+0c051fe0	0c11cec0	legacy_io_setup	same code, name, signature
+0c32d638	0c3e1cbc	mie_ident_text	global
+0c043ce0	0c1089c0	modvol_p_to_side	same code, name, signature
+0c0586c0	0c12cf00	mtx_add	same code, name
+0c04f340	0c11a220	card_queue_send_key	same code, name
+0c03f4c0	0c1041a0	obj_put_second_path_float	same code, name
+0c083c80	0c15a980	strtok	same code, name, signature
+0c3fb6d8	0c617018	strtok_next	global
+0c070ee0	0c146ea0	chunk_list_push	same code, name
+0c075a60	0c14ba20	bg_plane_from_flat_intensity_2vol	same code, name
+0c056360	0c123b60	sock_sendto_put_addr	same code, name
+0c0479ec	0c10c6cc	intensity_spill_tri_send_spec	same code, name, signature
+0c043c88	0c108968	modvol_saved_to_side_close	same code, name, signature
+0c03dfe0	0c102cc0	obj_textures_load_from	same code, name
+0c06ac00	0c140bc0	render_done_hook_put	same code, name
+0c057780	0c124f80	peer_cmd31_query1	same code, name
+0c0633a0	0c139060	aica_fifo_spin_until_idle	same code, name
+0c058730	0c12cf70	mtx_xform_vec4	same code, name
+0c04dc80	0c118b60	board_start	same code, name
+0c01f130	0c01f130	bios_rtc_seconds	global
+0c32d530	0c3e1bb4	boot_rtc_seconds	global
+0c026800	0c021220	media_probe_and_ids	same code, name
+0c0594c0	0c12ed40	texidx_slot_overwrite	same code, name
+0c341b38	0c41bb20	texidx_base	global
+0c33e550	0c418538	tex_slot_table	global
+0c058eb0	0c12d6f0	mtx_rot_z_s16_opposite	same code, name
+0c0257e0	0c048640	button_word_update	same code, name
+0c038620	0c0ff100	dummy_tri_link_on_lists	same code, name
+0c327af8	0c3dc148	dummy_tri_never	global
+0c0296e0	0c0804c0	alab_play_continue	same code, name
+0c3533e8	0c430fb0	alab_enabled	global
+0c30010c	0c3744e8	user_back_data	global
+0c063620	0c139120	g2dma_suspend_set_all	same code, name
+0c0591e0	0c12da20	vec3_sub	same code, name
+0c085500	0c15d3a0	isgraph	same code, name, signature
+0c04b8e0	0c1167c0	legacy_io_transfer	same code, name, signature
+0c32d6fc	0c3e1d80	legacy_io_inputs	global
+0c055b40	0c123340	sock_op13_two_strings	same code, name
+0c06bc40	0c141c00	pvr_vo_border_col_put	same code, name
+0c029040	0c07fe20	net_log_record_draw	same code, name
+0c0518c0	0c11c7a0	jvs_reply_channels	same code, name, signature
+0c036a20	0c128d20	bank_ring_add_slot_lists	same code, name
+0c033960	0c12a380	list_input_end_with_passes	same code, name
+0c094534	0c32a4a0	list_end_hook_count	global
+0c09455c	0c32a4c8	ta_param_used_last	global
+0c094564	0c32a4d0	ta_param_limit_last	global
+0c344554	0c41e53c	render_stats	global
+0c094560	0c32a4cc	ta_obj_next_last	global
+0c094568	0c32a4d4	ta_obj_limit_last	global
+0c09456c	0c32a4d8	ta_param_used_wrapped	global
+0c094574	0c32a4e0	ta_obj_next_wrapped	global
+0c094570	0c32a4dc	ta_param_used_max	global
+0c094578	0c32a4e4	ta_obj_next_min	global
+0c09457c	0c32a4e8	ta_obj_param_gap	global
+0c094580	0c32a4ec	ta_obj_param_gap_min	global
+ffd8000c	ffd8000c	tmu0_count_reg	global
+0c05fe60	0c135a00	tmu1_oneshot_clocked	same code, name
+0c3ba290	0c5d5c10	tmu1_done_fn	global
+0c3ba294	0c5d5c14	tmu1_done_arg	global
+0c031520	0c11d5a0	http_board_result_take	same code, name
+0c04a120	0c115000	mie_read_ident	same code, name
+0c0988bc	0c329ac0	mie_ident_expected	global
+0c05e5c0	0c133fe0	mtx_rot_unit_axis_sincos	same code, name
+0c05a840	0c1300c0	clip_rect_per_list_bits	same code, name
+0c07db40	0c153b00	init_block	same code, name, signature
+0c0379a0	0c12b960	vram_pair_pool_take	same code, name
+0c327aec	0c4174a0	vram_pair_pool_size	global
+0c327ae0	0c417494	vram_pair_pool_used	global
+0c327ae4	0c417498	vram_pair_pool_halves	global
+0c026060	0c048ec0	input_merged_bit_pressed	same code, name
+0c051740	0c11c620	jvs_reply_byte	same code, name, signature
+0c06c560	0c142520	surface_rect_rows_to_vram	same code, name
+0c036ba0	0c128ea0	bank_ring_add_capture	same code, name
+0c047d00	0c10c9e0	bump_strip_send	same code, name, signature
+0c02a320	0c0f2ae0	dimm_dma_chunk_start	same code, name
+0c071560	0c147520	pvr_reset_pulse	same code, name
+0c060b00	0c1366a0	dcache_discard_lines	same code, name, signature
+0c058f10	0c12d750	mtx_scale_by_vec3	same code, name, signature
+0c048bf0	0c10d8d0	vertex_colour_near_cut_emit	same code, name, signature
+0c3b3780	0c5caa00	vertex_colour_clip_ring	global
+0c074780	0c14a740	bg_plane_defaults_set	same code, name
+0c04e2a0	0c119180	sram_bank_snapshot	same code, name
+0c05d080	0c132aa0	light_pos_set	same code, name
+0c0451a4	0c109e84	float_colour_flat_copy_plain	same code, name, signature
+0c038ee0	0c0ff9c0	normal_block_scale_set_inverse	same code, name
+0c0397e0	0c101280	elan_frame_finish	same code, name
+0c05f520	0c1350c0	proj_point_to_pixel_xy	same code, name
+0c0993f0	0c32a704	proj_rect_px_left	global
+0c0993f4	0c32a708	proj_rect_px_top	global
+0c044d00	0c1099e0	float_colour_flat_copy_spec	same code, name, signature
+0c085720	0c159500	memchr	same code, name, signature
+0c060120	0c135cc0	tmu2_irq_off	same code, name
+0c04be60	0c116d40	sram_save_write_copy_a	same code, name
+0c05ea20	0c1345c0	mtx_save_proj_x_current	same code, name
+0c081f58	0c159258	__udivsi3_i4	same code, name, signature
+0c065b20	0c13bae0	lists_send_to_ta	same code, name
+0c05d5a0	0c132fc0	light_ambient_color_get	same code, name
+0c04bee0	0c116dc0	sram_save_write_range	same code, name
+0c03a140	0c101ee0	lights_elan_alt_color_set	same code, name
+0c05fa00	0c1355a0	proj_point_to_pixel_xyw	same code, name
+0c06c8c0	0c142880	vram_pool_free_and_largest	same code, name
+0c07b720	0c1516e0	elan_start_and_probe	same code, name
+a8800010	a8800010	elan_ctrl_reg	global
+0c344b38	0c41eb20	elan_rev_config	global
+0c0330e0	0c11f160	form_map_copy_out	same code, name
+0c04f280	0c11a160	card_queue_a0	same code, name
+0c32be04	0c3e0488	card_keys	global
+0c06ef20	0c144ee0	vram32_pair_free	same code, name
+0c03e000	0c102ce0	obj_textures_load	same code, name
+0c02bac0	0c0f6a40	naominet_player_start	same code, name
+0c30456c	0c3dbd20	naominet_config	global
+0c3a8834	0c5c3c8c	naominet_player_er_flags	global
+0c3a8838	0c5c3c90	naominet_player_di_flags	global
+0c3a883c	0c5c3c94	naominet_player_active	global
+0c05bd40	0c1315c0	cos_ang16	same code, name
+0c04c740	0c117620	bios_helpers_copy	same code, name
+0c036fc0	0c12c6a0	code_halfwords_copy_purged	same code, name
+0c03ea60	0c103740	obj_put_typed_world_f	same code, name
+0c05cee0	0c132900	hdr_or_color_clamp	same code, name
+0c058460	0c125c60	dimm_pio_write	same code, name
+0c025f80	0c048de0	input_boards_merge	same code, name
+0c0284a0	0c08df40	card_format2_area_clear	same code, name
+0c028900	0c07f6e0	net_upload_url_build	same code, name
+0c34dffc	0c42bbc4	net_upload_url	global
+0c04b2a0	0c116180	jvs_send_two_nodes_bare	same code, name
+0c029fe0	0c0f27a0	dimm_write	same code, name
+0c0254e0	0c048340	user_back_reset	same code, name
+0c091094	0c2943c8	user_back_defaults	global
+0c059d60	0c12f5e0	pal_group_store_colors	same code, name
+0c0695c0	0c13f580	render_pipeline_choose	same code, name
+0c058770	0c12cfb0	mtx_xform_dir	same code, name
+0c04ad00	0c115be0	eeprom_write_image	same code, name
+0c32d70c	0c3e1d90	eeprom_copy_a	global
+0c32c938	0c3e0fbc	eeprom_image	global
+0c32bdee	0c3e0472	eeprom_copy_b	global
+0c03a180	0c101f20	spot_falloff_from_cosines	same code, name
+0c058ee0	0c12d720	mtx_scale_xyz	same code, name
+0c025560	0c0483c0	user_back_flush	same code, name
+0c300108	0c3744e4	user_back_load_status	global
+0c0362a0	0c1285a0	tex_queue_flip	same code, name
+0c3272b8	0c415a68	tex_render_bank	global
+0c0945dc	0c32a490	tex_queue_fill_start	global
+0c0945d4	0c32a488	tex_queue_run_start	global
+0c0945d8	0c32a48c	tex_queue_run_cursor	global
+0c3272b4	0c415a64	tex_queue_half	global
+0c3271ac	0c41595c	tex_queue_buffers	global
+0c0945e0	0c32a494	tex_queue_fill_write	global
+0c072ec0	0c148e80	render_stall_check	same code, name
+a85f8044	a85f8044	both_fb_read_ctrl_reg	global
+0c3e53a8	0c600d28	render_stall_resets	global
+0c02a120	0c0f28e0	dimm_dma_wait_ack	same code, name
+0c061f20	0c1384a0	ext_device_status	same code, name
+0c099404	0c32a71c	ext_probe_state	global
+0c099410	0c32a728	ext_id10_found	global
+0c099414	0c32a72c	ext_id12_found	global
+0c099418	0c32a730	ext_bridge_400_found	global
+0c09941c	0c32a734	ext_bridge_800_found	global
+0c099420	0c32a738	ext_bridge_1400_found	global
+0c099424	0c32a73c	ext_bridge_1800_found	global
+0c034e20	0c12b840	pixels_to_rgb565	same code, name
+0c057980	0c125180	peer_stop	same code, name
+0c0340c0	0c12aae0	cpu_ol_target_select	same code, name
+0c060580	0c136120	ocache_invalidate_bit_set	same code, name
+0c033220	0c11f2a0	nsock_recv_start	same code, name
+0c3b2af0	0c5cf1e0	nsock_recv_dest	global
+0c3b2af4	0c5cf1e4	nsock_recv_size	global
+0c0576e0	0c124ee0	peer_cmd31_query0	same code, name
+0c059640	0c12eec0	tex_vram_free_second	same code, name
+0c03dce0	0c1029c0	busy_delay_5000	same code, name
+0c0355e0	0c1278e0	list_area_starts_lay_out	same code, name
+0c0353e0	0c12bf00	capture_rec_open	same code, name
+0c0542e0	0c121ae0	board_switch_request_write	same code, name
+0c04bb20	0c116a00	cart_dma_read	same code, name
+0c081260	0c157220	inflate_trees_fixed	same code, name, signature
+0c0999c0	0c32acd4	fixed_bl	global
+0c0999c4	0c32acd8	fixed_bd	global
+0c0999c8	0c32acdc	fixed_tl	global
+0c09a9c8	0c32bcdc	fixed_td	global
+0c040300	0c104fe0	argb_offset_strip_send_near_clip	same code, name, signature
+0c052220	0c11fa20	dimm_cmd_handler_clear	same code, name
+0c05fe00	0c1359a0	usec_to_tmu0_ticks	same code, name
+0c04b980	0c116860	legacy_io_start	same code, name
+0c026fc0	0c08ca60	card_crc_tables_init	same code, name
+0c0868d4	0c18a86c	card_crc_polys	global
+0c345bf8	0c4317bc	card_crc_tables	global
+0c0370c0	0c129900	model_matrix_cmds_write_at	same code, name
+0c327b38	0c3dc188	elan_matrix_params	global
+0c04dd60	0c118c40	board_prestart	same code, name
+0c02b180	0c0f3940	dimm_fcheck	same code, name, signature
+0c028880	0c07f660	url_is_power_on	same code, name
+0c048b10	0c10d7f0	vertex_colour_vtx_emit	same code, name, signature
+0c0270a0	0c08cb40	card_crc16	same code, name
+0c06e240	0c144200	lib_state_set_up_from_cfg	same code, name
+0c34453c	0c41e524	lib_info	global
+0c099604	0c32a918	nec_copyright	global
+0c099948	0c32ac5c	tile_split_word	global
+0c06a020	0c13ffe0	list_dummy_headers_write	same code, name
+0c3ba338	0c5d5cb8	bank_list_starts	global
+0c3ba390	0c5d5d10	list_header_counts	global
+0c058c70	0c12d4b0	mtx_negate_y_axis	same code, name
+0c034520	0c12af40	bits_set_count	same code, name
+0c07bfa0	0c151f60	crc32	same code, name, signature
+0c08c090	0c216c50	crc_table	global
+0c075720	0c14b6e0	bg_plane_from_tex_intensity_uv16	same code, name
+0c061220	0c136dc0	irq_hooks_run	same code, name
+0c342b0c	0c41caf4	irq_hook_heads	global
+0c02ab00	0c0f32c0	dimm_files_init	same code, name
+0c353924	0c55e154	dimm_dma_done_hook	global
+0c3a7da8	0c5b25d8	sffs_cwd	global
+0c04c800	0c1176e0	bios_coin_setting	same code, name
+0c05d0c0	0c132ae0	light_atten_set	same code, name
+0c059560	0c12ede0	texidx_vram_words_read	same code, name
+0c07ab00	0c150ac0	elan_pvr_reset_drop_frame	same code, name
+a8800000	a8800000	elan_id_reg	global
+ffa0002c	ffa0002c	dma2_control	global
+0c034c20	0c12b640	target_texidx_release	same code, name
+0c059040	0c12d880	vec3_add	same code, name
+0c0384a0	0c0fef80	model_draw_no_matrix	same code, name
+0c0516e0	0c11c5c0	jvs_reply_output	same code, name, signature
+0c04c560	0c117440	eeprom_save_max_size	same code, name
+0c03e9c0	0c1036a0	obj_put_typed_world	same code, name
+0c07f960	0c155920	zcfree	same code, name, signature
+0c069240	0c13f200	listbuf_bank_select	same code, name
+0c3ba374	0c5d5cf4	list_buffer_starts	global
+0c344018	0c41e000	list_write_state	global
+0c03ec20	0c103900	obj_light_color_set	same code, name
+0c038ce0	0c0ff7c0	model_volume_link_queue	same code, name
+0c327af4	0c3dc144	dummy_tri_outside	global
+0c327b00	0c3dc150	dummy_tri_inside	global
+0c043b60	0c108840	modvol_clip_vertex_load	same code, name, signature
+0c031060	0c11d0e0	http_lookup_retry_step	same code, name
+0c3b0aa4	0c5cd194	http_lookup_frame	global
+0c3b0a98	0c5cd188	http_req14_pending	global
+0c3b0aa0	0c5cd190	http_ready_flag	global
+0c05fb80	0c135720	mtx_premul_rect_proj_view	same code, name
+0c039f40	0c101ce0	lights_elan_state_init	same code, name
+0c327bac	0c3dc210	lights_elan_on_bits	global
+0c327bbc	0c3dc220	lights_elan_second_bits	global
+0c327bb5	0c3dc219	lights_elan_last_flag	global
+0c327bb4	0c3dc218	lights_elan_alt_color_on	global
+0c327ba4	0c3dc208	lights_elan_alt_color	global
+0c327b9c	0c3dc200	lights_elan_color_bits	global
+0c327bc0	0c3dc224	lights_elan_hdr_bits_16	global
+0c327ba8	0c3dc20c	lights_elan_hdr_bits_12	global
+0c327bb8	0c3dc21c	lights_elan_on_mask_high	global
+0c327bb0	0c3dc214	lights_elan_on_mask_low	global
+0c327bc4	0c3dc228	lights_elan_modes	global
+0c048fa0	0c110b60	irq_cart_board_relay	same code, name
+a05f705c	a05f705c	cart_board_irq_ack	global
+0c036880	0c128b80	ring_list_piece_append	same code, name
+0c05d780	0c1331a0	mtx_determinant	same code, name
+0c0291a0	0c07ff80	net_serial_get	same code, name
+0c094378	0c2a0178	net_serial	global
+0c063320	0c139500	utlb_uninstall	same code, name
+0c058c10	0c12d450	mtx_negate_z_axis	same code, name
+0c0302c0	0c0fb240	b64_char_index	same code, name
+0c04d020	0c117f00	board_config_pack	same code, name
+0c07b280	0c151240	elan_pvr_reset_retry_frame	same code, name
+0c09994c	0c32ac60	xfer_retry_mode	global
+a8800030	a8800030	elan_tile_split_reg	global
+0c3fb690	0c617010	tile_split_parked	global
+0c05e580	0c133fa0	mtx_rot_unit_axis_s16	same code, name
+0c058a20	0c12d260	mtx_premul_by_pairs	same code, name, signature
+0c05a9c0	0c130240	beam_line_read	same code, name
+0c026040	0c048ea0	input_is_1_or_2	same code, name
+0c043b90	0c108870	modvol_cut_pq_to_side	same code, name, signature
+0c059020	0c12d860	vec3_add_to	same code, name, signature
+0c058bb0	0c12d3f0	mtx_invert_rigid_regs	same code, name
+0c031e80	0c11df00	http_close_step	same code, name
+0c034040	0c12aa60	target_frame_flags_clear	same code, name
+0c094584	0c32a4f0	pass_open_entry	global
+0c052300	0c11fb00	dimm_cmd_post_bare	same code, name
+0c026080	0c048ee0	input_merged_bit_held	same code, name
+0c345b8c	0c41fbb0	input_merged	global
+0c026300	0c049160	player_input_buttons_copy	same code, name
+0c0517e0	0c11c6c0	jvs_reply_var_byte	same code, name, signature
+0c074740	0c14a700	bg_plane_append_uv_floats	same code, name
+0c033da0	0c12a7c0	target_rebind_texture	same code, name
+0c04c820	0c117700	bios_credit_init	same code, name
+0c058890	0c12d0d0	xmtrx_to_pairs	same code, name, signature
+0c04e3e0	0c1192c0	sram_save_load_dma_safe	same code, name
+0c048ba0	0c10d880	vertex_colour_kept_vtx_emit	same code, name, signature
+0c068900	0c13e8c0	strip_hdr_fog_mode_set	same code, name
+0c0637ee	0c1397ae	words_or_merge	same code, name, signature
+0c037ac0	0c101aa0	elan_matrix_cmds_write_front	same code, name
+0c0368e0	0c128be0	ring_list_block_append	same code, name
+0c0364e0	0c1287e0	bank_record_save	same code, name
+0c0945e8	0c32a49c	bank_record_saved	global
+0c3272bc	0c415a6c	bank_record_copy	global
+0c079340	0c14f300	xfer_job_next	same code, name
+0c04194c	0c10662c	lit_vertex_keep	same code, name, signature
+0c04c840	0c117720	bios_helper_34	same code, name
+0c073d60	0c149d20	isp_cache_irq_ack	same code, name
+0c029380	0c080160	alab_ready_check	same code, name
+0c025e00	0c048c60	board_switch_bits	same code, name
+0c048fe0	0c110ba0	irq_tex_overflow_relay	same code, name
+0c040670	0c105350	argb_offset_vertex_load	same code, name, signature
+0c04b620	0c116500	jvs_set_frame_command	same code, name, signature
+0c047770	0c10c450	intensity_spill_tri_send	same code, name, signature
+0c05c0c0	0c131940	log_natural	same code, name
+0c06b9c0	0c141980	pvr_cull_val_put_abs	same code, name
+0c03dc60	0c1009a0	obj_flag_overrides_reset	same code, name
+0c327cd4	0c3dc1cc	obj_flag_keep_mask	global
+0c327cd0	0c3dc1c8	obj_flag_force_bits	global
+0c0626c0	0c138c40	trap_serial_teardown	same code, name
+0c3ba2b8	0c5d5c38	trap_serial_is_sci	global
+0c04f120	0c11a000	card_queue_write	same code, name
+0c32e3c0	0c3e2a44	card_write_buffer	global
+0c060b40	0c1366e0	dcache_writeback_lines	same code, name
+0c02cf80	0c0f7f00	naominet_auth_request	same code, name
+0c06eb00	0c144ac0	surface_alloc_both_halves	same code, name
+0c099884	0c32ab98	vram_half0_size	global
+0c058840	0c12d080	xmtrx_to_3x3_in_4x4	same code, name, signature
+0c068940	0c13e900	strip_hdr_uv_flip_set	same code, name
+0c03a020	0c101dc0	light_elan_mode_c_set	same code, name
+0c070520	0c1464e0	vram_block_copy	same code, name
+0c04b140	0c116020	jvs_send	same code, name, signature
+0c05cda0	0c132620	text_color_set	same code, name
+0c047ad0	0c10c7b0	bump_group_send	same code, name, signature
+0c3b3540	0c5ca7c0	elan_group_header_words	global
+0c059be0	0c12f460	pal_groups_setup	same code, name
+0c3b8f40	0c5d48b4	pal_block_bitmap	global
+0c0590b0	0c12d8f0	vec3_distance	same code, name
+0c035c80	0c127f80	bg_plane_256x128_write	same code, name
+0c06b280	0c141240	lib_start_with_video_out	same code, name
+0c085520	0c15d3c0	isprint	same code, name, signature
+0c048ee0	0c110aa0	irq_vblank_in_relay	same code, name
+0c048b70	0c10d850	vertex_colour_flat_copy	same code, name, signature
+0c07dce0	0c153ca0	gen_bitlen	same code, name, signature
+0c069360	0c13f320	listbuf_transfer_done	same code, name, signature
+0c03fcc0	0c1049a0	argb_kept_vertex_emit	same code, name, signature
+0c3b2b60	0c5c9de0	argb_clip_ring	global
+0c058e60	0c12d6a0	mtx_rot_z_s16	same code, name
+0c042cba	0c10799a	lit_offset_flat_colour_spread	same code, name, signature
+0c05e380	0c133da0	mtx_mul_plane_flatten_along	same code, name
+0c034cc0	0c12b6e0	texidx_slot_get	same code, name
+0c046630	0c10b310	intensity_tri_send	same code, name, signature
+0c050120	0c11b000	card_key_hash	same code, name
+0c068460	0c13e420	strip_hdr_ctrl_bits4_set	same code, name
+0c031b40	0c11dbc0	http_ring_distance	same code, name
+0c04ae00	0c115ce0	eeprom_reset_copies	same code, name
+0c042cf8	0c1079d8	lit_offset_kept_vertex_emit	same code, name, signature
+0c036de0	0c1290e0	bank_ring_drop_jobs	same code, name
+0c04c180	0c117060	sram_save_is_ready	same code, name
+0c05a6a0	0c12ff20	graphics_bring_up_entry_alt	same code, name
+0c074800	0c14a7c0	bg_plane_from_flat_packed	same code, name
+0c05a740	0c12ffc0	draw_ctx_cull_bits_set	same code, name
+0c039420	0c100ec0	naomi2_lib_start	same code, name
+0c344550	0c41e538	short_line_timing	global
+0c327b64	0c3dc1b4	elan_revision	global
+0c327b08	0c3dc158	model_error_record	global
+0c33da78	0c417a60	render_config	global
+0c327b04	0c3dc154	elan_cmd_half_size	global
+0c327b28	0c3dc178	elan_lists_started	global
+0c327b70	0c3dc1d4	tile_split_args	global
+0c0637de	0c13979e	copy_words	same code, name
+0c04c880	0c117760	bios_ledger_check	same code, name
+0c03e620	0c103300	modvol_sign_put	same code, name
+0c327ce0	0c3dc330	modvol_sign	global
+0c035700	0c127a00	texture_clip_words_get	same code, name
+0c058d50	0c12d590	mtx_rot_x_s16_opposite	same code, name
+0c0589e0	0c12d220	mtx_mul_by_pairs	same code, name, signature
+0c0376c0	0c129f00	screen_quad_tex_elan_queue	same code, name
+0c07b7a0	0c151760	elan_irq_regs_init	same code, name
+0c0493c0	0c110f80	irq_cart_board_ack	same code, name
+0c0527a0	0c11ffa0	ctl_call_op4	same code, name
+0c039e60	0c101900	pt_alpha_ref_write_both	same code, name
+0c031a60	0c11dae0	http_header_end_find	same code, name
+0c079300	0c14f2c0	xfer_job_restart	same code, name
+0c05cf20	0c132940	hdr_or_bits8_set	same code, name
+0c04bc40	0c116b20	rom_crc_start	same code, name
+0c081d80	0c157d40	adler32	same code, name, signature
+0c06bda0	0c141d60	tile_limit_set	same code, name
+0c04e820	0c119700	uptime_save	same code, name, signature
+a0710000	a0710000	rtc_seconds_high	global
+0c32cb3c	0c3e11c0	sram_time	global
+0c06dde0	0c143da0	quant_error_2bit	same code, name
+0c045872	0c10a552	intensity_send_alpha	same code, name, signature
+0c0947f8	0c3258c0	obj_light_color	global
+0c094808	0c3258d0	obj_light_colour2	global
+0c036080	0c128380	tex_target_regs_load	same code, name
+0c05a800	0c130080	gfx_counters_since_snapshot	same code, name
+0c33da3c	0c417a24	gfx_counters_saved	global
+0c038200	0c0fece0	model_draw_blend_passes	same code, name
+0c0945f8	0c325864	blend_pass_bits	global
+0c03b420	0c0fcf00	strip_vertex_code_1	same code, name
+0c03ac80	0c0fc760	elan_cmd_half_size_set	same code, name
+0c081fe0	0c1592e0	atol	same code, name
+0c04d280	0c118160	sram_time_get	same code, name
+0c059ea0	0c12f720	pal_mark_blocks_used	same code, name
+0c037c40	0c101c20	elan_ram_alloc_top	same code, name
+0c04be00	0c116ce0	sram_save_write_copies	same code, name
+0c041260	0c105f40	lit_tris_send	same code, name, signature
+0c3b2fb0	0c5ca230	lit_group_light_mask	global
+0c3b2fa0	0c5ca220	lit_ambient_scaled	global
+0c3b2d60	0c5c9fe0	lit_group_colour	global
+0c05d6e0	0c133100	mtx_pop_all	same code, name
+0c0493a0	0c110f60	irq_rom_dma_end_ack	same code, name
+0c05ad00	0c130580	render_config_flag2_on	same code, name
+0c0588b0	0c12d0f0	mtx_store_translation	same code, name, signature
+0c077480	0c14d440	elan_layer_reset	same code, name
+0c09992c	0c32ac40	list4_regions_from_list2	global
+0c344a24	0c41ea0c	xfer_next_ticket	global
+0c344a14	0c41e9fc	xfer_trace_next	global
+0c344a20	0c41ea08	xfer_trace_last	global
+0c344a00	0c41e9e8	list_kind_sent	global
+0c344a10	0c41e9f8	xfer_dma_queued	global
+0c344a1c	0c41ea04	xfer_dma_finished	global
+0c07bac0	0c151a80	sq_save_stack	global
+0c344b40	0c41eb28	sq_save_top	global
+0c3445a8	0c41e590	direct_send_held	global
+0c3449f8	0c41e9e0	direct_send_hold_depth	global
+0c344a28	0c41ea10	tile_owner_bitmaps	global
+0c02a280	0c0f2a40	dimm_dma_start	same code, name
+0c353498	0c55dcc8	dimm_dma_started	global
+0c029760	0c080540	alab_play_end	same code, name
+0c059720	0c12efa0	texidx_bit_clear	same code, name
+0c043ca4	0c108984	modvol_q_to_side	same code, name, signature
+0c046440	0c10b120	intensity_tri_near_clip	same code, name, signature
+0c083a20	0c15a720	strlen	same code, name, signature
+0c04ab40	0c115a20	saturating_decrement	same code, name
+0c065f20	0c13bee0	fb_pair_index_toggle	same code, name
+0c099448	0c32a75c	fb_pair_index	global
+0c029660	0c080440	alab_play_start	same code, name
+0c029a60	0c080840	alab_status_poll_keep	same code, name
+0c059960	0c12f1e0	tex_slot_table_bind	same code, name
+0c33e430	0c418418	tex_slot_count	global
+0c341b24	0c41bb0c	tex_load_count	global
+0c028fe0	0c07fdc0	net_clock_now	same code, name
+0c05cdc0	0c132640	text_draw_formatted	same code, name
+0c33daec	0c417ad4	text_format_buf	global
+0c080140	0c156100	inflate_blocks_reset	same code, name, signature
+0c059150	0c12d990	vec3_set_length	same code, name, signature
+0c0331a0	0c11f220	nsock_send_start	same code, name
+0c3b0af0	0c5cd1e0	nsock_send_buf	global
+0c032e20	0c11eea0	form_map_clear	same code, name
+0c034140	0c12ab60	ta_buffers_reinit	same code, name
+0c058de0	0c12d620	mtx_rot_y_sincos_opposite	same code, name
+0c035e60	0c128160	bg_plane_and_region_array_write	same code, name
+0c03e900	0c1035e0	obj_proj_view_capture	same code, name
+0c3b2b10	0c5c9d90	obj_saved_mtx	global
+0c058820	0c12d060	xmtrx_to_3x3_packed	same code, name, signature
+0c062900	0c138e80	sq_windows_map	same code, name
+ff000010	ff000010	mmu_ctrl_reg	global
+0c343e30	0c41df30	sq_ram_entries	global
+0c343e0c	0c41df0c	sq_ta_entries	global
+0c343e2c	0c41df2c	sq_ta_yuv_entries	global
+0c039660	0c101100	elan_lists_start	same code, name
+0c327b8c	0c3dc1f0	elan_list0_size	global
+0c327b6c	0c3dc1d0	elan_list1_size	global
+0c327b90	0c3dc1f4	elan_list2_size	global
+0c327b98	0c3dc1fc	elan_list3_size	global
+0c327b94	0c3dc1f8	elan_list4_size	global
+0c33da50	0c417a38	render_frames_in_flight	global
+0c327b34	0c3dc184	elan_cmd_half	global
+0c028120	0c08dbc0	card_write_word_start	same code, name
+0c0367e0	0c128ae0	bank_list_piece_append	same code, name
+0c0288c0	0c07f6a0	url_is_net_server	same code, name
+0c037580	0c129dc0	screen_map_cmds_queue	same code, name
+0c043bec	0c1088cc	modvol_n_to_side	same code, name, signature
+0c065940	0c13b900	opaque_list_far_triangle	same code, name
+0c08bd54	0c216914	far_triangle_block	global
+0c05a6c0	0c12ff40	frame_pace_vblanks	same code, name
+0c33da30	0c417a18	frame_pace_vblank_n	global
+0c077540	0c14d500	elan_ram_span_get	same code, name
+0c053460	0c120c60	sock_close_all	same code, name
+0c07f6c0	0c155680	set_data_type	same code, name, signature
+0c058ad0	0c12d310	mtx_pop	same code, name
+0c04bac0	0c1169a0	cart_pio_read	same code, name
+0c0310e0	0c11d160	http_shutdown	same code, name
+0c07dac0	0c153a80	_tr_init	same code, name, signature
+0c09995c	0c32ac70	static_l_desc	global
+0c099970	0c32ac84	static_d_desc	global
+0c099984	0c32ac98	static_bl_desc	global
+0c0547c0	0c121fc0	lookup_request_write	same code, name
+0c03edc0	0c103aa0	obj_sphere_visible	same code, name
+0c05ff40	0c135ae0	tmu1_stop	same code, name
+0c05c940	0c1321c0	text_sprite_tex_word	same code, name
+0c058c40	0c12d480	mtx_negate_x_axis	same code, name
+0c074d80	0c14ad40	bg_plane_from_tex_packed_uv16	same code, name
+0c068340	0c13e300	context_volume2_header_select	same code, name
+0c02c220	0c0f71a0	naominet_last_error_get	same code, name
+0c02d960	0c0f88e0	naominet_job_alloc	same code, name
+0c3a7e28	0c5c3280	naominet_jobs	global
+0c0257a0	0c048600	card_log_clear	same code, name
+0c06bdc0	0c141d80	fb_clip_rect_store	same code, name
+0c05d9a0	0c1333c0	mtx_stack_setup	same code, name
+0c052620	0c11fe20	ctl_call_op2	same code, name
+0c074600	0c14a5c0	bg_plane_tag_bits_set	same code, name
+0c048cb0	0c10d990	vertex_colour_tri_near_clip	same code, name, signature
+0c0636e0	0c139580	aica_fifo_idle_flag	same code, name
+0c074360	0c14a320	vram32_write_chip_b	same code, name
+0c06dd20	0c143ce0	quant_error_6bit	same code, name
+0c058970	0c12d1b0	xmtrx_from_pairs	same code, name, signature
+0c05e220	0c133c40	mtx_times_last_pushed	same code, name
+0c055ce0	0c1234e0	sock_select_put_sets	same code, name
+0c073c60	0c149c20	param_overflow_irq	same code, name
+0c048280	0c10cf60	bump_kept_vtx_emit	same code, name, signature
+0c026400	0c049260	player_input_read	same code, name
+0c34578c	0c41f7b0	player_input	global
+0c0868cc	0c168080	player_start_bit	global
+0c303448	0c377824	player_buttons	global
+0c052860	0c120060	sock_slot_data_addr	same code, name
+0c037d00	0c0fe7e0	model_draw	same code, name
+0c04a920	0c115800	sram_bank_copy	same code, name
+0c02e960	0c0f98e0	http_client_sock_error	same code, name
+0c07b840	0c151800	elan_ram_window	same code, name
+0c041974	0c106654	lit_flat_colour_spread	same code, name, signature
+0c060a20	0c1365c0	cache_ram_blocks_take	same code, name
+0c068c00	0c13ebc0	list_header_sq_write	same code, name
+0c028280	0c08dd20	card_header_check	same code, name
+0c05b4a0	0c130d20	stopwatch_start	same code, name
+0c33da54	0c417a3c	stopwatch_start_count	global
+0c042c12	0c1078f2	lit_offset_vertex_emit	same code, name, signature
+0c0255e0	0c048440	point_ranking_insert	same code, name
+0c083300	0c15a000	strcmp	same code, name, signature
+0c0627e0	0c138d60	ic_flush_and_unblock	same code, name
+0c029dc0	0c0f2580	now_seconds_get	same code, name
+0c05a380	0c12fc00	bg_plane_corner_colors	same code, name
+0c069580	0c13f540	ta_param_area_release	same code, name
+0c3ba388	0c5d5d08	ta_param_area	global
+0c0590d0	0c12d910	vec3_cross	same code, name
+0c04d180	0c118060	board_config_from_args	same code, name
+0c06ac40	0c140c00	vblank_hook_put	same code, name
+0c081f20	0c159220	__movstrSI12_i4	same code, name, signature
+0c06c500	0c1424c0	surface_bytes_at_offset_to_vram	same code, name
+0c0308c0	0c0fb840	naominet_crc_table_build	same code, name
+0c30458c	0c3dbd40	naominet_crc_table	global
+0c05d3c0	0c132de0	light0_by_inverse_rotation	same code, name
+0c099378	0c32a68c	view_unit_z	global
+0c3ba280	0c5d5c00	model_unit_z	global
+0c059200	0c12da40	vec3_normalize	same code, name
+0c0601a0	0c135d40	tmu2_count_set	same code, name
+0c05c220	0c131aa0	lcg_next15	same code, name
+0c0992a4	0c32a5b8	random_lcg_state	global
+0c0658ac	0c13b86c	irq_entry_on_private_stack	same code, name, signature
+0c065824	0c13b7e4	irq_private_stack_saved_sp	global
+0c0658a8	0c13b868	irq_private_stack_handler	global
+0c05c480	0c131d00	sin_radians	same code, name
+0c05d320	0c132d40	lights_by_inverse_matrix	same code, name
+0c05f600	0c1351a0	proj_build_rect_matrix	same code, name
+0c0856e0	0c15d5a0	div	same code, name, signature
+0c061be0	0c138160	cache_shutdown	same code, name, signature
+0c058f50	0c12d790	mtx_subtract	same code, name
+0c05a140	0c12f9c0	draw_ctx_tex_offset_from_preset	same code, name
+0c04513e	0c109e1e	float_colour_vtx_emit_plain	same code, name, signature
+0c0534c0	0c120cc0	board_status_read	same code, name
+0c3b3ba0	0c5cf300	net_window_base	global
+0c058750	0c12cf90	mtx_xform_point	same code, name
+0c05b0e0	0c130960	tmu0_restart_usec_scale	same code, name
+0c33da38	0c417a20	tmu0_usec_per_tick	global
+0c049e60	0c114d40	maple_hw_init	same code, name
+ffa00020	ffa00020	dma2_source	global
+0c03dbe0	0c100920	obj_flag_override_set	same code, name
+0c086e40	0c21172c	obj_flag_fields	global
+0c02a7a0	0c0f2f60	sffs_find	same code, name, signature
+0c353928	0c55e158	sffs_dir	global
+0c083260	0c159f60	strchr	same code, name, signature
+0c0704a0	0c146460	node_list_insert_after	same code, name
+0c062140	0c1386c0	ext_bridge_hold_off	same code, name
+0c0533c0	0c120bc0	ip_text_parse	same code, name
+0c078e40	0c14ee00	jobq_append	same code, name
+0c067200	0c13d1c0	ta_lists_rearm	same code, name
+0c063740	0c139700	g2dma_suspend_set	same code, name
+0c046220	0c10af00	intensity_vtx_load	same code, name, signature
+0c058d20	0c12d560	mtx_rot_x_sincos_opposite	same code, name
+0c072da0	0c148d60	hblank_irq	same code, name
+0c032b80	0c11ec00	http_ring_state_get	same code, name
+0c0739c0	0c149980	ta_input_finish	same code, name
+0c05be40	0c1316c0	cot_ang16	same code, name
+0c035300	0c12be20	list_starts_from_capture	same code, name
+0c0945c4	0c32a530	list_starts_saved	global
+0c327198	0c417618	captured_list_starts	global
+0c032ee0	0c11ef60	form_map_hex	same code, name
+0c05b6a0	0c130f20	modvol_lists_merge_into_opaque	same code, name
+0c074640	0c14a600	bg_plane_skip_from_isp_word	same code, name
+0c03f3a0	0c104080	obj_lit_send	same code, name
+0c057620	0c124e20	peer_cmd35_post	same code, name
+0c0421f0	0c106ed0	lit_offset_strip_send	same code, name, signature
+0c03b440	0c0fcf20	strip_vertex_code_2	same code, name
+0c034460	0c12ae80	rt_tex_side_code	same code, name
+0c0400f0	0c104dd0	argb_offset_strip_send	same code, name, signature
+0c05e260	0c133c80	mtx_push_view_times_current	same code, name
+0c03f000	0c103ce0	obj_light_vecs_to_model	same code, name
+0c03a100	0c101ea0	lights_elan_last_flag_set	same code, name
+0c035880	0c127b80	tex_target_bank_addresses_set	same code, name
+0c04cca0	0c117b80	board_serial_numbers	same code, name
+0c01f200	0c01f200	board_serial_1	global
+0c01f220	0c01f220	board_serial_2	global
+0c06dd40	0c143d00	quant_error_5bit	same code, name
+0c058b20	0c12d360	mtx_push	same code, name, signature
+0c07a020	0c14ffe0	list_seg_append_padded	same code, name
+0c060040	0c135be0	tmu2_start	same code, name
+0c06e500	0c1444c0	chips_pool_irq_set_up	same code, name
+0c04bc60	0c116b40	rom_crc_feed	same code, name
+0c034340	0c12ad60	cpu_ol_all_tiles_put	same code, name
+0c062400	0c138980	trap_print_reg_row	same code, name
+0c3ba2b4	0c5d5c34	trap_frame	global
+0c068980	0c13e940	strip_hdr_uv_clamp_set	same code, name
+0c05da00	0c133420	mtx_stacks_start	same code, name
+0c3428a8	0c41c890	mtx_view_stack_slots	global
+0c3427b8	0c41c7a0	mtx_proj_stack_slots	global
+0c045178	0c109e58	float_colour_vtx_keep_plain	same code, name, signature
+0c05e2a0	0c133cc0	mtx_push_then_view	same code, name
+0c05ce80	0c1328a0	hdr_or_volume	same code, name
+0c027140	0c08cbe0	card_read_start	same code, name
+0c03f660	0c104340	argb_strip_send	same code, name, signature
+0c0419a6	0c106686	lit_kept_vertex_emit	same code, name, signature
+0c05e940	0c1344e0	proj_from_near_rect_zflip	same code, name
+0c059f00	0c12f780	pal_shadow_flush	same code, name
+0c3b9280	0c5d4c00	pal_shadow	global
+0c058860	0c12d0a0	xmtrx_to_4x3	same code, name, signature
+0c051680	0c11c560	jvs_reply_none	same code, name, signature
+0c054cc0	0c1224c0	board_text_request_write	same code, name
+0c052260	0c11fa60	dimm_cmd_post	same code, name
+0c01ff0c	0c01ff0c	dimm_link_flags	global
+0c05a180	0c12fa00	draw_ctx_filter_word_set_bit21	same code, name
+0c0519e0	0c11c8c0	jvs_reply_dac	same code, name, signature
+0c04cbe0	0c117ac0	bios_helper_58	same code, name
+0c03e760	0c103440	obj_modvol_send	same code, name
+0c0509e0	0c11b8c0	jvs_build_two_node_command	same code, name, signature
+0c3b3a50	0c5cafe0	jvs_two_node_command	global
+0c33539c	0c3e9a20	jvs_extra_command_len	global
+0c32f0bc	0c3e3740	jvs_extra_command	global
+0c079060	0c14f020	xfer_job_pool_init	same code, name
+0c3e667c	0c601ffc	xfer_node_pool	global
+0c050380	0c11b260	jvs_save_command_after	same code, name, signature
+0c32e518	0c3e2b9c	jvs_last_command	global
+0c334bd8	0c3e925c	jvs_frame_command	global
+0c3332a4	0c3e7928	jvs_frame_command_len	global
+0c05a3a0	0c12fc20	ta_list_sizes_set_up_old_holly	same code, name
+0c3b8f48	0c5d48bc	frame_surface_0	global
+0c3b8f70	0c5d48e4	frame_surface_1	global
+0c33d960	0c417948	builtin_texture_loaded	global
+0c04b800	0c1166e0	jvs_queue_command	same code, name, signature
+0c0516a0	0c11c580	jvs_reply_set_address	same code, name, signature
+0c072fc0	0c148f80	vertex_stall_check	same code, name
+0c05a000	0c12f880	dmac_ch2_and_master_enable	same code, name
+0c04df40	0c118e20	credit_select_price	same code, name
+0c32cb40	0c3e11c4	credit_state	global
+0c32d50c	0c3e1b90	credit_status	global
+0c060aa0	0c136640	cache_ram_block_release	same code, name
+0c02d0a0	0c0f8020	naominet_retry_wait_set	same code, name
+0c3a884c	0c5c3ca4	naominet_retry_wait_ms	global
+0c06a7e0	0c1407a0	setup_steps_mark	same code, name
+0c0995fc	0c32a910	setup_steps_done	global
+0c030960	0c0fb8e0	ip_to_dotted_text	same code, name
+0c3ae914	0c5c9d6c	ip_dotted_text_buf	global
+0c034fc0	0c12bae0	ring_slot_send_all	same code, name
+0c04c460	0c117340	eeprom_save_store	same code, name
+0c3b3a20	0c5cafb0	eeprom_save_header_a	global
+0c3b3a2c	0c5cafbc	eeprom_save_size	global
+0c3b3a24	0c5cafb4	eeprom_save_header_b	global
+0c047e60	0c10cb40	bump_tri_send	same code, name, signature
+0c040700	0c1053e0	argb_offset_flat_colour_spread	same code, name, signature
+0c028640	0c07f420	net_init	same code, name
+0c3039b4	0c37d804	net_info	global
+0c07b6e0	0c1516a0	elan_cmd_input_reset	same code, name
+0c043bcc	0c1088ac	modvol_n_to_newest	same code, name, signature
+0c02a460	0c0f2c20	dimm_dma_irq	same code, name
+0c3534a0	0c55dcd0	dimm_irq_prev_handler	global
+0c353494	0c55dcc4	dimm_dma_cur	global
+0c3534a4	0c55dcd4	dimm_dma_queue	global
+0c35349c	0c55dccc	dimm_dma_queued	global
+0c35348c	0c55dcbc	dimm_dma_active	global
+0c060900	0c1364a0	cache_prefetch_unaligned	same code, name
+0c0812a0	0c157260	inflate_codes_new	same code, name, signature
+0c058aa0	0c12d2e0	mtx_stack_drop_in	same code, name, signature
+0c06a620	0c1405e0	render_setup_finish	same code, name
+0c343fac	0c41df94	render_setup	global
+0c099600	0c32a914	ta_direct_mode	global
+0c04b0a0	0c115f80	jvs_send_reset	same code, name
+0c062720	0c138ca0	trap_serial_send_text	same code, name
+0c04ca00	0c1178e0	bios_helper_44	same code, name
+0c029be0	0c0f23a0	fatal_at	same code, name
+0c071020	0c146fe0	vram_find_mirrored_offset	same code, name
+0c061e20	0c1383a0	ext_devices_release	same code, name
+0c099408	0c32a720	ext_id10_high_code	global
+0c09940c	0c32a724	ext_id10_low_code	global
+0c03f1a0	0c103e80	obj_mtx_push_proj_view	same code, name
+0c035540	0c12c060	capture_mode_finish	same code, name
+0c04b6c0	0c1165a0	jvs_write_mie_buffer	same code, name
+0c05d100	0c132b20	light_range_set	same code, name
+0c048350	0c10d030	bump_tri_near_clip	same code, name, signature
+0c06bfc0	0c141f80	return_0x78_0c141f80	same code, name
+0c032ce0	0c11ed60	form_map_parse	same code, name
+0c0854c0	0c15d360	isalnum	same code, name, signature
+0c030620	0c0fb5a0	naominet_rtc_date_read	same code, name
+0c037ba0	0c101b80	elan_ram_region_take	same code, name
+0c0945f0	0c32587c	elan_ram_region_start	global
+0c0945f4	0c325880	elan_ram_region_end	global
+0c068ee0	0c13eea0	strip_list_write_ptr_addr	same code, name
+0c04c900	0c1177e0	bios_helper_28	same code, name
+0c029300	0c0800e0	alab_dimm_firmware_check	same code, name
+0c056ee0	0c1246e0	peer_request_result_get	same code, name
+0c035500	0c12c020	capture_mode_begin	same code, name
+0c0945c0	0c32a52c	capture_mode_on	global
+0c059920	0c12f1a0	tex_slot_bits_into_poly_hdr	same code, name
+0c028800	0c07f5e0	net_log_slot_current	same code, name
+0c34dff9	0c42bbc1	net_log_slot_cur	global
+0c04f220	0c11a100	card_queue_d0	same code, name
+0c07c140	0c152100	deflateInit_	same code, name, signature
+0c034d20	0c12b740	texidx_hw_size_get	same code, name
+0c072de0	0c148da0	yuv_done_irq	same code, name
+0c040740	0c105420	argb_offset_kept_vertex_emit	same code, name, signature
+0c04cec0	0c117da0	coin_config_unpack	same code, name
+0c05fb40	0c1356e0	mtx_premul_rect_proj	same code, name
+0c029160	0c07ff40	net_log_current_draw	same code, name
+0c0323e0	0c11e460	http_ring_prev	same code, name
+0c085580	0c15d420	isxdigit	same code, name, signature
+0c06c920	0c1428e0	mipmap_levels_overwrite	same code, name
+0c06f320	0c1452e0	vram_compact_halves	same code, name
+0c03fc80	0c104960	argb_flat_colour_spread	same code, name, signature
+0c05b660	0c130ee0	error_handler_pick	same code, name
+0c05da80	0c1334a0	mtx_inverse_lu	same code, name
+0c074680	0c14a640	bg_plane_append_offset	same code, name
+0c0631e0	0c1393c0	mmu_control_default_put	same code, name
+0c049f00	0c114de0	mie_wait_answer	same code, name
+0c044ca2	0c109982	float_colour_vtx_emit_spec	same code, name, signature
+0c03a000	0c101da0	light_elan_mode_b_set	same code, name
+0c06d4c0	0c143480	mip16_chain_to_vram	same code, name
+0c08bec0	0c216a80	mip16_chain_tail_bytes	global
+0c058990	0c12d1d0	mtx_mul_by	same code, name, signature
+0c034ba0	0c12b5c0	texidx_bind_frame_buffer	same code, name
+0c049020	0c110be0	irq_slots_install	same code, name
+0c3b38b4	0c5cab68	irq_slot_hook_ids	global
+0c086ef6	0c21198e	irq_ipr_defaults	global
+0c07fb60	0c155b20	inflateInit_	same code, name, signature
+0c04aba0	0c115a80	sram_read_bank_flag	same code, name
+0c04d200	0c1180e0	bios_signature_check	same code, name
+0c32c930	0c3e0fb4	bios_signature_found	global
+0c0988f8	0c329afc	bios_signature	global
+0c0485f0	0c10d2d0	vertex_colour_strip_send	same code, name, signature
+0c035960	0c127c60	tex_target_banks_place	same code, name
+0c0286e0	0c07f4c0	net_shutdown	same code, name
+0c06bb80	0c141b40	pvr_pal_ram_load_all	same code, name
+0c0491a0	0c110d60	irq_vblank_in_fn_store	same code, name
+0c04cb20	0c117a00	bios_helper_30	same code, name
+0c035d20	0c128020	bg_plane_256x128_write_link_out	same code, name
+0c042e40	0c107b20	lit_offset_tris_send_near_clip	same code, name, signature
+0c03a8a0	0c102640	lights_elan_send_masked	same code, name
+0c077340	0c14d300	pvr_softreset_pulse	same code, name
+0c036ec0	0c12c5a0	tile_grid_set_from_counts	same code, name
+0c028dc0	0c07fba0	net_log_record_time_stamp	same code, name
+0c05e4c0	0c133ee0	mtx_stack_drop	same code, name
+0c038f60	0c100a00	proj_cmd_queue	same code, name
+0c083338	0c15a038	strcpy	same code, name, signature
+0c034020	0c12aa40	target_background_words_set	same code, name
+0c094588	0c32a4f4	target_current	global
+0c077800	0c14d7c0	float_high_half	same code, name
+0c050400	0c11b2e0	jvs_save_command_before	same code, name, signature
+0c04c940	0c117820	bios_helper_08	same code, name
+0c03ada0	0c0fc880	model_body_sq_copy	same code, name
+0c085540	0c15d3e0	ispunct	same code, name, signature
+0c061fe0	0c138560	g2_timeout_flag_clear	same code, name
+0c042c6e	0c10794e	lit_offset_vertex_keep	same code, name, signature
+0c05e1c0	0c133be0	mtx_stack_select	same code, name
+0c04c8a0	0c117780	bios_credit_refresh	same code, name
+0c026260	0c0490c0	player_input_init	same code, name
+0c345be0	0c41fc04	input_repeat_cfg	global
+0c3033e4	0c3777c0	input_enabled	global
+0c038760	0c0ff240	matrix_cmds_build_normal_from_pushed	same code, name
+0c076680	0c14c640	tile_regions_put_flush_entry	same code, name
+0c0267c0	0c0211e0	media_is_dimm	same code, name
+0c303450	0c3601ec	system_param_value	global
+0c06cd00	0c142cc0	vram_pool_sort_and_compact	same code, name
+0c034300	0c12ad20	words_fill_arith	same code, name
+0c033be0	0c12a600	target_list_block_bits	same code, name
+0c04a360	0c115240	mie_send_cmd_84	same code, name
+0c0742e0	0c14a2a0	vram32_write	same code, name
+0c03eac0	0c1037a0	obj_light_scalar_set	same code, name
+0c052ce0	0c1204e0	dimm_mem_read_chunk	same code, name
+0c0854e0	0c15d380	iscntrl	same code, name, signature
+0c038ec0	0c0ff9a0	env_uv_offset_get	same code, name
+0c078fc0	0c14ef80	jobq_reset	same code, name
+0c06c0c0	0c142080	vram_upload_dma_idle	same code, name
+0c0793c0	0c14f380	xfer_job_retire	same code, name
+0c069da0	0c13fd60	used_lists_mask_set	same code, name
+0c055da0	0c1235a0	sock_select_get_sets	same code, name
+0c03fc60	0c104940	argb_vertex_keep	same code, name, signature
+0c025420	0c048280	user_back_init	same code, name
+0c3033e0	0c3777bc	user_back_area_size	global
+0c061a80	0c138000	sys_bring_up_all	same code, name
+0c059b40	0c12f3c0	tex_builtin_8x8_upload	same code, name
+0c0872c0	0c211e9c	tex_builtin_8x8_desc	global
+0c05cce0	0c132560	text_cursor_to_cell	same code, name
+0c05c340	0c131bc0	sec_ang16	same code, name
+0c083be0	0c15a8e0	strrchr	same code, name, signature
+0c05fda0	0c135940	ticks_between	same code, name, signature
+0c069660	0c13f620	listbuf_list_used_words	same code, name
+0c076100	0c14c0c0	bg_plane_from_tex_intensity_uv16_2vol	same code, name
+0c02da80	0c0f8a00	http_client_pool_init	same code, name
+0c3ae908	0c5c9d60	http_client_conn_count	global
+0c3ae904	0c5c9d5c	http_client_conns	global
+0c3ae90c	0c5c9d64	http_client_send_heap	global
+0c3ae910	0c5c9d68	http_client_recv_heap	global
+0c029c60	0c0f2420	fatal_at_va	same code, name, signature
+0c060080	0c135c20	tmu2_handler_set	same code, name
+0c05faa0	0c135640	mtx_set_rect_x_saved_proj	same code, name
+0c057b80	0c125380	dcache_range_purge	same code, name, signature
+0c02a1a0	0c0f2960	dimm_dma_abort	same code, name
+0c059aa0	0c12f320	tex_slot_table_wipe	same code, name
+0c0788e0	0c14e8a0	tile_grid_size_put	same code, name
+0c3e6678	0c601ff8	tile_grid_last_row	global
+a8800090	a8800090	elan_tile_grid_reg	global
+0c029f80	0c0f2740	rom_port_write32	same code, name
+0c0372a0	0c129ae0	screen_sprite_flat_queue	same code, name
+0c028760	0c07f540	net_log_slot_addr	same code, name
+0c304558	0c37e3a8	net_log_base	global
+0c058710	0c12cf50	mtx_xform_point_xyzw	same code, name
+0c058580	0c12c810	atan2_ang8_table	same code, name
+0c045fb0	0c10ac90	intensity_strip_near_clip	same code, name, signature
+0c05aac0	0c130340	render_config_fill_defaults	same code, name
+0c33da58	0c417a40	render_frame_surfaces	global
+0c33dae4	0c417acc	punch_list_share	global
+0c0831e0	0c159ee0	strcat	same code, name, signature
+0c0355a0	0c1278a0	list_block_sizes_from_alloc	same code, name
+0c037c20	0c101c00	elan_cmd_alloc	same code, name
+0c04e7e0	0c1196c0	coin_input_update	same code, name, signature
+0c085440	0c15d2e0	isalpha	same code, name, signature
+0c05867c	0c12c90c	palette_shadow_write	same code, name
+0c0526e0	0c11fee0	ctl_call_op3	same code, name
+0c056960	0c124160	sock_setopt_pack_args	same code, name
+0c058910	0c12d150	xmtrx_from_4x3	same code, name, signature
+0c07c660	0c152620	putShortMSB	same code, name, signature
+0c049200	0c110dc0	irq_cart_board_fn_store	same code, name
+0c057560	0c124d60	peer_cmd35_post_wait	same code, name
+0c033820	0c12a240	target_queues_flip	same code, name
+0c094554	0c32a4c0	pass_fb_select	global
+0c094558	0c32a4c4	ta_regs_need_restore	global
+0c094550	0c32a4bc	pass_queue_half	global
+0c325e10	0c416280	pass_queues	global
+0c325e90	0c416300	pass_entry_pools	global
+0c05dc40	0c133660	mtx_mul_eye_to_target_roll	same code, name
+0c04bea0	0c116d80	sram_save_write_copy_b	same code, name
+0c07a780	0c150740	ticket_wait	same code, name
+0c02eda0	0c0f9d20	http_client_body_read_length	same code, name
+0c059d40	0c12f5c0	pal_group_word0_get	same code, name
+0c04eb20	0c119a00	card_reply_bad	same code, name
+0c098a6c	0c329c70	card_unit_maple_ids	global
+0c098a80	0c329c84	card_bad_replies	global
+0c034b40	0c12b560	target_tex_retype	same code, name
+0c03aba0	0c102940	light_single_elan_send	same code, name
+0c0406e0	0c1053c0	argb_offset_vertex_keep	same code, name, signature
+0c04ab20	0c115a00	saturating_increment	same code, name
+0c05b720	0c130fa0	frame_stats_vertex_stalls_get	same code, name
+0c049560	0c114440	cart_timing_slowest	same code, name
+0c02d100	0c0f8080	naominet_stop	same code, name
+0c0787c0	0c14e780	tile_split_apply	same code, name
+0c055980	0c123180	sock_op12_pack_strings	same code, name
+0c05b460	0c130ce0	tmu0_ticks_as_usec	same code, name
+0c051840	0c11c720	jvs_reply_switches	same code, name, signature
+0c076520	0c14c4e0	objlist_put_never_drawn_triangle	same code, name
+0c04688a	0c10b56a	intensity_tri_send_spec	same code, name, signature
+0c032960	0c11e9e0	net_board_present	same code, name
+0c060b20	0c1366c0	dcache_writeback_discard_lines	same code, name, signature
+0c0855c0	0c15d460	toascii	same code, name, signature
+0c059600	0c12ee80	tex_vram_free_total	same code, name
+0c031180	0c11d200	http_user_agent_set	same code, name
+0c3b0aac	0c5cd19c	http_user_agent_buf	global
+0c054e40	0c122640	sock_op15_string_async	same code, name
+0c04b060	0c115f40	jvs_delay	same code, name
+0c03eae0	0c1037c0	obj_view_dir_put	same code, name
+0c0582c0	0c125ac0	dimm_status_mode_set	same code, name
+0c045800	0c10a4e0	typed_send_by_slot_alpha	same code, name, signature
+0c0450b8	0c109d98	float_colour_vtx_load_plain	same code, name, signature
+0c3b34e0	0c5ca760	float_colour_ambient	global
+0c094828	0c3258f0	single_light_color	global
+0c3b3260	0c5ca4e0	float_colour_group_base	global
+0c06af80	0c140f40	yuv_done_hook_put	same code, name
+0c0597a0	0c12f020	tex_slots_rebuild_after_vram_pass	same code, name
+0c07f880	0c155840	copy_block	same code, name, signature
+0c06ba80	0c141a40	pvr_fog_entries_from_floats	same code, name
+0c029e00	0c0f25c0	string_hash_x5	same code, name, signature
+0c046d40	0c10ba20	intensity_spill_strip_send	same code, name, signature
+0c029f20	0c0f26e0	irq_handler_swap	same code, name
+0c000200	0c000200	irq_handler_table	global
+0c0584c0	0c125cc0	dimm_dma_write	same code, name
+0c05b280	0c130b00	frame_stats_ta_param_used	same code, name
+0c33d964	0c41794c	frame_stats	global
+0c05e4e0	0c133f00	mtx_push_identity	same code, name
+0c02a820	0c0f2fe0	sffs_mount	same code, name
+0c353478	0c55dca8	sffs_bank	global
+0c35347c	0c55dcac	sffs_bank_size	global
+0c353438	0c55dc68	sffs_volume_header	global
+0c353490	0c55dcc0	dimm_dma_next_key	global
+0c0943b8	0c325504	sffs_mounted	global
+0c036f60	0c12c640	proj_rect_restore	same code, name
+0c0945ec	0c32a534	proj_rect_saved	global
+0c327abc	0c417638	saved_proj_left	global
+0c327ab8	0c417634	saved_proj_top	global
+0c327ab0	0c41762c	saved_proj_width	global
+0c327ab4	0c417630	saved_proj_height	global
+0c027380	0c08ce20	card_read_finish	same code, name
+0c04cfa0	0c117e80	board_config_unpack	same code, name
+0c32d724	0c3e1da8	dip_switches	global
+0c04a820	0c115700	sram_banks_clear	same code, name
+0c049220	0c110de0	irq_vbr_slot_fn_store	same code, name
+0c04e940	0c119820	card_queue_clear	same code, name
+0c32d6c8	0c3e1d4c	card_steps	global
+0c06ba00	0c1419c0	pvr_fog_clamp_pair_put	same code, name
+0c037c60	0c101c40	elan_ram_top_release_to	same code, name
+0c036e80	0c12c560	elan_input_reset_tile_word	same code, name
+0c076380	0c14c340	objlist_bytes_for_tiles	same code, name
+0c09991c	0c32ac30	opb_words_by_code	global
+0c05a200	0c12fa80	draw_ctx_tex_filter_set	same code, name
+0c06eaa0	0c144a60	surface_vram_alloc	same code, name
+0c031980	0c11da00	http_reply_ready	same code, name
+0c058280	0c125a80	dimm_command_cancel	same code, name
+0c06c080	0c142040	spg_latched_beam_xy_read	same code, name
+0c07dbc0	0c153b80	pqdownheap	same code, name, signature
+0c0456e0	0c10a3c0	intensity_spill_put	same code, name, signature
+0c094818	0c3258e0	intensity_spill_params	global
+0c0457e8	0c10a4c8	typed_send_slots	global
+0c045858	0c10a538	typed_send_slots_alpha	global
+0c07c680	0c152640	flush_pending	same code, name, signature
+0c05a680	0c12ff00	graphics_bring_up_entry	same code, name
+0c04c1a0	0c117080	sram_save_max_size	same code, name
+0c05b0c0	0c130940	render_config_flag20_on	same code, name
+0c04a600	0c1154e0	maple_unit_upload_firmware	same code, name
+0c0968b8	0c327abc	card_unit_firmware	global
+0c0988b8	0c329abc	maple_dma2_end	global
+0c034200	0c12ac20	ta_continue_into_target	same code, name
+0c09458c	0c32a4f8	ta_target_buf_select	global
+0c058340	0c125b40	dimm_pio_read	same code, name
+0c070460	0c146420	node_list_push_front	same code, name
+0c05cb40	0c1323c0	text_newline_keeps_margin	same code, name
+0c06d1a0	0c143160	surface_desc_fill_bytes	same code, name
+0c0743e0	0c14a3a0	vram32_read_both_ored	same code, name
+0c02f2c0	0c0fa240	naominet_poweron_body_build	same code, name
+0c0944b4	0c325634	b64_std_alphabet	global
+0c03ed80	0c103a60	list_write_ptrs_since_mark	same code, name
+0c06e620	0c1445e0	vram_lists_clear	same code, name
+0c3ba3a4	0c5d5d24	vram_node_pool	global
+0c0998b8	0c32abcc	packed_chunk_list	global
+0c036020	0c128320	tex_target_size_set	same code, name
+0c074540	0c14a500	vram64_read	same code, name
+0c061b20	0c1380a0	sys_bring_up_buses	same code, name
+0c078320	0c14e2e0	fb_pixel_addrs_by_chip	same code, name
+0c047580	0c10c260	intensity_spill_tri_near_clip	same code, name, signature
+0c032320	0c11e3a0	http_board_req14_arm	same code, name
+0c3b0a94	0c5cd184	http_req14_done	global
+0c05b880	0c131100	video_reconfigure	same code, name
+0c33d95c	0c417944	video_mode_is_0	global
+0c33da34	0c417a1c	clip_stretch_on	global
+0c08743c	0c212018	pixel_format_by_mode	global
+0c0872e0	0c211ebc	video_mode_table	global
+0c05d040	0c132a60	light_unit_axis_set	same code, name
+0c04f480	0c11a360	card_queue_da	same code, name
+0c04ca40	0c117920	bios_helper_48	same code, name
+0c033d60	0c12a780	target_bind_texture_sized	same code, name
+0c05c560	0c131de0	tan_radians	same code, name
+0c05b860	0c1310e0	presort_flag_flip_if_equal	same code, name
+0c072bc0	0c148b80	pvr_irq_entry_and_masks_set	same code, name
+0c3e53a4	0c600d24	vblank_recheck_request	global
+0c05bf60	0c1317e0	float_fraction	same code, name
+0c057b00	0c125300	dimm_cmd23_send_op2	same code, name
+0c06c060	0c142020	frame_vblank_quota_put	same code, name
+0c051d80	0c11cc60	legacy_io_poll	same code, name, signature
+0c049c20	0c114b00	maple_send_no_data	same code, name
+0c030c20	0c0fbba0	block_heap_init	same code, name
+0c05d280	0c132ca0	light_ambient_from_rgb	same code, name
+0c035760	0c127a60	texture_fb_write_regs_build	same code, name
+0c03fbf0	0c1048d0	argb_vertex_load	same code, name, signature
+0c05e0e0	0c133b00	mtx_mul_plane_reflect	same code, name
+0c0319c0	0c11da40	http_reply_release	same code, name
+0c0491c0	0c110d80	irq_hblank_fn_store	same code, name
+0c083160	0c159d80	sprintf	same code, name
+0c039e00	0c1018a0	modvol_mode_cheap_shadow	same code, name
+0c06dda0	0c143d60	quant_error_3bit	same code, name
+0c04ba20	0c116900	cart_control_clear	same code, name
+0c32e514	0c3e2b98	cart_control_bits	global
+0c04cae0	0c1179c0	bios_helper_4c	same code, name
+0c04f420	0c11a300	card_queue_d9	same code, name
+0c038ba0	0c0ff680	model_list_link_queue	same code, name
+0c05a080	0c12f900	render_with_busy_flag	same code, name
+0c0591b0	0c12d9f0	vec3_length_squared	same code, name
+0c044ba8	0c109888	float_colour_vtx_load_spec	same code, name, signature
+0c094838	0c325900	second_light_color	global
+0c3b3270	0c5ca4f0	float_colour_group_offset	global
+0c3b34f0	0c5ca770	float_colour_base_stash	global
+0c03f160	0c103e40	obj_mtx_push_proj	same code, name
+0c036540	0c128840	bank_record_restore	same code, name
+0c036440	0c128740	list_chunk_copy_to_cmd_buffer	same code, name
+0c059090	0c12d8d0	vec3_dot	same code, name
+0c04c4e0	0c1173c0	eeprom_save_read_copy_a	same code, name
+0c060160	0c135d00	tmu2_rate_set	same code, name
+0c0266e0	0c049540	input_per_frame	same code, name
+0c05bfa0	0c131820	rsqrt_signed	same code, name
+0c0365a0	0c1288a0	bank_lists_load_from_ring	same code, name
+0c058cf0	0c12d530	mtx_rot_x_s16	same code, name, signature
+0c043cfc	0c1089dc	modvol_cut_np_to_side	same code, name, signature
+0c04b8c0	0c1167a0	led_latch_inverted	same code, name
+a05f7068	a05f7068	led_latch_register	global
+0c069300	0c13f2c0	listbuf_list_transfer	same code, name
+0c0256a0	0c048500	time_ranking_insert	same code, name
+0c0829a0	0c1595c0	memcmp	same code, name, signature
+0c054040	0c121840	resolve_request_write	same code, name
+0c05b2a0	0c130b20	frame_stats_ta_param_area_size	same code, name
+0c05fc80	0c135820	mtx_premul_two	same code, name, signature
+0c05df60	0c133980	mtx_lu_pivoted	same code, name
+0c035100	0c12bc20	capture_first_open	same code, name
+0c04ab60	0c115a40	sram_set_bank_flag	same code, name
+0c05d420	0c132e40	light_on_set	same code, name
+0c04f2e0	0c11a1c0	card_queue_read_key	same code, name
+0c033260	0c11f2e0	nsock_recv_collect	same code, name
+0c3b1af0	0c5ce1e0	nsock_recv_buf	global
+0c02e940	0c0f98c0	http_client_response_set	same code, name
+0c07a580	0c150540	sq_copy_blocks	same code, name
+0c073cc0	0c149c80	objlist_overflow_irq	same code, name
+0c02d9c0	0c0f8940	naominet_job_free	same code, name
+0c038f40	0c0ffa20	normal_block_scale_reset	same code, name
+0c049480	0c111040	intc_ipr_level_read	same code, name
+0c02d180	0c0f8100	naominet_board_check	same code, name
+0c3a8868	0c5c3cc0	naominet_machine_info	global
+0c05c260	0c131ae0	lcg_next_unit	same code, name
+0c085480	0c15d320	islower	same code, name, signature
+0c043c4c	0c10892c	modvol_cut_pq_to_newest	same code, name, signature
+0c0493e0	0c110fa0	irq_event_ack	same code, name
+0c09487c	0c325a7c	irq_event_ack_fns	global
+0c027340	0c08cde0	card_read_raw_copy	same code, name
+0c0620e0	0c138660	ext_bridge_clear_reg14	same code, name
+0c035820	0c127b20	tex_target_bank_lay_out	same code, name
+0c0454e2	0c10a1c2	float_colour_tri_near_clip_plain	same code, name, signature
+0c05b700	0c130f80	frame_stats_render_stalls_get	same code, name
+0c0629e0	0c138f60	sq_windows_unmap	same code, name
+0c0743c0	0c14a380	vram32_read	same code, name
+0c060f60	0c136b00	irq_hooks_clear	same code, name
+0c342e0c	0c41cdf4	irq_hook_pool	global
+0c04c140	0c117020	sram_save_read_copy_b	same code, name
+0c080b60	0c156b20	inflate_set_dictionary	same code, name, signature
+0c054d40	0c122540	board_text_call	same code, name
+0c031d60	0c11dde0	http_socket_create_step	same code, name, signature
+0c0361a0	0c1284a0	tex_render_wait	same code, name
+0c061b60	0c1380e0	sys_wind_down	same code, name
+0c028940	0c07f720	net_reply_has_stat_header	same code, name
+0c04f3c0	0c11a2a0	card_queue_read	same code, name
+0c05d1c0	0c132be0	spot_cone_set_ang16	same code, name
+0c0588e0	0c12d120	xmtrx_from_3x3_of_4x4	same code, name, signature
+0c044950	0c109630	float_colour_strip_near_clip_spec	same code, name, signature
+0c074300	0c14a2c0	vram32_write_chip_a	same code, name
+0c04c8c0	0c1177a0	bios_coin_frame	same code, name, signature
+0c033fa0	0c12a9c0	target_draw_finish	same code, name
+0c0545a0	0c121da0	getopt_value_copy_back	same code, name
+0c05c2c0	0c131b40	float_trunc	same code, name
+0c058e90	0c12d6d0	mtx_rot_z_sincos_opposite	same code, name
+0c03f380	0c104060	obj_alt_lighting_off	same code, name
+0c059760	0c12efe0	texidx_header_words_put	same code, name
+0c05d260	0c132c80	light_type_set	same code, name
+0c029b60	0c0f2320	mem_block_set	same code, name
+0c027cc0	0c08d760	card_format_field_get	same code, name
+0c0635c0	0c1396a0	g2dma_addr_guard_set	same code, name
+a05f78bc	a05f78bc	g2_dma_guard_reg	global
+0c099440	0c32a754	g2_dma_guard_word	global
+0c073d80	0c149d40	strip_hazard_irq	same code, name
+0c3e53ac	0c600d2c	render_just_started	global
+0c044d44	0c109a24	float_colour_kept_vtx_emit_spec	same code, name, signature
+0c3b32e0	0c5ca560	float_colour_clip_ring	global
+0c029e80	0c0f2640	g1_bus_hold	same code, name
+0c03a1c0	0c101f60	spot_falloff_from_angles	same code, name
+0c0297e0	0c0805c0	alab_step_timed	same code, name
+0c3533f0	0c430fb8	alab_step_usec	global
+0c037ee0	0c0fe9c0	model_draw_all_as_opaque	same code, name
+0c06bb40	0c141b00	pvr_pal_ram_ctrl_put	same code, name
+0c03b200	0c0fcce0	model_buf_free	same code, name
+0c05a7c0	0c130040	gfx_counters_snapshot	same code, name
+0c081900	0c1578c0	inflate_codes_free	same code, name, signature
+0c0523c0	0c11fbc0	busy_word_drop	same code, name
+0c038ea0	0c0ff980	env_uv_offset_set	same code, name
+0c05c8e0	0c132160	text_list_choice_set	same code, name
+0c052400	0c11fc00	busy_word_try_set	same code, name, signature
+0c06a960	0c140920	hook_slots_defaults	same code, name
+0c0343e0	0c12ae00	cpu_ol_tile_ptrs_build	same code, name
+0c048700	0c10d3e0	vertex_colour_tri_send	same code, name, signature
+0c039fe0	0c101d80	light_elan_mode_a_set	same code, name
+0c065828	0c13b7e8	call_on_private_stack	same code, name, signature
+0c074280	0c14a240	dcache_writeback_span	same code, name
+0c058c20	0c12d460	mtx_negate_xz_axes	same code, name
+0c02e980	0c0f9900	http_client_conn_is_open	same code, name
+0c056da0	0c1245a0	peer_area_reset	same code, name
+0c3b7bc0	0c5d3320	peer_area_base	global
+0c05a1c0	0c12fa40	draw_ctx_filter_word_set_bit20	same code, name
+0c0452f0	0c109fd0	float_colour_tri_near_clip_spec	same code, name, signature
+0c0741c0	0c14a180	hook_slot_run	same code, name
+0c028d40	0c07fb20	net_log_record_fill	same code, name
+0c035020	0c12bb40	capture_send_via_slot	same code, name
+0c047fb0	0c10cc90	bump_strip_near_clip	same code, name, signature
+0c0255a0	0c048400	user_back_save_now	same code, name
+0c033d20	0c12a740	target_bind_texture	same code, name
+0c059180	0c12d9c0	vec3_scale	same code, name, signature
+0c06dd60	0c143d20	quant_error_4bit	same code, name
+0c0305e0	0c0fb560	naominet_ms_between	same code, name
+0c05d5e0	0c133000	light_ambient_color_set	same code, name
+0c031a20	0c11daa0	http_reply_text	same code, name
+0c03f770	0c104450	argb_tris_send	same code, name, signature
+0c03f060	0c103d40	obj_light_vecs_to_model_view	same code, name
+0c05fd40	0c1358e0	tmu0_free_run_start	same code, name
+0c049980	0c114860	maple_send	same code, name
+0c04d7c0	0c1186a0	ledger_from_sram	same code, name
+0c04d080	0c117f60	coin_config_from_args	same code, name
+0c32d720	0c3e1da4	sram_bank_flag	global
+0c059340	0c12ebc0	texidx_tables_place	same code, name
+0c036f00	0c12c5e0	proj_rect_save_once	same code, name
+0c075d40	0c14bd00	bg_plane_from_tex_packed_uv16_2vol	same code, name
+0c02faa0	0c0faa20	naominet_score_request_build	same code, name
+0c04c9c0	0c1178a0	bios_helper_40	same code, name
+0c0519a0	0c11c880	jvs_reply_counter	same code, name, signature
+0c0295e0	0c0803c0	alab_auth_info_get	same code, name
+0c34e13c	0c42bd04	alab_auth_info	global
+0c3533d0	0c430f98	auth_server_clock	global
+0c353394	0c430f5c	auth_reply_words	global
+0c3533c0	0c430f88	auth_place_id	global
+0c058bf0	0c12d430	mtx_negate_yz_axes	same code, name
+0c0379e0	0c12c760	dcache_purge_lines	same code, name
+0c077560	0c14d520	elan_list_block_queue	same code, name
+0c06af00	0c140ec0	strip_hazard_hook_put	same code, name
+0c0683c0	0c13e380	pvr_shadow_scale_write	same code, name
+0c099454	0c32a768	shadow_scale_off	global
+0c05fae0	0c135680	mtx_xform_point_div_w	same code, name
+0c06b260	0c141220	vblank_tick_await_next	same code, name
+0c058fa0	0c12d7e0	mtx_transpose	same code, name
+0c05eae0	0c134680	mtx_save_view_x_current	same code, name
+0c3429f8	0c41c9e0	view_x_model_matrix	global
+0c051620	0c11c500	jvs_reply_reset	same code, name, signature
+0c068a80	0c13ea40	strip_hdr_shade_op_set	same code, name
+0c032a40	0c11eac0	http_body_pack	same code, name
+0c078920	0c14e8e0	tile_split_columns_only_set	same code, name
+0c3e6674	0c601ff4	tile_split_columns_only	global
+0c037a00	0c1019e0	elan_matrix_cmds_write	same code, name, signature
+0c052440	0c11fc40	ctl_channel_prepare	same code, name
+0c03f870	0c104550	argb_strip_send_near_clip	same code, name, signature
+0c05ab60	0c1303e0	render_config_texmem_size_put	same code, name
+0c03b760	0c0fd240	float_pair_pack16	same code, name
+0c068b20	0c13eae0	strip_hdr_pal_group_set	same code, name
+0c04bf60	0c116e40	sram_save_write_range_a	same code, name
+0c03e600	0c1032e0	modvol_instruction_get	same code, name
+0c03e500	0c1031e0	obj_palette_offset_apply	same code, name
+0c05c620	0c131ea0	tan_ang16	same code, name
+0c074aa0	0c14aa60	bg_plane_from_flat_intensity	same code, name
+0c046962	0c10b642	intensity_spill_send_alpha	same code, name, signature
+0c06b000	0c140fc0	error_hook_put	same code, name
+0c03e580	0c103260	modvol_shadow_set_up	same code, name
+0c05d140	0c132b60	spot_cone_set_cos	same code, name
+0c06a800	0c1407c0	setup_steps_store	same code, name
+0c060560	0c136100	icache_invalidate_bit_set	same code, name
+0c06f400	0c1453c0	vram_find_mirrored_offset_for_surface	same code, name
+0c06aec0	0c140e80	surface_alloc_fail_hook_put	same code, name
+0c06e5e0	0c1445a0	error_hook_run	same code, name
+0c044e60	0c109b40	float_colour_strip_near_clip_plain	same code, name, signature
+0c0386a0	0c0ff180	matrix_cmds_build	same code, name
+0c051640	0c11c520	jvs_reply_main_board_id	same code, name, signature
+0c049a80	0c114960	maple_send_start	same code, name
+0c04f0e0	0c119fc0	card_queue_begin	same code, name
+0c057f60	0c125760	dimm_page_fd00_blank	same code, name
+0c01fd00	0c01fd00	dimm_page_fd00	global
+0c07cc20	0c152be0	read_buf	same code, name, signature
+0c059fe0	0c12f860	clip_stretch_step_report	same code, name
+0c09927c	0c32a590	clip_stretch_step	global
+0c0470d0	0c10bdb0	intensity_spill_strip_near_clip	same code, name, signature
+0c04c100	0c116fe0	sram_save_read_copy_a	same code, name
+0c03e960	0c103640	obj_put_typed	same code, name
+0c080b20	0c156ae0	inflate_blocks_free	same code, name, signature
+0c078300	0c14e2c0	elan_reg_d0_value_put	same code, name
+0c049160	0c110d20	irq_slots_install_holly_only	same code, name
+0c047340	0c10c020	intensity_spill_vtx_load	same code, name, signature
+0c0285a0	0c07f380	net_log_record_init	same code, name
+0c0696a0	0c13f660	listbuf_list_seek	same code, name
+0c04cb60	0c117a40	bios_helper_50	same code, name
+0c048f60	0c110b20	irq_rom_dma_end_relay	same code, name
+0c079b80	0c14fb40	list_seg_end_mark	same code, name
+0c029d00	0c0f24c0	get_now_tm	same code, name, signature
+0c037140	0c129980	raw_block_queue_lists_0_2	same code, name
+0c03a220	0c101fc0	elan_list_ref_block_queue	same code, name
+0c025760	0c0485c0	time_ranking_slot_find	same code, name
+0c032300	0c11e380	http_ring_next	same code, name
+0c058f40	0c12d780	mtx_overwrite_translation	same code, name, signature
+0c0260a0	0c048f00	input_merged_pressed	same code, name
+0c034320	0c12ad40	vram64_word_put_advance	same code, name
+0c040f10	0c105bf0	lit_strip_send	same code, name, signature
+0c04a9c0	0c1158a0	sram_sync_from_bank1	same code, name
+0c05a240	0c12fac0	strip_context_defaults	same code, name
+0c02b880	0c0f6800	naominet_name_info_get	same code, name
+0c3a8a50	0c5c3ea8	naominet_name_info	global
+0c085460	0c15d300	isupper	same code, name, signature
+0c048a60	0c10d740	vertex_colour_vtx_load	same code, name, signature
+0c05f5c0	0c135160	mtx_xform_point_by_saved_view	same code, name
+0c0742c0	0c14a280	pvr_reg_read	same code, name
+0c030920	0c0fb8a0	naominet_crc_update	same code, name
+0c035c40	0c127f40	tex_target_bg_plane_rewrite	same code, name
+0c0528a0	0c1200a0	sock_slots_prepare	same code, name
+0c3b3ba4	0c5cf304	send_area_base	global
+0c3b3ba8	0c5cf308	recv_area_base	global
+0c02dc60	0c0f8be0	http_client_conn_reset	same code, name
+0c039520	0c100fc0	tile_split_args_keep	same code, name
+0c0587f0	0c12d030	xmtrx_to_words	same code, name, signature
+0c0287a0	0c07f580	net_log_slot_advance	same code, name
+0c054520	0c121d20	getopt_request_write	same code, name
+0c0521e0	0c11f9e0	dimm_cmd_handler_put	same code, name
+0c030b60	0c0fbae0	naominet_unlock	same code, name
+0c0260c0	0c048f20	input_merged_held	same code, name
+0c05e7e0	0c134200	mtx_translate_by_minus_v	same code, name
+0c04a420	0c115300	mie_upload_firmware	same code, name
+0c0948c4	0c325ac8	mie_firmware	global
+0c0968b4	0c327ab8	maple_dma_end	global
+0c04df00	0c118de0	credit_event_pop	same code, name
+0c070600	0c1465c0	node_list_sort_by_start	same code, name
+0c06b760	0c141720	display_blank_and_quiesce	same code, name
+0c03ad20	0c0fc800	model_header_sq_copy	same code, name
+0c03fd00	0c1049e0	argb_near_vertex_emit	same code, name, signature
+0c049180	0c110d40	irq_render_done_fn_store	same code, name
+0c082b60	0c159780	memset	same code, name, signature
+0c0684a0	0c13e460	strip_hdr_depth_compare_set	same code, name
+0c057a80	0c125280	dimm_cmd23_send_pair	same code, name
+0c02e8a0	0c0f9820	http_client_conn_close	same code, name
+0c036180	0c128480	tex_render_start	same code, name
+0c06d500	0c1434c0	mip16_chain_from_vram	same code, name
+0c03ed40	0c103a20	list_write_ptrs_mark	same code, name
+0c05a440	0c12fcc0	graphics_bring_up	same code, name
+a05f689c	a05f689c	chip_revision_reg	global
+0c33dae0	0c417ac8	frame_pixel_format	global
+0c33e650	0c418638	bg_plane_context	global
+0c33dd5c	0c417d44	strip_context_main	global
+0c33e714	0c4186fc	draw_ctx_ptr	global
+0c33e624	0c41860c	bring_up_word_860c	global
+0c341b1c	0c41bb04	bring_up_word_bb04	global
+0c341b20	0c41bb08	bring_up_word_bb08	global
+0c341b4c	0c41bb34	bring_up_word_bb34	global
+0c341b3c	0c41bb24	bring_up_floats_bb24	global
+0c341b28	0c41bb10	bring_up_words_bb10	global
+0c05cfc0	0c1329e0	light_table_fill_defaults	same code, name
+0c0992c8	0c32a5dc	light_record_default	global
+0c02e8e0	0c0f9860	http_client_server_addr_set	same code, name
+0c06bfe0	0c141fa0	ta_isp_softreset_after_drain	same code, name
+0c055a20	0c123220	sock_op12_two_strings	same code, name
+0c07dee0	0c153ea0	gen_codes	same code, name, signature
+0c036360	0c128660	tex_queue_install	same code, name
+0c0945d0	0c32a484	tex_render_done_chained	global
+0c02d940	0c0f88c0	naominet_last_error_keep	same code, name
+0c3a885c	0c5c3cb4	naominet_last_error	global
+0c057f40	0c125740	dimm_page_fd00_get	same code, name
+0c0344a0	0c12aec0	rt_tex_hw_words_build	same code, name
+0c058e10	0c12d650	mtx_rot_y_s16_opposite	same code, name
+0c026960	0c021380	system_param_country_get	same code, name
+0c070420	0c1463e0	vram_node_return	same code, name
+0c0634a0	0c1395a0	g2dma_slot_reset	same code, name
+0c043c0c	0c1088ec	modvol_cut_np_to_newest	same code, name, signature
+0c05ff80	0c135b20	tmu1_underflow_isr	same code, name
+0c056f20	0c124720	peer_area_range_check	same code, name
+0c05ad40	0c1305c0	render_config_flag2_off	same code, name
+0c02aa40	0c0f3200	dimm_fbusy	same code, name
+0c05d180	0c132ba0	spot_cone_set_sincos	same code, name
+0c04bfe0	0c116ec0	sram_save_store	same code, name
+0c0684e0	0c13e4a0	strip_hdr_cull_mode_set	same code, name
+0c04cde0	0c117cc0	board_config_validate	same code, name
+0c05a0c0	0c12f940	draw_context_preset_apply	same code, name
+0c087454	0c212030	draw_context_presets	global
+0c33da60	0c417a48	draw_context_preset_cur	global
+0c058790	0c12cfd0	mtx_invert_rigid	same code, name
+0c06ac80	0c140c40	hblank_hook_put	same code, name
+0c068ca0	0c13ec60	list_block_sq_write	same code, name
+0c02a680	0c0f2e40	dimm_dma_find	same code, name
+0c05e240	0c133c60	mtx_premul_view_top	same code, name
+0c02f980	0c0fa900	naominet_poweron_request_build	same code, name
+0c06bd20	0c141ce0	bg_plane_vertices_by_type	same code, name, signature
+0c0998d4	0c32abe8	bg_plane_loaders	global
+0c0352a0	0c12bdc0	capture_all_replay	same code, name
+0c07a720	0c1506e0	cmd_area_write_ticketed	same code, name
+0c05cea0	0c1328c0	hdr_or_fog	same code, name
+0c02b8e0	0c0f6860	naominet_region_info_get	same code, name
+0c3a8a5c	0c5c3eb4	naominet_region_info	global
+0c027120	0c08cbc0	card_unit_result	same code, name
+0c06ea20	0c1449e0	vram32_buffer_pair_alloc	same code, name
+0c04ac00	0c115ae0	eeprom_read_image	same code, name
+0c05eb40	0c1346e0	proj_offset_xy	same code, name
+0c0993e0	0c32a6f4	proj_pending_offset_x	global
+0c0993e4	0c32a6f8	proj_pending_offset_y	global
+0c048f20	0c110ae0	irq_hblank_relay	same code, name
+0c057a20	0c125220	dimm_cmd24_hook_install	same code, name
+0c028260	0c08dd00	card_unit_ok	same code, name
+0c048b50	0c10d830	vertex_colour_vtx_keep	same code, name, signature
+0c07f920	0c1558e0	zError	same code, name, signature
+0c07b420	0c1513e0	elan_cmd_wait_list_end	same code, name
+0c08c020	0c216be0	list_end_irq_bits	global
+0c033de0	0c12a800	target_resize	same code, name
+0c0599c0	0c12f240	tex_slot_build_hw_words	same code, name
+0c037ea0	0c0fe980	model_draw_translucent_part	same code, name
+0c04f4e0	0c11a3c0	card_queue_d1	same code, name
+0c05be00	0c131680	cosh_ang16	same code, name
+0c03dc20	0c100960	obj_flag_override_clear	same code, name
+0c058fd0	0c12d810	mtx_translate	same code, name, signature

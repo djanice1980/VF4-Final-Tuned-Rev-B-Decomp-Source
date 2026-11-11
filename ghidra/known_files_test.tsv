@@ -1,0 +1,193 @@
+start	end	file	evidence
+0c020000	0c0200bf	vf4lib/libbase/src/start_asm.c	test.bin's copy of the hand-written start-up (_start, matched source/asm/0c020000.s); it differs from main.bin's only in literal words and jumps to test.bin's game_main
+0c0200c0	0c0253df	testmode/testmode.c	the test program's own code (file name ours; directory from the build string "release/jp_f/testmode 2004-11-15 23:01:34"): game_main, hardware_boot, game_boot and game_frame_loop of the test build, the screen machine (test_screen_table) and every test screen up to the card menu; its strings run without a break from 0x0C08D990 ("% 4d / %d", game_boot) to 0x0C08ECDB (card_menu's "        : %s"), ending right before user_back.c's assert path 0x0C08ECDC; .data 0x0C086058-0x0C0868D7 (on_off_texts, chara_names, the screen and menu tables, the card messages and card menu rows) and 0x0C091010-0x0C09105F (close_hours .. test_mode, test_cursor, test_page, test_frame_count, test_menu's code words); .bss card_menu_state 0x0C3034A8
+0c0253e0	0c0257df	vf4lib/libbase/src/user_back.c	assert path ".../libbase/src/user_back.c" (0x0C08ECDC) in user_back_init; all of it byte-identical to main.bin's user_back.c
+0c0257e0	0c02673f	vf4lib/libbase/src/input.c	button_word_update .. player_input_get, the same routines in the same order as main.bin's input.c (0x0C048640-0x0C04959F, without static_heap.c after it); file name as main.bin's row
+0c026740	0c0269ff	vf4lib/libbase/src/system_common.c	assert path ".../libbase/src/system_common.c" (0x0C08ED28) in system_param_country_init and system_param_country_get; board_ids_read .. sys_frame_end as in main.bin (main.bin's dimm_request_hook_install is not in this build)
+0c026a00	0c026fbf	testmode/card_test.c	the card reader tests behind the CARD MENU (file name ours; library unknown): card_test_read_run .. card_record_blank_unpack; a separate object because it sits after the libbase objects and before card_common.c, and its .data2 (card_test_write_error / card_test_verify_error 0x0C094368-0x0C09436F) opens the .data2 block before network.c's net_serial (0x0C094378); no main.bin counterpart
+0c026fc0	0c0284ff	vf4lib/libcard/src/card_common.c	assert path ".../libcard/src/card_common.c" (0x0C08EDA0, "type < CRC_TYPE_MAX") in card_crc16 (0x0C0270A0); from card_crc_tables_init (0x0C026FC0) to card_format2_area_clear (0x0C0284A0), the order of main.bin's card_common.c rows (0x0C08CA60-0x0C08DF9F); sol.c does not follow in this build
+0c028500	0c029abf	vf4lib/libnetwork/src/network.c	the test build of main.bin's network.c group "net_info and net_init, the network check log, the alab glue" (main.bin 0x0C07F2E0 to alab_work_get 0x0C080880): net_info_get .. alab_work_get, all twins or near-twins in main.bin's order; no assert path in this build; .data net_cmd_table 0x0C0868EC and e_net_ver_names 0x0C0868D8 (right after testmode.c's .data), .data2 net_serial 0x0C094378 and the alab names, .bss net_info 0x0C3039B4 .. alab_step_usec 0x0C3533F0
+0c029ac0	0c029b5f	vf4lib/libcore/src/fmath.c	only vec_to_local (byte-identical to main.bin's 0x0C0F2280, the last routine of main.bin's fmath.c); file name as main.bin's row
+0c029b60	0c029cff	vf4lib/libcore/src/fatal.c	mem_block_set, two unlisted routines (0x0C029B80 empty, 0x0C029BA0 like main.bin's mem_block_copy), fatal_at, fatal_at_va, fatal_record_store: main.bin's fatal.c in the same order
+0c029d00	0c029dff	vf4lib/libcore/src/tm_sys.c	assert path ".../libcore/src/tm_sys.c" (0x0C08F13C, "now_time != -1") in get_now_tm; get_now_tm and now_seconds_get
+0c029e00	0c02b1bf	vf4lib/libcore/src/sffs.c	SimpleFlashFS" / "1999.5.5" in sffs_mount; from string_hash_x5 (the first routine of main.bin's sffs.c) to dimm_fcheck and the unlisted 0x0C02B0A0 / 0x0C02B140; main.bin's malloc.c .. gz.c do not follow in this build
+0c02b1c0	0c030bdf	sdk/alab/naominet_client.c	the alAb client, as in main.bin: test 0x0C02B1C0 (FUN_0c02b1c0, the build of naominet_init) lies 0xCAF80 below main.bin's 0x0C0F6140, and the distance holds up to naominet_irq_level_restore (0x0C030BC0 = main 0x0C0FBB40); the START IS OUTSIDE THIS RANGE (the 0x0C020000 agent's range): the merge decides
+0c030be0	0c030edf	sdk/alab/block_heap.c	the 64-byte-unit heap, opening with its own interrupt-mask pair (0x0C030BE0/0x0C030C00) as in main.bin; block_heap_init .. block_heap_free; file name ours (as main.bin's row)
+0c030ee0	0c032cdf	naomi2lib/libnl2http/src/http.c	assert path ".../libnl2http/src/http.c" (string 0x0C08F694, used by http_post_queue 0x0C031660 and http_recv_step 0x0C032000); http_startup .. http_close_locked, the same order as main.bin's 0x0C11CF60-0x0C11ED5F; it follows block_heap.c directly, so main.bin's hand-written normal packer at 0x0C0FBE60 is not in this image (a separate object, as main.bin's row already says)
+0c032ce0	0c03317f	naomi2lib/libnl2http/src/map.c	assert path ".../libnl2http/src/map.c" (0x0C08F7F8, form_map_copy_out "out_buf too short %d + 1 > %d"); form_map_parse .. form_map_copy_out
+0c033180	0c03331f	naomi2lib/libnl2http/src/naomi_socket.c	assert path ".../libnl2http/src/naomi_socket.c" (0x0C08F84C, nsock_recv_collect "recv_size != SOCKET_ERR", "recv_size == sz"); nsock_connect_start .. nsock_recv_collect
+0c033320	0c03365f	naomi2lib/libnl2http/src/base64.c	file name ours; base64_encode and base64_decode only, with base64_alphabet (0x0C086BEC) in .rodata after http.c's two host names; the token-list routines main.bin keeps in front of them (0x0C11F3A0-0x0C11F53F) are not linked here (see below)
+0c033660	0c0336ff	gfxlib/frame_end.c	frame_end_with_targets alone, as main.bin's 0x0C129120-0x0C1291BF; followed here by the pass object, not by main.bin's model_merge object (not linked into test.bin)
+0c033700	0c034e7f	gfxlib/tex_passes.c	target_pass_next_start .. texidx_size_get and the two uncalled pixel converters at 0x0C034DC0 / 0x0C034E20 (main.bin 0x0C12B7E0 / 0x0C12B840), the same members as main.bin's 0x0C12A120-0x0C12B89F
+0c034e80	0c03559f	gfxlib/list_capture.c	ring_slot_lists_record .. capture_mode_finish, as main.bin's 0x0C12B9A0-0x0C12C0BF (in test.bin it comes straight after the pass object; main.bin has vram_pair_pool.c between them)
+0c0355a0	0c036e1f	gfxlib/tex_render.c	list_block_sizes_from_alloc .. bank_ring_drop_jobs, as main.bin's 0x0C1278A0-0x0C12911F
+0c036e20	0c03707f	gfxlib/gfx_helpers.c	check_or_magenta_halt .. code_jump_patch and its 12-byte jump stub at 0x0C037060, as main.bin's 0x0C12C500-0x0C12C75F
+0c037080	0c0378df	gfxlib/screen_prims.c	opens with the two uncalled write-pointer routines at 0x0C037080 / 0x0C0370A0 (main.bin's elan_write_ptr_get / elan_write_ptr_set, 0x0C1298C0 / 0x0C1298E0), right after the helper object's jump stub, as main.bin's notes said; .. screen_quad_tex_elan_queue
+0c0378e0	0c0379df	gfxlib/vram_pair_pool.c	vram_pair_pool_alloc, vram_pair_pool_take (main.bin 0x0C12B8A0-0x0C12B99F)
+0c0379e0	0c0379ff	gfxlib/dcache_purge.c	dcache_purge_lines alone (main.bin 0x0C12C760); the NAOMI2 library follows
+0c037a00	0c037cff	sdk/naomi2_library/elan_cmd_ram.c	file name ours; elan_matrix_cmds_write, elan_ram_region_take, the uncalled ELAN RAM resets at 0x0C037C00 / 0x0C037C20, elan_ram_alloc_top, elan_ram_top_release_to, elan_cmd_buffer_flip and the uncalled 0x0C037CE0; main.bin 0x0C1019E0-0x0C101CDF, which sits there between the projection object and the lights; one object of the NAOMI2 library archive (see below)
+0c037d00	0c038f5f	sdk/naomi2_library/model_draw.c	file name ours; model_draw and its variants, matrix_cmds_*, model_list_link_queue, model_volume_link_queue, three uncalled setters, normal_block_scale_reset; main.bin 0x0C0FE7E0-0x0C0FFA3F
+0c038f60	0c039f3f	sdk/naomi2_library/naomi2_library.c	proj_cmd_queue, proj_cmds_send, the uncalled build-text getter 0x0C039400 (its string "NAOMI2 LIBRARY Ver 0.03 SOFT1 R&D Build:Apr  5 2004 17:14:06", 0x0C086CEC, same date as main.bin's), naomi2_lib_start, render_config_from_list_sizes, elan_lists_start/end, the modifier volume modes, pt_alpha_ref_write_both, elan_regs_quiesce; main.bin 0x0C100A00-0x0C1019DF; the object with the library banner, so it keeps the library's file name
+0c039f40	0c03abff	sdk/naomi2_library/elan_lights.c	file name ours; lights_elan_state_init, the eight uncalled light setters (0x0C039FE0-0x0C03A180), spot_falloff_from_angles .. light_single_elan_send; main.bin 0x0C101CE0-0x0C10299F, the last piece before NLOBJPUT there
+0c03ac00	0c03ccff	sdk/naomi2_library/model_compile.c	file name ours; the uncalled model heap mark/restore/reset/size routines (0x0C03AC00-0x0C03AC80, main.bin 0x0C0FC6E0-0x0C0FC760), model_heap_top / frame_list_write_end (0x0C03ACA0 / 0x0C03ACC0, never made functions here), model_header_sq_copy .. dummy_tri_list_build; main.bin 0x0C0FC6E0-0x0C0FE7DF
+0c03cd00	0c03dcbf	sdk/naomi2_library/model_tex.c	file name ours; vertex_bytes_from_format, the model_tex_* walkers, the uncalled flag-field setter 0x0C03DBE0, obj_flag_overrides_reset and the two empty load hooks; main.bin 0x0C0FFA40-0x0C1009FF
+0c03dcc0	0c03f57f	sdk/naomi2_library/object_put.c	test.bin build of main.bin's object_put.c (0x0C1029A0-0x0C10425F, offset 0xC4CE0); starts outside this range: 0x0C03DCC0 is the same code as main.bin's first object_put.c routine 0x0C1029A0 (clears the two words main.bin calls texidx_base and obj_palette_table), after test.bin's two empty stubs 0x0C03DC80/0x0C03DCA0 that end its naomi2_library.c; the neighbour 0c0301c0 decides that boundary
+0c03f580	0c04000f	sdk/naomi2_library/elan_argb_strips.c	hand-written assembly, main.bin 0x0C104260-0x0C104CEF moved by 0xC4CE0; opens at argb_strips_send's true start 0x0C03F580
+0c040010	0c040b0f	sdk/naomi2_library/elan_argb_offset_strips.c	hand-written assembly, main.bin 0x0C104CF0-0x0C1057EF moved by 0xC4CE0
+0c040b10	0c041d8f	sdk/naomi2_library/elan_lit.c	hand-written assembly, main.bin 0x0C1057F0-0x0C106A6F moved by 0xC4CE0
+0c041d90	0c0430ff	sdk/naomi2_library/elan_lit_offset.c	hand-written assembly, main.bin 0x0C106A70-0x0C107DDF moved by 0xC4CE0
+0c043100	0c043d4f	sdk/naomi2_library/elan_modvol.c	hand-written assembly, main.bin 0x0C107DE0-0x0C108A2F moved by 0xC4CE0
+0c043d50	0c0456df	sdk/naomi2_library/elan_float_colour.c	hand-written assembly, main.bin 0x0C108A30-0x0C10A3BF moved by 0xC4CE0
+0c0456e0	0c04586f	sdk/naomi2_library/elan_typed_slots.c	hand-written assembly, main.bin 0x0C10A3C0-0x0C10A54F moved by 0xC4CE0 (intensity_spill_put opens it in both)
+0c045870	0c04695f	sdk/naomi2_library/elan_intensity.c	hand-written assembly, main.bin 0x0C10A550-0x0C10B63F moved by 0xC4CE0
+0c046960	0c047acf	sdk/naomi2_library/elan_intensity_spill.c	hand-written assembly, main.bin 0x0C10B640-0x0C10C7AF moved by 0xC4CE0
+0c047ad0	0c0484df	sdk/naomi2_library/elan_bump.c	hand-written assembly, main.bin 0x0C10C7B0-0x0C10D1BF moved by 0xC4CE0
+0c0484e0	0c048e9f	sdk/naomi2_library/elan_vertex_colour.c	hand-written assembly, main.bin 0x0C10D1C0-0x0C10DB7F moved by 0xC4CE0; the last code before the interrupt slots (test.bin has no libspr)
+0c048ea0	0c04955f	sdk/libintr/irq_slots.c	main.bin 0x0C110A60-0x0C11111F moved by 0xC7BC0 (irq_render_done_relay opens it in both); test.bin has no libsnd after it
+0c049560	0c0498df	sdk/libam/boot.c	main.bin 0x0C114440-0x0C1147BF moved by 0xCAEE0 (cart_timing_slowest opens it in both)
+0c0498e0	0c04997f	sdk/libam/getcrc.c	main.bin 0x0C1147C0-0x0C11485F moved by 0xCAEE0 (crc16_ccitt)
+0c049980	0c04a81f	sdk/libam/maple.c	main.bin 0x0C114860-0x0C1156FF moved by 0xCAEE0 (maple_send opens it)
+0c04a820	0c04abdf	sdk/libam/backup.c	main.bin 0x0C115700-0x0C115ABF moved by 0xCAEE0 (sram_banks_clear opens it)
+0c04abe0	0c04b05f	sdk/libam/eeprom.c	main.bin 0x0C115AC0-0x0C115F3F moved by 0xCAEE0 (eeprom_copy_block opens it, eeprom_flush ends it)
+0c04b060	0c04ba1f	sdk/libam/jamma.c	main.bin 0x0C115F40-0x0C1168FF moved by 0xCAEE0 (jvs_delay opens it)
+0c04ba20	0c04bcdf	sdk/libam/romread.c	main.bin 0x0C116900-0x0C116BBF moved by 0xCAEE0 (cart_control_clear opens it)
+0c04bce0	0c04c35f	sdk/libam/userbkup.c	main.bin 0x0C116BC0-0x0C11723F moved by 0xCAEE0 (sram_save_zero opens it)
+0c04c360	0c04c73f	sdk/libam/usereep.c	main.bin 0x0C117240-0x0C11761F moved by 0xCAEE0 (eeprom_save_zero opens it)
+0c04c740	0c04cc9f	sdk/libam/nlasrvdt.c	main.bin 0x0C117620-0x0C117B7F moved by 0xCAEE0 (bios_helpers_copy opens it)
+0c04cca0	0c04e8ff	sdk/libam/nlam.c	main.bin 0x0C117B80-0x0C1197DF moved by 0xCAEE0 (board_serial_numbers opens it)
+0c04e900	0c05029f	sdk/libam/nlag1.c	main.bin 0x0C1197E0-0x0C11B17F moved by 0xCAEE0 (card_units_poll opens it, the MD5 code and card_key_hash end it)
+0c0502a0	0c05161f	sdk/nlajamma/jvs.c	main.bin 0x0C11B180-0x0C11C4FF moved by 0xCAEE0 (jvs_index_replies opens it)
+0c051620	0c051a1f	sdk/nlajamma/jvs_replies.c	main.bin 0x0C11C500-0x0C11C8FF moved by 0xCAEE0 (jvs_reply_reset opens it)
+0c051a20	0c051d7f	sdk/nlajamma/credit.c	main.bin 0x0C11C900-0x0C11CC5F moved by 0xCAEE0 (coin_state_clear opens it)
+0c051d80	0c05207f	sdk/nlajamma/legacy_io.c	main.bin 0x0C11CC60-0x0C11CF5F moved by 0xCAEE0 (legacy_io_poll opens it); test.bin has no HTTP client after it
+0c052080	0c05243f	sdk/nlasock/dimm_link.c	main.bin 0x0C11F880-0x0C11FC3F moved by 0xCD800; opens with the uncalled build-text getter 0x0C052080 (a start Ghidra never made; its pool word points at test.bin's "\nNLASOCK Ver.0.12 Build: Oct 19 2004 19:..." at 0x0C086F98, which the strings file credits to legacy_io_setup only because no function starts at 0x0C052080); ends past this range (ctl_channel_prepare at 0x0C052440 opens control.c in both builds): the neighbour 0c0523c0 decides | test.bin copy of main.bin's dimm_link.c (0x0C11F880-0x0C11FC3F), offset +0xCD800 (dimm_net_attach 0c0520a0 = 0x0C11F8A0); file name ours; the start lies outside this range (neighbour 0c03e5e0 decides)
+0c052440	0c05281f	sdk/nlasock/control.c	test.bin copy of main.bin's control.c (0x0C11FC40-0x0C12001F), +0xCD800: ctl_channel_prepare to ctl_call_op4 with the three operation-only request writers; static record 0c33d034 (main 0x0C412B3C); file name ours
+0c052820	0c05355f	sdk/nlasock/slots.c	test.bin copy of main.bin's slots.c (0x0C120020-0x0C120D5F), +0xCD800: sock_slot_at (sock_slot_table 0c33d044) to board_status_read; .bss 0c3b3ba0-0c3b7bbf (area bases, transfer settings, the two bounce buffers) in main.bin's order; file name ours
+0c053560	0c05397f	sdk/nlasock/accept.c	test.bin copy of main.bin's accept.c (0x0C120D60-0x0C12117F), +0xCD800; file name ours
+0c053980	0c053b1f	sdk/nlasock/bind.c	test.bin copy of main.bin's bind.c (0x0C121180-0x0C12131F), +0xCD800; file name ours
+0c053b20	0c053c5f	sdk/nlasock/close.c	test.bin copy of main.bin's close.c (0x0C121320-0x0C12145F), +0xCD800; file name ours
+0c053c60	0c053eff	sdk/nlasock/connect.c	test.bin copy of main.bin's connect.c (0x0C121460-0x0C1216FF), +0xCD800; file name ours
+0c053f00	0c05403f	sdk/nlasock/error_code.c	test.bin copy of main.bin's error_code.c (0x0C121700-0x0C12183F), +0xCD800; file name ours
+0c054040	0c0542df	sdk/nlasock/resolve.c	test.bin copy of main.bin's resolve.c (0x0C121840-0x0C121ADF), +0xCD800; file name ours
+0c0542e0	0c05451f	sdk/nlasock/board_switch.c	test.bin copy of main.bin's board_switch.c (0x0C121AE0-0x0C121D1F), +0xCD800; file name ours
+0c054520	0c0547bf	sdk/nlasock/get_option.c	test.bin copy of main.bin's get_option.c (0x0C121D20-0x0C121FBF), +0xCD800; file name ours
+0c0547c0	0c05493f	sdk/nlasock/lookup.c	test.bin copy of main.bin's lookup.c (0x0C121FC0-0x0C12213F), +0xCD800; file name ours
+0c054940	0c054b7f	sdk/nlasock/ioctl.c	test.bin copy of main.bin's ioctl.c (0x0C122140-0x0C12237F), +0xCD800; file name ours
+0c054b80	0c054cbf	sdk/nlasock/listen.c	test.bin copy of main.bin's listen.c (0x0C122380-0x0C1224BF), +0xCD800; file name ours
+0c054cc0	0c054f1f	sdk/nlasock/board_text.c	test.bin copy of main.bin's board_text.c (0x0C1224C0-0x0C12271F), +0xCD800; file name ours
+0c054f20	0c05597f	sdk/nlasock/recv.c	test.bin copy of main.bin's recv.c (0x0C122720-0x0C12317F), +0xCD800; file name ours
+0c055980	0c055c3f	sdk/nlasock/op12_op13.c	test.bin copy of main.bin's op12_op13.c (0x0C123180-0x0C12343F), +0xCD800; file name ours
+0c055c40	0c055fff	sdk/nlasock/select.c	test.bin copy of main.bin's select.c (0x0C123440-0x0C1237FF), +0xCD800; file name ours
+0c056000	0c05695f	sdk/nlasock/send.c	test.bin copy of main.bin's send.c (0x0C123800-0x0C12415F), +0xCD800; file name ours
+0c056960	0c056b1f	sdk/nlasock/set_option.c	test.bin copy of main.bin's set_option.c (0x0C124160-0x0C12431F), +0xCD800; file name ours
+0c056b20	0c056c5f	sdk/nlasock/op10.c	test.bin copy of main.bin's op10.c (0x0C124320-0x0C12445F), +0xCD800; file name ours
+0c056c60	0c056d9f	sdk/nlasock/create.c	test.bin copy of main.bin's create.c (0x0C124460-0x0C12459F), +0xCD800; file name ours
+0c056da0	0c057a1f	sdk/nlasock/peer.c	test.bin copy of main.bin's peer.c (0x0C1245A0-0x0C12521F), +0xCD800; .bss 0c3b7bc0-0c3b8ddf (peer area base, transfer modes, bounce buffer, start table) as in main.bin; file name ours
+0c057a20	0c057b7f	sdk/nlasock/cmd23.c	test.bin copy of main.bin's cmd23.c (0x0C125220-0x0C12537F), +0xCD800; file name ours
+0c057b80	0c057b9f	sdk/nlasock/dcache_asm.c	test.bin copy of main.bin's dcache_asm.c (0x0C125380-0x0C12539F), +0xCD800; file name ours
+0c057ba0	0c05857f	sdk/nladimm/nladimm.c	test.bin copy of main.bin's nladimm.c (0x0C1253A0-0x0C125D7F), +0xCD800 to the end of dimm_dma_write's pool (0c058554-0c05857f = main 0x0C125D54); main.bin's next object request_serve_asm.c (0x0C125D80-0x0C12603F) and the game-built gfxlib are absent here; file name ours
+0c058580	0c0586bf	sdk/naomi_library/asm_helpers.c	test.bin copy of the part of main.bin's asm_helpers.c from 0x0C12C810 (offset +0xD4290): the uncalled arctangent with its byte table (0c058580-0c05865f, no function entry), the uncalled sine (0c058660), fsca_cos16, fsca_sincos16, palette_shadow_write and its pool; main.bin's first 0x90 bytes of that file (0x0C12C780-0x0C12C80F) are not in test.bin; file name ours
+0c0586c0	0c05901f	sdk/naomi_library/matrix_asm.c	test.bin copy of main.bin's matrix_asm.c (offset +0xD4840 from mtx_xform_point_xyzw 0c058710 = 0x0C12CF50 to the end at 0x0C12D85F), plus the uncalled XMTRX add at 0c0586c0-0c05870f (= main 0x0C12CF00-0x0C12CF4F), which test.bin keeps while it leaves out the vertex lighting code main.bin has before it; the radian rotation entries 0c058c80/90/a0 have no function entry; file name ours
+0c059020	0c05927f	sdk/naomi_library/vector_asm.c	test.bin copy of main.bin's vector_asm.c (0x0C12D860-0x0C12DABF), +0xD4840; file name ours
+0c059280	0c059bdf	sdk/naomi_library/texture.c	test.bin copy of main.bin's texture.c (0x0C12EB00-0x0C12F45F), +0xD5880; main.bin's draw.c (0x0C12DAC0-0x0C12EAFF, 0x1040 bytes) is absent: the offset grows by exactly its size; .data 0c09926c-0c099274 as main's 0x0C32A580-0x0C32A588; file name ours
+0c059be0	0c059f7f	sdk/naomi_library/palette.c	test.bin copy of main.bin's palette.c (0x0C12F460-0x0C12F7FF), +0xD5880; file name ours
+0c059f80	0c059fff	sdk/naomi_library/version.c	test.bin copy of main.bin's version.c (0x0C12F800-0x0C12F87F), +0xD5880 (the start bytes match 0x0C12F800); file name ours
+0c05a000	0c05b9bf	sdk/naomi_library/system.c	test.bin copy of main.bin's system.c (0x0C12F880-0x0C13123F), +0xD5880; .bss render configuration block 0c33da78 (main 0x0C417A60) and neighbours as in main.bin; file name ours
+0c05b9c0	0c05c77f	sdk/naomi_library/scalar_math.c	test.bin copy of main.bin's scalar_math.c (0x0C131240-0x0C131FFF), +0xD5880; file name ours
+0c05c780	0c05ce5f	sdk/naomi_library/print.c	test.bin copy of main.bin's print.c (0x0C132000-0x0C1326DF), +0xD5880; file name ours
+0c05ce60	0c05cfbf	sdk/naomi_library/header_bits.c	test.bin copy of main.bin's header_bits.c (0x0C132880-0x0C1329DF), +0xD5A20 (0c05ce60 matches 0x0C132880; no function entry there); main.bin's fog.c (0x0C1326E0-0x0C13287F, 0x1A0 bytes) is absent, the offset growing by its size; file name ours
+0c05cfc0	0c05d61f	sdk/naomi_library/lights.c	test.bin copy of main.bin's lights.c (0x0C1329E0-0x0C13303F), +0xD5A20; file name ours
+0c05d620	0c05e85f	sdk/naomi_library/matrix.c	test.bin copy of main.bin's matrix.c (from 0x0C133040), +0xD5A20 through mtx_peek_pushed 0c05d960 and mtx_stack_setup 0c05d9a0; the END IS OUTSIDE THIS RANGE and not settled: main.bin's end 0x0C1343FF would give 0c05e9df, but the bytes at 0c05e9e0 match main 0x0C134580, so the offset changes again before then (neighbour 0c05d9a0 decides); file name ours | test.bin copy of main.bin's matrix.c; START OUTSIDE THIS RANGE (0c05d620 is the copy of mtx_xform_points, in the 0c0523c0 range; its 12 routines up to 0c05d99f are main.bin's first 12 in order); 0x180 bytes shorter than main.bin's: vec3_tri_normal and vec3_tri_normal_flipped (main 0c134280-0c1343ff) have no copy, so the object ends after mtx_translate_by_vec3 (0c05e820)
+0c05e860	0c05fd3f	sdk/naomi_library/projection.c	test.bin copy of main.bin's projection.c (proj_from_near_rect .. mtx_set_w_first, same 0x14e0 bytes); includes the copy of coord_scale_store at 0c05fbe0, which the index does not list
+0c05fd40	0c06041f	sdk/sy/sytmr.c	test.bin copy (tmu0_free_run_start .. tmu2_ticks_between, same 0x6e0 bytes); build string "syTmr Ver 1.04am_am2c" at 0c08f919
+0c060420	0c060f5f	sdk/sy/sycache.c	test.bin copy (caches_reset_to_mode .. dcache_writeback_scan_hi, same size); includes the copy of dcache_tags_clear at 0c060940 the index does not list; "syCache Ver 2.01" at 0c08f94d
+0c060f60	0c0615bf	sdk/sy/sychain.c	test.bin copy (irq_hooks_clear .. irq_hook_remove); "syChain Ver 1.50am_am2c" at 0c08f97d
+0c0615c0	0c0616b7	sdk/sy/checker_vector.c	test.bin copy; its only routine, the break handler at 0c0615c0 (main.bin's int_break_handler, the same code), is not in the index; its pool word 0c0616b4 holds address_checker_trap
+0c0616b8	0c061a7f	sdk/sy/exception_vectors.c	test.bin copy (the exception entry at 0c0616b8, not in the index, then irq_entry_via_firmware .. context_save_dispatch_nested, same 0x3c8 bytes)
+0c061a80	0c061c7f	sdk/sy/syhw.c	test.bin copy (sys_bring_up_all .. sysbus_regs_load_defaults, same 0x200 bytes)
+0c061c80	0c0621bf	sdk/sy/syextchk.c	test.bin copy (ext_devices_probe .. ext_bridge_hold_off); "syExtChk Ver 2.04" at 0c08f9b5
+0c0621c0	0c0627df	sdk/sy/address_checker.c	test.bin copy (address_checker_trap and the serial routines); owns " --- ADDRESS CHECKER TRAP --- " (0c08f9e4), the register labels 0c08fa08-0c08fab0 and "Please, cancel the interrupt from ADRESS CHECKER." (0c08fb08)
+0c0627e0	0c0628ff	sdk/sy/syint.c	test.bin copy (ic_flush_and_unblock, irq_stack_switch, sr_bl_clear, all twins); "syInt Ver 2.02am_am2c" at 0c08fb3d
+0c062900	0c062adf	sdk/sy/sysq.c	test.bin copy (sq_windows_map, sq_windows_unmap and the two uncalled address conversions at 0c062a60 / 0c062aa0, byte for byte the same as main.bin's 0c138fe0 / 0c139020, which have no rows in either image); "sySq Ver 1.50" at 0c08fb71
+0c062ae0	0c0637bf	sdk/sy/g2_mmu_members.c	file name ours, UNCERTAIN, see below: the G2 bus, G2 DMA and UTLB routines of main.bin's g2_dma.c, syg2.c, symmu.c and g2_lowlevel.c, interleaved; "syG2 Ver 1.02.02" (0c08fb9d) and "syMmu Ver 1.50" (0c08fbcd) both belong here
+0c0637c0	0c06593f	sdk/kamui/asm_helpers.c	test.bin copy (copy_by_pairs_or_words .. ocbwb_line, the 8 KB zero stack 0c063820-0c06581f, irq_entry_on_private_stack at 0c0658ac; same 0x2180 bytes)
+0c065940	0c0672df	sdk/kamui/scene_render.c	test.bin copy (opaque_list_far_triangle .. ta_lists_rearm, same 0x19a0 bytes)
+0c0672e0	0c06759f	sdk/kamui/fb_surfaces.c	test.bin copy (fb_vram_alloc, fb_size_from_display_mode); owns fb_surface_slot 0c099450
+0c0675a0	0c068bff	sdk/kamui/strip_context.c	test.bin copy (uv_size_code .. strip_header_to_list and the uncalled per-field setters after it, which the index does not list: nothing between 0c068442 and 0c068c00)
+0c068c00	0c068eff	sdk/kamui/list_writes.c	test.bin copy (list_header_sq_write .. list_tile_clip_param_write)
+0c068f00	0c06a95f	sdk/kamui/list_buffers.c	test.bin copy (listbuf_lay_out_four .. render_drain); render_buffers_lay_out reads "HARDWARE" / "EnableTexture16MB" (0c08fbf8 / 0c08fc04)
+0c06a960	0c06b1df	sdk/kamui/hooks.c	test.bin copy (hook_slots_defaults .. border_color_by_code_hang; the do-nothing defaults 0c06b040-0c06b120 are not in the index)
+0c06b1e0	0c06b95f	sdk/kamui/display.c	test.bin copy (fb_regs_reload_blanked .. vo_start_offset_apply); "KAMUI" / "VideoMode" / "DisplayMode" / "AntiAlias" / "Dither" (0c08fc18-0c08fc44)
+0c06b960	0c06c19f	sdk/kamui/pvr_settings.c	test.bin copy (fb_w_ctrl_alpha_cutoff .. pvr_text_ctrl_stride_put)
+0c06c1a0	0c06e23f	sdk/kamui/texture_surfaces.c	test.bin copy (surface_set_up_and_place .. dither_argb8888_in_place); owns the .rodata size tables 0c08be30-0c08c01f (data rows)
+0c06e240	0c06e61f	sdk/kamui/lib_state.c	test.bin copy (lib_state_set_up_from_cfg .. hook_request_ignored); "RENDER" .. "VSYNCTimeOut" (0c08fc4c-0c08fcf0)
+0c06e620	0c07117f	sdk/kamui/vram_alloc.c	test.bin copy from vram_lists_clear; END OUTSIDE THIS RANGE: 0c07117f is main.bin's end (0c14713f) at this stretch's constant offset 0xD5FC0, for the 0c0703c0 range to confirm | test.bin copy of main.bin's 0c1445e0-0c14713f (the texture memory allocator), same layout at -0xD5FC0; the START is outside this range (the 0c05d9a0 range decides; 0c06e620 is where main.bin's start lands); ends after vram32_to_64_offset as in main.bin
+0c071180	0c0714bf	sdk/kamui/runtime_settings.c	test.bin copy of main.bin's 0c147140-0c14747f (vertex area put, render_stats_read, frame_stall_limits_put, ta_yuv_regs_write); main.bin's row is bounded by reference material only, the bytes mark neither end
+0c0714c0	0c07155f	sdk/kamui/cfg_lookup.c	test.bin copy of main.bin's 0c147480-0c14751f: cfg_setting_or_default alone ("HARDWARE", "EnableTexture16MB" in its pool, 0x0C08FBF8 / 0x0C08FC04)
+0c071560	0c0719ff	sdk/kamui/hw_defaults.c	test.bin copy of main.bin's 0c147520-0c1479bf: pvr_reset_pulse, pvr_regs_defaults_and_vram_clear, fog_regs_defaults, teardown_empty_step
+0c071a00	0c0729df	sdk/kamui/sync_timing.c	test.bin copy of main.bin's 0c1479c0-0c14899f: fb_reg_images_pack, fb_layout_compute, spg_timing_load, the PAL / NTSC / VGA timing blocks and the two blank-gate stubs
+0c0729e0	0c0741bf	sdk/kamui/pvr_irq.c	test.bin copy of main.bin's 0c1489a0-0c14a17f: opens with its own pvrirq_check_or_halt / pvrirq_sq_save / pvrirq_sq_restore (the three-routine header group that also opens 0c0773e0's, 0c078780's, 0c078c60's, 0c07a300's and 0c07b500's objects), ends with pvr_irq_service (extent 0x384) and its jump table (pointer at 0x0C0741BC)
+0c0741c0	0c0745ff	sdk/kamui/chip_access.c	test.bin copy of main.bin's 0c14a180-0c14a5bf: hook_slot_run, device_bringup_noop, the first / second / both register writes, the register read and the 32-bit and 64-bit window copies; ends where the background plane object starts, as in main.bin
+0c074600	0c07637f	sdk/kamui/bg_plane_loaders.c	test.bin copy of main.bin's 0c14a5c0-0c14c33f: the background plane loaders and helpers; owns the table bg_plane_loaders (0x0C0998D4, already named in test.bin: 18 pointers 0x0C074800 ... 0x0C076360); its last three entries 0x0C076320 / 0x0C076340 / 0x0C076360 are routines Ghidra did not make functions (see below)
+0c076380	0c0773df	sdk/kamui/ta_regions.c	test.bin copy of main.bin's 0c14c340-0c14d39f: objlist_bytes_for_tiles, ta_lists_point_at_buffer, the helper triangles, tile_regions_write, ta_memory_defaults_set, ta_buffers_lay_out, pvr_softreset_pulse; ends where elan_commands.c's copy of the check-or-halt starts
+0c0773e0	0c07877f	sdk/kamui/elan_commands.c	test.bin copy of main.bin's 0c14d3a0-0c14e73f: opens with elancmd_check_or_halt; elan_probe, elan_layer_reset, the RAM window, elan_list_block_queue, the three light packers, fb_pixel_addrs_by_chip, elan_vram_read_batch; uses elan_present / elan_read_* (0x0C099930-0x0C099944)
+0c078780	0c078c5f	sdk/kamui/tile_split.c	test.bin copy of main.bin's 0c14e740-0c14ec1f: opens with tilesplit_check_or_halt; tile_split_apply / restrict / owner / select, the grid size and columns-only setters
+0c078c60	0c07a2ff	sdk/kamui/transfer_queue.c	test.bin copy of main.bin's 0c14ec20-0c1502bf: opens with xferq_check_or_halt / xferq_sq_save / xferq_sq_restore; the job queues, job start / enqueue / next / retire, the list banks and segments, the waits
+0c07a300	0c07b4ff	sdk/kamui/elan_status.c	test.bin copy of main.bin's 0c1502c0-0c1514bf: opens with elanirq_check_or_halt / elanirq_sq_save / elanirq_sq_restore; xfer_trace_push, the ticketed block writes, elan_status_service, the two reset-and-recover routines, render_hang_recover, ta_timeout_hook, elan_cmd_wait_list_end; list_end_irq_bits (0x0C08C020, named) and xfer_retry_mode (0x0C09994C, named) as in main.bin
+0c07b500	0c07bebf	sdk/kamui/elan_setup.c	test.bin copy of main.bin's 0c1514c0-0c151e7f: opens with elanhw_check_or_halt / elanhw_sq_save / elanhw_sq_restore; ELAN start and probe, input reset, interrupt registers, elan_ctrl_bit0_off_or_back, the memory window, tile_split_bitmap_update, elan_d0_set_for_list; then the 1 KB zero store-queue save stack (0x0C07BAC0-0x0C07BEBF, data in .text, main.bin's 0x0C151A80 at the same distance); ends before zlib
+0c07bec0	0c07bf7f	zlib/compress.c	compress2, compress; same layout as main.bin's 0c151e80-0c151f3f
+0c07bf80	0c07c09f	zlib/crc32.c	the unlisted 0x0C07BF80 (returns the table pointer 0x0C08C090, zlib's get_crc_table position) and crc32; main.bin's 0c151f40 row starts at the same unlisted routine
+0c07c0a0	0c07c13f	zlib/uncompr.c	uncompress
+0c07c140	0c07da9f	zlib/deflate.c	deflateInit_ ... deflate_slow (the "1.1.4" version text 0x0C08FD74 through my_version 0x0C099958)
+0c07daa0	0c07f8ff	zlib/trees.c	tr_static_init ... copy_block; the trees.c tables 0x0C08C540-0x0C08CF6F (extra_lbits ... base_dist, with bl_order and configuration_table already named) in the same order as main.bin's 0x0C217100-0x0C217B2F
+0c07f900	0c07f97f	zlib/zutil.c	zError, zcalloc, zcfree (z_errmsg 0x0C099998 named)
+0c07f980	0c08013f	zlib/inflate.c	inflateReset ... inflateSyncPoint ("unknown compression method", "incorrect header check", "need dictionary", "incorrect data check")
+0c080140	0c080bbf	zlib/infblock.c	inflate_blocks_reset ... inflate_blocks_sync_point ("invalid stored block lengths", "invalid block type"); border 0x0C08CF74
+0c080bc0	0c08129f	zlib/inftrees.c	huft_build, inflate_trees_bits / dynamic / fixed (the "oversubscribed ..." and "incomplete ..." texts); cplens / cplext / cpdist / cpdext 0x0C08CFF0-0x0C08D1D7
+0c0812a0	0c08191f	zlib/infcodes.c	inflate_codes_new, inflate_codes, inflate_codes_free
+0c081920	0c081a1f	zlib/infutil.c	inflate_flush; inflate_mask 0x0C09AAC8
+0c081a20	0c081d7f	zlib/inffast.c	inflate_fast
+0c081d80	0c081edf	zlib/adler32.c	adler32; the end of the stretch that matches main.bin at -0xD5FC0
+0c081ee0	0c081f3f	libgcc/movstr_i4.s	file name ours) __movstr_i4_odd 0x0C081EE8, __movstr_i4_even 0x0C081F12 and the unlisted 12-byte copy 0x0C081F20 (three mov.l loads and stores; main.bin has the same bytes unlisted at 0x0C159220): the libgcc struct-move group, hand-written assembly
+0c081f40	0c081f57	libgcc/sdivsi3_i4.s	file name ours) __sdivsi3_i4 (twin; main.bin source/asm/0c159240.s)
+0c081f58	0c081f9f	libgcc/udivsi3_i4.s	file name ours) __udivsi3_i4 (twin; main.bin source/asm/0c159258.s)
+0c081fa0	0c081fdf	libgcc/fixunssfsi.c	file name ours) the twin FUN_0c081fa0 (main.bin FUN_0c1592a0): float to unsigned, taking 2^31 off before the truncation for large values; by role only
+0c081fe0	0c081fff	newlib/libc/stdlib/atol.c	the twin FUN_0c081fe0 (main.bin FUN_0c1592e0): strtol(text, 0, 10); by role only
+0c082000	0c0821ff	newlib/libc/time/lcltime_r.c	localtime_r (main.bin's evidence: newlib's lcltime_r.c compiles to these bytes)
+0c082200	0c08299f	vf4lib/libcore/src/malloc.c	the test.bin build of main.bin's malloc.c (0c0f3980-0c0f487f there, asserted): the same routines in the same order (align_up, block_init, guard set and test, check_block, the ring links, heap_init, free_internal, size_to_units, malloc_internal, realloc_internal, heap_stats_get, main_heap_init, malloc, free, realloc, calloc, main_heap_stats_get, main_heap_mallinfo) without main.bin's debug fill, poison, error reports and the heap_malloc family; no assert text in this build; .bss main_heap_ready / heap_irq_level_saved / main_heap 0x0C3FB698-0x0C3FB6D3, right after the graphics library's tile_split_parked (0x0C3FB690) and elan_ctrl_saved (0x0C3FB694)
+0c0829a0	0c0829ff	newlib/libc/string/memcmp.c	memcmp (twin)
+0c082aa0	0c082b5f	newlib/libc/string/memmove.c	memmove (byte-identical to main.bin's)
+0c082ba0	0c0830ff	newlib/libc/time/mktime.c	validate_structure, mktime, as in main.bin
+0c083100	0c08315f	newlib/libc/stdio/snprintf.c	snprintf (byte-identical to main.bin's); file by topic
+0c083160	0c0831df	newlib/libc/stdio/sprintf.c	the sprintf-like twin FUN_0c083160 (main.bin FUN_0c159d80); file by topic
+0c0831e0	0c08325f	newlib/libc/string/strcat.c	strcat (named)
+0c083260	0c0832ff	newlib/libc/string/strchr.c	strchr (named)
+0c083380	0c083a1f	newlib/libc/time/strftime.c	strftime and its format pieces 0x0C0900EC-0x0C09013C
+0c083a20	0c083a7f	newlib/libc/string/strlen.c	strlen (named)
+0c083a80	0c083b3f	newlib/libc/string/strncmp.c	strncmp
+0c083b40	0c083bdf	newlib/libc/string/strncpy.c	strncpy (named)
+0c083be0	0c083c1f	newlib/libc/string/strrchr.c	strrchr (named)
+0c083c20	0c083c7f	newlib/libc/string/strstr.c	strstr
+0c083c80	0c083c9f	newlib/libc/string/strtok.c	strtok (named)
+0c083ca0	0c083d5f	newlib/libc/string/strtok_r.c	strtok_r
+0c083d60	0c083eff	libc/strtol.c	file name ours, library unknown) strtol; main.bin has no file for its twin either
+0c083f00	0c08407f	libc/strtoul.c	file name ours, library unknown) strtoul
+0c084080	0c0840df	libc/float_split.c	file name ours, library unknown) float_split_int_frac; could instead open the formatter's file (its only callers are the two float routines after it)
+0c0840e0	0c08543f	libc/vsnprintf.c	file name ours, library unknown) fmt_float_digits, fmt_float_round, fmt_exponent_put, vsnprintf and their strings 0x0C090144-0x0C090178 ("-Inf", "Inf", "SNaN", the two digit strings, "(null)")
+0c085440	0c08545f	newlib/libc/ctype/isalpha.c	isalpha (named; main.bin: newlib's isalpha.c compiles to these bytes); one newlib member per routine for the next twelve rows
+0c085460	0c08547f	newlib/libc/ctype/isupper.c	isupper
+0c085480	0c08549f	newlib/libc/ctype/islower.c	islower
+0c0854a0	0c0854bf	newlib/libc/ctype/isdigit.c	isdigit
+0c0854c0	0c0854df	newlib/libc/ctype/isalnum.c	isalnum
+0c0854e0	0c0854ff	newlib/libc/ctype/iscntrl.c	iscntrl
+0c085500	0c08551f	newlib/libc/ctype/isgraph.c	isgraph
+0c085520	0c08553f	newlib/libc/ctype/isprint.c	isprint
+0c085540	0c08555f	newlib/libc/ctype/ispunct.c	ispunct
+0c085560	0c08557f	newlib/libc/ctype/isspace.c	isspace
+0c085580	0c08559f	newlib/libc/ctype/isxdigit.c	isxdigit
+0c0855a0	0c0855bf	newlib/libc/ctype/isascii.c	isascii
+0c0855c0	0c0855df	newlib/libc/ctype/toascii.c	toascii
+0c0855e0	0c08561f	newlib/libc/ctype/tolower.c	tolower: by topic and position (after the newlib class routines); not compiled to check
+0c085620	0c08565f	newlib/libc/ctype/toupper.c	toupper: as tolower
+0c085660	0c0856df	libc/ctype_case_dup.c	file name ours, library unknown) tolower_dup, toupper_dup: identical second copies, nothing calls them
+0c085720	0c0857bf	newlib/libc/string/memchr.c	memchr (twin); the last code in test.bin

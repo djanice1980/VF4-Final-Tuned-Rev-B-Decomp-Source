@@ -1,0 +1,70 @@
+enum	table	count	named_by	menu_users
+e_mode	0c16cb04	26	common prefix MODE_	
+e_names_0c16cb6c	0c16cb6c	23	placeholder	
+e_stroke	0c16cbc8	10	common prefix STROKE_	
+e_type	0c1748dc	14	menu labels TYPE	TYPE
+e_cb	0c174914	26	common prefix CB_	
+e_net_ver	0c187aec	4	menu labels net ver	net ver
+e_win	0c1e2a10	20	menu labels WIN_BG_COLOR, WIN_COLOR	WIN_BG_COLOR, WIN_COLOR
+e_off_on	0c1e2ab0	2	members	ADV_DEMO_A, ADV_DEMO_B, ADV_DEMO_C, ALAB_DISP, ALAB_ENABLE, CARD_1P_USE, CARD_2P_USE, CARD_START, CHALLENGE ONLY, DEBUG_DISP, DISP_FORCE, EFFECT SKIP, FTF_RECOVER, F_B_NET_ACCESS, F_HAIKI, F_NET_TOUCH, F_NOW_GAME, GACHA_ON_OFF, GBLCTR, J_KATA_L, J_KATA_R, J_KUBI, J_MOMO_L, J_MOMO_R, J_MUNE, J_SUNE_L, J_SUNE_R, J_UDE_L, J_UDE_R, K_ASI_L, K_ASI_R, K_HARA, K_KOSI, K_MUNE, K_TE_L, K_TE_R, K_TOE_L, K_TOE_R, K_WAKI_L, K_WAKI_R, MATERIAL_PROP, MISSION_OFF_ON, MISSION_SELECT, NET_CONNECT, NULL, REPLAY_MESSAGE, REVISE_OFF_SW, SC_CAMERA, SIC_DISP_SW, SPEC_FADE, STAGE_SELECT, TEXTURE_CLAMP, T_HRAA, T_KUBI, T_MUNE, T_SUNE_L, T_SUNE_R, T_UDE_L, T_UDE_R, UKEMI_ON_OFF, ball disp, card force close, card force open, force close, force open, main_crc_brk_sw, main_crc_set_sw, mat_sw, net debug, other_crc_brk_sw, other_crc_set_sw
+e_rsmooth_no	0c1e2c7c	16	menu labels RSMOOTH_NO	RSMOOTH_NO
+e_names_0c1e31cc	0c1e31cc	161	placeholder	UNIT, _part
+e_on_off	0c1e34f4	2	members	CONSOLE_DISP, FACE_DISP, INT_BALL_DISP, LIGHT_DISP, ROB_DISP, SHADOW_ERASE, STAGE_DISP, light_anim_sw
+e_cpu_on_off	0c1e352c	5	menu labels CPU_ON_OFF	CPU_ON_OFF
+e_cpu_mot_type	0c1e3590	9	menu labels CPU_MOT_TYPE	CPU_MOT_TYPE
+e_gravity_mode	0c1e35b4	7	menu labels GRAVITY_MODE	GRAVITY_MODE
+e_sc_dir	0c1e35d0	3	menu labels SC_DIR	SC_DIR
+e_cv	0c1e3698	94	common prefix CV_	CV_TYPE_0, CV_TYPE_1, CV_TYPE_2, CV_TYPE_3, CV_TYPE_4, CV_TYPE_5, CV_TYPE_6, CV_TYPE_7
+e_sd	0c1e386c	46	common prefix SD_	SND_TYPE_0, SND_TYPE_1, SND_TYPE_2, SND_TYPE_3, SND_TYPE_4, SND_TYPE_5, SND_TYPE_6, SND_TYPE_7
+e_mode_0c211244	0c211244	5	menu labels MODE	MODE
+e_names_0c211258	0c211258	30	placeholder	
+e_mode_0c24318c	0c24318c	9	menu labels mode	mode
+e_nagerare	0c256b74	240	menu labels NAGERARE	NAGERARE
+e_names_0c27be6c	0c27be6c	288	placeholder	
+e_camera	0c2858b0	55	common prefix CAMERA_	
+e_adv	0c28bd30	75	common prefix ADV_	
+e_names_0c2924f4	0c2924f4	19	placeholder	
+e_light_tag	0c293e30	6	menu labels LIGHT_TAG	LIGHT_TAG
+e_type_0c293e48	0c293e48	5	menu labels type	type
+e_names_0c293e5c	0c293e5c	6	placeholder	DIFFUSE, SPECULAR
+e_routing	0c293e74	16	menu labels ROUTING	ROUTING
+e_nl2_lctrl_use	0c293eb4	4	common prefix NL2_LCTRL_USE_	
+e_game_time	0c294304	6	menu labels GAME_TIME_1P, GAME_TIME_VS	GAME_TIME_1P, GAME_TIME_VS
+e_energy	0c29431c	5	menu labels ENERGY_1P, ENERGY_VS	ENERGY_1P, ENERGY_VS
+e_cv_0c297a34	0c297a34	10	common prefix CV_	cv_type
+e_names_0c2992b4	0c2992b4	11	placeholder	
+e_names_0c29930c	0c29930c	11	placeholder	
+e_names_0c299364	0c299364	11	placeholder	
+e_names_0c2993bc	0c2993bc	11	placeholder	
+e_names_0c299414	0c299414	11	placeholder	
+e_names_0c29946c	0c29946c	11	placeholder	
+e_names_0c2994c4	0c2994c4	11	placeholder	
+e_names_0c29951c	0c29951c	11	placeholder	
+e_names_0c299574	0c299574	11	placeholder	
+e_names_0c2995cc	0c2995cc	11	placeholder	
+e_names_0c299624	0c299624	11	placeholder	
+e_names_0c29967c	0c29967c	11	placeholder	
+e_names_0c2996d4	0c2996d4	11	placeholder	
+e_names_0c29972c	0c29972c	11	placeholder	
+e_names_0c299784	0c299784	11	placeholder	
+e_alab_stat	0c2a0184	3	common prefix ALAB_STAT_	
+e_dimm	0c2a0190	3	common prefix DIMM_	
+e_disp_name	0c2a0228	8	menu labels DISP_NAME	DISP_NAME
+e_disp_type	0c2a024c	3	menu labels DISP_TYPE	DISP_TYPE
+e_chlg_map_plate	0c2a1d04	8	common prefix CHLG_MAP_PLATE_	
+e_chlg_map_plate_0c2a1d24	0c2a1d24	8	common prefix CHLG_MAP_PLATE_	
+e_platemove	0c2a1d44	8	common prefix PLATEMOVE_	
+e_chlg_map_suji	0c2a1d64	8	common prefix CHLG_MAP_SUJI_	
+e_parts_r	0c2a1d84	8	common prefix PARTS_R_	
+e_parts_r_num	0c2a1da4	8	common prefix PARTS_R_NUM_	
+e_parts_ita_lv	0c2a1dc4	8	common prefix PARTS_ITA_LV_	
+e_parts	0c2a1de4	5	common prefix PARTS_	
+e_chlg_map_rank	0c2a1df8	5	common prefix CHLG_MAP_RANK_	
+e_total_rank	0c2a1e10	5	common prefix TOTAL_RANK_	
+e_result_rank	0c2a1e24	5	common prefix RESULT_RANK_	
+e_names_0c2a1e44	0c2a1e44	12	placeholder	
+e_type_0c2b1010	0c2b1010	5	menu labels type	type
+e_names_0c2b1090	0c2b1090	32	placeholder	
+e_names_0c2b1110	0c2b1110	4	placeholder	
+e_rottype	0c322820	4	common prefix ROTTYPE_	j_ex_00, j_ex_01, j_ex_02, j_ex_03, j_ex_04, j_ex_05, j_ex_06, j_ex_07, j_ex_08, j_ex_09, j_ex_10, j_ex_11, j_ex_12, j_ex_13, j_ex_14, j_ex_15, j_ex_16, j_ex_17, j_ex_18, j_ex_19, j_ex_20, j_ex_21, j_ex_22, j_ex_23, j_ex_24, j_ex_25, j_ex_26, j_ex_27, j_ex_28, j_ex_29, j_ex_30, j_ex_31, j_ex_32, j_ex_33, j_ex_34, j_ex_35, j_ex_36, j_ex_37, j_ex_38, j_ex_39, j_ex_40, j_ex_41, j_ex_42, j_ex_43, j_ex_44, j_ex_45, j_ex_46, j_ex_47, j_ex_48, j_ex_49, j_ex_50, j_ex_51, j_ex_52, j_ex_53, j_ex_54, j_ex_55, j_ex_56, j_ex_57, j_ex_58, j_ex_59, j_ex_60, j_ex_61, j_ex_62, j_ex_63, rot_type
+e_names_0c325544	0c325544	7	placeholder	

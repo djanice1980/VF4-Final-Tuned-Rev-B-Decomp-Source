@@ -1,0 +1,6 @@
+gfx_state	the graphics library's state block, shared with its interrupt handlers (pvr_irq.c). Declared volatile, 434 of the 437 functions in the 25 files that use it match with their code unchanged; with no volatile at all, 66 of them stop matching (2026-11-04, scratchpad experiments A and B). The decompiler had rebuilt the qualifier one access at a time as casts.
+short_line_timing	split from gfx_state 2026-11-04; spg_timing_ntsc re-reads it for each value (x ? a : a) and stops matching without volatile. (lib_info matches either way and render_stats only without: neither is listed)
+elan_ctrl_reg	the ELAN control register at 0xa8800010; elan_ctrl_bit0_off_or_back (elan_setup.c) stops matching without volatile (2026-11-05, wave 4 merge). led_latch_register and elan_tile_grid_reg match either way: not listed
+holly_fifo_status_reg	the Holly FIFO status register at 0xa05f688c; the sy FIFO-idle wait stops matching without volatile (2026-11-05, wave 5). aica_fifo_idle_flag reads a byte of it without volatile
+cart_data_reg	the cartridge data port at 0xa05f7008; dimm_read_unlocked stops matching without volatile (2026-11-05, wave 5)
+g1_dma_status_reg	the G1 DMA status register at 0xa05f7418; g1_dma_spin_idle and the six nlam DMA wait wrappers stop matching without volatile (2026-11-05, wave 5)

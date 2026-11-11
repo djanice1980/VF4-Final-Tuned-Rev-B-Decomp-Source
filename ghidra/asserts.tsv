@@ -1,0 +1,130 @@
+function	file	line	expr
+0c021260	vf4lib/libbase/src/system_common.c	114	0
+0c021380	vf4lib/libbase/src/system_common.c	135	system_param_value.initialized_country
+0c022a20	vf4lib/libbase/src/cns_nickname.c	1032	i != CNS_NN_LOAD_TEX_MAX
+0c023c60	vf4lib/libbase/src/replay.c	842	0
+0c024700	vf4lib/libbase/src/mode.c	451	(req >= 0)&&(req<MODE_MAIN_MAX)
+0c0247c0	vf4lib/libbase/src/mode.c	484	mode_data[main_mode_no].main_func.mode_asg == main_mode_no
+0c0247c0	vf4lib/libbase/src/mode.c	492	mode_data[main_mode_no].sub_func[sub_mode_no].mode_asg == sub_mode_no
+0c02acc0	vf4lib/libbase/src/mode.c	4877	0
+0c03e660	vf4lib/libbase/src/console.c	7301	0
+0c045180	vf4lib/libbase/src/load_obj.c	286	fatal "ITEM MEMORY OVER %s(%d)"
+0c047b40	vf4lib/libbase/src/field.c	652	fatal "Collision data version error!!"
+0c048280	vf4lib/libbase/src/user_back.c	578	fatal "backup ram size error!!"
+0c0495a0	vf4lib/libbase/src/static_heap.c	110	fatal "sh_bdi_malloc(): No memory for [%s]"
+0c049600	vf4lib/libbase/src/static_heap.c	121	fatal "sh_bdi_elan(): No memory for [%s]"
+0c049660	vf4lib/libbase/src/static_heap.c	182	fatal "get_static_heap(): No memory for [%s]"
+0c04fde0	vf4lib/libenemy/src/libenemy.c	417	tbl_no < ENEMY_DATA_TBL_MAX
+0c04fde0	vf4lib/libenemy/src/libenemy.c	418	char_num < CN_MAX
+0c050060	vf4lib/libenemy/src/libenemy.c	520	ai_type == 0
+0c050be0	vf4lib/libenemy/src/libenemy.c	1125	0
+0c054b20	vf4lib/libenemy/src/libenemy.c	4025	0
+0c054cc0	vf4lib/libenemy/src/libenemy.c	4195	0
+0c054d00	vf4lib/libenemy/src/libenemy.c	4223	0
+0c054f40	vf4lib/libenemy/src/libenemy.c	4354	0
+0c054fc0	vf4lib/libenemy/src/libenemy.c	4479	0
+0c055ce0	vf4lib/libenemy/src/vp_main.c	905	gnt < VP_GN_MAX
+0c055d60	vf4lib/libenemy/src/vp_main.c	925	ynt < VP_YN_MAX
+0c056a20	vf4lib/libenemy/src/vp_main.c	1616	st_act->drank == 0
+0c056a20	vf4lib/libenemy/src/vp_main.c	1633	retval != NULL
+0c058400	vf4lib/libenemy/src/vp_main.c	2615	0
+0c072020	vf4lib/libaction/src/coli_attack.c	3186	(attack_point>=0)&&(attack_point<AP_MAX)
+0c077680	vf4lib/libsound/src/sound_cmn.c	370	fatal "packloadlock_wait ERROR."
+0c077720	vf4lib/libsound/src/sound_cmn.c	384	fatal "packload_wait ERROR."
+0c0777a0	vf4lib/libsound/src/sound_cmn.c	398	fatal "packreload_wait ERROR."
+0c0778e0	vf4lib/libsound/src/sound_cmn.c	481	fatal "nlsndPackReload_Open ERROR."
+0c0778e0	vf4lib/libsound/src/sound_cmn.c	492	fatal "pack size ERROR."
+0c077d00	vf4lib/libsound/src/sound_cmn.c	616	fatal "%s open error"
+0c077d00	vf4lib/libsound/src/sound_cmn.c	619	fatal "%s read error"
+0c077d80	vf4lib/libsound/src/sound_cmn.c	636	fatal "PACKLOAD size error"
+0c078520	vf4lib/libsound/src/sound.c	453	extra_sound_no < SOUND_EXTRA_MAX
+0c078820	vf4lib/libsound/src/sound.c	561	fatal "other bgm load ERROR."
+0c078820	vf4lib/libsound/src/sound.c	592	fatal "other bgm load ERROR."
+0c07a620	vf4lib/libnetwork/src/network.c	666	!is_vs_game
+0c07af80	vf4lib/libnetwork/src/network.c	950	NAS_OK == net_info.auth_stat
+0c07b280	vf4lib/libnetwork/src/network.c	1116	0
+0c07b580	vf4lib/libnetwork/src/network.c	1211	0
+0c07bc40	vf4lib/libnetwork/src/network.c	1567	0
+0c07bc40	vf4lib/libnetwork/src/network.c	1739	fatal "unknown NAM (%d)"
+0c07c8e0	vf4lib/libnetwork/src/network.c	2337	0
+0c0838c0	vf4lib/libcard/src/card_mode.c	2174	0
+0c0838c0	vf4lib/libcard/src/card_mode.c	2242	0
+0c085aa0	vf4lib/libcard/src/card.c	598	fatal "should be buf_size >= 21, but %d"
+0c0860e0	vf4lib/libcard/src/card.c	862	fatal "char_num too large"
+0c086420	vf4lib/libcard/src/card.c	1030	fatal "bad ENattack_point_no %d"
+0c086ee0	vf4lib/libcard/src/card.c	1545	0
+0c08a2a0	vf4lib/libcard/src/nickname.c	467	fatal "disp_type illegal"
+0c08a620	vf4lib/libcard/src/nickname.c	627	fatal "disp_type illegal"
+0c08a7e0	vf4lib/libcard/src/nickname.c	693	fatal "pt_diff overflow"
+0c08aac0	vf4lib/libcard/src/nickname.c	831	fatal "no level up"
+0c08ac80	vf4lib/libcard/src/nickname.c	903	fatal "name or level illegal"
+0c08ace0	vf4lib/libcard/src/nickname.c	915	fatal "idnm illegal"
+0c08cb40	vf4lib/libcard/src/card_common.c	96	type < CRC_TYPE_MAX
+0c08dfe0	vf4lib/libcard/src/sol.c	95	c == 22
+0c08dfe0	vf4lib/libcard/src/sol.c	108	a == 21
+0c092e80	vf4lib/libmotion/src/mot_tools.c	1003	0
+0c092f60	vf4lib/libmotion/src/mot_tools.c	1046	0
+0c093100	vf4lib/libmotion/src/mot_tools.c	1122	0
+0c093100	vf4lib/libmotion/src/mot_tools.c	1132	0
+0c0a2dc0	vf4lib/libmission/src/msnm.c	2963	item_max <= MSNM_GET_ITEM_MAX
+0c0a3020	vf4lib/libmission/src/msnm.c	3093	tbl_num > 0 && tbl_num < 32
+0c0a4320	vf4lib/libmission/src/msnm_func.c	751	type_max[MSNM_TRY_HYPER_TYPE_A] > 0
+0c0a4580	vf4lib/libmission/src/msnm_func.c	823	char_num >= 0 && char_num <= 15
+0c0a4580	vf4lib/libmission/src/msnm_func.c	825	mot_tbl
+0c0b1140	vf4lib/libeffect/src/effect_malloc.c	100	fatal "effect malloc ptr is freed!?"
+0c0b7540	vf4lib/libeffect/src/effect_etc.c	2400	0
+0c0bde60	vf4lib/libeffect/src/effect.c	357	0
+0c0bfae0	vf4lib/libeffect/src/effect_rain.c	1133	0
+0c0c0d20	vf4lib/libeffect/src/effect_rain.c	1962	0
+0c0c1320	vf4lib/libeffect/src/effect_rain.c	2087	0
+0c0cc6c0	vf4lib/librobdisp/src/rob_color.c	289	fatal "COLOR_BUFFER 4.1 OVERFLOW."
+0c0cd140	vf4lib/librobdisp/src/rob_color.c	735	fatal "COLOR_BUFFER 4.0 overflow."
+0c0cd280	vf4lib/librobdisp/src/rob_color.c	815	fatal "COLOR_BUFFER 4.1 OVERFLOW."
+0c0d09a0	vf4lib/librobdisp/src/rob_hand.c	200	hand_prj_assert_flag
+0c0dda40	vf4lib/libsprite/src/sprite.c	367	fatal "L-TOP %s open error."
+0c0e1d80	vf4lib/libsprite/src/aetset.c	338	tex_no < MAX_DEF_TEX
+0c0e1d80	vf4lib/libsprite/src/aetset.c	341	fatal "ERROR!: Can't load strip texture. aut_id=%d, tex_no=%d"
+0c0e2080	vf4lib/libsprite/src/aetset.c	450	fatal "Error!: AET illigal stack-memory free order."
+0c0e25a0	vf4lib/libsprite/src/aetset.c	880	fatal "Error!: AET statck num over."
+0c0e25a0	vf4lib/libsprite/src/aetset.c	885	fatal "Error!: AET statck memory over."
+0c0e2640	vf4lib/libsprite/src/aetset.c	915	fatal "Error!: AET stack memory pop."
+0c0e2760	vf4lib/libsprite/src/aetset.c	998	fatal "Error!: AET load tex max over."
+0c0e6140	vf4lib/libsprite/src/aet_anim_if.c	40	fatal "ERROR!"
+0c0e6ae0	vf4lib/libpoly/src/pol_uti.c	208	objbank_num >= 0
+0c0e6b40	vf4lib/libpoly/src/pol_uti.c	229	0
+0c0e6d80	vf4lib/libpoly/src/pol_uti.c	306	0
+0c0e7060	vf4lib/libpoly/src/pol_uti.c	454	objbank_num >= 0
+0c0e7120	vf4lib/libpoly/src/pol_uti.c	484	0
+0c0e7120	vf4lib/libpoly/src/pol_uti.c	487	0
+0c0e7120	vf4lib/libpoly/src/pol_uti.c	489	0
+0c0e7120	vf4lib/libpoly/src/pol_uti.c	491	0
+0c0e7120	vf4lib/libpoly/src/pol_uti.c	494	0
+0c0e7120	vf4lib/libpoly/src/pol_uti.c	499	0
+0c0e7340	vf4lib/libpoly/src/pol_uti.c	590	objbank_num >= 0
+0c0e75c0	vf4lib/libpoly/src/pol_uti.c	675	objbank_num >= 0
+0c0e7e20	vf4lib/libpoly/src/put_poly.c	309	0
+0c0e8540	vf4lib/libpoly/src/load_poly.c	115	objbank_num >= 0
+0c0e8aa0	vf4lib/libpoly/src/load_poly_bg.c	247	queue->objbank_num >= 0
+0c0eac40	vf4lib/libpoly/src/tune_texture.c	171	0
+0c0eac40	vf4lib/libpoly/src/tune_texture.c	192	0
+0c0eb140	vf4lib/libdebug/src/win_sys.c	321	fatal "addr <%08x> out of range"
+0c0ecd20	vf4lib/libdebug/src/win_sys.c	1743	0
+0c0f24c0	vf4lib/libcore/src/tm_sys.c	33	now_time != -1
+0c0f3be0	vf4lib/libcore/src/malloc.c	192	fatal "mixed heap or broken %p"
+0c0f3cc0	vf4lib/libcore/src/malloc.c	238	fatal "probably uninitilized heap %p"
+0c0f3cc0	vf4lib/libcore/src/malloc.c	244	fatal "bad align"
+0c0f3cc0	vf4lib/libcore/src/malloc.c	253	fatal "check_heap_internal()"
+0c0f3f80	vf4lib/libcore/src/malloc.c	443	fatal "break point %d by malloc_internal"
+0c0f3f80	vf4lib/libcore/src/malloc.c	476	p->bsize > nunits + 1
+0c0f49a0	vf4lib/libcore/src/load.c	103	fatal "Error: %d = decode_gzip_data()"
+0c0f4aa0	vf4lib/libcore/src/load.c	122	fatal "%s open error"
+0c0f4bc0	vf4lib/libcore/src/load.c	148	fatal "%s open error"
+0c0f4d80	vf4lib/libcore/src/load.c	221	0
+0c0f4e60	vf4lib/libcore/src/load.c	259	fatal "<%s> IS OVER %d FILES"
+0c0f4f60	vf4lib/libcore/src/load.c	292	fatal "<%s> IS CANT OPEN"
+0c0f5ea0	vf4lib/libcore/src/gz.c	336	err>=0
+0c11d6e0	naomi2lib/libnl2http/src/http.c	463	0
+0c11e080	naomi2lib/libnl2http/src/http.c	756	0
+0c11f160	naomi2lib/libnl2http/src/map.c	305	fatal "out_buf too short %d + 1 > %d"
+0c11f2e0	naomi2lib/libnl2http/src/naomi_socket.c	89	recv_size != SOCKET_ERR
+0c11f2e0	naomi2lib/libnl2http/src/naomi_socket.c	90	recv_size == sz

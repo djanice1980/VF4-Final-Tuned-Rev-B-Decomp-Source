@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- vf4ft-decomp variant of Ghidra's SuperH4 LE language. -->
+<language_definitions>
+  <language processor="SuperH4"
+            endian="little"
+            size="32"
+            variant="vf4ft"
+            version="1.01"
+            slafile="SuperH4_le.sla"
+            processorspec="SuperH4_vf4ft.pspec"
+            id="SuperH4:LE:32:vf4ft">
+    <description>SuperH-4 little endian, VF4 Final Tuned FPU model (fschg tracks SZ, SZ/PR known at entry)</description>
+    <compiler name="default" spec="SuperH4_le.cspec" id="default"/>
+  </language>
+</language_definitions>

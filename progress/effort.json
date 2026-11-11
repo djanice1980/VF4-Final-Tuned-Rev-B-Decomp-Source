@@ -1,0 +1,41 @@
+{
+ "first": "2026-10-21T15:30:46+00:00",
+ "last": "2026-11-05T16:46:29+00:00",
+ "elapsed_days": 15.1,
+ "session_hours": 82.7,
+ "agent_hours": 196.2,
+ "agents": 876,
+ "tokens": {
+  "input_tokens": 208597,
+  "cache_creation_input_tokens": 191241106,
+  "cache_read_input_tokens": 12842606062,
+  "output_tokens": 63963262
+ },
+ "tokens_total": 13098019027,
+ "tokens_new": 255412965,
+ "models": {
+  "claude-opus-5-5": {
+   "input": 139054,
+   "write_5m": 151680771,
+   "write_1h": 27523686,
+   "read": 12295276069,
+   "output": 59657707
+  },
+  "<synthetic>": {
+   "input": 0,
+   "write_5m": 0,
+   "write_1h": 0,
+   "read": 0,
+   "output": 0
+  },
+  "claude-fable-5-1": {
+   "input": 69543,
+   "write_5m": 10985176,
+   "write_1h": 1051473,
+   "read": 547329993,
+   "output": 4305555
+  }
+ },
+ "api_cost_usd": 5143,
+ "unpriced_tokens": 0
+}

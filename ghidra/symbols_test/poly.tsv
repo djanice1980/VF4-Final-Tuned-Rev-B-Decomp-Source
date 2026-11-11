@@ -1,0 +1,2 @@
+address	kind	declaration	confidence	evidence
+0c03ae40	function	model_size	inferred	the test.bin build of main.bin's model_size (0x0C0FC920): -1 for no model; for magic 0x100 returns word 6 (mdl_block.size); older layouts are summed from three parts + 0x60; caller model_buf_alloc; part of sdk/naomi2_library/model_compile.c (file name ours)

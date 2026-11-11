@@ -1,0 +1,11 @@
+address	evidence
+0c13b882	analysis started a function 0x16 bytes into the KamuiTL interrupt entry at 0c13b86c (after its stack switch and the first saves, where a .word 0x4f52 was left before the routine); the entry itself is in ghidra/symbols/kamui.tsv
+0c104262	analysis started a function two bytes into argb_strips_send (0c104260, mov r15,r1): the fmov fr15,@-r15 after it; nothing branches or points here; the routine's row is in ghidra/symbols/elan_asm.tsv
+0c104cf2	as 0c104262, two bytes into argb_offset_strips_send (0c104cf0)
+0c107e02	analysis split modvol_strips_send (0c107de0) 0x22 bytes in, at the sts.l pr after its register saves; nothing branches or points here
+0c108a54	a point inside float_colour_send_alpha's prologue (0c108a32), after the register saves; nothing branches here
+0c10b664	a point inside intensity_spill_send_alpha's prologue (0c10b642), after the register saves; the real starts 0c10b640 / 0c10b642 are rows in ghidra/symbols/elan_asm.tsv
+0c10d1fa	a fall-through point inside vertex_colour_group_send (0c10d1c0), after the colour scales are set; nothing branches here
+0c0b046a	analysis started a function at the body of model_verts_project_scaled (0c0b0460): the entry tests r4, returns on 0 and otherwise falls through with bf; nothing else branches or points here
+0c0b058a	as 0c0b046a: the body of model_verts_project (0c0b0580), reached only by its bf
+0c0e08f4	six nops of padding and then the shared exit of tex_pixels_yuv_adjust (0c0e0300; mov #0,r0 and the epilogue restoring fr12-fr15 / r14 its prologue saved at 0c0e0900), which branches there at 0c0e0318 and 0c0e08d4; the matched C of tex_pixels_yuv_adjust (0x664 bytes) already covers it

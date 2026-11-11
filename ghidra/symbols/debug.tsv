@@ -1,0 +1,2 @@
+address	kind	declaration	confidence	evidence
+0c1e3924	data	void *debug_out	inferred	the handle every debug print passes first to the fprintf-like console_printf (EAlloc/EFree heap traces, the sound-test clock line); holds 0x0c322d60. Code reads it each time, so it is a variable, not a constant (Ghidra folded the load into &PTR_DAT_0c322d60)

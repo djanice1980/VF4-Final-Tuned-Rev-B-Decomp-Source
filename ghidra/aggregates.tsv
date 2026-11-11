@@ -1,0 +1,365 @@
+address	size	fields	result
+0c1631b4	16	4	left alone: named global camera_proj_default at its start
+0c16666c	48	12	left alone: named global est_data_default at its start
+0c168068	20	5	left alone: named global fog_record_zero at its start
+0c187e08	12	1	left alone: named global card_renew_text_table at its start
+0c1a0108	16	3	left alone: named global chlg_total_columns at its start
+0c1a08e0	12	2	left alone: named global msn_text_colors at its start
+0c1a78c8	12	3	left alone: named global card_mark_motion at its start
+0c1e2794	8	1	left alone: named global aet_file_table at its start
+0c1e2b38	5	1	left alone: named global win_border_glyphs at its start
+0c211e9c	8	2	left alone: named global tex_builtin_8x8_desc at its start
+0c235ab0	17	5	left alone: typed data string at 0c235ab0
+0c24312c	2	2	left alone: named global coin_added at its start
+0c243130	2	2	left alone: named global coin_count_prev at its start
+0c243134	2	2	left alone: named global credit_count_prev at its start
+0c28c214	4	2	left alone: named global ledger_baseline at its start
+0c28ed38	16	4	left alone: named global card_icon_pos at its start
+0c28ed54	3	3	left alone: named global mes_anim_state at its start
+0c28eda8	2	2	left alone: named global quest_mes_phase at its start
+0c28f88c	12	2	left alone: named global card_panel_sel_rows at its start
+0c2925d0	2	2	left alone: named global rounds_won at its start
+0c2925fc	8	2	left alone: named global cpu_false_stats at its start
+0c292608	8	2	left alone: named global render_false_stats at its start
+0c2926e0	8	2	left alone: named global player_chara at its start
+0c2926e8	8	2	left alone: named global side_costume at its start
+0c292750	8	2	left alone: named global rob_body_vram_used at its start
+0c292758	8	2	left alone: named global rob_items_vram_used at its start
+0c293d8c	2	2	left alone: named global rob_obj_alt_req at its start
+0c293dc4	16	3	left alone: named global light_set_ambient at its start
+0c29439c	8	2	left alone: named global bg_color_custom at its start
+0c298dbc	16	1	left alone: named global chara_sound_tables at its start
+0c299258	2	2	left alone: named global rob_alt_model_card at its start
+0c299294	2	2	left alone: named global sel_just_decided at its start
+0c29fd1c	48	1	left alone: inside undefined *[86] at 0c29fcdc
+0c29ffd4	116	1	left alone: named global sound_bank_files at its start
+0c2a0090	8	1	left alone: inside char *[80] at 0c29ffd4
+0c2a0114	12	2	left alone: named global net_debug at its start
+0c2a01fc	2	2	left alone: named global level_change_flags at its start
+0c2a02f4	2	2	left alone: named global item_award_mes_on at its start
+0c2a02fc	2	2	left alone: named global item_plate_hidden at its start
+0c2a0494	14	1	left alone: named global mot_slots at its start
+0c2a0684	8	2	left alone: named global mission_tally at its start
+0c2a068c	8	2	left alone: named global mission_of_side at its start
+0c2a070c	8	2	left alone: named global prize_item_chance at its start
+0c2a08ec	8	2	left alone: named global prize_item at its start
+0c2a08f4	8	2	left alone: named global prize_money at its start
+0c2a0950	20	1	left alone: named global stage at its start
+0c2a1cb8	44	11	left alone: named global msn_hint_box at its start
+0c2a1e3c	8	2	left alone: named global chlg_coin_get_xy at its start
+0c2a26a8	8	1	made agg_0c2a26a8
+0c2a26e0	8	1	made agg_0c2a26e0
+0c2a2aac	28	1	left alone: named global rome_break_sources at its start
+0c2a46fc	20	1	left alone: named global djo_fence_segs at its start
+0c2a4db8	20	2	left alone: named global noh_etc_objs at its start
+0c2a5200	18	2	left alone: named global are_fans at its start
+0c2a54b0	20	1	left alone: named global break_floor_tiles at its start
+0c2a9750	12	2	left alone: named global audience_anim_sets at its start
+0c2a99b8	24	2	left alone: named global bird_spare_box at its start
+0c2a9d30	18	2	left alone: named global fish_model_sets at its start
+0c2aa06c	16	1	left alone: named global fish_seeker_params at its start
+0c2b0a40	48	12	left alone: named global sand_puff_config at its start
+0c2b0aa2	4	1	left alone: named global fish_mot_list at its start
+0c2b1470	16	4	left alone: named global item_test_names_1p at its start
+0c2b1480	16	4	left alone: named global item_test_names_2p at its start
+0c2b1490	16	4	left alone: named global item_test_counts_1p at its start
+0c2b14a0	16	4	left alone: named global item_test_counts_2p at its start
+0c2dd5d0	8	2	left alone: named global disp_sw at its start
+0c2dd850	24	6	left alone: named global osage_param_zero at its start
+0c2eea9c	8	2	left alone: named global item_zanzou_trail_ids at its start
+0c2efa3c	12	3	left alone: named global zanzou_fixed_point_8 at its start
+0c2efa48	12	3	left alone: named global zanzou_fixed_point_9 at its start
+0c2efa54	12	3	left alone: named global zanzou_fixed_dir_8 at its start
+0c2efa60	12	3	left alone: named global zanzou_fixed_dir_9 at its start
+0c2ff5bc	12	3	left alone: named global osage_wind at its start
+0c2ff5e0	12	3	left alone: named global osage_root_offset at its start
+0c2ff5f0	84	2	left alone: named global bone_chain_wind at its start
+0c306c88	76	1	left alone: named global stage_table at its start
+0c3226a8	44	11	left alone: named global objbank_empty at its start
+0c3227fc	8	2	left alone: named global fb_text_cursor at its start
+0c322d4c	6	6	left alone: named global level_change_items at its start
+0c322d54	8	8	left alone: named global entry_0 at its start
+0c325508	20	5	left alone: named global clip_rect at its start
+0c325864	24	1	left alone: named global blend_pass_bits at its start
+0c325890	16	4	left alone: named global obj_light_dir at its start
+0c3258a0	12	3	left alone: named global obj_half_vector at its start
+0c3258b0	12	3	left alone: named global obj_view_dir at its start
+0c3258c0	12	3	left alone: named global obj_light_color at its start
+0c3258d0	12	3	left alone: named global obj_light_colour2 at its start
+0c3258f0	16	4	left alone: named global single_light_color at its start
+0c325900	16	4	left alone: named global second_light_color at its start
+0c325a08	12	2	left alone: named global line3d_opaque_header at its start
+0c325a28	12	1	left alone: named global line3d_alpha_header at its start
+0c32a598	12	3	left alone: named global bg_plane_colors at its start
+0c32a770	16	4	left alone: named global strip_header_words at its start
+0c32aba4	40	10	left alone: named global vram_halves at its start
+0c32acac	32	3	left alone: named global z_errmsg at its start
+0c360000	8	2	left alone: named global field_load at its start
+0c360018	8	2	left alone: named global nick_comm_buf at its start
+0c36009c	8	2	left alone: named global gz_buffer at its start
+0c3600d0	8	2	left alone: named global heap_texdata at its start
+0c3600dc	8	2	left alone: named global nick_game_buf at its start
+0c3601e0	8	2	left alone: named global spr_cmn_top at its start
+0c3601ec	52	13	left alone: named global system_param_value at its start
+0c370ac8	15	6	left alone: named global rep_highlights at its start
+0c370b80	72	2	left alone: named global credit_copy at its start
+0c370c84	2	2	left alone: named global side_entry_flags at its start
+0c370c98	12	3	left alone: named global cam_anim_start_eye at its start
+0c370cb0	32	7	left alone: named global cam_anim_sample at its start
+0c370cd0	12	3	left alone: named global cam_anim_eye at its start
+0c370ce0	116	31	left alone: named global camera at its start
+0c370d64	12	3	left alone: named global cam_anim_target at its start
+0c370db0	12	3	left alone: named global cam_anim_start_target at its start
+0c371010	12	3	left alone: named global adv_light_target at its start
+0c3713b4	96	24	left alone: named global est_data at its start
+0c371994	8	2	left alone: named global coli_test_nearest_hits at its start
+0c3719a0	8	2	made agg_0c3719a0
+0c371a3c	8	2	made agg_0c371a3c
+0c371a44	8	2	made agg_0c371a44
+0c371a5c	8	2	made agg_0c371a5c
+0c371a7c	12	3	left alone: named global break_floor_impact at its start
+0c371ad8	8	2	left alone: named global coli_test_hits at its start
+0c371b18	8	2	left alone: named global rob_chain_usec at its start
+0c371b98	8	2	made agg_0c371b98
+0c372430	8	2	made agg_0c372430
+0c372448	8	2	made agg_0c372448
+0c372818	20	4	left alone: named global extra_light at its start
+0c3728ac	32	3	left alone: named global light_sets at its start
+0c373060	68	9	left alone: inside light_src_rec[6][16] at 0c3728ac
+0c37422c	12	3	left alone: named global hit_light_pos at its start
+0c374238	16	4	left alone: named global light_masks at its start
+0c374288	20	7	left alone: named global fog_offset at its start
+0c37429c	6	3	left alone: named global fog_target at its start
+0c3742c8	20	7	left alone: named global fog_cur at its start
+0c3742dc	8	3	left alone: named global fog_base at its start
+0c3742f0	6	3	left alone: named global fade_r at its start
+0c3744e8	13012	103	left alone: named global user_back_data at its start
+0c3778dc	2	2	left alone: named global sel_cursor at its start
+0c37ba30	28	1	left alone: named global robs at its start
+0c37cccc	12	2	left alone: named global rob_coli_records at its start
+0c37d614	8	2	left alone: named global sound_reload_queue at its start
+0c37d65c	96	10	left alone: named global sound_state at its start
+0c37d714	20	4	left alone: named global sound_reload_job at its start
+0c37d734	36	14	left alone: named global sound_test_state at its start
+0c37d758	2	1	left alone: named global net_select_scratch at its start
+0c37d791	58	3	left alone: named global net_select_pending at its start
+0c37d804	68	18	left alone: named global net_info at its start
+0c37d9c4	52	1	left alone: inside net_check_log_rec at 0c37d848
+0c37e3e6	6	4	left alone: named global card_debug_requests at its start
+0c37f938	12	3	left alone: named global rob_root_offset at its start
+0c382418	16	4	left alone: named global stage_screen_proj at its start
+0c382438	30	6	left alone: named global stage_anim_objs at its start
+0c382498	48	8	left alone: named global stage_anim_obj2 at its start
+0c38651c	73	2	left alone: named global nyc_helis at its start
+0c386aac	223	21	left alone: named global nyc_searchlights at its start
+0c386b8c	223	8	left alone: named global nyc_searchlights_fixed at its start
+0c386c6c	80	1	left alone: named global nyc_heli_light0 at its start
+0c386cdc	80	1	left alone: named global nyc_heli_light1 at its start
+0c386d58	52	1	left alone: named global nyc_beam_glows at its start
+0c38982c	24	5	left alone: named global effect_slots at its start
+0c389cdc	176	21	left alone: named global rain_params at its start
+0c38a848	33	4	left alone: named global snow_flakes at its start
+0c38bfb8	44	13	left alone: named global snow_wind at its start
+0c38c47c	4	2	left alone: named global snow_sway at its start
+0c38c57c	37	6	left alone: named global snow_sheets at its start
+0c38cd4c	4	2	left alone: named global snow_ground_frame at its start
+0c396cc0	24	6	left alone: named global sand_colors at its start
+0c397ae8	48	12	left alone: named global sand_puff_config_copy at its start
+0c3985b0	44	11	left alone: named global lens_flare_copy at its start
+0c3985e0	4	3	left alone: named global color_1p_a at its start
+0c3985e4	4	3	left alone: named global color_2p_a at its start
+0c3985fc	36	7	left alone: named global rope_links at its start
+0c3ad21c	60	7	left alone: named global stage_wind at its start
+0c3b63d4	8	1	left alone: inside int[81] at 0c3b6298
+0c3b63dc	59	4	left alone: named global sprite_set_loaded at its start
+0c3b6430	8	2	left alone: named global char_side_tex_mask at its start
+0c3b6438	38	10	left alone: named global sprite_put_state at its start
+0c3b6538	20	1	left alone: inside objbank[21] at 0c3b64bc
+0c3b6578	48	2	left alone: inside objbank[21] at 0c3b64bc
+0c3b65b8	28	3	left alone: inside objbank[21] at 0c3b64bc
+0c3b66f8	60	4	left alone: inside objbank[21] at 0c3b64bc
+0c3b6738	40	2	left alone: inside objbank[21] at 0c3b64bc
+0c3b6778	64	4	left alone: inside objbank[21] at 0c3b64bc
+0c3b67b8	44	2	left alone: inside objbank[21] at 0c3b64bc
+0c3b67f8	64	3	left alone: inside objbank[21] at 0c3b64bc
+0c3b7758	12	3	left alone: named global object_mem_last at its start
+0c3ba014	80	4	left alone: named global objbank_mem_sizes at its start
+0c3d62c8	60	8	left alone: named global poly_test_camera at its start
+0c3d77c4	36	4	left alone: named global motion_test at its start
+0c3d7828	112	5	left alone: named global frame_check at its start
+0c3d88d8	12	3	left alone: named global fatal_record at its start
+0c3d8ce8	44	7	left alone: named global gz_stream at its start
+0c3dbd20	28	7	left alone: named global naominet_config at its start
+0c3dc158	32	8	left alone: named global model_error_record at its start
+0c3dc188	36	5	left alone: named global elan_matrix_params at its start
+0c3dc1d4	24	6	left alone: named global tile_split_args at its start
+0c3dc200	8	2	left alone: named global lights_elan_color_bits at its start
+0c3dc228	12	3	left alone: named global lights_elan_modes at its start
+0c3e033c	8	2	left alone: named global sprite_coord_recip at its start
+0c3e035c	8	2	left alone: named global sprite_coord_extent at its start
+0c3e0378	16	4	left alone: named global board_settings at its start
+0c3e11c4	188	4	left alone: named global credit_state at its start
+0c3e12a8	12	3	left alone: named global mie_start_state at its start
+0c3e1af4	80	2	left alone: named global card_units at its start
+0c3e1d80	3	2	left alone: named global legacy_io_inputs at its start
+0c3e2b4c	68	11	left alone: named global coin_settings at its start
+0c3e3b28	2	2	left alone: named global jvs_reply_data at its start
+0c3e9b18	16	3	left alone: inside char *[31][256] at 0c3e9a9c
+0c412b28	16	4	left alone: named global dimm_cmd_unhandled at its start
+0c412b3c	16	4	left alone: named global ctl_call_state at its start
+0c41344c	12	3	left alone: named global peer_request_state at its start
+0c413460	12	3	left alone: named global water_grid_spare_vec at its start
+0c41347c	60	7	left alone: named global water_state at its start
+0c413dc8	20	3	left alone: inside water_state_rec at 0c41347c
+0c416b0c	28	5	left alone: named global cpu_ol_target at its start
+0c417488	12	3	made agg_0c417488
+0c417498	8	2	left alone: named global vram_pair_pool_halves at its start
+0c4174b8	24	6	left alone: named global capture_records at its start
+0c417618	20	5	left alone: named global captured_list_starts at its start
+0c41794c	52	4	left alone: named global frame_stats at its start
+0c41798c	16	2	left alone: inside frame_stats_rec at 0c41794c
+0c4179c8	52	2	left alone: inside frame_stats_rec at 0c41794c
+0c417a24	16	4	left alone: named global gfx_counters_saved at its start
+0c417a40	8	2	left alone: named global render_frame_surfaces at its start
+0c417a48	20	5	left alone: named global draw_context_preset_cur at its start
+0c417a60	96	14	left alone: named global render_config at its start
+0c417d18	44	9	left alone: named global obj_send_header at its start
+0c418458	12	3	left alone: named global vertex_buffer_desc at its start
+0c41bb10	16	4	left alone: named global bring_up_words_bb10 at its start
+0c41bb24	16	4	left alone: named global bring_up_floats_bb24 at its start
+0c41bb38	12	4	left alone: named global display_state at its start
+0c41bb44	8	2	left alone: named global poly_header_or_words at its start
+0c41c64c	16	4	left alone: named global light_ambient_color at its start
+0c41c860	48	5	left alone: named global mtx_stack_records at its start
+0c41cab0	52	4	left alone: named global view_side_planes at its start
+0c41df70	20	5	left alone: named global fb_write_block at its start
+0c41df94	104	26	left alone: named global render_setup at its start
+0c41e000	16	4	left alone: named global list_write_state at its start
+0c41e010	1300	162	left alone: named global gfx_state at its start
+0c41e524	20	5	left alone: named global lib_info at its start
+0c41e53c	80	13	left alone: named global render_stats at its start
+0c41e9f0	8	2	left alone: named global blank_end_block at its start
+0c41ea10	8	2	left alone: named global tile_owner_bitmaps at its start
+0c41eb20	8	2	left alone: named global elan_rev_config at its start
+0c41eccc	28	7	left alone: named global rob_cam_history at its start
+0c41edc8	20	1	left alone: named global rob_cam_hist_a_tail at its start
+0c41eddc	12	2	left alone: named global rob_cam_hist_a_oldest_pos at its start
+0c41eefc	12	2	left alone: named global rob_cam_hist_b_oldest_pos at its start
+0c41ef08	12	1	left alone: named global rob_cam_history_end at its start
+0c41f05c	36	10	left alone: inside replay_cam_rec at 0c41ef20
+0c41f08c	4	2	made agg_0c41f08c
+0c41f310	12	3	made agg_0c41f310
+0c41f31c	12	3	made agg_0c41f31c
+0c41f400	32	5	left alone: named global net_status at its start
+0c41f440	8	2	left alone: named global prize_anim at its start
+0c41f458	2	2	left alone: named global appose_pose_choice at its start
+0c41f45c	2	2	left alone: named global appose_pose_tried at its start
+0c41fb44	2	2	left alone: named global jvs_board_status at its start
+0c41fb48	28	2	left alone: named global board_buttons at its start
+0c41fbb0	12	2	left alone: named global input_merged at its start
+0c41fbec	8	2	left alone: named global jvs_check_frames at its start
+0c41fbf4	8	2	left alone: named global jvs_bad_frames at its start
+0c41fbfc	8	2	left alone: named global jvs_bad_run at its start
+0c41fc04	24	6	left alone: named global input_repeat_cfg at its start
+0c41fc20	2	2	left alone: named global sel_cursor_prev at its start
+0c41fc30	16	2	left alone: named global sel_slot_marks at its start
+0c41fc50	304	37	left alone: named global sel_screen at its start
+0c41fd98	8	2	left alone: named global sel_card_event_done at its start
+0c420164	12	2	left alone: named global enemy_origin at its start
+0c4202d0	4	2	left alone: named global vp_rank_weights at its start
+0c420608	132	4	left alone: named global vp_work_1p at its start
+0c421b54	28	8	left alone: named global script_choice_stack at its start
+0c4220b4	12	3	left alone: named global robs_push_dir at its start
+0c4220e0	8	2	left alone: named global chara_se_tables at its start
+0c4220e8	8	2	left alone: named global chara_voice_tables at its start
+0c422400	60	3	left alone: inside net_game_config_rec at 0c4223c0
+0c42293c	64	1	left alone: inside net_game_config_rec at 0c4223c0
+0c42297c	40	2	left alone: inside net_game_config_rec at 0c4223c0
+0c423180	2	2	left alone: named global net_bookmark_flags at its start
+0c430e54	8	2	left alone: named global auth_client_config at its start
+0c430edc	48	8	left alone: named global auth_client_settings at its start
+0c430f5c	8	2	left alone: named global auth_reply_words at its start
+0c430f88	8	2	left alone: named global auth_place_id at its start
+0c431390	8	2	left alone: named global card_service_state at its start
+0c431398	12	3	left alone: named global jisaku_marks at its start
+0c43151c	16	5	left alone: named global nickname_points at its start
+0c431bbc	20	5	left alone: named global item_lottery at its start
+0c431c04	12	3	left alone: named global item_pending_mark at its start
+0c446f8c	12	3	left alone: named global rob_eval_aim at its start
+0c450f0c	12	3	left alone: named global lottery_reels at its start
+0c450f24	356	49	left alone: named global msnm_disp_state at its start
+0c454970	32	1	left alone: named global effect_heap_stats at its start
+0c454a10	16	4	left alone: named global loop64_model at its start
+0c454a24	32	7	left alone: named global rob_fx_pool at its start
+0c454de4	32	8	left alone: named global down_fx at its start
+0c454e5c	32	8	left alone: named global step_fx at its start
+0c4556a0	8	2	left alone: named global garden_other_objs at its start
+0c4556d8	20	4	left alone: named global hbr_floats at its start
+0c4557a4	24	4	left alone: named global umi_float at its start
+0c455834	8	2	left alone: named global dural_stage_scroll at its start
+0c45583c	28	7	left alone: named global dust_records at its start
+0c4586f8	36	10	left alone: named global fish_seeker at its start
+0c45875c	80	1	left alone: named global fish_solo1 at its start
+0c4587ac	80	5	left alone: named global fish_solo2 at its start
+0c4587fc	80	1	left alone: named global fish_solo3 at its start
+0c458c6c	28	8	left alone: named global sky_flash at its start
+0c458c88	12	3	left alone: named global sky_flash_ambient at its start
+0c46c464	8	1	left alone: named global rain_streaks at its start
+0c484b04	5	2	left alone: named global rain_fan_records at its start
+0c489884	12	2	left alone: named global snow_cas_timings at its start
+0c48aa30	82	2	left alone: named global snow_spray_lists at its start
+0c48ab60	4	2	left alone: named global sand_ground_frame at its start
+0c48c5ac	82	2	left alone: named global sand_puff_lists at its start
+0c48c798	8	2	left alone: named global leaf_fly_models at its start
+0c48c7a0	8	2	left alone: named global leaf_shadow_models at its start
+0c492270	8	2	left alone: named global texcol_scratch_c at its start
+0c4c52e4	29	8	left alone: named global itmtst_state at its start
+0c4c5304	16	4	left alone: named global itmtst_stats at its start
+0c4c5480	40	1	left alone: inside itmtst_stats_rec at 0c4c5304
+0c4ecbfc	8	2	left alone: named global aet_file_table_hdr at its start
+0c4edce4	8	2	left alone: named global aet_stack at its start
+0c4ee14c	60	8	left alone: inside aet_draw_state_rec at 0c4ee0d0
+0c551e20	8	1	left alone: named global poly_queue at its start
+0c5b26c8	88	3	left alone: named global load_slots at its start
+0c5c3c80	8	2	left alone: named global naominet_job_queue at its start
+0c5c3cb4	12	3	left alone: named global naominet_last_error at its start
+0c5c3cc0	88	5	left alone: named global naominet_machine_info at its start
+0c5c3d18	20	5	left alone: named global naominet_score_args at its start
+0c5c3e6c	8	2	left alone: named global naominet_score_extra at its start
+0c5c3ea0	8	2	left alone: named global naominet_uri_host at its start
+0c5c3ea8	12	3	left alone: named global naominet_name_info at its start
+0c5c3eb4	24	6	left alone: named global naominet_region_info at its start
+0c5c3ecc	8	2	left alone: named global naominet_setting at its start
+0c5c3ed4	8	2	left alone: named global naominet_place_id at its start
+0c5c3edc	32	8	left alone: named global naominet_timeouts at its start
+0c5c3efc	16	8	left alone: named global naominet_server_time at its start
+0c5c3f0c	3	3	left alone: named global naominet_reauth_time at its start
+0c5c9d7c	8	2	left alone: named global matrix_cmds_block at its start
+0c5c9d84	12	3	left alone: named global normal_block_scale at its start
+0c5ca220	20	5	left alone: named global lit_ambient_scaled at its start
+0c5ca240	20	2	left alone: named global lit_offset_group_colours at its start
+0c5ca4c0	20	5	left alone: named global lit_offset_ambient_scaled at its start
+0c5ca760	20	5	left alone: named global float_colour_ambient at its start
+0c5cab00	12	3	left alone: named global line3d_piece_step at its start
+0c5cab0c	12	3	left alone: named global line3d_piece_start at its start
+0c5cab18	12	3	left alone: named global line3d_piece_end at its start
+0c5cab34	52	6	left alone: named global irq_slot_fns at its start
+0c5cae7c	9	9	left alone: named global mie_request at its start
+0c5caf80	16	4	left alone: named global sram_save_header_a at its start
+0c5caf90	16	4	left alone: named global sram_save_header_b at its start
+0c5cafb0	4	3	left alone: named global eeprom_save_header_a at its start
+0c5cafb4	4	3	left alone: named global eeprom_save_header_b at its start
+0c5cb000	8	2	left alone: named global coins_pending at its start
+0c5d4340	10	2	left alone: named global peer_start_table at its start
+0c5d4540	12	2	left alone: named global dimm_board_info at its start
+0c5d45c0	48	12	left alone: named global dimm_request at its start
+0c5d4800	72	19	left alone: named global graphics_work at its start
+0c5d4878	56	2	left alone: named global tex_fallback_slot at its start
+0c5d4960	24	6	left alone: named global text_sprite_header at its start
+0c5d4978	32	3	left alone: named global text_font_surface at its start
+0c5d5c3c	92	17	left alone: named global strip_header_shadow at its start
+0c5d5cb8	20	5	left alone: named global bank_list_starts at its start
+0c5d5ce0	20	5	left alone: named global list_cursors at its start
+0c5d5d08	8	1	left alone: named global ta_param_area at its start
+0c5d5d10	20	5	left alone: named global list_header_counts at its start
+0c606ffc	12	1	left alone: named global xfer_free_nodes at its start

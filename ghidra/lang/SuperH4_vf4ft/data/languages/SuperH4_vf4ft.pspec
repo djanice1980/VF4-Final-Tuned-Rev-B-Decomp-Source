@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Derived from Ghidra's SuperH4.pspec (Apache-2.0) for vf4ft-decomp.
+     Entry state is what VF4 Final Tuned's startup code loads
+     (lds 0x40000,fpscr at 0x0C020036): DN=1, round to nearest, PR=0, SZ=0.
+     NOTE: in Ghidra 12.1.2 this tracked_set did not reach the program
+     context for the FPSCR_SZ/FPSCR_PR pseudo-registers (checked with a
+     probe script), so ghidra/SetFpuEntryState.java sets them over .text.
+     The entries are kept as documentation of the intended entry state. -->
+<processor_spec>
+  <properties>
+    <property key="assemblyRating:SuperH4:LE:32:vf4ft" value="PLATINUM"/>
+  </properties>
+  <programcounter register="PC"/>
+  <context_data>
+    <tracked_set space="register">
+      <set name="FPSCR" val="0x40000"/>
+      <set name="FPSCR_SZ" val="0"/>
+      <set name="FPSCR_PR" val="0"/>
+    </tracked_set>
+  </context_data>
+</processor_spec>

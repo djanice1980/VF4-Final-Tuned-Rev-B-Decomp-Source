@@ -1,0 +1,56 @@
+/*
+ * newlib/libm/math/ef_asin.c
+ * Decompiler output that compiles to the game's bytes (found by
+ * tools/match/auto_match.py, moved here by tools/match/adopt.py); every
+ * function here matches (python3 -I tools/match/match.py checks the tree).
+ */
+#include "vf4ft.h"
+
+float __ieee754_asinf(float value)
+{
+  typedef union { float value; uint word; } float_shape;
+  float x = value;
+  float t, w, p, q, c, r, s;
+  int hx, ix;
+  int iw;
+
+  do { float_shape gf_u; gf_u.value = x; hx = gf_u.word; } while (0);
+  ix = hx & 0x7fffffff;
+  if (ix == 0x3f800000) {
+    return x * 1.5707962513e+00 + x * 7.5497894159e-08;
+  }
+  else if (ix > 0x3f800000) {
+    return (x - x) / (x - x);
+  }
+  else if (ix < 0x3f000000) {
+    if (ix < 0x32000000) {
+      if (1.000e+30 + x > 1.0) return x;
+    }
+    else
+      t = x * x;
+    p = t * (1.6666667163e-01 + t * (-3.2556581497e-01 + t * (2.0121252537e-01 + t * (-4.0055535734e-02 + t * (7.9153501429e-04 + t * 3.4793309169e-05)))));
+    q = 1.0 + t * (-2.4033949375e+00 + t * (2.0209457874e+00 + t * (-6.8828397989e-01 + t * 7.7038154006e-02)));
+    w = p / q;
+    return x + x * w;
+  }
+  w = 1.0 - fabsf(x);
+  t = w * (float)0.5;
+  p = t * (1.6666667163e-01 + t * (-3.2556581497e-01 + t * (2.0121252537e-01 + t * (-4.0055535734e-02 + t * (7.9153501429e-04 + t * 3.4793309169e-05)))));
+  q = 1.0 + t * (-2.4033949375e+00 + t * (2.0209457874e+00 + t * (-6.8828397989e-01 + t * 7.7038154006e-02)));
+  s = __ieee754_sqrtf(t);
+  if (ix >= 0x3f79999a) {
+    w = p / q;
+    t = 1.5707962513e+00 - ((float)2.0 * (s + s * w) - 7.5497894159e-08);
+  }
+  else {
+    w = s;
+    do { float_shape gf_u; gf_u.value = w; iw = gf_u.word; } while (0);
+    do { float_shape sf_u; sf_u.word = iw & 0xfffff000; w = sf_u.value; } while (0);
+    c = (t - w * w) / (s + w);
+    r = p / q;
+    p = (float)2.0 * s * r - (7.5497894159e-08 - (float)2.0 * c);
+    q = 7.8539818525e-01 - (float)2.0 * w;
+    t = 7.8539818525e-01 - (p - q);
+  }
+  if (hx > 0) return t; else return -t;
+}

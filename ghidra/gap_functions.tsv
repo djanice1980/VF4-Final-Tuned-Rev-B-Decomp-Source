@@ -1,0 +1,280 @@
+address	status	library	reached_by	what_it_does
+0c0fc6e0	uncalled	NAOMI2 library	nothing (no load, branch or table entry anywhere in the image)	copies the model heap top 0c3dc14c to the saved mark 0c3dc180
+0c0fc700	uncalled	NAOMI2 library	nothing (no load, branch or table entry anywhere in the image)	sets the model heap top 0c3dc14c back to the mark saved by the uncalled routine at 0x0C0FC6E0 (0c3dc180), freeing every block allocated since
+0c0fc720	uncalled	NAOMI2 library	nothing (no load, branch or table entry anywhere in the image)	sets both the model heap top 0c3dc14c and the saved mark 0c3dc180 to the heap's initial top 0c3dc1ac, freeing every model buffer
+0c0fc760	uncalled	NAOMI2 library	nothing (no load, branch or table entry anywhere in the image)	stores size rounded up to 32 bytes in 0c3dc154, the size of one frame's display list area (elan_cmd_buffer_flip places the write pointer 0c3dc1b8 at base 0c32587c plus the frame index times it)
+0c0fd240	uncalled	NAOMI2 library	nothing (no load, branch or table entry anywhere in the image)	returns the top 16 bits of the first float's bit pattern in the upper half and those of the second in the lower half (two truncated 16-bit floats in one word)
+0c0ff980	uncalled	NAOMI2 library	nothing (no load, branch or table entry anywhere in the image)	stores u and v at 0c3dc188 +0x1c and +0x20, the offsets model_list_compile adds to environment-mapped texture coordinates ((n + 1) / 2 + offset) and that the 0x08000200 normal block carries
+0c0ff9a0	uncalled	NAOMI2 library	nothing (no load, branch or table entry anywhere in the image)	reads the two offsets of the uncalled routine at 0x0C0FF980 (0c3dc188 +0x1c, +0x20) into *u and *v
+0c0ff9c0	uncalled	NAOMI2 library	nothing (no load, branch or table entry anywhere in the image)	stores 1/x, 1/y, 1/z in the block at 0c5c9d84
+0c0ffa00	uncalled	NAOMI2 library	nothing (no load, branch or table entry anywhere in the image)	stores x, y, z in the block at 0c5c9d84, the three factors the C matrix builders put (as -x, y, -z) at the end of the 0x08000200 normal block
+0c100920	uncalled	NAOMI2 library	nothing (no load, branch or table entry anywhere in the image)	(field 0-3, value): for field <= 3 takes {mask, shift} from obj_flag_fields (one bit at 9, 10, 11 or 12), clears it from the keep mask 0c3dc1cc and ORs value << shift into the force bits 0c3dc1c8 that model_tex_load_walk applies to word 2 of each object header
+0c100960	uncalled	NAOMI2 library	nothing (no load, branch or table entry anywhere in the image)	(field 0-3): undoes the uncalled routine at 0x0C100920 for one field: sets its bits in 0c3dc1cc and clears them in 0c3dc1c8
+0c100ea0	uncalled	NAOMI2 library	nothing (no load, branch or table entry anywhere in the image)	returns the address of the library build string naomi2_lib_version_string (0c211784)
+0c101aa0	uncalled	NAOMI2 library	nothing (no load, branch or table entry anywhere in the image)	hand-written assembly, the variant of elan_matrix_cmds_write that takes the matrix already in the front FPU bank (no frchg), saves fr12-fr15, scales the rows by floats +0, +4 and +0x18 of the parameter record and writes the same 0x08000200 / 0x08000100 commands with a 1.0 word; returns the end pointer
+0c101be0	uncalled	NAOMI2 library	nothing (no load, branch or table entry anywhere in the image)	zeroes elan_ram_top and elan_cmd_write_ptr
+0c101c00	uncalled	NAOMI2 library	nothing (no load, branch or table entry anywhere in the image)	(bytes): moves elan_cmd_write_ptr on by the size rounded up to 32 bytes
+0c101cc0	uncalled	NAOMI2 library	nothing (no load, branch or table entry anywhere in the image)	puts elan_ram_top back to elan_ram_region_end, dropping every top allocation
+0c101d80	uncalled	NAOMI2 library	nothing (no load, branch or table entry anywhere in the image)	(light, value): stores word +0 of the light's the block at 0c3dc228 record, which elan_light_pack_directional puts into bits 5-7 of its word 6
+0c101da0	uncalled	NAOMI2 library	nothing (no load, branch or table entry anywhere in the image)	(light, value): stores word +4 of the light's the block at 0c3dc228 record (bits 28-29 of the packed light's word 5)
+0c101dc0	uncalled	NAOMI2 library	nothing (no load, branch or table entry anywhere in the image)	(light, value): stores word +8 of the light's the block at 0c3dc228 record (bits 24-27 of the packed light's word 5)
+0c101de0	uncalled	NAOMI2 library	nothing (no load, branch or table entry anywhere in the image)	(light, flags): stores the flags in word +0xc of the light's the block at 0c3dc228 record; bit 0 sets or clears the light's bit (bit_masks) in lights_elan_on_bits, bit 1 in lights_elan_second_bits
+0c101ea0	uncalled	NAOMI2 library	nothing (no load, branch or table entry anywhere in the image)	(value): lights_elan_last_flag = value != 0, the bit 20 lights_elan_block_queue ORs into each light command's last word
+0c101ec0	uncalled	NAOMI2 library	nothing (no load, branch or table entry anywhere in the image)	(byte): stores lights_elan_alt_colour_on, which makes lights_elan_block_queue use lights_elan_alt_colour for the header's second colour word
+0c101ee0	uncalled	NAOMI2 library	nothing (no load, branch or table entry anywhere in the image)	(r, g, b floats): packs them x 255 into the RGB bytes of lights_elan_alt_colour
+0c101f20	uncalled	NAOMI2 library	nothing (no load, branch or table entry anywhere in the image)	(cos a, cos b floats): k = 1 / (cos a - cos b) and -cos b x k, returned as the upper 16 bits of each float packed in one word (k high)
+0c1029a0	uncalled	NAOMI2 library (NLOBJPUT)	nothing (no load, branch or table entry anywhere in the image)	zeroes texidx_base and obj_palette_table
+0c1029c0	uncalled	NAOMI2 library (NLOBJPUT)	nothing (no load, branch or table entry anywhere in the image)	counts a stack word from 0 to 5000 and returns (a busy delay)
+0c1031e0	uncalled	NAOMI2 library (NLOBJPUT)	nothing (no load, branch or table entry anywhere in the image)	(obj, offset): when 0c32a58c is 1 and the object is not empty, sets the palette bits (bits 21-26 of word +0xc) of every palette-format (5, 6) polygon record to its word +0x3c plus offset
+0c1032e0	uncalled	NAOMI2 library (NLOBJPUT)	nothing (no load, branch or table entry anywhere in the image)	returns modvol_instruction >> 29
+0c103320	uncalled	NAOMI2 library (NLOBJPUT)	nothing (no load, branch or table entry anywhere in the image)	returns modvol_sign
+0c103500	uncalled	NAOMI2 library (NLOBJPUT)	nothing (no load, branch or table entry anywhere in the image)	returns the module's build date string object_put_build_date_str (0c2117fc, "Apr  5 2004 17:11:49")
+0c1037a0	uncalled	NAOMI2 library (NLOBJPUT)	nothing (no load, branch or table entry anywhere in the image)	(float): stores it in obj_light_scalar and in the header block word 0c417d34 (+0x1c)
+0c103900	uncalled	NAOMI2 library (NLOBJPUT)	nothing (no load, branch or table entry anywhere in the image)	(r, g, b): stores them in the block at 0c3258c0 and copies them to obj_light_colour2
+0c103960	uncalled	NAOMI2 library (NLOBJPUT)	nothing (no load, branch or table entry anywhere in the image)	(r, g, b): stores obj_light_colour2 only
+0c103a20	uncalled	NAOMI2 library (NLOBJPUT)	nothing (no load, branch or table entry anywhere in the image)	copies the first four words of the list write pointer record (*0c41df88) into gfx_counters_saved
+0c103a60	uncalled	NAOMI2 library (NLOBJPUT)	nothing (no load, branch or table entry anywhere in the image)	(four int out pointers): each of the four list write pointers minus its word in gfx_counters_saved
+0c103ca0	uncalled	NAOMI2 library (NLOBJPUT)	nothing (no load, branch or table entry anywhere in the image)	(obj): walks the polygon records from obj + 0x18 (0x50 bytes plus word +0x4c each) to the zero word that ends them and returns the word after it; 0 for an empty object (word 0 negative or +0x18 zero)
+0c104060	uncalled	NAOMI2 library (NLOBJPUT)	nothing (no load, branch or table entry anywhere in the image)	clears obj_alt_lighting
+0c104220	uncalled	NAOMI2 library (NLOBJPUT)	nothing (no load, branch or table entry anywhere in the image)	(x, y, z floats): stores them at +4, +8 and +0xc of the block at 0c3258f0
+0c104240	uncalled	NAOMI2 library (NLOBJPUT)	nothing (no load, branch or table entry anywhere in the image)	(x, y, z floats): stores them at +4, +8 and +0xc of the block at 0c325900
+0c10db80	uncalled	libspr	nothing (no load, branch or table entry anywhere in the image)	returns 0c2118a4, libspr's build date
+0c10e460	uncalled	libspr	nothing (no load, branch or table entry anywhere in the image)	(float *w, float *h): copies the block at 0c3e035c out; read-back partner of 0c10e420
+0c10ee40	uncalled	libspr (strip object)	nothing (no load, branch or table entry anywhere in the image)	(mode): stores it in strip_matrix_mode 0c3e036c, the flag the vertex senders test
+0c10f100	uncalled	libspr (strip object)	nothing (no load, branch or table entry anywhere in the image)	(group): stores it in strip_pal_group 0c3e0368, which strip_ctx_record_apply_textured reads
+0c10fb00	uncalled	libspr (line object)	nothing (no load, branch or table entry anywhere in the image)	stores fr4 in line3d_split_length (0x0C3259B0)
+0c10fb40	uncalled	libspr (line object)	nothing (no load, branch or table entry anywhere in the image)	(src, dst) blend factors into the translucent line header's TSP word (src << 29, (dst & 7) << 26)
+0c10fb80	uncalled	libspr (line object)	nothing (no load, branch or table entry anywhere in the image)	(flag) fog field of both line headers: flag 1 clears bits 22-23 (table fog), anything else sets 0x800000 (no fog)
+0c110f20	uncalled	libintr	nothing (no load, branch or table entry anywhere in the image)	returns irq_last_event
+0c111040	uncalled	libintr	nothing (no load, branch or table entry anywhere in the image)	(source, out) reads an INTC priority field via irq_ipr_fields; 1 ok, 0 for source above 12
+0c1110c0	uncalled	libintr	nothing (no load, branch or table entry anywhere in the image)	`bra` to itself (spins forever)
+0c111100	uncalled	libintr	nothing (no load, branch or table entry anywhere in the image)	(stack) writes 0x80000000 to 0x0C32A714 and the stack to 0x0C32A718, the two sy `.data` words the start-up passes to ic_flush_and_unblock / irq_stack_switch
+0c112080	uncalled	libsnd	nothing (no load, branch or table entry anywhere in the image)	(words) -1 for 0, else stores the words-per-step in the job record (+4); returns 0
+0c112460	uncalled	libsnd	nothing (no load, branch or table entry anywhere in the image)	returns dtpk_empty_header (0x0C211A28)
+0c113160	uncalled	libsnd	nothing (no load, branch or table entry anywhere in the image)	(header, out size) *out = header byte +7 x 16; returns the header
+0c113260	uncalled	libsnd	nothing (no load, branch or table entry anywhere in the image)	(port, channel, out size) for an open port: *out = pcm_buffer_bytes, returns that channel's buffer address
+0c1132a0	uncalled	libsnd	nothing (no load, branch or table entry anywhere in the image)	(port) the port's sample rate (+0xc) when open
+0c1132e0	uncalled	libsnd	nothing (no load, branch or table entry anywhere in the image)	(port) the port's sample bits (+2) when open
+0c113360	uncalled	libsnd	nothing (no load, branch or table entry anywhere in the image)	(1 or 2 channels) finds a free mono / stereo port, marks it open (state 1), returns it or -1
+0c113440	uncalled	libsnd	nothing (no load, branch or table entry anywhere in the image)	(port) an open port that is not playing goes back to free (state 0)
+0c1136c0	uncalled	libsnd	nothing (no load, branch or table entry anywhere in the image)	(port) empty
+0c1136e0	uncalled	libsnd	nothing (no load, branch or table entry anywhere in the image)	(port) empty
+0c113700	uncalled	libsnd	nothing (no load, branch or table entry anywhere in the image)	(header) copies pcm_header_template's 64 bytes into it
+0c113720	uncalled	libsnd	nothing (no load, branch or table entry anywhere in the image)	(header, octave, fns) u16 +0x22 = octave << 11 \| fns
+0c113740	uncalled	libsnd	nothing (no load, branch or table entry anywhere in the image)	(header, 1/2/4 channels) byte +9 low bits = 0/1/2, bit 7 kept
+0c1137e0	uncalled	libsnd	nothing (no load, branch or table entry anywhere in the image)	(header, channel, volume) byte +0x31 + ch * 4
+0c113800	uncalled	libsnd	nothing (no load, branch or table entry anywhere in the image)	(header, channel, pan) byte +0x32 + ch * 4
+0c113820	uncalled	libsnd	nothing (no load, branch or table entry anywhere in the image)	(header, 16/8/4 bits) byte +8 = 0/1/3
+0c1138c0	uncalled	libsnd	nothing (no load, branch or table entry anywhere in the image)	(header, DSP channel, level) byte +0x33 + i * 4 = ch << 4 \| level for all four channels
+0c113900	uncalled	libsnd	nothing (no load, branch or table entry anywhere in the image)	(header, gain) byte +0x30 + i * 4 for all four channels
+0c113f40	uncalled	libsnd	nothing (no load, branch or table entry anywhere in the image)	returns sndram_copy_by_dma
+0c113f60	uncalled	libsnd	nothing (no load, branch or table entry anywhere in the image)	finds a free handle in snd_dma_handles, sets its flag to 1 and returns it, else 0
+0c11d260	uncalled	libnl2http	nothing (no load, branch or table entry anywhere in the image)	returns http_server_ip_buf (0c5cd1cc), naominet.jp's resolved address as dotted text
+0c11e760	uncalled	libnl2http	nothing (no load, branch or table entry anywhere in the image)	returns http_retry_total (0c5cd154), the count of failed requests restarted
+0c11ec00	uncalled	libnl2http	nothing (no load, branch or table entry anywhere in the image)	stores http_ring_tail, http_ring_active and http_ring_head (0c5cd158/15c/160) through its three pointer arguments
+0c11ec40	uncalled	libnl2http	nothing (no load, branch or table entry anywhere in the image)	stores its argument in http_pack_bodies (0c5cd18c), turning POST body packing on or off
+0c11ec60	uncalled	libnl2http	nothing (no load, branch or table entry anywhere in the image)	stores its argument in http_dump_hook (0c3f16a4), the request dump callback
+0c11f4a0	uncalled	libnl2http	nothing (no load, branch or table entry anywhere in the image)	returns a token list's token count (word +0)
+0c11f880	uncalled	NLASOCK	nothing (no load, branch or table entry anywhere in the image)	returns the address of NLASOCK's build text 0c211b5c (pool word 0x0C11F890); nothing points at it
+0c11fa20	uncalled	NLASOCK	nothing (no load, branch or table entry anywhere in the image)	clears dimm_cmd_handler_table[id] for an id below 64 and returns 0, else -1; the uncalled partner of dimm_cmd_handler_put
+0c1246e0	uncalled	NLASOCK	nothing (no load, branch or table entry anywhere in the image)	returns the peer request result (the block at 0c41344c +4) when its done word is 1, else -2
+0c124700	uncalled	NLASOCK	nothing (no load, branch or table entry anywhere in the image)	returns the peer request done word (the block at 0c41344c +0)
+0c1253a0	uncalled	NLADIMM	nothing (no load, branch or table entry anywhere in the image)	Returns the address of the NLADIMM build text 0c211dd4 (NLADIMM's version routine).
+0c125740	uncalled	NLADIMM	nothing (no load, branch or table entry anywhere in the image)	Sets dimm_last_status to 0 and returns 0x0c01fd00, the 0x100-byte shared page dimm_page_fd00_blank fills with spaces.
+0c125a80	uncalled	NLADIMM	nothing (no load, branch or table entry anywhere in the image)	Cancels the posted board command: clears the pending mask 0x0c01fc08 and the whole of the block at 0c5d45c0, its argument copy included.
+0c125ac0	uncalled	NLADIMM	nothing (no load, branch or table entry anywhere in the image)	(flag) With the board word's bit 29 set, waits up to 0x22ca4 reads for bit 0 of the DIMM status register 0xa05f704c. Then rewrites that register with bits 12-13 set to 0x1000 (flag non-zero) or 0x2000, clearing bit 8 when bit 29 is set.
+0c126340	uncalled	graphics library	nothing (no load, branch or table entry anywhere in the image)	(a, b) Stores two floats at water_state +0x34 / +0x38.
+0c126360	uncalled	graphics library	nothing (no load, branch or table entry anywhere in the image)	(value, vector) Stores a float at 0c41345c and copies a 3-float vector to the block at 0c413460 (0c413460).
+0c128a00	uncalled	graphics library	nothing (no load, branch or table entry anywhere in the image)	(list, out) Reads one ELAN list of the bank being built (0x0C41E5A0 + bank * 0x110 + list * 0x34): its count into out +0x10, and its head pair (count 0) or tail pair into out +0/+4.
+0c128a60	uncalled	graphics library	nothing (no load, branch or table entry anywhere in the image)	(list, record) The counterpart of 0c128a00. It keeps the list's tail pair in record +8/+0xc. When the counts differ, it makes the record's pair and count the list's tail, then replaces the pair with the link read from the last 32-byte block (word +4 or 0xaa000000, word +0xc). Record +0x10 = the count difference.
+0c12aae0	uncalled	graphics library	nothing (no load, branch or table entry anywhere in the image)	(target, buffer half) Picks a target's buffer half for the CPU object list writer: base words into cpu_ol_param_base and the block at 0c416b0c +0/+4, tile clip and block size words (+0x78/+0x7c) into +0x14/+0x18.
+0c12b7e0	uncalled	graphics library	nothing (no load, branch or table entry anywhere in the image)	(destination, source bytes, count) Converts 4-byte pixels to 16-bit ARGB1555: the top 5 bits of bytes 0-2, and bit 7 of byte 3 as alpha.
+0c12b840	uncalled	graphics library	nothing (no load, branch or table entry anywhere in the image)	(destination, source bytes, count) Converts 4-byte pixels to 16-bit RGB565, skipping the fourth byte.
+0c12bc20	uncalled	graphics library	nothing (no load, branch or table entry anywhere in the image)	Opens capture record capture_count (the block at 0c4174b8 + n * 0x2c) as capture_first / capture_open, with the enabled-list mask and the five current list write pointers.
+0c12bc80	uncalled	graphics library	nothing (no load, branch or table entry anywhere in the image)	Closes the open capture record when it is capture_first. Each enabled list's size is write pointer minus start, and 32 bytes are reserved after a nonempty segment. Clears both pointers, and counts the record when any segment is nonempty.
+0c12be80	uncalled	graphics library	nothing (no load, branch or table entry anywhere in the image)	When write_ptrs_saved is clear, copies the five list write pointers into write_ptrs_save and sets the flag.
+0c12bec0	uncalled	graphics library	nothing (no load, branch or table entry anywhere in the image)	When write_ptrs_saved is set, puts the five list write pointers back from write_ptrs_save and clears the flag.
+0c12bf00	uncalled	graphics library	nothing (no load, branch or table entry anywhere in the image)	(capture record) Makes the record capture_open and stores each enabled list's current write pointer in it.
+0c12bf60	uncalled	graphics library	nothing (no load, branch or table entry anywhere in the image)	Closes capture_open as 0c12bc80 does, without the capture_first check or the count.
+0c12e9c0	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c12ea20	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c12ea40	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c12ea80	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c12eac0	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c12ede0	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c12efe0	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c12f080	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c12f5c0	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c12f800	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c12f820	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c12f840	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c12f860	called	NAOMI LIBRARY	loaded or branched to by a function Ghidra knows	
+0c12f9c0	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c12fa00	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c12fa40	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c12fa80	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c12ffc0	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c130140	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c130580	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c1305c0	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c130620	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c130920	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c130940	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c1309c0	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c130b40	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c130c00	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c130ec0	called	NAOMI LIBRARY	loaded or branched to by a function Ghidra knows	
+0c130f40	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c130f60	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c130f80	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c130fa0	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c1317e0	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c131b40	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c131b80	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c132020	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c132040	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c132140	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c132160	uncalled	NAOMI LIBRARY	only from the uncalled code at 0c132aa0	
+0c1323e0	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c132940	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c132aa0	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c132ae0	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c132b20	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c132c80	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c132ca0	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c132e40	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c132f20	called	NAOMI LIBRARY	loaded or branched to from code inside a known function's range that Ghidra did not follow	
+0c132fc0	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c133000	uncalled	NAOMI LIBRARY	nothing (no load, branch or table entry anywhere in the image)	
+0c1359a0	uncalled	sy modules	nothing (no load, branch or table entry anywhere in the image)	
+0c135ae0	uncalled	sy modules	nothing (no load, branch or table entry anywhere in the image)	
+0c135be0	uncalled	sy modules	nothing (no load, branch or table entry anywhere in the image)	
+0c135c00	uncalled	sy modules	nothing (no load, branch or table entry anywhere in the image)	
+0c135c20	uncalled	sy modules	nothing (no load, branch or table entry anywhere in the image)	
+0c135cc0	uncalled	sy modules	nothing (no load, branch or table entry anywhere in the image)	
+0c135d00	uncalled	sy modules	nothing (no load, branch or table entry anywhere in the image)	
+0c135d40	uncalled	sy modules	nothing (no load, branch or table entry anywhere in the image)	
+0c135d80	uncalled	sy modules	nothing (no load, branch or table entry anywhere in the image)	
+0c135da0	uncalled	sy modules	nothing (no load, branch or table entry anywhere in the image)	
+0c136080	uncalled	sy modules	nothing (no load, branch or table entry anywhere in the image)	
+0c136100	uncalled	sy modules	nothing (no load, branch or table entry anywhere in the image)	
+0c136120	uncalled	sy modules	nothing (no load, branch or table entry anywhere in the image)	
+0c1364e0	called, now dcache_tags_clear	sy modules	loaded or branched to by a function Ghidra knows	
+0c1365c0	uncalled	sy modules	nothing (no load, branch or table entry anywhere in the image)	
+0c136640	uncalled	sy modules	nothing (no load, branch or table entry anywhere in the image)	
+0c138160	called, now cache_shutdown	sy modules	loaded or branched to by a function Ghidra knows	
+0c1384a0	uncalled	sy modules	nothing (no load, branch or table entry anywhere in the image)	
+0c138520	uncalled	sy modules	nothing (no load, branch or table entry anywhere in the image)	
+0c138540	uncalled	sy modules	nothing (no load, branch or table entry anywhere in the image)	
+0c138fe0	uncalled	sy modules	nothing (no load, branch or table entry anywhere in the image)	
+0c139020	uncalled	sy modules	nothing (no load, branch or table entry anywhere in the image)	
+0c1393c0	uncalled	sy modules	nothing (no load, branch or table entry anywhere in the image)	
+0c139540	uncalled	sy modules	nothing (no load, branch or table entry anywhere in the image)	
+0c13c780	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c13e360	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c13e420	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c13e460	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c13e4a0	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c13e4e0	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c13e540	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c13e700	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c13e8c0	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c13e900	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c13e940	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c13e980	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c13e9e0	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c13ea40	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c13ea80	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c13eae0	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c13eb40	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c13eb80	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c13eea0	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c13f660	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c141000	called	KamuiTL	loaded or branched to by a function Ghidra knows	
+0c141020	called	KamuiTL	loaded or branched to by a function Ghidra knows	
+0c141040	called	KamuiTL	loaded or branched to by a function Ghidra knows	
+0c141060	called	KamuiTL	loaded or branched to by a function Ghidra knows	
+0c141080	called	KamuiTL	loaded or branched to by a function Ghidra knows	
+0c1410a0	called	KamuiTL	loaded or branched to by a function Ghidra knows	
+0c1410c0	called	KamuiTL	loaded or branched to by a function Ghidra knows	
+0c1410e0	called	KamuiTL	loaded or branched to by a function Ghidra knows	
+0c141d60	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c141f80	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c1420c0	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c143740	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c143760	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c1440a0	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c1441e0	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c147420	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c147560	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c148060	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c148c80	called	KamuiTL	loaded or branched to from code inside a known function's range that Ghidra did not follow	
+0c148d60	called	KamuiTL	loaded or branched to from code inside a known function's range that Ghidra did not follow	
+0c148da0	called	KamuiTL	loaded or branched to from code inside a known function's range that Ghidra did not follow	
+0c149d20	called	KamuiTL	loaded or branched to from code inside a known function's range that Ghidra did not follow	
+0c149d40	called	KamuiTL	loaded or branched to from code inside a known function's range that Ghidra did not follow	
+0c149d80	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c14a5a0	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c14c2e0	called	KamuiTL	held in an initialized-data function table	
+0c14c300	called	KamuiTL	held in an initialized-data function table	
+0c14c320	called	KamuiTL	held in an initialized-data function table	
+0c14d340	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c14d360	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c14d380	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c151820	uncalled	KamuiTL	nothing (no load, branch or table entry anywhere in the image)	
+0c024640	uncalled	libbase	nothing (no load, branch or table entry anywhere in the image)	rep_play_pos_clamp: when the ring has not wrapped and rep_play_pos is at or past rep_ring_write, sets rep_play_pos to 0; nothing in the image calls it
+0c033600	uncalled	libbase	nothing (no load, branch or table entry anywhere in the image)	cpu_usage_us_ptr: returns the address of cpu_usage_us
+0c0ed6a0	uncalled	libdebug	nothing (no load, branch or table entry anywhere in the image)	fb_text_cursor_set: (column, row): stores the frame-buffer text cursor fb_text_cursor (0x0C3227FC); nothing in the image calls it.tsv; found by its prologue in the gap after the previous function's literal pool)
+0c0eda60	uncalled	libdebug	nothing (no load, branch or table entry anywhere in the image)	break_a_read_set: (address, address mask): user break channel A on reads of the address (0xFF200000 address, 0xFF200004 mask, condition 0x34 = instruction or operand access, read), control register 0xFF200020 cleared; nothing in the image calls it, like the five setters after it.tsv; found by its prologue in the gap after the previous function's literal pool)
+0c0edaa0	uncalled	libdebug	nothing (no load, branch or table entry anywhere in the image)	break_b_read_set: (address, address mask): as break_a_read_set on channel B (0xFF20000C, mask 0xFF200010, condition 0xFF200014 = 0x34); nothing in the image calls it.tsv; found by its prologue in the gap after the previous function's literal pool)
+0c0edae0	uncalled	libdebug	nothing (no load, branch or table entry anywhere in the image)	break_a_access_set: (address, address mask): channel A break on read or write (condition 0x3C); nothing in the image calls it.tsv; found by its prologue in the gap after the previous function's literal pool)
+0c0edb20	uncalled	libdebug	nothing (no load, branch or table entry anywhere in the image)	break_b_access_set: (address, address mask): channel B break on read or write (condition 0x3C); nothing in the image calls it.tsv; found by its prologue in the gap after the previous function's literal pool)
+0c0edb60	uncalled	libdebug	nothing (no load, branch or table entry anywhere in the image)	break_a_write_set: (address, address mask): channel A break on writes (condition 0x38); nothing in the image calls it.tsv; found by its prologue in the gap after the previous function's literal pool)
+0c0edba0	uncalled	libdebug	nothing (no load, branch or table entry anywhere in the image)	break_b_write_set: (address, address mask): channel B break on writes (condition 0x38); nothing in the image calls it.tsv; found by its prologue in the gap after the previous function's literal pool)
+0c0edbe0	uncalled	libdebug	nothing (no load, branch or table entry anywhere in the image)	break_b_write_value_set: (address, address mask, size code, value): channel B break on writes of a value: condition 0x38 | size, the value (doubled into the high byte for size 1) in the data register 0xFF200018, data mask 0xFF20001C = 0, control 0xFF200020 = 0x80 (data compare on channel B); nothing in the image calls it.tsv; found by its prologue in the gap after the previous function's literal pool)
+0c0edc40	uncalled	libdebug	nothing (no load, branch or table entry anywhere in the image)	break_b_write_value_mask_set: (address, address mask, size code, value, value mask): break_b_write_value_set with the fifth (stack) argument as the data mask; nothing in the image calls it.tsv; found by its prologue in the gap after the previous function's literal pool)
+0c0edca0	uncalled	libdebug	nothing (no load, branch or table entry anywhere in the image)	stats_322804_clear: clears the two floats at 0x0C322804 and the float at 0x0C32280C; role unclear, no reader of them was found; nothing in the image calls it.tsv; found by its prologue in the gap after the previous function's literal pool)
+0c0edd20	uncalled	libdebug	nothing (no load, branch or table entry anywhere in the image)	debug_stub_edd20: empty; nothing in the image calls it.tsv; found by its prologue in the gap after the previous function's literal pool)
+0c0ee500	uncalled	libdebug	nothing (no load, branch or table entry anywhere in the image)	stage_slot_select: points 0x0C306CF8 at entry [0x0C306CFC] of the stage table 0x0C306C88 and copies that entry to 0x0C306CF4; role unclear; nothing in the image calls it.tsv; found by its prologue in the gap after the previous function's literal pool)
+0c0ee8e0	uncalled	libdebug	nothing (no load, branch or table entry anywhere in the image)	float_preset_3228f4_apply: (index): stores entry index (0-6) of the float table 0x0C3228F4 (0.003 to 0.004), or 0.003 for any other index, in both 0x0C292770 and 0x0C371988; role unclear; nothing in the image calls it.tsv; found by its prologue in the gap after the previous function's literal pool)
+0c0ef640	uncalled	libdebug	nothing (no load, branch or table entry anywhere in the image)	debug_stub_ef640: empty; nothing in the image calls it.tsv; found by its prologue in the gap after the previous function's literal pool)
+0c0f5640	uncalled	libcore	nothing (no load, branch or table entry anywhere in the image)	point_distance_fsqrt: hand-written: |a - b| of two 3-float points (fipr, fsqrt)
+0c0f5660	uncalled	libcore	nothing (no load, branch or table entry anywhere in the image)	point_distance_inv: hand-written: 1 / |a - b| (fsrra), 0 for coincident points
+0c0f5740	uncalled	libcore	nothing (no load, branch or table entry anywhere in the image)	vec3_move_on_pitch_heading: hand-written: out = in + dist * (sin h cos p, sin p, -cos h cos p)
+0c0f5780	uncalled	libcore	nothing (no load, branch or table entry anywhere in the image)	vec3_from_pitch_heading: hand-written: out = dist * (sin h cos p, sin p, -cos h cos p)
+0c0f57c0	uncalled	libcore	nothing (no load, branch or table entry anywhere in the image)	vec_to_local_into_alt: hand-written: an alternate entry that branches into vec_to_local_into's body (0x0C0F57F4)
+0c0f5820	uncalled	libcore	nothing (no load, branch or table entry anywhere in the image)	vec_to_local_regs_alt: hand-written: an alternate entry that branches into the body of 0x0C0F5840
+0c0f5840	uncalled	libcore	nothing (no load, branch or table entry anywhere in the image)	vec_to_local_regs: hand-written: vec_to_local_into with the point in fr4-fr6 and the result returned in fr4-fr6
+0c0f5880	uncalled	libcore	nothing (no load, branch or table entry anywhere in the image)	mtx_push_regs: hand-written: pushes the matrix registers onto the stack record at 0x0C41C860 (count +0, pointer +8, 64 bytes per entry)
+0c0f58c0	uncalled	libcore	nothing (no load, branch or table entry anywhere in the image)	mtx_push_load_identity_regs: hand-written: the same push, then loads identity
+0c0f5920	uncalled	libcore	nothing (no load, branch or table entry anywhere in the image)	mtx_copy16: hand-written: copies 16 floats r5 -> r4 with paired moves
+0c0fbe9a	uncalled	NAOMI2 library	nothing (no load, branch or table entry anywhere in the image)	normal_pack_bytes_copy: hand-written: a byte-identical copy of normal_pack_bytes (0x0C0FBE60)
+0c054b60	uncalled	libenemy	nothing (no load, branch or table entry anywhere in the image)	enemy_record_fill: (table, row group, row): fills row [group x 10 + row] (0x20 bytes) of a table: +8 the horizontal distance from the vector at 0x0C420164 (never written: in effect from the origin) to the opponent's +0x90 / +0x98, +0xC / +0xE / +0x10 / +0x12 the opponent's +0x2E8 / +0x2EA / +0x2E6 / +0x2A0, bytes +0x1C..+0x1F = 0x11, 0x22, 0x33, 0x44; with enemy_records it fills the rows enemy_records_clear clears; role unclear (a recording or test routine); between the libenemy.c asserts of lines 4025 and 4195; Ghidra did not make this a function
+0c054c00	uncalled	libenemy	nothing (no load, branch or table entry anywhere in the image)	enemy_ai_attack_kind_is_1: (move id): 1 when the enemy_ai_attack_table row of that move has kind 1, else 0; Ghidra did not make this a function
+0c054c60	uncalled	libenemy	nothing (no load, branch or table entry anywhere in the image)	enemy_ai_attack_kind_is_2: (move id): as enemy_ai_attack_kind_is_1 for kind 2; Ghidra did not make this a function
+0c054d40	uncalled	libenemy	nothing (no load, branch or table entry anywhere in the image)	enemy_ai_attack_frames_spare: (move id): sums the frame counts of that row's script and returns the word at 0x0C29E704 minus the opponent's +0x2E6 minus the sum, at least 2 (nothing writes 0x0C29E704); Ghidra did not make this a function
+0c055860	uncalled	libenemy	nothing (no load, branch or table entry anywhere in the image)	vp_version_get: returns the address of "Ver.1.10 2004-03-04 Wangan-Kage" (Ghidra folded its pool into the function before it, which only calls vp_mode_flag_set(0)); Ghidra did not make this a function
+0c05c2c0	uncalled	libenemy	nothing (no load, branch or table entry anywhere in the image)	vp_mode_name: (mode): vp_mode_names[mode] ("MODE_NO_ACT" ...). Ghidra did not make this a function (it sits in the literal pool area after vp_trait_get); nothing in the image calls it (a debug display's helper)
+0c05c2e0	uncalled	libenemy	nothing (no load, branch or table entry anywhere in the image)	vp_flag_name: (bit): vp_flag_names[bit] ("INIT_SUCCESS" ...), the names of the vp +0x2c bits. Ghidra did not make this a function; nothing in the image calls it
+0c05c300	uncalled	libenemy	nothing (no load, branch or table entry anywhere in the image)	vp_stroke_name: (bit): vp_stroke_names[bit] ("STROKE_HIT" ...), the names of the vp +0x30 bits. Ghidra did not make this a function; nothing in the image calls it
+0c0936c0	uncalled	libmotion	nothing (no load, branch or table entry anywhere in the image)	mot_slot_get: (slot): returns the slot's 0x14-byte record in the motion slot table agg_0c2a0494; Ghidra has no function here (the code follows mothead_table_set's pool); nothing in the image calls it
+0c0936e0	uncalled	libmotion	nothing (no load, branch or table entry anywhere in the image)	mot_slot_find: (id): returns the first of the four slot records of agg_0c2a0494 whose id range (+0x0C <= id < +0x0E) holds the motion id, or 0; Ghidra has no function here; nothing in the image calls it (mot_bank_base does the same search itself)
+0c0946e0	uncalled	libmotion	nothing (no load, branch or table entry anywhere in the image)	rob_eval_empty_a: an empty routine; Ghidra has no function here and nothing in the image refers to it; role unclear
+0c094880	uncalled	libmotion	nothing (no load, branch or table entry anywhere in the image)	rob_eval_empty_b: an empty routine between face_rig_outputs and face_rig_offset; Ghidra has no function here and nothing in the image refers to it; role unclear
+0c098320	uncalled	libmission	nothing (no load, branch or table entry anywhere in the image)	lottery_symbol_get: returns lottery_symbol (0x0C2A06D4); Ghidra has no function here and nothing in the image calls it
+0c0b4160	uncalled	libeffect	nothing (no load, branch or table entry anywhere in the image)	empty_fn_0c0b4160: GHIDRA HAS NO FUNCTION HERE: an empty function (frame setup and return only), the first of seven in a row at 0x0C0B4160-0x0C0B422F (0x4160, 0x4180, 0x41A0, 0x41C0, 0x41E0, 0x4200, 0x4220); nothing in the image calls them or points at them (compiled-out stubs; role unclear)
+0c0b4180	uncalled	libeffect	nothing (no load, branch or table entry anywhere in the image)	empty_fn_0c0b4180: an empty function, one of the seven at 0x0C0B4160-0x0C0B422F (after empty_fn_0c0b4160); Ghidra did not make this a function
+0c0b41a0	uncalled	libeffect	nothing (no load, branch or table entry anywhere in the image)	empty_fn_0c0b41a0: an empty function, one of the seven at 0x0C0B4160-0x0C0B422F (after empty_fn_0c0b4160); Ghidra did not make this a function
+0c0b41c0	uncalled	libeffect	nothing (no load, branch or table entry anywhere in the image)	empty_fn_0c0b41c0: an empty function, one of the seven at 0x0C0B4160-0x0C0B422F (after empty_fn_0c0b4160); Ghidra did not make this a function
+0c0b41e0	uncalled	libeffect	nothing (no load, branch or table entry anywhere in the image)	empty_fn_0c0b41e0: an empty function, one of the seven at 0x0C0B4160-0x0C0B422F (after empty_fn_0c0b4160); Ghidra did not make this a function
+0c0b4200	uncalled	libeffect	nothing (no load, branch or table entry anywhere in the image)	empty_fn_0c0b4200: an empty function, one of the seven at 0x0C0B4160-0x0C0B422F (after empty_fn_0c0b4160); Ghidra did not make this a function
+0c0b4220	uncalled	libeffect	nothing (no load, branch or table entry anywhere in the image)	empty_fn_0c0b4220: an empty function, one of the seven at 0x0C0B4160-0x0C0B422F (after empty_fn_0c0b4160); Ghidra did not make this a function
+0c0b45e0	uncalled	libeffect	nothing (no load, branch or table entry anywhere in the image)	loop64_model_init: GHIDRA HAS NO FUNCTION HERE (code 0x0C0B45E0-0x0C0B45FF): sets the frame short of the record at 0x0C454A10 to -1 and its position (+4) to 0; with loop64_model_step (0x0C0B4620) and loop64_model_draw it forms an unused looping-model effect; nothing in the image calls it or points at it; role unclear
+0c0b4620	uncalled	libeffect	nothing (no load, branch or table entry anywhere in the image)	loop64_model_step: GHIDRA HAS NO FUNCTION HERE (code 0x0C0B4620-0x0C0B463B): steps the frame short of the record at 0x0C454A10 through 0..63; nothing in the image calls it or points at it; role unclear
+0c0b4ac0	uncalled	libeffect	nothing (no load, branch or table entry anywhere in the image)	rob_fx_enable: GHIDRA HAS NO FUNCTION HERE (code 0x0C0B4AC0-0x0C0B4B0F): clears the 16 records of rob_fx_pool (flags, timer, scale 1.0, frame table null) and sets bit 0 of rob_fx_flags; nothing in the image calls it or points at it, so the flag stays 0 and rob_fx_slot_spawn never fires
+0c0b4b20	uncalled	libeffect	nothing (no load, branch or table entry anywhere in the image)	rob_fx_disable: GHIDRA HAS NO FUNCTION HERE (code 0x0C0B4B20-0x0C0B4B37): clears bit 0 of rob_fx_flags; nothing in the image calls it or points at it
+0c0b65c0	uncalled	libeffect	nothing (no load, branch or table entry anywhere in the image)	empty_fn_0c0b65c0: GHIDRA HAS NO FUNCTION HERE (code 0x0C0B65C0-0x0C0B65CB): an empty function between djo_light_cycle_init and mtx_push_pop_only; nothing in the image calls it or points at it (likely the emptied update of the same unlisted effect; role unclear)
+0c0b6620	uncalled	libeffect	nothing (no load, branch or table entry anywhere in the image)	djo_light_cycle_hold_clear: GHIDRA HAS NO FUNCTION HERE (code 0x0C0B6620-0x0C0B6637): clears the hold flag 0x0C2A4D18 of djo_light_cycle_next; nothing in the image calls it or points at it
+0c0cc040	uncalled	libeffect	nothing (no load, branch or table entry anywhere in the image)	lens_flare_src_load: when the stage record (DAT_0c306ce8) has a flare record at +0x5C, copies its 11 words to 0x0C3985B0 and points lens_flare_src there, else clears it; stage 4 (YAM, 0x0C1E2248) is the only stage with one; nothing in the image points at it; Ghidra did not make this a function
+0c0cf060	uncalled	librobdisp	nothing (no load, branch or table entry anywhere in the image)	rob_item101_head_set: (rob): when item 101 (0x65; entry 0x4B0 = 100 x 12 of the character's chara_item_table row) exists for the rob's costume, makes it slot 0's card item (flags bit 1 on, bit 0 off, id 0x65, kind and data from the entry); nothing in the image points at it; Ghidra did not make this a function
+0c0ea920	uncalled	libpoly	nothing (no load, branch or table entry anywhere in the image)	color_tune_yuv: (r, g, b pointers to 0-1 floats; fr4, fr5, fr6): converts to luminance and two colour differences (0.299, 0.587, 0.114 / -0.147, -0.289, 0.436 / 0.615, -0.515, -0.100), scales the luminance by fr4 and the differences by fr5, converts back (1.14, -0.396, -0.581, 2.029), adds fr6, clamps each to 0-1 and stores; constant table 0x0C0EA9CC-0x0C0EA9FF; the companion of color_tune_hsb; nothing in the image points at it; Ghidra did not make this a function

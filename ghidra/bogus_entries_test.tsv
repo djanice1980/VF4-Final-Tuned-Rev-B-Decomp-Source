@@ -1,0 +1,8 @@
+address	evidence
+0c03f582	analysis started argb_strips_send two bytes late: its true start is 0c03f580 (mov r15,r1), the row in ghidra/symbols_test/; test.bin build of main.bin 0c104262
+0c040012	as 0c03f582: argb_offset_strips_send starts at 0c040010; test.bin build of main.bin 0c104cf2
+0c043122	the body of modvol_strips_send (0c043100) after its register saves; test.bin build of main.bin 0c107e02
+0c043d74	the body of float_colour_send_alpha (0c043d52)
+0c046984	the body of intensity_spill_send_alpha (0c046962)
+0c04851a	the body of vertex_colour_group_send (0c0484e0); test.bin build of main.bin 0c10d1fa
+0c0658c2	analysis started a function 0x16 bytes into the interrupt entry at 0c0658ac (test.bin copy of main.bin 0c13b86c, bogus entry 0c13b882); nothing branches or points here

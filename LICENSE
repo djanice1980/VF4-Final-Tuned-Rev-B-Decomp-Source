@@ -1,0 +1,36 @@
+This repository holds three kinds of material. NOTICE.md says which files
+are which; THIRD-PARTY.md gives the terms of the third kind.
+
+1. The project's own work: the tools, scripts, Ghidra scripts, documents,
+   the status page, and the names, comments, descriptions, type headers
+   and tables the project wrote. The MIT License below covers this.
+2. The reconstructed source of the game program (source/, source_test/,
+   src/, src_test/). The program it expresses belongs to its owners. The
+   MIT License below covers only the project's own annotations in those
+   files; it grants nothing over the program itself. See NOTICE.md.
+3. Code that comes from other projects, under their own terms. See
+   THIRD-PARTY.md.
+
+----------------------------------------------------------------------
+
+MIT License
+
+Copyright (c) 2026 The VF4 Final Tuned reconstruction contributors
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
