@@ -4599,11 +4599,11 @@ void link_constrain_core(float *param_1,float *param_2,float param_3,float param
 void point_dist_clamp_asm(float *param_1,float *param_2,float param_3); /* 0x0c0dc6e0 */
 undefined4 coli_list_push_point(float *param_1,undefined4 param_2,undefined4 param_3); /* 0x0c0dc720 */
 int coli_list_push_core(undefined4 param_1,short *param_2,float param_3,float param_4,float param_5); /* 0x0c0dc740 */
-void coli_sphere_push_point(float *param_1,undefined4 param_2); /* 0x0c0dc800 */
+void coli_sphere_push_point(float *point, osage_coli_shape *shape); /* 0x0c0dc800 */
 bool coli_sphere_push_core(undefined4 param_1,float *param_2,float param_3,float param_4,float param_5); /* 0x0c0dc820 */
-void coli_capsule_z_push_point(float *param_1,float *param_2); /* 0x0c0dc85a */
-void coli_capsule_x_push_point(float *param_1,int param_2); /* 0x0c0dc87c */
-void coli_capsule_y_push_point(float *param_1,float *param_2); /* 0x0c0dc8ae */
+void coli_capsule_z_push_point(float *point, osage_coli_shape *shape); /* 0x0c0dc85a */
+void coli_capsule_x_push_point(float *point, osage_coli_shape *shape); /* 0x0c0dc87c */
+void coli_capsule_y_push_point(float *point, osage_coli_shape *shape); /* 0x0c0dc8ae */
 undefined4 coli_capsule_z_push_core(undefined4 param_1, float *param_2, float param_3, float param_4, float param_5); /* 0x0c0dc8e0 */
 undefined4 coli_capsule_x_push_core(undefined4 param_1,int param_2,float param_3,float param_4,float param_5); /* 0x0c0dc900 */
 undefined4 coli_capsule_y_push_core(undefined4 param_1,float *param_2,float param_3,float param_4,float param_5); /* 0x0c0dc940 */
@@ -5727,7 +5727,7 @@ void modvol_mode_two_volume(void); /* 0x0c1018c0 */
 void pt_alpha_ref_write_both(uint alpha_ref); /* 0x0c101900 */
 void elan_regs_quiesce(void); /* 0x0c101920 */
 uint *elan_matrix_cmds_write(uint *dst, elan_matrix_param_rec *params); /* 0x0c1019e0 */
-undefined4 * elan_matrix_cmds_write_front(undefined4 *param_1,float *param_2); /* 0x0c101aa0 */
+undefined4 *elan_matrix_cmds_write_front(undefined4 *out, float *params); /* 0x0c101aa0 */
 bool elan_ram_region_take(void); /* 0x0c101b80 */
 void elan_ram_pointers_clear(void); /* 0x0c101be0 */
 uint *elan_cmd_alloc(int size); /* 0x0c101c00 */
@@ -6261,7 +6261,7 @@ void pcm_header_gain_set(int header, short gain); /* 0x0c113900 */
 #elif defined(KRPROTO_pcm_header_field)
 uint pcm_header_field();
 #else
-uint pcm_header_field(int header, uint field, short ch, uint channels); /* 0x0c113920 */
+uint pcm_header_field(int header, uint field, short ch); /* 0x0c113920 */
 #endif
 #if defined(NOPROTO_pcm_port_ch_volume_post)
 #elif defined(KRPROTO_pcm_port_ch_volume_post)
@@ -7023,7 +7023,7 @@ void light_vertex_multi(float *verts, int unused, int count, void *rec); /* 0x0c
 uint lights_reaching_sphere(float *sphere); /* 0x0c12cd00 */
 void mtx_project_points(float *param_1,float *param_2,int param_3); /* 0x0c12cdd0 */
 void empty_asm_0c12cefc(void); /* 0x0c12cefc */
-void mtx_add(void); /* 0x0c12cf00 */
+void mtx_add(float *mtx); /* 0x0c12cf00 */
 void mtx_xform_point_xyzw(float *param_1,float *param_2); /* 0x0c12cf50 */
 void mtx_xform_vec4(float *param_1,float *param_2); /* 0x0c12cf70 */
 #if defined(NOPROTO_mtx_xform_point)
@@ -7112,7 +7112,7 @@ undefined8 mtx_rot_z_s16_opposite(ushort param_1); /* 0x0c12d6f0 */
 void mtx_scale_xyz(float param_1,float param_2,float param_3); /* 0x0c12d720 */
 void mtx_scale_by_vec3(float *param_1); /* 0x0c12d750 */
 void mtx_overwrite_translation(float *pos); /* 0x0c12d780 */
-void mtx_subtract(void); /* 0x0c12d790 */
+void mtx_subtract(float *mtx); /* 0x0c12d790 */
 void mtx_transpose(void); /* 0x0c12d7e0 */
 #if defined(NOPROTO_mtx_translate)
 #elif defined(KRPROTO_mtx_translate)
@@ -7309,7 +7309,7 @@ int frame_stats_drawing_usec(void); /* 0x0c130aa0 */
 int frame_stats_ta_param_used(void); /* 0x0c130b00 */
 int frame_stats_ta_param_area_size(void); /* 0x0c130b20 */
 void frame_buffer_read_words(uint *out); /* 0x0c130b40 */
-void frame_buffer_read_fifth(int out); /* 0x0c130c00 */
+void frame_buffer_read_fifth(void *out); /* 0x0c130c00 */
 uint tmu0_count_now(void); /* 0x0c130cc0 */
 int tmu0_ticks_as_usec(int ticks); /* 0x0c130ce0 */
 int down_count_elapsed(int earlier, int later); /* 0x0c130d00 */
@@ -8250,7 +8250,7 @@ float copysignf(float x, float y); /* 0x0c159180 */
 float copysign(float x, float y); /* 0x0c1591c0 */
 void __movstr_i4_odd(void *dst,void *src,int pairs); /* 0x0c1591e8 */
 void __movstr_i4_even(void *dst,void *src,int pairs); /* 0x0c159212 */
-void __movstrSI12_i4(int dst,int src); /* 0x0c159220 */
+void __movstrSI12_i4(void *dst,void *src); /* 0x0c159220 */
 int __sdivsi3_i4(int dividend,int divisor); /* 0x0c159240 */
 uint __udivsi3_i4(uint dividend,uint divisor); /* 0x0c159258 */
 int __fixunssfsi(float value); /* 0x0c1592a0 */

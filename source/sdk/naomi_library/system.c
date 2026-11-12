@@ -800,7 +800,7 @@ void frame_buffer_read_words(uint *out)
   return;
 }
 
-void frame_buffer_read_fifth(int out)
+void frame_buffer_read_fifth(void *out)
 {
   ushort *pixels;
   ushort *dst;
@@ -823,7 +823,7 @@ void frame_buffer_read_fifth(int out)
     for (;;) ;
   }
   line_shorts /= 2;
-  dst = (ushort *)(out + 0x1000);
+  dst = (ushort *)((char *)out + 0x1000);
   for (y = 0; y < display_state.screen_height; y += 5) {
     for (x = 0; x < line_shorts; x += 5) {
       *dst++ = *pixels;

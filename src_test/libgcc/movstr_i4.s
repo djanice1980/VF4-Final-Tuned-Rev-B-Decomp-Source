@@ -28,5 +28,5 @@ void __movstr_i4_even(undefined4 *param_1,undefined4 *param_2,int param_3);
  * same code as main.bin 0c159220 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c159220.s (hand-written assembly, tools/match/match.py)
  */
-void __movstrSI12_i4(int dst,int src);
+void __movstrSI12_i4(void *dst,void *src);
 

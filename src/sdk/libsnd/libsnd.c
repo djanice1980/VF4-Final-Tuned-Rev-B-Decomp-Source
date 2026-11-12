@@ -1725,10 +1725,11 @@ void pcm_header_gain_set(int header, short gain)
  * evidence: (64-byte PCM header, field, channel): reads one header field: 0 sample rate (u16 +0x2a), 1 bits per sample (byte +8), 2 samples (size x 8 / bits / channels), 3 data size (+0xc), 4 channels (1, 2 or 4 from byte +9), 5 a channel's volume (+0x31 + ch * 4), 6 its pan (+0x32 + ch * 4), 7 and 8 the low and high nibble of +0x33 (DSP send level and channel: pcm_header_dsp_send_set packs channel << 4 | level), 9 filter cutoff (u16 +0x16 >> 6, 1 at least; 0 when byte +0x1f is set), 10 resonance (+0x1e); -1 for other fields; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness on a header with size 0x1000, bits code 1, 2 channels, rate 22050, +0x16 = 0x1234, +0x1E = 0x11, DSP send set (3, 9): fields 0-10 gave 22050, 8, 0x800, 0x1000, 2, ch 2's volume 0x55, ch 3's pan 0x66, 9, 3, 0x48, 0x11, and 11 gave -1; with 4-bit and 4 channels field 2 gave 0x800 and 4 gave 4; +0x1F set made 9 give 0, +0x16 = 0x20 gave 1
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
-uint pcm_header_field(int header, uint field, short ch, uint channels)
+uint pcm_header_field(int header, uint field, short ch)
 {
   int size = *(int *)(header + 0xc);
   uint bits;
+  uint channels;
   switch (*(byte *)(header + 9) & 3) {
   case 0:
     channels = 1;

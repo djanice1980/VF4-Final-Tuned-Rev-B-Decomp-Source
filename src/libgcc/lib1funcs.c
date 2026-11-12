@@ -29,7 +29,7 @@ void __movstr_i4_even(void *dst,void *src,int pairs);
  * convention: __keeps_r3_r4_r5_r6_r7_fr1_fr2_fr3_fr4_fr5_fr6_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c159220.s (hand-written assembly, tools/match/match.py)
  */
-void __movstrSI12_i4(int dst,int src);
+void __movstrSI12_i4(void *dst,void *src);
 
 /* 0x0c159240  size 0x18  file by match with source
  * confidence: named

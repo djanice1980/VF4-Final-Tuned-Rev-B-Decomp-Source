@@ -20,7 +20,7 @@ uint *elan_matrix_cmds_write(uint *dst, elan_matrix_param_rec *params);
  * convention: __keeps_r2_r3_r5 (AssignCallEffects)
  * matched: source/asm/0c101aa0.s (hand-written assembly, tools/match/match.py)
  */
-undefined4 * elan_matrix_cmds_write_front(undefined4 *param_1,float *param_2);
+undefined4 *elan_matrix_cmds_write_front(undefined4 *out, float *params);
 
 /* 0x0c101b80  size 0x44  file by match with source
  * confidence: observed

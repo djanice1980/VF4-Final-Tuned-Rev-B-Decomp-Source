@@ -516,7 +516,7 @@ a88000d0	a88000d0	elan_reg_d0	global
 0c051fe0	0c11cec0	legacy_io_setup	same code, name, signature
 0c32d638	0c3e1cbc	mie_ident_text	global
 0c043ce0	0c1089c0	modvol_p_to_side	same code, name, signature
-0c0586c0	0c12cf00	mtx_add	same code, name
+0c0586c0	0c12cf00	mtx_add	same code, name, signature
 0c04f340	0c11a220	card_queue_send_key	same code, name
 0c03f4c0	0c1041a0	obj_put_second_path_float	same code, name
 0c083c80	0c15a980	strtok	same code, name, signature
@@ -797,7 +797,7 @@ a8800030	a8800030	elan_tile_split_reg	global
 0c048ba0	0c10d880	vertex_colour_kept_vtx_emit	same code, name, signature
 0c068900	0c13e8c0	strip_hdr_fog_mode_set	same code, name
 0c0637ee	0c1397ae	words_or_merge	same code, name, signature
-0c037ac0	0c101aa0	elan_matrix_cmds_write_front	same code, name
+0c037ac0	0c101aa0	elan_matrix_cmds_write_front	same code, name, signature
 0c0368e0	0c128be0	ring_list_block_append	same code, name
 0c0364e0	0c1287e0	bank_record_save	same code, name
 0c0945e8	0c32a49c	bank_record_saved	global
@@ -1056,7 +1056,7 @@ ff000010	ff000010	mmu_ctrl_reg	global
 0c05f600	0c1351a0	proj_build_rect_matrix	same code, name
 0c0856e0	0c15d5a0	div	same code, name, signature
 0c061be0	0c138160	cache_shutdown	same code, name, signature
-0c058f50	0c12d790	mtx_subtract	same code, name
+0c058f50	0c12d790	mtx_subtract	same code, name, signature
 0c05a140	0c12f9c0	draw_ctx_tex_offset_from_preset	same code, name
 0c04513e	0c109e1e	float_colour_vtx_emit_plain	same code, name, signature
 0c0534c0	0c120cc0	board_status_read	same code, name

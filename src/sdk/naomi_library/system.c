@@ -1077,7 +1077,7 @@ void frame_buffer_read_words(uint *out)
  * evidence: (out): copies every fifth 16-bit unit of every fifth line of the frame buffer to out +0x1000: the count it steps to is width x bytes per pixel / 2 (16-bit units a line), and after each line read it skips 0xa00 units (four 640-pixel lines of 16-bit pixels), which only suits a 640-wide 16-bit buffer; hangs for a pixel format above 5; nothing in the image calls it (uncalled code, made a function 2026-11-09); between frame_buffer_read_words and tmu0_count_now, so by link order part of sdk/naomi_library/system.c; exercised 2026-11-12: called by the harness with display_state's width and height poked to 8 and 10, pixel format 0 and the shown buffer's 16-bit units poked to their own numbers, it stored units 0, 5, 2570, 2575 at out + 0x1000 and nothing more; with width 16 and height 6, units 0, 5, 10, 15, 2580, 2585 and two more 5 apart
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
-void frame_buffer_read_fifth(int out)
+void frame_buffer_read_fifth(void *out)
 {
   ushort *pixels;
   ushort *dst;
@@ -1100,7 +1100,7 @@ void frame_buffer_read_fifth(int out)
     for (;;) ;
   }
   line_shorts /= 2;
-  dst = (ushort *)(out + 0x1000);
+  dst = (ushort *)((char *)out + 0x1000);
   for (y = 0; y < display_state.screen_height; y += 5) {
     for (x = 0; x < line_shorts; x += 5) {
       *dst++ = *pixels;

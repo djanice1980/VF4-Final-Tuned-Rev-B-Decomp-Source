@@ -551,7 +551,7 @@ int vram_pair_pool_alloc(uint size); /* 0x0c0378e0 */
 uint vram_pair_pool_take(uint size); /* 0x0c0379a0 */
 void dcache_purge_lines(uint addr, int size); /* 0x0c0379e0 */
 uint *elan_matrix_cmds_write(uint *dst, elan_matrix_param_rec *params); /* 0x0c037a00 */
-undefined4 * elan_matrix_cmds_write_front(undefined4 *param_1,float *param_2); /* 0x0c037ac0 */
+undefined4 *elan_matrix_cmds_write_front(undefined4 *out, float *params); /* 0x0c037ac0 */
 bool elan_ram_region_take(void); /* 0x0c037ba0 */
 uint *elan_cmd_alloc(int size); /* 0x0c037c20 */
 int elan_ram_alloc_top(int size); /* 0x0c037c40 */
@@ -1282,7 +1282,7 @@ void fsca_sincos16();
 void fsca_sincos16(ushort param_1,float *param_2,float *param_3); /* 0x0c058670 */
 #endif
 void palette_shadow_write(int param_1,undefined4 *param_2,int param_3); /* 0x0c05867c */
-void mtx_add(void); /* 0x0c0586c0 */
+void mtx_add(float *mtx); /* 0x0c0586c0 */
 void mtx_xform_point_xyzw(float *param_1,float *param_2); /* 0x0c058710 */
 void mtx_xform_vec4(float *param_1,float *param_2); /* 0x0c058730 */
 void mtx_xform_point(float *param_1,float *param_2); /* 0x0c058750 */
@@ -1347,7 +1347,7 @@ undefined8 mtx_rot_z_s16_opposite(ushort param_1); /* 0x0c058eb0 */
 void mtx_scale_xyz(void); /* 0x0c058ee0 */
 void mtx_scale_by_vec3(float *param_1); /* 0x0c058f10 */
 void mtx_overwrite_translation(float *pos); /* 0x0c058f40 */
-void mtx_subtract(void); /* 0x0c058f50 */
+void mtx_subtract(float *mtx); /* 0x0c058f50 */
 void mtx_transpose(void); /* 0x0c058fa0 */
 void mtx_translate(float x, float y, float z); /* 0x0c058fd0 */
 undefined8 mtx_load_identity(void); /* 0x0c058fe0 */
@@ -2196,7 +2196,7 @@ int inflate_fast(uInt bl, uInt bd, inflate_huft *tl, inflate_huft *td, inflate_b
 uLong adler32(uLong adler, const Bytef *buf, uInt len); /* 0x0c081d80 */
 void __movstr_i4_odd(void *dst,void *src,int pairs); /* 0x0c081ee8 */
 void __movstr_i4_even(undefined4 *param_1,undefined4 *param_2,int param_3); /* 0x0c081f12 */
-void __movstrSI12_i4(int dst,int src); /* 0x0c081f20 */
+void __movstrSI12_i4(void *dst,void *src); /* 0x0c081f20 */
 int __sdivsi3_i4(int dividend,int divisor); /* 0x0c081f40 */
 uint __udivsi3_i4(uint dividend,uint divisor); /* 0x0c081f58 */
 int __fixunssfsi(float value); /* 0x0c081fa0 */

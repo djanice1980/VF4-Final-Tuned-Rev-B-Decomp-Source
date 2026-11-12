@@ -1369,10 +1369,11 @@ void pcm_header_gain_set(int header, short gain)
   return;
 }
 
-uint pcm_header_field(int header, uint field, short ch, uint channels)
+uint pcm_header_field(int header, uint field, short ch)
 {
   int size = *(int *)(header + 0xc);
   uint bits;
+  uint channels;
   switch (*(byte *)(header + 9) & 3) {
   case 0:
     channels = 1;

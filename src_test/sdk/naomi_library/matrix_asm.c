@@ -12,7 +12,7 @@
  * same code as main.bin 0c12cf00 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c12cf00.s (hand-written assembly, tools/match/match.py)
  */
-void mtx_add(void);
+void mtx_add(float *mtx);
 
 /* 0x0c058710  size 0x16  file by match with source
  * confidence: observed
@@ -371,7 +371,7 @@ void mtx_overwrite_translation(float *pos);
  * same code as main.bin 0c12d790 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c12d790.s (hand-written assembly, tools/match/match.py)
  */
-void mtx_subtract(void);
+void mtx_subtract(float *mtx);
 
 /* 0x0c058fa0  size 0x2a  file by match with source
  * confidence: observed

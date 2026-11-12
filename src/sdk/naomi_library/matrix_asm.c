@@ -12,7 +12,7 @@
  * convention: __keeps_r1_r2_r3_r5_r6_r7 (AssignCallEffects)
  * matched: source/asm/0c12cf00.s (hand-written assembly, tools/match/match.py)
  */
-void mtx_add(void);
+void mtx_add(float *mtx);
 
 /* 0x0c12cf50  size 0x16  file by match with source
  * confidence: observed
@@ -406,7 +406,7 @@ void mtx_overwrite_translation(float *pos);
  * convention: __keeps_r1_r2_r3_r5_r6_r7 (AssignCallEffects)
  * matched: source/asm/0c12d790.s (hand-written assembly, tools/match/match.py)
  */
-void mtx_subtract(void);
+void mtx_subtract(float *mtx);
 
 /* 0x0c12d7e0  size 0x2a  file by match with source
  * confidence: observed

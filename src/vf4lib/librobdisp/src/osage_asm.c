@@ -67,7 +67,7 @@ int coli_list_push_core(undefined4 param_1,short *param_2,float param_3,float pa
  * convention: __keeps_r1_r2_r3_r6_r7_fr1_fr2 (AssignCallEffects)
  * matched: source/asm/0c0dc800.s (hand-written assembly, tools/match/match.py)
  */
-void coli_sphere_push_point(float *param_1,undefined4 param_2);
+void coli_sphere_push_point(float *point, osage_coli_shape *shape);
 
 /* 0x0c0dc820  size 0x3a  file by match with source
  * confidence: observed
@@ -83,7 +83,7 @@ bool coli_sphere_push_core(undefined4 param_1,float *param_2,float param_3,float
  * convention: __keeps_r2_r3_r5_r6_r7 (AssignCallEffects)
  * matched: source/asm/0c0dc85a.s (hand-written assembly, tools/match/match.py)
  */
-void coli_capsule_z_push_point(float *param_1,float *param_2);
+void coli_capsule_z_push_point(float *point, osage_coli_shape *shape);
 
 /* 0x0c0dc87c  size 0x32  file by match with source
  * confidence: exercised
@@ -91,7 +91,7 @@ void coli_capsule_z_push_point(float *param_1,float *param_2);
  * convention: __keeps_r2_r3_r5_r6_r7 (AssignCallEffects)
  * matched: source/asm/0c0dc85a.s (hand-written assembly, tools/match/match.py)
  */
-void coli_capsule_x_push_point(float *param_1,int param_2);
+void coli_capsule_x_push_point(float *point, osage_coli_shape *shape);
 
 /* 0x0c0dc8ae  size 0x2e  file by match with source
  * confidence: exercised
@@ -99,7 +99,7 @@ void coli_capsule_x_push_point(float *param_1,int param_2);
  * convention: __keeps_r2_r3_r5_r6_r7 (AssignCallEffects)
  * matched: source/asm/0c0dc85a.s (hand-written assembly, tools/match/match.py)
  */
-void coli_capsule_y_push_point(float *param_1,float *param_2);
+void coli_capsule_y_push_point(float *point, osage_coli_shape *shape);
 
 /* 0x0c0dc8e0  size 0x18  file by match with source
  * confidence: observed
