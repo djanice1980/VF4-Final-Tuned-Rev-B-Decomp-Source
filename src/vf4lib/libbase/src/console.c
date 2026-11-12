@@ -3218,8 +3218,8 @@ void win_streak_draw(int side_arg, uint blink)
 }
 
 /* 0x0c03abe0  size 0x94  file by match with source
- * confidence: inferred
- * evidence: (text, max length, x, y, z): draws up to max length characters of text one at a time in the font at euc_text_font, 12 px apart, so that the last ends at x. Caller: card_times_draw; part of vf4lib/libbase/src/console.c
+ * confidence: exercised
+ * evidence: (text, max length, x, y, z): draws up to max length characters of text one at a time in the font at euc_text_font, 12 px apart, so that the last ends at x. Caller: card_times_draw; part of vf4lib/libbase/src/console.c; exercised 2026-11-12: called by the harness with x 100, y 20, z 0.5: "abc" with max length 5 put three characters (sprite_text_put, flags 0x80) at x 64, 76 and 88; "abcdef" with max length 3 the same three; "ab" with max length 5 two, at x 76 and 88
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 void text_right_align_draw(char *text, uint max_len, float x, float y, float z)
@@ -3238,8 +3238,8 @@ void text_right_align_draw(char *text, uint max_len, float x, float y, float z)
 }
 
 /* 0x0c03aca0  size 0x92  file by match with source
- * confidence: inferred
- * evidence: (side, x, y, z): the short +0x12 of the side's record (card_image_get), at least 0, printed "%d" right-aligned at x - 19 in red below 4, yellow below 10, else white, followed by the binary's "回" (times). Nothing in the image calls it; part of vf4lib/libbase/src/console.c
+ * confidence: exercised
+ * evidence: (side, x, y, z): the short +0x12 of the side's record (card_image_get), at least 0, printed "%d" right-aligned at x - 19 in red below 4, yellow below 10, else white, followed by the binary's "回" (times). Nothing in the image calls it; part of vf4lib/libbase/src/console.c; exercised 2026-11-12: called by the harness for side 0 at x 200 with the card's short +0x12 poked: 2 gave color 0xFF0000 (sprite_colors_set), sprintf "%d" of 2 and text_right_align_draw(text, 3, 181, ...); 7 gave 0xE0E000, 12 gave 0xFFFFFF, and -3 printed 0 in red; side 1 with 9 gave 0xE0E000; each then put the suffix bytes 0xB2 0xF3 ("回" in EUC) at x 200
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 void card_times_draw(int side, float x, float y, float z)
@@ -3670,8 +3670,8 @@ int digits5_draw(uint value, float x, float y_arg, float z)
 }
 
 /* 0x0c03bd60  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: (side, value): stores value (0-4 only) in console_side_value[side]; role unclear; nothing in the image calls it (uncalled code, made a function 2026-11-09); between digits5_draw and console_side_value_get, so by link order part of vf4lib/libbase/src/console.c
+ * confidence: exercised
+ * evidence: (side, value): stores value (0-4 only) in console_side_value[side]; role unclear; nothing in the image calls it (uncalled code, made a function 2026-11-09); between digits5_draw and console_side_value_get, so by link order part of vf4lib/libbase/src/console.c; exercised 2026-11-12: called by the harness in one sandbox: after console_side_value_set(1, 3) console_side_value_get(1) returned 3, after (1, 4) it returned 4, and after (1, 7) still 4 (values above 4 not stored); side 0 stayed 0
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 void console_side_value_set(char side, uchar value)
@@ -3683,8 +3683,8 @@ void console_side_value_set(char side, uchar value)
 }
 
 /* 0x0c03bd80  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (side): returns console_side_value[side], the byte console_side_value_set stores; role unclear; nothing in the image calls it (uncalled code, made a function 2026-11-09); between console_side_value_set and team_name_set, so by link order part of vf4lib/libbase/src/console.c
+ * confidence: exercised
+ * evidence: (side): returns console_side_value[side], the byte console_side_value_set stores; role unclear; nothing in the image calls it (uncalled code, made a function 2026-11-09); between console_side_value_set and team_name_set, so by link order part of vf4lib/libbase/src/console.c; exercised 2026-11-12: called by the harness in one sandbox: after console_side_value_set(1, 3) console_side_value_get(1) returned 3, after (1, 4) it returned 4, after (1, 7) still 4, and console_side_value_get(0) returned 0, the snapshot's byte
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 uchar console_side_value_get(char side)
@@ -4145,8 +4145,8 @@ void emblem_debug_pick(int side_arg)
 }
 
 /* 0x0c03cea0  size 0x2c  file by match with source
- * confidence: inferred
- * evidence: (side): makes side 0 or 1 the emblem_browse_side and raises emblem_sprites[side] to at least 32000; nothing in the image calls it (uncalled code, made a function 2026-11-09); between emblem_debug_pick and emblem_debug_store, so by link order part of vf4lib/libbase/src/console.c
+ * confidence: exercised
+ * evidence: (side): makes side 0 or 1 the emblem_browse_side and raises emblem_sprites[side] to at least 32000; nothing in the image calls it (uncalled code, made a function 2026-11-09); between emblem_debug_pick and emblem_debug_store, so by link order part of vf4lib/libbase/src/console.c; exercised 2026-11-12: called by the harness with side 1: with emblem_sprites[1] = 5 it set emblem_browse_side 1 and emblem_sprites[1] 32000 (emblem_sprites[0] stayed -1); with emblem_sprites[1] = 40000 it left 40000
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 void emblem_browse_side_set(char side)
@@ -4164,8 +4164,8 @@ void emblem_browse_side_set(char side)
 }
 
 /* 0x0c03cee0  size 0x3e  file by match with source
- * confidence: inferred
- * evidence: (side): writes the low byte of emblem_sprites[side] plus 1 to the card's *EMBLEM byte (+0x1D, card_body_emblem_set) and sets emblem_browse_side to 0xFF, ending emblem_debug_pick; nothing in the image calls it; part of vf4lib/libbase/src/console.c
+ * confidence: exercised
+ * evidence: (side): writes the low byte of emblem_sprites[side] plus 1 to the card's *EMBLEM byte (+0x1D, card_body_emblem_set) and sets emblem_browse_side to 0xFF, ending emblem_debug_pick; nothing in the image calls it; part of vf4lib/libbase/src/console.c; exercised 2026-11-12: called by the harness with emblem_sprites[0] = 0x1234 and emblem_sprites[1] = 0x17F: side 0 wrote 0x35 to card 0's byte at body +0x1D (card_body_emblem_set) and side 1 wrote 0x80 to card 1's; emblem_browse_side went from 0, and from 1, to 0xFF
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 void emblem_debug_store(int side_arg)
@@ -4179,8 +4179,8 @@ void emblem_debug_store(int side_arg)
 }
 
 /* 0x0c03cf40  size 0x2a  file by match with source
- * confidence: inferred
- * evidence: (side): writes 0 to the card's *EMBLEM byte (+0x1D, card_body_emblem_set) and sets emblem_browse_side to 0xFF; the twin of emblem_debug_store; nothing in the image calls it; part of vf4lib/libbase/src/console.c
+ * confidence: exercised
+ * evidence: (side): writes 0 to the card's *EMBLEM byte (+0x1D, card_body_emblem_set) and sets emblem_browse_side to 0xFF; the twin of emblem_debug_store; nothing in the image calls it; part of vf4lib/libbase/src/console.c; exercised 2026-11-12: called by the harness after emblem_debug_store had written 0x35 and 0x80 to the two cards' emblem bytes, emblem_debug_clear(1) wrote 0 to card 1's byte (card_body_emblem_set(body, 0)) and left card 0's 0x35, and emblem_browse_side went from 1 to 0xFF
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 void emblem_debug_clear(int side_arg)
@@ -5154,8 +5154,8 @@ void prize_bar_2p_draw(void)
 }
 
 /* 0x0c03f4e0  size 0x3c  file by match with source
- * confidence: inferred
- * evidence: (a, b): calls prize_number_stub for a at 56,406 and b at 26,418; nothing in the image calls it; part of vf4lib/libbase/src/console.c
+ * confidence: exercised
+ * evidence: (a, b): calls prize_number_stub for a at 56,406 and b at 26,418; nothing in the image calls it; part of vf4lib/libbase/src/console.c; exercised 2026-11-12: called by the harness with (7, 9), it called prize_number_stub(7, 56, 406, 0.007) and prize_number_stub(9, 26, 418, 0.007)
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 void prize_numbers_1p_stub(int upper_value, int lower_value)
@@ -5166,8 +5166,8 @@ void prize_numbers_1p_stub(int upper_value, int lower_value)
 }
 
 /* 0x0c03f540  size 0x3c  file by match with source
- * confidence: inferred
- * evidence: (a, b): the 2P twin of prize_numbers_1p_stub (563,406 and 593,418); nothing in the image calls it; part of vf4lib/libbase/src/console.c
+ * confidence: exercised
+ * evidence: (a, b): the 2P twin of prize_numbers_1p_stub (563,406 and 593,418); nothing in the image calls it; part of vf4lib/libbase/src/console.c; exercised 2026-11-12: called by the harness with (7, 9), it called prize_number_stub(7, 563, 406, 0.007) and prize_number_stub(9, 593, 418, 0.007)
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 void prize_numbers_2p_stub(int upper_value, int lower_value)
@@ -5791,9 +5791,9 @@ void prize_layer_2efb_draw(float x, float y, float z)
 }
 
 /* 0x0c041320  size 0x114  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x132
- * evidence: (x, y, z): prize_layer_2efb_draw plus sprites 0x2F01-0x2F03 at three table offsets, each mirrored about the screen center; layer routine of prize_anim_3's first four layers; part of vf4lib/libbase/src/console.c
+ * evidence: (x, y, z): prize_layer_2efb_draw plus sprites 0x2F01-0x2F03 at three table offsets, each mirrored about the screen center; layer routine of prize_anim_3's first four layers; part of vf4lib/libbase/src/console.c; exercised 2026-11-12: called by the harness with (100, 200, 0.5) it called prize_layer_2efb_draw(100, 200, 0.5) and put 0x2F01, 0x2F02, 0x2F03 at (-138, 158), (-122, 214), (-50, 238) with scale 1 and again at x 778, 762, 690 with scale x -1 (each pair summing to 640, mirrored about x 320); with (10, 20, 0.25) the first x values moved by -90, the mirrored ones by +90 and every y by -180
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 void prize_layer_2efb_parts_draw(float x, float y, float z)
@@ -5843,8 +5843,8 @@ void prize_layer_2ef9_draw(float x, float y, float z)
 }
 
 /* 0x0c041500  size 0x44  file by match with source
- * confidence: inferred
- * evidence: (x, y, z): sprite 0x2EFC with blend 0x100B, just in front of z; layer routine in prize_anim_3; part of vf4lib/libbase/src/console.c
+ * confidence: exercised
+ * evidence: (x, y, z): sprite 0x2EFC with blend 0x100B, just in front of z; layer routine in prize_anim_3; part of vf4lib/libbase/src/console.c; exercised 2026-11-12: called by the harness with (100, 200, 0.5) it set the flags override 0x100B (sprite_flags_override_set), put sprite 0x2EFC at (100, 200, 0.499) and reset the override; with (10, 20, 0.25) the sprite went to (10, 20, 0.249)
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 void prize_layer_2efc_draw(float x, float y, float z)
@@ -5856,8 +5856,8 @@ void prize_layer_2efc_draw(float x, float y, float z)
 }
 
 /* 0x0c041560  size 0x44  file by match with source
- * confidence: inferred
- * evidence: (x, y, z): sprite 0x2EFD with blend 0x1009, just in front of z; layer routine in prize_anim_3; part of vf4lib/libbase/src/console.c
+ * confidence: exercised
+ * evidence: (x, y, z): sprite 0x2EFD with blend 0x1009, just in front of z; layer routine in prize_anim_3; part of vf4lib/libbase/src/console.c; exercised 2026-11-12: called by the harness with (100, 200, 0.5) it set the flags override 0x1009 (sprite_flags_override_set), put sprite 0x2EFD at (100, 200, 0.499) and reset the override; with (10, 20, 0.25) the sprite went to (10, 20, 0.249)
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 void prize_layer_2efd_draw(float x, float y, float z)
@@ -5869,8 +5869,8 @@ void prize_layer_2efd_draw(float x, float y, float z)
 }
 
 /* 0x0c0415c0  size 0x6e  file by match with source
- * confidence: inferred
- * evidence: (x, y, z): sprites 0x2EFE (blend 0x100B) and 0x2EFF (blend 0x1009) inside sprite_next_blend_set / sprite_next_blend_normal; layer routine in prize_anim_3; part of vf4lib/libbase/src/console.c
+ * confidence: exercised
+ * evidence: (x, y, z): sprites 0x2EFE (blend 0x100B) and 0x2EFF (blend 0x1009) inside sprite_next_blend_set / sprite_next_blend_normal; layer routine in prize_anim_3; part of vf4lib/libbase/src/console.c; exercised 2026-11-12: called by the harness with (100, 200, 0.5), between sprite_next_blend_set(0) and sprite_next_blend_normal it put 0x2EFE with the flags override 0x100B and 0x2EFF with 0x1009, both at (100, 200, 0.5); with (10, 20, 0.25) both at (10, 20, 0.25)
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 void prize_layer_2efe_draw(float x, float y, float z)
@@ -5887,8 +5887,8 @@ void prize_layer_2efe_draw(float x, float y, float z)
 }
 
 /* 0x0c041660  size 0x68  file by match with source
- * confidence: inferred
- * evidence: (x, y, z): sprite 0x2F00 twice, with blend 0x100E and with flag 0x1026; layer routine in prize_anim_3 (19 layers); part of vf4lib/libbase/src/console.c
+ * confidence: exercised
+ * evidence: (x, y, z): sprite 0x2F00 twice, with blend 0x100E and with flag 0x1026; layer routine in prize_anim_3 (19 layers); part of vf4lib/libbase/src/console.c; exercised 2026-11-12: called by the harness with (100, 200, 0.5), between sprite_next_blend_set(0) and sprite_next_blend_normal it put 0x2F00 at (100, 200, 0.499) once with the flags override 0x100E and once through sprite_put_flags_xyz with flags 0x1026; with (10, 20, 0.25) both at (10, 20, 0.249)
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 void prize_layer_2f00_draw(float x, float y, float z)
@@ -5902,8 +5902,8 @@ void prize_layer_2f00_draw(float x, float y, float z)
 }
 
 /* 0x0c041700  size 0x68  file by match with source
- * confidence: inferred
- * evidence: (x, y, z): sprite 0x3075 twice, with blend 0x100E and with flag 0x1026; layer routine of prize_banner_anim_g and the tables before it; part of vf4lib/libbase/src/console.c
+ * confidence: exercised
+ * evidence: (x, y, z): sprite 0x3075 twice, with blend 0x100E and with flag 0x1026; layer routine of prize_banner_anim_g and the tables before it; part of vf4lib/libbase/src/console.c; exercised 2026-11-12: called by the harness with (100, 200, 0.5), between sprite_next_blend_set(0) and sprite_next_blend_normal it put 0x3075 at (100, 200, 0.499) once with the flags override 0x100E and once through sprite_put_flags_xyz with flags 0x1026; with (10, 20, 0.25) both at (10, 20, 0.249)
  * matched: source/vf4lib/libbase/src/console.c (tools/match/match.py)
  */
 void prize_layer_3075_draw(float x, float y, float z)

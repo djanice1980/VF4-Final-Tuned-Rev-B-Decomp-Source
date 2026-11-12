@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c06b960  size 0x42  file by match with source
- * confidence: inferred
- * evidence: (value): clamps to 0-255, keeps it at +0xa0 of the state block and puts it, shifted left 15, in place of bits 16-23 (the alpha threshold field) of the kept FB_W_CTRL word (+0x2c4), then writes FB_W_CTRL (0x48) to both chips; returns 0; nothing calls it; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (value): clamps to 0-255, keeps it at +0xa0 of the state block and puts it, shifted left 15, in place of bits 16-23 (the alpha threshold field) of the kept FB_W_CTRL word (+0x2c4), then writes FB_W_CTRL (0x48) to both chips; returns 0; nothing calls it; part of KamuiTL; checked against reference material (not in this repo); record as the game has it: FB_W_CTRL's alpha threshold (bits 16-23) gets half the value, and an odd value leaves bit 15 set until the word is rebuilt; exercised 2026-11-12: called by the harness in one sandbox with the kept FB_W_CTRL 9: 0x40 kept 0x40 at +0xa0 and wrote 0x200009 to 0x48 (pvr_reg_write_both); 300 kept 0xff and wrote 0x7f8009; -5 kept 0 and wrote 0x8009 (bits 16-23 cleared, bit 15 left from before); with the kept word poked 0xffffffff, 0 wrote 0xff00ffff
  * same code as main.bin 0c141920 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/pvr_settings.c (tools/match/match.py)
  */
@@ -128,8 +128,8 @@ int pvr_pal_ram_ctrl_put(uint format)
 }
 
 /* 0x0c06bb80  size 0x40  file by match with source
- * confidence: inferred
- * evidence: (words): writes 1024 words to the palette RAM (0xa05f9000 onward, both chips); returns 0; caller pal_shadow_flush; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (words): writes 1024 words to the palette RAM (0xa05f9000 onward, both chips); returns 0; caller pal_shadow_flush; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with a buffer of words 0xa0, 0xa1, ... and 0xbeef as word 1023, it called pvr_reg_write_both 1024 times, from (0x1000, 0xa0), (0x1004, 0xa1) to (0x1ffc, 0xbeef); returned 0
  * same code as main.bin 0c141b40 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/pvr_settings.c (tools/match/match.py)
  */
@@ -144,7 +144,7 @@ int pvr_pal_ram_load_all(uint *words)
 
 /* 0x0c06bbe0  size 0x52  file by match with source
  * confidence: inferred
- * evidence: (first entry, count, words): writes the palette RAM entries from first entry up to first + count (at most entry 0x3fe) from the same entries of the table; returns 0; nothing calls it; part of KamuiTL; checked against reference material (not in this repo)
+ * evidence: (first entry, count, words): writes the palette RAM entries from first entry up to first + count from the same entries of the table; a range running past the end (first + count above 0x400) stops at entry 0x3fe, one short of the last entry, while one ending exactly at 0x400 writes entry 0x3ff too; returns 0; nothing calls it; part of KamuiTL; checked against reference material (not in this repo); record as the game has it: the cut for an overlong range is one entry short; corrected 2026-11-12 from harness calls: called by the harness with a table of known words: (2, 3) wrote entries 2-4 (offsets 0x1008-0x1010) from words 2-4 and (0x3fc, 10) entries 0x3fc-0x3fe, as described, but (0x3fe, 2) wrote entries 0x3fe and 0x3ff and (0x3f0, 0x10) sixteen entries up to 0x3ff: the cut to entry 0x3fe applies only when first + count is above 0x400
  * same code as main.bin 0c141ba0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/pvr_settings.c (tools/match/match.py)
  */
@@ -231,8 +231,8 @@ int region_presort_flip_on_match(int flag)
 }
 
 /* 0x0c06bda0  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: (x, y): turns gfx_state's tile limit on with the two values and asks for a region rebuild (3); returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between region_presort_flip_on_match and fb_clip_rect_store, so by link order part of sdk/kamui/pvr_settings.c
+ * confidence: exercised
+ * evidence: (x, y): turns gfx_state's tile limit on with the two values and asks for a region rebuild (3); returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between region_presort_flip_on_match and fb_clip_rect_store, so by link order part of sdk/kamui/pvr_settings.c; exercised 2026-11-12: called by the harness in one sandbox: (100, 200) left gfx_state+0x1c8 = 1, +0x1cc = 100, +0x1d0 = 200 and +0x1c0 = 3; (7, 9) then left 1, 7, 9 and 3; returned 0
  * same code as main.bin 0c141d60 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/pvr_settings.c (tools/match/match.py)
  */
@@ -400,8 +400,8 @@ int spg_latched_beam_xy_read(uint *x, uint *y)
 }
 
 /* 0x0c06c0c0  size 0x2a  file by match with source
- * confidence: inferred
- * evidence: returns 0 when texture uploads are made by the CPU (+0x43c of the state block is 1) or when the last upload's DMA (its handle at +0x438) has finished (ticket_done_poll), else 0x11; nothing calls it; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: returns 0 when texture uploads are made by the CPU (+0x43c of the state block is 1) or when the last upload's DMA (its handle at +0x438) has finished (ticket_done_poll), else 0x11; nothing calls it; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the snapshot's +0x43c = 1 it returned 0 without polling; with +0x43c poked 0 and the ticket at +0x438 0x29f (below xfer_done_count 0x2a0) it returned 0, with 0x7fff0000 it returned 0x11; ticket_done_poll got the ticket each time
  * same code as main.bin 0c142080 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/pvr_settings.c (tools/match/match.py)
  */
@@ -420,8 +420,8 @@ int vram_upload_dma_idle(void)
 }
 
 /* 0x0c06c140  size 0x38  file by match with source
- * confidence: inferred
- * evidence: (width in pixels): puts width / 32 in the stride field (bits 0-4) of TEXT_CONTROL (0xe4), read back from the first chip and written to both; returns 0; nothing calls it; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (width in pixels): puts width / 32 in the stride field (bits 0-4) of TEXT_CONTROL (0xe4), read back from the first chip and written to both; returns 0; nothing calls it; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with 640 it read TEXT_CONTROL (pvr_reg_read(0xe4)) and wrote it back through pvr_reg_write_both(0xe4, ...) with 20 in bits 0-4, with 96 it wrote 3; returned 0
  * same code as main.bin 0c142100 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/pvr_settings.c (tools/match/match.py)
  */

@@ -451,8 +451,8 @@ int context_header_select(strip_context_rec *ctx)
 }
 
 /* 0x0c068340  size 0x48  file by match with source
- * confidence: inferred
- * evidence: (strip context): copies the context's second-volume TSP and texture words (+0x98/+0x9c) and four color floats into the second-volume part of the header shadow (strip_header_shadow +0x44 to +0x5c) and rebuilds the strip header; callers dualvol_ctx_init, polystrip_plain_dualvol; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (strip context): copies the context's second-volume TSP and texture words (+0x98/+0x9c) and its four face color floats (+0x70 to +0x7c) into the second-volume part of the header shadow (strip_header_shadow +0x44, +0x48 and +0x50 to +0x5c) and rebuilds the strip header; callers dualvol_ctx_init, polystrip_plain_dualvol; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with a context whose +0x98, +0x9c were 0x11110098, 0x1111009c and face colors (+0x70) .5, .25, .125, .0625 (offset colors 2-5): strip_header_shadow +0x44, +0x48 got the two words, +0x50 to +0x5c the face colors; strip_header_build ran; returned 0
  * same code as main.bin 0c13e300 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/strip_context.c (tools/match/match.py)
  */
@@ -469,8 +469,8 @@ int context_volume2_header_select(strip_context_rec *ctx)
 }
 
 /* 0x0c0683a0  size 0x10  file by match with source
- * confidence: inferred
- * evidence: (code): stores gfx_state.strip_len_code and returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between context_volume2_header_select and pvr_shadow_scale_write, so by link order part of sdk/kamui/strip_context.c
+ * confidence: exercised
+ * evidence: (code): stores gfx_state.strip_len_code and returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between context_volume2_header_select and pvr_shadow_scale_write, so by link order part of sdk/kamui/strip_context.c; exercised 2026-11-12: called by the harness with 5 and then 9: gfx_state.strip_len_code (snapshot 3) became 5, then 9; both calls returned 0
  * same code as main.bin 0c13e360 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/strip_context.c (tools/match/match.py)
  */
@@ -494,8 +494,8 @@ int pvr_shadow_scale_write(int scale)
 }
 
 /* 0x0c068400  size 0x42  file by match with source
- * confidence: inferred
- * evidence: copies the strip header words (strip_header_words, the count in strip_header_word_count) to the current list's write pointer (strip_list_type picks it; the slot pointer is kept in list_cursor_slot) and advances it; returns the slot; nothing in the image calls it; part of KamuiTL
+ * confidence: exercised
+ * evidence: copies the strip header words (strip_header_words, the count in strip_header_word_count) to the current list's write pointer (strip_list_type picks it; the slot pointer is kept in list_cursor_slot) and advances it; returns the slot; nothing in the image calls it; part of KamuiTL; exercised 2026-11-12: called by the harness in one sandbox with strip_list_type 2, strip_header_word_count 5, strip_header_words 0x11111111 to 0x66666666 and list_write_ptrs[2] (0c5d5ce8) pointed at a buffer, it copied the first five words there (the sixth word of the buffer kept), left the pointer at buffer+0x14 and list_cursor_slot at 0c5d5ce8 and returned 0c5d5ce8; with type 0 and count 3 it copied three words, advanced list_write_ptrs[0] by 12 and returned 0c5d5ce0
  * same code as main.bin 0c13e3c0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/strip_context.c (tools/match/match.py)
  */
@@ -508,8 +508,8 @@ int * strip_header_to_list(void)
 }
 
 /* 0x0c068460  size 0x20  file by match with source
- * confidence: inferred
- * evidence: (value): bits 4-5 of the strip header's control word, written to the shadow and to strip_header_words[0]; returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between strip_header_to_list and strip_hdr_depth_compare_set, so by link order part of sdk/kamui/strip_context.c
+ * confidence: exercised
+ * evidence: (value): bits 4-5 of the strip header's control word, written to the shadow and to strip_header_words[0]; returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between strip_header_to_list and strip_hdr_depth_compare_set, so by link order part of sdk/kamui/strip_context.c; exercised 2026-11-12: called by the harness in one sandbox with the control word strip_header_shadow+0 planted 0 and value 2 it left 0x20 there and in strip_header_words[0] (planted 0xdeadbeef); with 0xffffffff and value 1, 0xffffffdf in both; returned 0
  * same code as main.bin 0c13e420 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/strip_context.c (tools/match/match.py)
  */
@@ -525,8 +525,8 @@ int strip_hdr_ctrl_bits4_set(int value)
 }
 
 /* 0x0c0684a0  size 0x20  file by match with source
- * confidence: inferred
- * evidence: (mode): bits 29-31 of the strip header's second word (shadow and strip_header_words[1]); returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between strip_hdr_ctrl_bits4_set and strip_hdr_cull_mode_set, so by link order part of sdk/kamui/strip_context.c
+ * confidence: exercised
+ * evidence: (mode): bits 29-31 of the strip header's second word (shadow and strip_header_words[1]); returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between strip_hdr_ctrl_bits4_set and strip_hdr_cull_mode_set, so by link order part of sdk/kamui/strip_context.c; exercised 2026-11-12: called by the harness in one sandbox with the second word strip_header_shadow+0x10 planted 0 and mode 5 it left 0xa0000000 there and in strip_header_words[1] (planted 0xdeadbeef); with 0xffffffff and mode 2, 0x5fffffff in both; returned 0
  * same code as main.bin 0c13e460 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/strip_context.c (tools/match/match.py)
  */
@@ -542,8 +542,8 @@ int strip_hdr_depth_compare_set(int mode)
 }
 
 /* 0x0c0684e0  size 0x20  file by match with source
- * confidence: inferred
- * evidence: (mode): bits 27-28 of the strip header's second word; returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between strip_hdr_depth_compare_set and strip_hdr_z_write_off_set, so by link order part of sdk/kamui/strip_context.c
+ * confidence: exercised
+ * evidence: (mode): bits 27-28 of the strip header's second word; returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between strip_hdr_depth_compare_set and strip_hdr_z_write_off_set, so by link order part of sdk/kamui/strip_context.c; exercised 2026-11-12: called by the harness in one sandbox with the second word strip_header_shadow+0x10 planted 0 and mode 3 it left 0x18000000 there and in strip_header_words[1] (planted 0xdeadbeef); with 0xffffffff and mode 1, 0xefffffff in both; returned 0
  * same code as main.bin 0c13e4a0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/strip_context.c (tools/match/match.py)
  */
@@ -559,8 +559,8 @@ int strip_hdr_cull_mode_set(int mode)
 }
 
 /* 0x0c068900  size 0x20  file by match with source
- * confidence: inferred
- * evidence: (mode): bits 22-23 of the strip header's third word; returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between strip_hdr_dst_blend_set and strip_hdr_uv_flip_set, so by link order part of sdk/kamui/strip_context.c
+ * confidence: exercised
+ * evidence: (mode): bits 22-23 of the strip header's third word; returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between strip_hdr_dst_blend_set and strip_hdr_uv_flip_set, so by link order part of sdk/kamui/strip_context.c; exercised 2026-11-12: called by the harness in one sandbox with the third word strip_header_shadow+0x14 planted 0 and mode 2 it left 0x00800000 there and in strip_header_words[2] (planted 0xdeadbeef); with 0xffffffff and mode 1, 0xff7fffff in both; returned 0
  * same code as main.bin 0c13e8c0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/strip_context.c (tools/match/match.py)
  */
@@ -576,8 +576,8 @@ int strip_hdr_fog_mode_set(int mode)
 }
 
 /* 0x0c068940  size 0x20  file by match with source
- * confidence: inferred
- * evidence: (bits): bits 17-18 of the strip header's third word; returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between strip_hdr_fog_mode_set and strip_hdr_uv_clamp_set, so by link order part of sdk/kamui/strip_context.c
+ * confidence: exercised
+ * evidence: (bits): bits 17-18 of the strip header's third word; returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between strip_hdr_fog_mode_set and strip_hdr_uv_clamp_set, so by link order part of sdk/kamui/strip_context.c; exercised 2026-11-12: called by the harness in one sandbox with the third word strip_header_shadow+0x14 planted 0 and 3 it left 0x00060000 there and in strip_header_words[2] (planted 0xdeadbeef); with 0xffffffff and 2, 0xfffdffff in both; returned 0
  * same code as main.bin 0c13e900 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/strip_context.c (tools/match/match.py)
  */
@@ -593,8 +593,8 @@ int strip_hdr_uv_flip_set(int bits)
 }
 
 /* 0x0c068980  size 0x20  file by match with source
- * confidence: inferred
- * evidence: (bits): bits 15-16 of the strip header's third word; returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between strip_hdr_uv_flip_set and strip_hdr_tex_filter_set, so by link order part of sdk/kamui/strip_context.c
+ * confidence: exercised
+ * evidence: (bits): bits 15-16 of the strip header's third word; returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between strip_hdr_uv_flip_set and strip_hdr_tex_filter_set, so by link order part of sdk/kamui/strip_context.c; exercised 2026-11-12: called by the harness in one sandbox with the third word strip_header_shadow+0x14 planted 0 and 1 it left 0x00008000 there and in strip_header_words[2] (planted 0xdeadbeef); with 0xffffffff and 2, 0xffff7fff in both; returned 0
  * same code as main.bin 0c13e940 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/strip_context.c (tools/match/match.py)
  */
@@ -610,8 +610,8 @@ int strip_hdr_uv_clamp_set(int bits)
 }
 
 /* 0x0c0689c0  size 0x3c  file by match with source
- * confidence: inferred
- * evidence: (filter 0-3): bits 13-14 of the strip header's third word through the local table {0, 2, 1, 3}; returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between strip_hdr_uv_clamp_set and strip_hdr_tsp_bit12_set, so by link order part of sdk/kamui/strip_context.c
+ * confidence: exercised
+ * evidence: (filter 0-3): bits 13-14 of the strip header's third word through the local table {0, 2, 1, 3}; returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between strip_hdr_uv_clamp_set and strip_hdr_tsp_bit12_set, so by link order part of sdk/kamui/strip_context.c; exercised 2026-11-12: called by the harness in one sandbox with the third word strip_header_shadow+0x14 planted 0, filters 1, 2 and 3 left 0x4000, 0x2000 and 0x6000 there and in strip_header_words[2] (codes 2, 1, 3 in bits 13-14); with 0xffffffff and filter 0, 0xffff9fff; returned 0
  * same code as main.bin 0c13e980 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/strip_context.c (tools/match/match.py)
  */
@@ -633,8 +633,8 @@ int strip_hdr_tex_filter_set(int filter)
 }
 
 /* 0x0c068a80  size 0x20  file by match with source
- * confidence: inferred
- * evidence: (op): bits 6-7 of the strip header's third word; returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between strip_hdr_tsp_bit12_set and strip_hdr_gouraud_set, so by link order part of sdk/kamui/strip_context.c
+ * confidence: exercised
+ * evidence: (op): bits 6-7 of the strip header's third word; returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between strip_hdr_tsp_bit12_set and strip_hdr_gouraud_set, so by link order part of sdk/kamui/strip_context.c; exercised 2026-11-12: called by the harness in one sandbox with the third word strip_header_shadow+0x14 planted 0 and op 2 it left 0x80 there and in strip_header_words[2] (planted 0xdeadbeef); with 0xffffffff and op 1, 0xffffff7f in both; returned 0
  * same code as main.bin 0c13ea40 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/strip_context.c (tools/match/match.py)
  */
@@ -650,8 +650,8 @@ int strip_hdr_shade_op_set(int op)
 }
 
 /* 0x0c068b20  size 0x40  file by match with source
- * confidence: inferred
- * evidence: (group): for a palette texture (format field 5 or 6 in bits 27-29 of the texture word) stores the group in bits 21-26 of the strip header's texture word; returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between strip_hdr_gouraud_set and strip_hdr_ctrl_bits18_set, so by link order part of sdk/kamui/strip_context.c
+ * confidence: exercised
+ * evidence: (group): for a palette texture (format field 5 or 6 in bits 27-29 of the texture word) stores the group in bits 21-26 of the strip header's texture word; returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between strip_hdr_gouraud_set and strip_hdr_ctrl_bits18_set, so by link order part of sdk/kamui/strip_context.c; exercised 2026-11-12: called by the harness in one sandbox on the texture word strip_header_shadow+0x18: planted 0x28000000 (format 5), group 0x15 gave 0x2aa00000 there and in strip_header_words[3] (group 0x55 the same); 0x37e00000 (format 6) with group 0 gave 0x30000000; 0x08000000 (format 1) with 0x15 was left as it was and strip_header_words[3] kept its planted 0xdeadbeef; returned 0
  * same code as main.bin 0c13eae0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/strip_context.c (tools/match/match.py)
  */
@@ -671,8 +671,8 @@ int strip_hdr_pal_group_set(uint group)
 }
 
 /* 0x0c068b80  size 0x24  file by match with source
- * confidence: inferred
- * evidence: (value): bits 18-19 of the strip header's control word, with bit 23 set; returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between strip_hdr_pal_group_set and strip_hdr_ctrl_bits16_set, so by link order part of sdk/kamui/strip_context.c
+ * confidence: exercised
+ * evidence: (value): bits 18-19 of the strip header's control word, with bit 23 set; returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between strip_hdr_pal_group_set and strip_hdr_ctrl_bits16_set, so by link order part of sdk/kamui/strip_context.c; exercised 2026-11-12: called by the harness in one sandbox with the control word strip_header_shadow+0 planted 0 and value 2 it left 0x00880000 there and in strip_header_words[0] (planted 0xdeadbeef); with 0xffffffff and value 1, 0xfff7ffff in both; returned 0
  * same code as main.bin 0c13eb40 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/strip_context.c (tools/match/match.py)
  */
@@ -688,8 +688,8 @@ int strip_hdr_ctrl_bits18_set(int value)
 }
 
 /* 0x0c068bc0  size 0x22  file by match with source
- * confidence: inferred
- * evidence: (value): bits 16-17 of the strip header's control word, with bit 23 set; returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between strip_hdr_ctrl_bits18_set and list_header_sq_write, so by link order part of sdk/kamui/strip_context.c
+ * confidence: exercised
+ * evidence: (value): bits 16-17 of the strip header's control word, with bit 23 set; returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between strip_hdr_ctrl_bits18_set and list_header_sq_write, so by link order part of sdk/kamui/strip_context.c; exercised 2026-11-12: called by the harness in one sandbox with the control word strip_header_shadow+0 planted 0 and value 3 it left 0x00830000 there and in strip_header_words[0] (planted 0xdeadbeef); with 0xffffffff and value 2, 0xfffeffff in both; returned 0
  * same code as main.bin 0c13eb80 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/strip_context.c (tools/match/match.py)
  */

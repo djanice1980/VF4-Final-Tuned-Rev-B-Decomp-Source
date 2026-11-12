@@ -77,8 +77,8 @@ void msn_text_mirror_set(int on)
 }
 
 /* 0x0c0ad2e0  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (alpha): stores the float at msn_text state +0x28; nothing in the image calls it (uncalled code, made a function 2026-11-09); between msn_text_mirror_set and msn_text_alpha_reset, so by link order part of vf4lib/libmission/src/msnm_text.c
+ * confidence: exercised
+ * evidence: (alpha): stores the float at msn_text state +0x28; nothing in the image calls it (uncalled code, made a function 2026-11-09); between msn_text_mirror_set and msn_text_alpha_reset, so by link order part of vf4lib/libmission/src/msnm_text.c; exercised 2026-11-12: called by the harness in one sandbox: msn_text_alpha_set(0.25) left 0.25 (0x3E800000) at msn_text state (0x0C451088) +0x28, and msn_text_alpha_set(0.75) after a reset left 0.75
  * matched: source/vf4lib/libmission/src/msnm_text.c (tools/match/match.py)
  */
 void msn_text_alpha_set(float alpha)
@@ -88,8 +88,8 @@ void msn_text_alpha_set(float alpha)
 }
 
 /* 0x0c0ad300  size 0x16  file by match with source
- * confidence: inferred
- * evidence: sets the float at msn_text state +0x28 to 1.0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between msn_text_alpha_set and msn_text_align_set, so by link order part of vf4lib/libmission/src/msnm_text.c
+ * confidence: exercised
+ * evidence: sets the float at msn_text state +0x28 to 1.0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between msn_text_alpha_set and msn_text_align_set, so by link order part of vf4lib/libmission/src/msnm_text.c; exercised 2026-11-12: called by the harness in one sandbox with the float at msn_text state (0x0C451088) +0x28 at 0.25 and then at 0.5 (poked): both times it became 1.0 (0x3F800000)
  * matched: source/vf4lib/libmission/src/msnm_text.c (tools/match/match.py)
  */
 void msn_text_alpha_reset(void)
@@ -423,9 +423,9 @@ void msn_text_color_by_name(char *name)
 }
 
 /* 0x0c0adb00  size 0x72  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x80
- * evidence: (name, box, position, next position): finds the name among the 25 images of msn_text_images ("R4".. "YOGA", "YOGA_R", "ROLL8426"..) and advances over and draws it (msn_text_advance, msn_text_image_draw); only caller msn_text_tag_run ("<IMG_name>"); part of vf4lib/libmission/src/msnm_text.c
+ * evidence: (name, box, position, next position): finds the name among the 25 images of msn_text_images ("P", "K", "G", "1".."9" without "5", "R1".."R9" without "R5", "YOGA", "YOGA_R", "ROLL8426", "ROLL8624", "ROLL2486", "ROLL2684") and advances over and draws it (msn_text_advance, msn_text_image_draw); only caller msn_text_tag_run ("<IMG_name>"); part of vf4lib/libmission/src/msnm_text.c; exercised 2026-11-12: called by the harness with "K", "YOGA_R", "R4" and "R5": it called msn_text_advance with entries 1, 20 and 14 of msn_text_images and msn_text_image_draw(1 / 20 / 14, pos) with the position buffer it was given; "R5" (not in the table) drew nothing
  * matched: source/vf4lib/libmission/src/msnm_text.c (tools/match/match.py)
  */
 void msn_text_image_tag(char *name, float *box, float *pos, float *next)

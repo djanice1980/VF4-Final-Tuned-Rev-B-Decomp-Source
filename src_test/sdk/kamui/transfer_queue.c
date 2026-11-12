@@ -337,8 +337,8 @@ void xfer_job_start(void)
 }
 
 /* 0x0c079300  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: sends the current transfer job again (xfer_job_start) when there is one; called by elan_pvr_reset_retry_frame after a reset; part of KamuiTL
+ * confidence: exercised
+ * evidence: sends the current transfer job again (xfer_job_start) when there is one; called by elan_pvr_reset_retry_frame after a reset; part of KamuiTL; exercised 2026-11-12: called by the harness: with xfer_current 0 (snapshot) it returned without a call; with xfer_current poked 0x0F002000 it called xfer_job_start()
  * same code as main.bin 0c14f2c0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/transfer_queue.c (tools/match/match.py)
  */
@@ -783,8 +783,8 @@ void list_seg_append_padded(int kind, uint addr, int len)
 }
 
 /* 0x0c07a060  size 0x28  file by match with source
- * confidence: inferred
- * evidence: (bank): runs the interrupt routine pvr_irq_service once by hand and returns whether that bank's state word (list_banks + bank * 0x110) is back to 0; bank_close_and_submit loops on it when flag bit 2 of elan_rev_config asks to wait; part of KamuiTL
+ * confidence: exercised
+ * evidence: (bank): runs the interrupt routine pvr_irq_service once by hand and returns whether that bank's state word (list_banks + bank * 0x110) is back to 0; bank_close_and_submit loops on it when flag bit 2 of elan_rev_config asks to wait; part of KamuiTL; exercised 2026-11-12: called by the harness with list_banks+0x110 (bank 1 state) poked 2 and +0x220 (bank 2) 0: bank_poll_done(1) called pvr_irq_service and returned 0, (2) returned 1, and with bank 2 poked 1 it returned 0
  * same code as main.bin 0c150020 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/transfer_queue.c (tools/match/match.py)
  */
@@ -878,8 +878,8 @@ uint bank_close_and_submit(uint list_mask, uint first_list)
 }
 
 /* 0x0c07a280  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: spins until there is no current transfer job (xfer_current) and the pending queue xfer_pending is empty; called by frame_lists_send_and_rearm, close_lists_and_draw_to_surface, redraw_lists_to_surface, ta_lists_rearm and render_setup_finish; part of KamuiTL
+ * confidence: exercised
+ * evidence: spins until there is no current transfer job (xfer_current) and the pending queue xfer_pending is empty; called by frame_lists_send_and_rearm, close_lists_and_draw_to_surface, redraw_lists_to_surface, ta_lists_rearm and render_setup_finish; part of KamuiTL; exercised 2026-11-12: called by the harness: with xfer_current and the first word of xfer_pending 0 (snapshot) it returned; with xfer_current poked 0x0F002000, and separately with xfer_pending's first word poked, it did not return within its budget
  * same code as main.bin 0c150240 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/transfer_queue.c (tools/match/match.py)
  */

@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c1291c0  size 0x40  file by match with source
- * confidence: inferred
- * evidence: (model): takes the model's size (+0x18) rounded up to 32 bytes from the top of ELAN RAM (elan_ram_alloc_top), copies the model's header and body there through the store queue (model_header_sq_copy, model_body_sq_copy) and returns the address; nothing in the image calls it; part of the unidentified game-built graphics library (model object, 0x0C1291C0-0x0C1298BF, not linked into the test program)
+ * confidence: exercised
+ * evidence: (model): takes the model's size (+0x18) rounded up to 32 bytes from the top of ELAN RAM (elan_ram_alloc_top), copies the model's header and body there through the store queue (model_header_sq_copy, model_body_sq_copy) and returns the address; nothing in the image calls it; part of the unidentified game-built graphics library (model object, 0x0C1291C0-0x0C1298BF, not linked into the test program); exercised 2026-11-12: called by the harness on a model of its own in scratch memory with size word (+0x18) 0xa5: it returned elan_ram_top 0xab97be80 - 0xc0 = 0xab97bdc0, elan_ram_top became that and the 0xc0 bytes there were the model's (word +0x3c 0); with size 0x80 it returned 0xab97be00 and copied 0x80 bytes
  * matched: source/gfxlib/model_merge.c (tools/match/match.py)
  */
 uint model_copy_to_elan_ram(compiled_model_rec *model)
@@ -80,8 +80,8 @@ int models_merge_xformed_into(int dst, int count, model_xform_pair *pairs)
 }
 
 /* 0x0c129360  size 0x58  file by match with source
- * confidence: inferred
- * evidence: (count, array of {matrix, model} pairs): adds up the models' sizes (+0x18), takes that much (rounded to 32 bytes) from the top of ELAN RAM (elan_ram_alloc_top), builds the merged model there (models_merge_xformed_into) and returns its address; nothing in the image calls it; part of the unidentified game-built graphics library (model object, 0x0C1291C0-0x0C1298BF, not linked into the test program)
+ * confidence: exercised
+ * evidence: (count, array of {matrix, model} pairs): adds up the models' sizes (+0x18), takes that much (rounded to 32 bytes) from the top of ELAN RAM (elan_ram_alloc_top), builds the merged model there (models_merge_xformed_into) and returns its address; nothing in the image calls it; part of the unidentified game-built graphics library (model object, 0x0C1291C0-0x0C1298BF, not linked into the test program); exercised 2026-11-12: called by the harness with two {matrix, model} pairs (models of size 0x90 and 0x80, each one vertex block in part +0x48; translations (1,2,3) and (10,20,30)): it returned top - 0x120 = 0xab97bd60, the merged part +0x48 was {0x18, 96} and the vertices (1,1,1) and (5,6,7) came out at (2,3,4) and (15,26,37); with count 1 and the second matrix it returned top - 0xa0 with the vertex at (11,21,31)
  * matched: source/gfxlib/model_merge.c (tools/match/match.py)
  */
 uint models_merge_to_elan_ram(int count, model_xform_pair *pairs)
@@ -101,8 +101,8 @@ uint models_merge_to_elan_ram(int count, model_xform_pair *pairs)
 }
 
 /* 0x0c1293c0  size 0x54  file by match with source
- * confidence: inferred
- * evidence: (model or 0): transforms each nonempty part display list of the model (offset and size pairs at +0x40, +0x48, +0x50) in place by the current matrix (dlist_xform_in_place); nothing in the image calls it; part of the unidentified game-built graphics library (model object, 0x0C1291C0-0x0C1298BF, not linked into the test program)
+ * confidence: exercised
+ * evidence: (model or 0): transforms each nonempty part display list of the model (offset from the pair's own address and size, pairs at +0x40, +0x48, +0x50) in place by the current matrix (dlist_xform_in_place); nothing in the image calls it; part of the unidentified game-built graphics library (model object, 0x0C1291C0-0x0C1298BF, not linked into the test program); exercised 2026-11-12: called by the harness on a model in scratch memory (part +0x40 a vertex block of two vertices, +0x48 empty, +0x50 a type-0 command then a one-vertex block) with the snapshot's current matrix (rotation about y, translation (-0.096, -5, -3.945)): (2,-1,0.5) became (-0.1825,-6,-1.8849), (0,3,0) (-0.0961,-2,-3.9447), (-1,0,-1) (0.6817,-5,-5.1258); a block no part points at and model 0 left everything as it was
  * matched: source/gfxlib/model_merge.c (tools/match/match.py)
  */
 void model_parts_xform_in_place(compiled_model_rec *model)
@@ -125,8 +125,8 @@ void model_parts_xform_in_place(compiled_model_rec *model)
 }
 
 /* 0x0c129420  size 0x5c  file by match with source
- * confidence: inferred
- * evidence: (model or 0, mask): for each nonempty part display list of the model (+0x40, +0x48, +0x50) ANDs the two header words of every vertex block with the mask and zeroes the next two (dlist_hdr_and_mask); nothing in the image calls it; part of the unidentified game-built graphics library (model object, 0x0C1291C0-0x0C1298BF, not linked into the test program)
+ * confidence: exercised
+ * evidence: (model or 0, mask): for each nonempty part display list of the model (+0x40, +0x48, +0x50) ANDs the two header words of every vertex block with the mask and zeroes the next two (dlist_hdr_and_mask); nothing in the image calls it; part of the unidentified game-built graphics library (model object, 0x0C1291C0-0x0C1298BF, not linked into the test program); exercised 2026-11-12: called by the harness with mask 0x0f0f0f0f on a model whose parts +0x40 and +0x50 hold vertex blocks (the second after a type-0 command) and +0x48 is empty: words 2 and 4 of both blocks were ANDed (0x12345678 became 0x02040608, 0xffffffff 0x0f0f0f0f) and words 3 and 5 zeroed; a block no part points at was untouched and model 0 changed nothing
  * matched: source/gfxlib/model_merge.c (tools/match/match.py)
  */
 void model_parts_hdr_and_mask(compiled_model_rec *model, uint mask)
@@ -147,8 +147,8 @@ void model_parts_hdr_and_mask(compiled_model_rec *model, uint mask)
 }
 
 /* 0x0c129480  size 0xcc  file by match with source
- * confidence: inferred
- * evidence: ({address, length}, list, unused): writes through the store queue at elan_cmd_write_ptr (QACR0/1 at 0xff000038/3c set from its top byte) a 64-byte block: a 0x08000800 command OR the first polygon header OR word (poly_header_or_words), 0x18000000 or 0x10000000 by the sign of that word, the second OR word, the display list address (bit 31 set) and length, then four 0x08000000 words; counts both 32-byte halves in list_end_block_count, keeps the block in last_link_cmd, moves the write pointer on and queues the block on the list (elan_list_block_queue); callers model_parts_queue_three_lists and model_parts_queue_translucent; part of the unidentified game-built graphics library (model object, 0x0C1291C0-0x0C1298BF, not linked into the test program)
+ * confidence: exercised
+ * evidence: ({address, length}, list, unused): writes through the store queue at elan_cmd_write_ptr (QACR0/1 at 0xff000038/3c set from its top byte) a 64-byte block: a 0x08000800 command OR the first polygon header OR word (poly_header_or_words), 0x18000000 or 0x10000000 by the sign of that word, the second OR word, 0, the display list address (& 0x1fffff8, bit 31 set), 1, the length and 0, then 0x08000000 in every other word of the second 32 bytes (four of them); counts both 32-byte halves in list_end_block_count (modulo 4), keeps the block in last_link_cmd, moves the write pointer on and queues the block on the list (elan_list_block_queue); callers model_parts_queue_three_lists and model_parts_queue_translucent; part of the unidentified game-built graphics library (model object, 0x0C1291C0-0x0C1298BF, not linked into the test program); exercised 2026-11-12: called by the harness with part {0xab123458, 0x1230}, list 2 and poly_header_or_words poked {0x00030040, 0x00c00000}: at elan_cmd_write_ptr 0xaa100000 it wrote 08030840 18000000 00c00000 0 81123458 1 1230 0 and 0x08000000 words, last_link_cmd 0xaa100000, pointer 0xaa100040, elan_list_block_queue(2); with the first word poked 0x80000040 and list 4 the block began 88000840 10000000 and went on list 4
  * matched: source/gfxlib/model_merge.c (tools/match/match.py)
  */
 void dlist_call_block_queue(list_block_ref *part, int list, int unused)
@@ -202,8 +202,8 @@ void dlist_call_block_queue(list_block_ref *part, int list, int unused)
 }
 
 /* 0x0c1295a0  size 0xce  file by match with source
- * confidence: inferred
- * evidence: ({address, length}, list, unused, extra header bits, texture word): as dlist_call_block_queue with the extra bits ORed into the third word and the texture word as the fourth; caller model_parts_queue_textured; part of the unidentified game-built graphics library (model object, 0x0C1291C0-0x0C1298BF, not linked into the test program)
+ * confidence: exercised
+ * evidence: ({address, length}, list, unused, extra header bits, texture word): as dlist_call_block_queue with the extra bits ORed into the third word and the texture word as the fourth; caller model_parts_queue_textured; part of the unidentified game-built graphics library (model object, 0x0C1291C0-0x0C1298BF, not linked into the test program); exercised 2026-11-12: called by the harness with part {0xab123458, 0x1230}, list 0, extra bits 0x25, texture word 0x12345678 and poly_header_or_words poked {0x00030040, 0x00c00000}: the block at 0xaa100000 began 08030840 18000000 00c00025 12345678 81123458 1 1230 0, the pointer moved to 0xaa100040 and the block was queued on list 0
  * matched: source/gfxlib/model_merge.c (tools/match/match.py)
  */
 void dlist_call_block_queue_tex(list_block_ref *part, int list, int unused, uint hdr_bits, uint tex_word)
@@ -252,8 +252,8 @@ void dlist_call_block_queue_tex(list_block_ref *part, int list, int unused, uint
 }
 
 /* 0x0c1296c0  size 0x7e  file by match with source
- * confidence: inferred
- * evidence: (model or 0): queues the model's three nonempty part display lists (+0x40, +0x48, +0x50) on lists 0, 2 and 4 (dlist_call_block_queue); nothing in the image calls it; part of the unidentified game-built graphics library (model object, 0x0C1291C0-0x0C1298BF, not linked into the test program)
+ * confidence: exercised
+ * evidence: (model or 0): queues the model's three nonempty part display lists (+0x40, +0x48, +0x50) on lists 0, 2 and 4 (dlist_call_block_queue); nothing in the image calls it; part of the unidentified game-built graphics library (model object, 0x0C1291C0-0x0C1298BF, not linked into the test program); exercised 2026-11-12: called by the harness on a model record with parts {0x20, 0x30}, empty, {0xb0, 0x38} at +0x40/+0x48/+0x50: two blocks calling 0x0f004060 (length 0x30) on list 0 and 0x0f004100 (0x38) on list 4; with +0x48 = {0x58, 0x18} three blocks on lists 0, 2 and 4; model 0 wrote nothing
  * matched: source/gfxlib/model_merge.c (tools/match/match.py)
  */
 void model_parts_queue_three_lists(compiled_model_rec *model)
@@ -280,8 +280,8 @@ void model_parts_queue_three_lists(compiled_model_rec *model)
 }
 
 /* 0x0c129760  size 0x5e  file by match with source
- * confidence: inferred
- * evidence: (model or 0): queues the model's first two nonempty part display lists (+0x40, +0x48) both on list 2 (dlist_call_block_queue); nothing in the image calls it; part of the unidentified game-built graphics library (model object, 0x0C1291C0-0x0C1298BF, not linked into the test program)
+ * confidence: exercised
+ * evidence: (model or 0): queues the model's first two nonempty part display lists (+0x40, +0x48) both on list 2 (dlist_call_block_queue); nothing in the image calls it; part of the unidentified game-built graphics library (model object, 0x0C1291C0-0x0C1298BF, not linked into the test program); exercised 2026-11-12: called by the harness on a model record with all three parts set ({0x20, 0x30}, {0x58, 0x18}, {0xb0, 0x38}): two blocks, calling 0x0f004060 (0x30) and 0x0f0040a0 (0x18), both queued on list 2; the third part was not queued (write pointer 0xaa100080)
  * matched: source/gfxlib/model_merge.c (tools/match/match.py)
  */
 void model_parts_queue_translucent(compiled_model_rec *model)
@@ -303,8 +303,8 @@ void model_parts_queue_translucent(compiled_model_rec *model)
 }
 
 /* 0x0c1297e0  size 0xc2  file by match with source
- * confidence: inferred
- * evidence: (model or 0, texture index, header bits): reads the texture slot of the index's texidx_map entry into polygon header words (tex_slot_bits_into_poly_hdr), ORs its control bits into the given bits and queues the model's three nonempty parts on lists 0, 2 and 4 with them (dlist_call_block_queue_tex); nothing in the image calls it; part of the unidentified game-built graphics library (model object, 0x0C1291C0-0x0C1298BF, not linked into the test program)
+ * confidence: exercised
+ * evidence: (model or 0, texture index, header bits): reads the texture slot of the index's texidx_map entry into a local polygon header (tex_slot_bits_into_poly_hdr: the slot's size bits into the low 6 bits of word 2, its texture word into word 3), ORs that word 2 into the given bits and passes word 3 as the texture word and queues the model's three nonempty parts on lists 0, 2 and 4 with them (dlist_call_block_queue_tex); nothing in the image calls it; part of the unidentified game-built graphics library (model object, 0x0C1291C0-0x0C1298BF, not linked into the test program); as the game has it: an uninitialized local header word goes into the header bits; exercised 2026-11-12: called by the harness on a model with parts +0x40 and +0x50 and header bits 0x00a00000: with texture index 0 (slot 0x1f: size bits 0, texture word 0x08125810) both blocks got 0x08125810 as fourth word and 0x00a00000 in the third, on lists 0 and 4; with index 1 (slot 0x20: 0x2b, 0x0012b100) third words gained 0x2b and fourth 0x0012b100; model 0 queued nothing (third word also carries stack bits, see notes)
  * matched: source/gfxlib/model_merge.c (tools/match/match.py)
  */
 void model_parts_queue_textured(compiled_model_rec *model, int tex_index, uint hdr_bits)

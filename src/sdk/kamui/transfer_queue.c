@@ -21,8 +21,8 @@ void xferq_check_or_halt(int ok)
 }
 
 /* 0x0c14ec60  size 0x86  file by match with source
- * confidence: inferred
- * evidence: with interrupts masked, saves the store queue address registers (QACR0/1 at 0xff000038/3c) and the save-stack pointer sq_save_top into a 3-word record, flushes both store queues (64 bytes) into the next 64-byte slot of the save stack (the 1 KB zero buffer at sq_save_stack in .text) and moves the pointer on, so an interrupt can use the store queues without losing what the interrupted code had put in them; this object's copy, uncalled; part of KamuiTL
+ * confidence: exercised
+ * evidence: with interrupts masked, saves the store queue address registers (QACR0/1 at 0xff000038/3c) and the save-stack pointer sq_save_top into a 3-word record, flushes both store queues (64 bytes) into the next 64-byte slot of the save stack (the 1 KB zero buffer at sq_save_stack in .text) and moves the pointer on, so an interrupt can use the store queues without losing what the interrupted code had put in them; this object's copy, uncalled; part of KamuiTL; exercised 2026-11-12: called by the harness inside one driver call (a stub in buf:7) after sq_copy_blocks had left 16 marker words in the store queues: the record held 0xc, 0xc (QACR as sq_copy_blocks set it) and 0x0C151A80, the slot 0x0C151A80 held the 16 words and sq_save_top moved to 0x0C151AC0; xferq_sq_restore then took it back (see there)
  * matched: source/sdk/kamui/transfer_queue.c (tools/match/match.py)
  */
 void xferq_sq_save(uint *saved)
@@ -56,8 +56,8 @@ void xferq_sq_save(uint *saved)
 }
 
 /* 0x0c14ed20  size 0xa6  file by match with source
- * confidence: inferred
- * evidence: the inverse: with interrupts masked, steps sq_save_top back 64 bytes (halting unless it equals the record's pointer), reloads QACR0/1 from the record and copies the 64 saved bytes back into the store queues from the uncached slot; this object's copy, uncalled; part of KamuiTL
+ * confidence: exercised
+ * evidence: the inverse: with interrupts masked, steps sq_save_top back 64 bytes (halting unless it equals the record's pointer), reloads QACR0/1 from the record and copies the 64 saved bytes back into the store queues from the uncached slot; this object's copy, uncalled; part of KamuiTL; exercised 2026-11-12: called by the harness inside one driver call after xferq_sq_save and a second sq_copy_blocks with other words: sq_save_top went back to 0x0C151A80 and a pref of the queues then wrote the first 16 words (the saved slot) to the destination, where without the restore the second words arrived; with the record pointer poked to 0x0C151B00 it called xferq_check_or_halt(0) and did not return
  * matched: source/sdk/kamui/transfer_queue.c (tools/match/match.py)
  */
 void xferq_sq_restore(uint *saved)
@@ -334,8 +334,8 @@ void xfer_job_start(void)
 }
 
 /* 0x0c14f2c0  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: sends the current transfer job again (xfer_job_start) when there is one; called by elan_pvr_reset_retry_frame after a reset; part of KamuiTL
+ * confidence: exercised
+ * evidence: sends the current transfer job again (xfer_job_start) when there is one; called by elan_pvr_reset_retry_frame after a reset; part of KamuiTL; exercised 2026-11-12: called by the harness: with xfer_current 0 (snapshot) it returned without a call; with xfer_current poked 0x0F002000 it called xfer_job_start()
  * matched: source/sdk/kamui/transfer_queue.c (tools/match/match.py)
  */
 int xfer_job_restart(void)
@@ -774,8 +774,8 @@ void list_seg_append_padded(int kind, uint addr, int len)
 }
 
 /* 0x0c150020  size 0x28  file by match with source
- * confidence: inferred
- * evidence: (bank): runs the interrupt routine pvr_irq_service once by hand and returns whether that bank's state word (list_banks + bank * 0x110) is back to 0; bank_close_and_submit loops on it when flag bit 2 of elan_rev_config asks to wait; part of KamuiTL
+ * confidence: exercised
+ * evidence: (bank): runs the interrupt routine pvr_irq_service once by hand and returns whether that bank's state word (list_banks + bank * 0x110) is back to 0; bank_close_and_submit loops on it when flag bit 2 of elan_rev_config asks to wait; part of KamuiTL; exercised 2026-11-12: called by the harness with list_banks+0x110 (bank 1 state) poked 2 and +0x220 (bank 2) 0: bank_poll_done(1) called pvr_irq_service and returned 0, (2) returned 1, and with bank 2 poked 1 it returned 0
  * matched: source/sdk/kamui/transfer_queue.c (tools/match/match.py)
  */
 bool bank_poll_done(int bank)
@@ -868,8 +868,8 @@ uint bank_close_and_submit(uint list_mask, uint first_list)
 }
 
 /* 0x0c150240  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: spins until there is no current transfer job (xfer_current) and the pending queue xfer_pending is empty; called by frame_lists_send_and_rearm, close_lists_and_draw_to_surface, redraw_lists_to_surface, ta_lists_rearm and render_setup_finish; part of KamuiTL
+ * confidence: exercised
+ * evidence: spins until there is no current transfer job (xfer_current) and the pending queue xfer_pending is empty; called by frame_lists_send_and_rearm, close_lists_and_draw_to_surface, redraw_lists_to_surface, ta_lists_rearm and render_setup_finish; part of KamuiTL; exercised 2026-11-12: called by the harness: with xfer_current and the first word of xfer_pending 0 (snapshot) it returned; with xfer_current poked 0x0F002000, and separately with xfer_pending's first word poked, it did not return within its budget
  * matched: source/sdk/kamui/transfer_queue.c (tools/match/match.py)
  */
 int xfer_wait_idle(void)

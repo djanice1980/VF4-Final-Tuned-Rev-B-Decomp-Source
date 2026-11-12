@@ -1572,8 +1572,8 @@ void enemy_state_hame(void)
 }
 
 /* 0x0c052a60  size 0x2a  file by match with source
- * confidence: inferred
- * evidence: handler of state 17 "SAKE_NAGENUKE": when no script runs, enemy_state_clear and the script at enemy_script_up_gp (tap up, then P+G: sidestep, then throw escape); reached through enemy_state_funcs[17]; part of vf4lib/libenemy/src/libenemy.c
+ * confidence: exercised
+ * evidence: handler of state 17 "SAKE_NAGENUKE": when no script runs, enemy_state_clear and the script at enemy_script_up_gp (tap up, then P+G: sidestep, then throw escape); reached through enemy_state_funcs[17]; part of vf4lib/libenemy/src/libenemy.c; exercised 2026-11-12: called by the harness with the snapshot's enemy work (no script, flags 0x80000000) it called enemy_state_clear and enemy_script_start(enemy_script_up_gp, 0); after enemy_script_start(enemy_script_back_pk, 0) in the same sandbox (flags 0x40000000) it did nothing
  * matched: source/vf4lib/libenemy/src/libenemy.c (tools/match/match.py)
  */
 void enemy_state_sake_nagenuke(void)
@@ -1684,9 +1684,9 @@ void enemy_state_ukemi(void)
 }
 
 /* 0x0c052de0  size 0x108  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x17c
- * evidence: handler of state 10 "KAESHI" (reversal): clears the state and, when no script runs, starts the reversal script for the opponent's attack kind (opponent +0x330 bit groups 0x50005 / 0x680068 / 0x12 / 0x200 ...) chosen per CPU character (0 and 10, 5, 9, 12, others; scripts enemy_script_back_pk, enemy_script_down_back_pk, enemy_script_back_gpk_forward_p, enemy_script_back_gpk, enemy_script_down_forward_pk, enemy_script_forward_pk, enemy_script_down_pk, enemy_script_down_guard_7); reached through enemy_state_funcs[10]; part of vf4lib/libenemy/src/libenemy.c
+ * evidence: handler of state 10 "KAESHI" (reversal): clears the state and, when no script runs, starts the reversal script for the opponent's attack kind (opponent +0x330 bit groups 0x50005 / 0x680068 / 0x12 / 0x200 ...) chosen per CPU character (0 and 10, 5, 9, 12, others; scripts enemy_script_back_pk, enemy_script_down_back_pk, enemy_script_back_gpk_forward_p, enemy_script_back_gpk, enemy_script_down_forward_pk, enemy_script_forward_pk, enemy_script_down_pk, enemy_script_down_guard_7); reached through enemy_state_funcs[10]; part of vf4lib/libenemy/src/libenemy.c; exercised 2026-11-12: called by the harness with enemy_opp_rob set to robs[1] (as the enemy frame sets it) and its +0x330 poked, always enemy_state_clear, then: CPU character 5 with 0x1 enemy_script_forward_pk, with 0x8 enemy_script_down_forward_pk, with 0x200 nothing; character 12 with 0x10000 enemy_script_back_pk; character 3 with 0x4 nothing, with 0x1 enemy_script_back_pk; character 5 with 0x1 while a script runs nothing
  * matched: source/vf4lib/libenemy/src/libenemy.c (tools/match/match.py)
  */
 void enemy_state_kaeshi(void)
@@ -2720,8 +2720,8 @@ void enemy_think_ai_type_stub_a(void)
 }
 
 /* 0x0c054b60  size 0x8e  file by match with source
- * confidence: inferred
- * evidence: (table, row group, row): fills row [group x 10 + row] (0x20 bytes) of a table: +8 the horizontal distance from the vector at enemy_origin (never written: in effect from the origin) to the opponent's +0x90 / +0x98, +0xC / +0xE / +0x10 / +0x12 the opponent's +0x2E8 / +0x2EA / +0x2E6 / +0x2A0, bytes +0x1C..+0x1F = 0x11, 0x22, 0x33, 0x44; with enemy_records it fills the rows enemy_records_clear clears; role unclear (a recording or test routine); between the libenemy.c asserts of lines 4025 and 4195; Ghidra did not make this a function; part of vf4lib/libenemy/src/libenemy.c
+ * confidence: exercised
+ * evidence: (table, row group, row): fills row [group x 10 + row] (0x20 bytes) of a table: +8 the horizontal distance from the vector at enemy_origin (never written: in effect from the origin) to the opponent's +0x90 / +0x98, +0xC / +0xE / +0x10 / +0x12 the opponent's +0x2E8 / +0x2EA / +0x2E6 / +0x2A0, bytes +0x1C..+0x1F = 0x11, 0x22, 0x33, 0x44; with enemy_records it fills the rows enemy_records_clear clears; role unclear (a recording or test routine); between the libenemy.c asserts of lines 4025 and 4195; Ghidra did not make this a function; part of vf4lib/libenemy/src/libenemy.c; exercised 2026-11-12: called by the harness with enemy_opp_rob set to robs[1] (as the enemy frame sets it), its x / z (+0x90 / +0x98) 3 / 4 and +0x2E8, +0x2EA, +0x2E6, +0x2A0 0x111, 0x222, 0x333, 0x444: (buffer, 1, 2) wrote row 12 (+0x180): +8 5.0, the four shorts 0x111, 0x222, 0x333, 0x444 and bytes 11 22 33 44 at +0x1C, row 11 untouched; with x / z -6 / 8, (buffer, 0, 3) put 10.0 at +0x68
  * matched: source/vf4lib/libenemy/src/libenemy.c (tools/match/match.py)
  */
 void enemy_record_fill(int table,int group,int row)
@@ -2745,9 +2745,9 @@ void enemy_record_fill(int table,int group,int row)
 }
 
 /* 0x0c054c00  size 0x3e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x52
- * evidence: (move id): 1 when the enemy_ai_attack_table row of that move has kind 1, else 0; Ghidra did not make this a function; part of vf4lib/libenemy/src/libenemy.c; the move id is an unsigned short (extu.w at entry)
+ * evidence: (move id): 1 when the enemy_ai_attack_table row of that move has kind 1, else 0; Ghidra did not make this a function; part of vf4lib/libenemy/src/libenemy.c; the move id is an unsigned short (extu.w at entry); exercised 2026-11-12: called by the harness move 0x466 (row 19, kind 1) gave 1, 0x10466 also 1 (the id is taken as a short), 0x42A (kind 2) 0, 0x431 (kind 0) 0 and 0x1234 (no row) 0
  * matched: source/vf4lib/libenemy/src/libenemy.c (tools/match/match.py)
  */
 int enemy_ai_attack_kind_is_1(ushort move_id)
@@ -2767,9 +2767,9 @@ int enemy_ai_attack_kind_is_1(ushort move_id)
 }
 
 /* 0x0c054c60  size 0x3e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x52
- * evidence: (move id): as enemy_ai_attack_kind_is_1 for kind 2; Ghidra did not make this a function; part of vf4lib/libenemy/src/libenemy.c; the move id is an unsigned short (extu.w at entry)
+ * evidence: (move id): as enemy_ai_attack_kind_is_1 for kind 2; Ghidra did not make this a function; part of vf4lib/libenemy/src/libenemy.c; the move id is an unsigned short (extu.w at entry); exercised 2026-11-12: called by the harness move 0x42A (row 32, kind 2) gave 1, 0x4CC (row 38, kind 2) 1, 0x466 (kind 1) 0 and 0x1234 (no row) 0
  * matched: source/vf4lib/libenemy/src/libenemy.c (tools/match/match.py)
  */
 int enemy_ai_attack_kind_is_2(ushort move_id)
@@ -2815,9 +2815,9 @@ int enemy_dead_stub_4223(void)
 }
 
 /* 0x0c054d40  size 0x64  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x68
- * evidence: (move id): sums the frame counts of that row's script and returns the word at enemy_ai_attack_frame_base minus the opponent's +0x2E6 minus the sum, at least 2 (nothing writes enemy_ai_attack_frame_base); Ghidra did not make this a function; part of vf4lib/libenemy/src/libenemy.c; the move id is an unsigned short (extu.w at entry); returns it unsigned too (extu.w before rts)
+ * evidence: (move id): sums the frame counts of that row's script and returns the word at enemy_ai_attack_frame_base minus the opponent's +0x2E6 minus the sum, or 2 when that is below 1 (a result of 1 is returned as 1) (nothing writes enemy_ai_attack_frame_base); Ghidra did not make this a function; part of vf4lib/libenemy/src/libenemy.c; the move id is an unsigned short (extu.w at entry); returns it unsigned too (extu.w before rts); exercised 2026-11-12: called by the harness with enemy_ai_attack_frame_base 0 (snapshot) and enemy_opp_rob set to robs[1] (as the enemy frame sets it): with its +0x2E6 at -50, move 0x457 (script frames 6 + 2) gave 42, 0x475 (1 + 1 + 40) 8 and 0x1234 (no row) 50; with -9, 0x457 gave 1, with -10 2 and with 0 2 (notes row on "at least 2")
  * matched: source/vf4lib/libenemy/src/libenemy.c (tools/match/match.py)
  */
 ushort enemy_ai_attack_frames_spare(ushort move_id)

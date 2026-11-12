@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c0ea920  size 0xac  file by match with source
- * confidence: inferred
- * evidence: (r, g, b pointers to 0-1 floats; fr4, fr5, fr6): converts to luminance and two color differences (0.299, 0.587, 0.114 / -0.147, -0.289, 0.436 / 0.615, -0.515, -0.100), scales the luminance by fr4 and the differences by fr5, converts back (1.14, -0.396, -0.581, 2.029), adds fr6, clamps each to 0-1 and stores; constant table 0x0C0EA9CC-0x0C0EA9FF; the companion of color_tune_hsb; nothing in the image points at it; Ghidra did not make this a function; part of vf4lib/libpoly/src/tune_texture.c
+ * confidence: exercised
+ * evidence: (r, g, b pointers to 0-1 floats; fr4, fr5, fr6): converts to luminance and two color differences (0.299, 0.587, 0.114 / -0.147, -0.289, 0.436 / 0.615, -0.515, -0.100), scales the luminance by fr4 and the differences by fr5, converts back (1.14, -0.396, -0.581, 2.029), adds fr6, clamps each to 0-1 and stores; constant table 0x0C0EA9CC-0x0C0EA9FF; the companion of color_tune_hsb; nothing in the image points at it; Ghidra did not make this a function; part of vf4lib/libpoly/src/tune_texture.c; exercised 2026-11-12: called by the harness: (0.8, 0.4, 0.2) with scales 1 and 1 and offset 0 came back (0.80004, 0.40007, 0.20057), with 0.5, 2 and 0.1 (0.95488, 0.15494, 0, clamped) and (0.1, 0.9, 0.3) with 1.2, 1.5 and -0.05 (0 and 1, clamped, and 0.22262), each as the description's coefficients give
  * matched: source/vf4lib/libpoly/src/tune_texture.c (tools/match/match.py)
  */
 void color_tune_yuv(float *pr, float *pg, float *pb, float y_scale, float diff_scale, float offset)
@@ -82,8 +82,8 @@ void color_tune_hsb(float *pr,float *pg,float *pb,ushort hue,float brightness,fl
 }
 
 /* 0x0c0eab20  size 0x26  file by match with source
- * confidence: inferred
- * evidence: (texture descriptor list): tex_desc_tune_start, then tex_desc_tune_step until it returns 1; returns 0; nothing in the image calls it; part of vf4lib/libpoly/src/tune_texture.c
+ * confidence: exercised
+ * evidence: (texture descriptor list): tex_desc_tune_start, then tex_desc_tune_step until it returns 1; returns 0; nothing in the image calls it; part of vf4lib/libpoly/src/tune_texture.c; exercised 2026-11-12: called by the harness with two 4x4 5-6-5 descriptors (format 0x101) and a width-0 end: it called tex_desc_tune_start(list), then tex_desc_tune_step four times (0, 0, 0, 1) and returned 0; the first texture's 17 texels went from 0x5555 to 0xB398 with the snapshot's tune values, the second's stayed 0x5555 (see tex_desc_tune_step)
  * matched: source/vf4lib/libpoly/src/tune_texture.c (tools/match/match.py)
  */
 int tex_desc_tune_all(tex_desc_rec *descs)
@@ -98,8 +98,8 @@ int tex_desc_tune_all(tex_desc_rec *descs)
 }
 
 /* 0x0c0eab60  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: (texture descriptor list): keeps the list for tex_desc_tune_step and clears its state; returns 0; only caller tex_desc_tune_all; part of vf4lib/libpoly/src/tune_texture.c
+ * confidence: exercised
+ * evidence: (texture descriptor list): keeps the list for tex_desc_tune_step and clears its state; returns 0; only caller tex_desc_tune_all; part of vf4lib/libpoly/src/tune_texture.c; exercised 2026-11-12: called by the harness with tex_desc_tune_cursor, tex_desc_tune_word and tex_desc_tune_running poked to 0x99, 5 and 1: start(buf:1) returned 0 and left them buf:1, 0 and 0; start(0) left the cursor 0
  * matched: source/vf4lib/libpoly/src/tune_texture.c (tools/match/match.py)
  */
 int tex_desc_tune_start(tex_desc_rec *descs)
@@ -113,7 +113,7 @@ int tex_desc_tune_start(tex_desc_rec *descs)
 /* 0x0c0eaba0  size 0x58  file by match with source
  * confidence: inferred
  * extent: 0x5a
- * evidence: (no arguments): tunes every texture of the list in turn with the current tune values: starts the next descriptor (tex_tune_start) or continues it (tune_texture_step); returns 1 at the descriptor with width 0 or with no list, else 0; only caller tex_desc_tune_all; part of vf4lib/libpoly/src/tune_texture.c
+ * evidence: (no arguments): one step of tuning the list's textures with the current tune values: returns 1 at once when there is no list or the cursor is at the descriptor with width 0; else, when no texture is running, starts the one at the cursor (tex_tune_start), moves the cursor on and marks it running, or runs one slice of it (tune_texture_step, running while that returns 1); returns 0; since the end test comes first, the last texture of a list is started but never tuned (as the game has it); only caller tex_desc_tune_all; part of vf4lib/libpoly/src/tune_texture.c; record as the game has it: tex_desc_tune_all and tex_desc_tune_step leave the last texture of a list untuned; nothing in the image calls tex_desc_tune_all, so the game never meets it; corrected 2026-11-12 from harness calls: the last texture of a list is started but never tuned: called by the harness over two 4x4 descriptors and a width-0 end, steps 1-4 called tex_tune_start(first) (cursor to the second, running 1), tune_texture_step (returned 0, running 0), tex_tune_start(second) (cursor to the end, running 1), then returned 1 at once; with tex_tune_brightness poked to 0.5 the first texture became 0xFFFF and the second stayed 0x5555
  * matched: source/vf4lib/libpoly/src/tune_texture.c (tools/match/match.py)
  */
 int tex_desc_tune_step(void)

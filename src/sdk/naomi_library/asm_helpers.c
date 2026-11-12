@@ -7,24 +7,24 @@
 #include "vf4ft.h"
 
 /* 0x0c12c810  size 0x44  file by match with source
- * confidence: inferred
- * evidence: hand-written: (y in fr4, x in fr5): the angle of the vector with 0x100 a turn: folds the signs and the larger of the two into an octant, divides, and looks the quotient up in the 129-byte arctangent table after it; nothing in the image calls it (uncalled code, made a function 2026-11-09); between words_copy and fsca_sin16, so by link order part of sdk/naomi_library/asm_helpers.c
+ * confidence: exercised
+ * evidence: hand-written: (y in fr4, x in fr5): the angle of the vector with 0x100 a turn: folds the signs and the larger of the two into an octant, divides, and looks the quotient up in the 129-byte arctangent table after it; nothing in the image calls it (uncalled code, made a function 2026-11-09); between words_copy and fsca_sin16, so by link order part of sdk/naomi_library/asm_helpers.c; exercised 2026-11-12: called by the harness with (y, x) = (0, 1) it returned 0, (1, 0) 0x40, (0, -1) 0x80, (-1, 0) 0xC0, (1, 2) 19 (byte 64 of arctan_ang8_table), (2, 1) 45 (0x40 - 19), (-1, -2) 147 (0x80 + 19) and (3, -3) 0x60
  * convention: __keeps_r3_r4_r5_r6_r7_fr1_fr2_fr3_fr6_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c12c810.s (hand-written assembly, tools/match/match.py)
  */
 int atan2_ang8_table(float param_1,float param_2);
 
 /* 0x0c12c8f0  size 0x6  file by match with source
- * confidence: inferred
- * evidence: hand-written: (16-bit angle): the sine in fr0 (fsca leaves the cosine in fr1); fsca_cos16 after it returns the cosine; nothing in the image calls it (uncalled code, made a function 2026-11-09); between atan2_ang8_table and fsca_cos16, so by link order part of sdk/naomi_library/asm_helpers.c
+ * confidence: exercised
+ * evidence: hand-written: (16-bit angle): the sine in fr0 (fsca leaves the cosine in fr1); fsca_cos16 after it returns the cosine; nothing in the image calls it (uncalled code, made a function 2026-11-09); between atan2_ang8_table and fsca_cos16, so by link order part of sdk/naomi_library/asm_helpers.c; exercised 2026-11-12: called by the harness with 0x4000 fr0 was 1.0, with 0x1000 0.382683 (fr1 the cosine 0.923880), and with 0x14000 again 1.0 (only the low 16 bits count)
  * convention: __keeps_r1_r2_r3_r4_r5_r6_r7_fr2_fr3_fr4_fr5_fr6_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c12c8f0.s (hand-written assembly, tools/match/match.py)
  */
 undefined8 fsca_sin16(ushort param_1);
 
 /* 0x0c12c8f8  size 0x8  file by match with source
- * confidence: inferred
- * evidence: fsca of a 16-bit angle (0x10000 a turn) and returns the cosine (fr1); the uncalled routine before it at fsca_sin16 returns the sine; called by spot_falloff_from_angles and from 0c12beb4; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: fsca of a 16-bit angle (0x10000 a turn) and returns the cosine in fr0 (moved there from fr1, which keeps it too); the uncalled routine before it at fsca_sin16 returns the sine; called by spot_falloff_from_angles and from 0c12beb4; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with 0x1000 it returned 0.923880 in fr0 (fr1 the same) and with 0x8000 -1.0
  * convention: __keeps_r1_r2_r3_r4_r5_r6_r7_fr2_fr3_fr4_fr5_fr6_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c12c8f8.s (hand-written assembly, tools/match/match.py)
  */
@@ -39,9 +39,9 @@ float fsca_cos16(ushort param_1);
 void fsca_sincos16(undefined4 param_1,float *param_2,float *param_3);
 
 /* 0x0c12c90c  size 0x32  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x3a
- * evidence: (first entry, source, count): copies count entries into the palette shadow table at pal_shadow (4 bytes an entry from first entry * 4): 32-bit words when the mode byte graphics_work.pal_entry_format is 3, else 16-bit halves; then sets the upload flag byte graphics_work.pal_shadow_changed (0c5d4800) to 1, which pal_shadow_flush (0x0C12F780) tests and clears when it sends the shadow; callers pal_group_store_colors and the game's palette users model_tex_load_walk, obj_textures_load_step, sprite_record_make, sprite_record_pal_group_replace, strip_pal_group_ref; part of the NAOMI library; checked against reference material (not in this repo)
+ * evidence: (first entry, source, count): copies count entries into the palette shadow table at pal_shadow (4 bytes an entry from first entry * 4): 32-bit words when the mode byte graphics_work.pal_entry_format is 3, else the source's 16-bit halfwords, each into the low half of its entry (the high half kept); then sets the upload flag byte graphics_work.pal_shadow_changed (0c5d4800) to 1, which pal_shadow_flush (0x0C12F780) tests and clears when it sends the shadow; callers pal_group_store_colors and the game's palette users model_tex_load_walk, obj_textures_load_step, sprite_record_make, sprite_record_pal_group_replace, strip_pal_group_ref; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness (2, words 11112222 33334444 55556666, 3) in sandboxes with graphics_work.pal_entry_format poked (0 in the snapshot): with 3 the three words went whole into pal_shadow entries 2 to 4 (entry 5 untouched); with 1 the halfwords 2222, 1111, 4444 went into the low halves of entries 2 to 4, keeping the high halves 9999, 8888, 7777 planted there; both times pal_shadow_changed became 1
  * convention: __keeps_r3_r7_fr1_fr2_fr3_fr4_fr5_fr6_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c12c90c.s (hand-written assembly, tools/match/match.py)
  */

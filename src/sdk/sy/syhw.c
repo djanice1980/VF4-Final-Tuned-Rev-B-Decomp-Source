@@ -95,9 +95,9 @@ void cache_shutdown(void)
 }
 
 /* 0x0c1381a0  size 0x32  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x46
- * evidence: zeroes the interrupt controller's ICR and IPRA-IPRC (0xffd00000-0c), writes 0xc0 to the SCIF port register (0xffe80020), then stores each value of the (address, value) list sysbus_reg_defaults (0c2164fc, the Holly system bus registers from 0xa05f6800, up to a null address); part of syHw; checked against reference material (not in this repo)
+ * evidence: zeroes the interrupt controller's ICR and IPRA-IPRC (0xffd00000-0c), writes 0xc0 to the SCIF port register (0xffe80020), then stores each value of the (address, value) list sysbus_reg_defaults (0c2164fc, the Holly system bus registers from 0xa05f6800, up to a null address); part of syHw; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness it wrote 0 to ffd00000, ffd00004, ffd00008 and ffd0000c, 0xc0 to ffe80020, then the image's sysbus_reg_defaults pairs as address then value, in order: a05f6800=0x11ff0000, a05f6804=0x20, a05f6810=0xcff0000, a05f6814=0xcff0000, a05f6818=0, a05f681c=0, a05f6840=0 (the record keeps the first 12 register writes, so the stop at the null address after 84 pairs was not seen)
  * matched: source/sdk/sy/syhw.c (tools/match/match.py)
  */
 void sysbus_regs_load_defaults(void)

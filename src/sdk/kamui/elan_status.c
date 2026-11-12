@@ -124,8 +124,8 @@ void xfer_trace_push(uint event)
 }
 
 /* 0x0c150540  size 0x58  file by match with source
- * confidence: inferred
- * evidence: (source, destination, length): copies length / 32 blocks of 32 bytes through the store queue (QACR from the destination's area), flushing each block with pref; part of KamuiTL
+ * confidence: exercised
+ * evidence: (source, destination, length): copies length / 32 blocks of 32 bytes through the store queue (QACR from the destination's area), flushing each block with pref; part of KamuiTL; exercised 2026-11-12: called by the harness with 16 marker words in a buffer: (source, 0x0F006000, 64) copied all 16 and left the 17th destination word (0x77) alone; (source, 0x0F006000, 40) copied one block of 8 words and not the 9th; the QACR value it set (0xc for area 3) was what xferq_sq_save then recorded
  * matched: source/sdk/kamui/elan_status.c (tools/match/match.py)
  */
 void sq_copy_blocks(uint *src, uint dst, uint len)
@@ -187,8 +187,8 @@ int block_write_ticketed(uint src, uint dst, uint len)
 }
 
 /* 0x0c1506e0  size 0x16  file by match with source
- * confidence: inferred
- * evidence: (source, length): block_write_ticketed to the ELAN command area 0xa9000000; called by listbuf_list_transfer; part of KamuiTL
+ * confidence: exercised
+ * evidence: (source, length): block_write_ticketed to the ELAN command area 0xa9000000; called by listbuf_list_transfer; part of KamuiTL; exercised 2026-11-12: called by the harness with (0x0F004000, 64) it called block_write_ticketed(0x0F004000, 0xA9000000, 64) and returned its -1 (the store queue path), and with (0x0C300000, 0x40) block_write_ticketed(0x0C300000, 0xA9000000, 64) and returned its ticket 672
  * matched: source/sdk/kamui/elan_status.c (tools/match/match.py)
  */
 int cmd_area_write_ticketed(uint src, uint len)
@@ -355,8 +355,8 @@ int elan_status_service(void)
 }
 
 /* 0x0c150ac0  size 0x92  file by match with source
- * confidence: inferred
- * evidence: resets the ELAN command input (0xa8800008 = 5 with zeros through 0xa8800000/04) and soft-resets both rendering chips (0xa85f8008), waits for the channel-2 DMA (0xa05f6808) to stop, stops SH-4 DMA channel 2, clears the render-end interrupt bits 0x200780 of both chips, marks the bank being rendered idle and moves on, retires the current transfer (trace 2) and frees every pending one; called by ta_bad_input_irq after it clears bit 4 of the error status; part of KamuiTL
+ * confidence: exercised
+ * evidence: resets the ELAN command input (0xa8800008 = 5 with zeros through 0xa8800000/04) and soft-resets both rendering chips (0xa85f8008), waits for the channel-2 DMA (0xa05f6808) to stop, stops SH-4 DMA channel 2, clears the render-end interrupt bits 0x200780 of both chips, marks the bank being rendered idle and moves on, retires the current transfer (trace 2) and frees every pending one; called by ta_bad_input_irq after it clears bit 4 of the error status; part of KamuiTL; exercised 2026-11-12: called by the harness on the fight snapshot (bank_render_index 3, xfer_current 0) with list_banks+0x330 poked 5: it wrote 0 to 0xa05f6808, 0xa8800000/04 and (last) 0xa8800008 and 0xa85f8008, 0x200780 to 0xa85f6900, CHCR2 with bit 0 clear (0x12c0), set bank 3's state to 0 and bank_render_index to 0, did not retire a transfer, and called jobq_reset(xfer_pending, 1), which emptied the queue
  * matched: source/sdk/kamui/elan_status.c (tools/match/match.py)
  */
 void elan_pvr_reset_drop_frame(void)

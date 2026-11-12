@@ -200,9 +200,7 @@ int usec_to_ticks_at_rate(int usec, uint rate)
   return ((uint)usec / d) * 100 + (((uint)usec % d) * 100) / d;
 }
 
-void tmu2_ticks_between(int first, int second)
+uint tmu2_ticks_between(int first, int second)
 {
-  ticks_between(first,second);
-
-  return;
+  return ticks_between(first,second);
 }

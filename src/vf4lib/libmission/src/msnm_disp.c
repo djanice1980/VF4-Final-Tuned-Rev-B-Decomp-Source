@@ -1805,8 +1805,8 @@ void chlg_screen_dim_draw(float level)
 }
 
 /* 0x0c0ab7c0  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (state): stores the challenge result's bar state, the word chlg_bars_state_get returns; nothing in the image calls it (uncalled code, made a function 2026-11-09); between chlg_screen_dim_draw and chlg_bars_state_get, so by link order part of vf4lib/libmission/src/msnm_disp.c
+ * confidence: exercised
+ * evidence: (state): stores the challenge result's bar state, the word chlg_bars_state_get returns; nothing in the image calls it (uncalled code, made a function 2026-11-09); between chlg_screen_dim_draw and chlg_bars_state_get, so by link order part of vf4lib/libmission/src/msnm_disp.c; exercised 2026-11-12: called by the harness in one sandbox: after chlg_bars_state_set(3) chlg_bars_state_get returned 3, and after chlg_bars_state_set(7) it returned 7
  * matched: source/vf4lib/libmission/src/msnm_disp.c (tools/match/match.py)
  */
 void chlg_bars_state_set(int state)
@@ -2623,8 +2623,8 @@ void chlg_route_preview_reset(msnm_try_rec *next_mission, msnm_try_setting_rec *
 }
 
 /* 0x0c0ace80  size 0x2a  file by match with source
- * confidence: inferred
- * evidence: (character): the character's icon (table chlg_chara_icons) at (485, 320); nothing in the image calls it; part of vf4lib/libmission/src/msnm_disp.c
+ * confidence: exercised
+ * evidence: (character): the character's icon (table chlg_chara_icons) at (485, 320); nothing in the image calls it; part of vf4lib/libmission/src/msnm_disp.c; exercised 2026-11-12: called by the harness with characters 0, 1 and 11 it called sprite_put_xyz with 0x9A3, 0x9B0 and 0x9A6 (the +4 word of chlg_chara_icons entries 0, 1, 11 in work/main.bin), each at (485, 320, 0.01)
  * matched: source/vf4lib/libmission/src/msnm_disp.c (tools/match/match.py)
  */
 void chlg_chara_icon_draw(int chara)
@@ -2650,8 +2650,8 @@ void chlg_route_cursor_set(msnm_try_rec *next_mission, msnm_try_setting_rec *nex
 }
 
 /* 0x0c0acf00  size 0x40  file by match with source
- * confidence: inferred
- * evidence: releases the preview parts at display work +0xfc, +0x100 and +0x12c when set, without marking them unused; nothing in the image calls it; part of vf4lib/libmission/src/msnm_disp.c
+ * confidence: exercised
+ * evidence: releases the preview parts at display work +0xfc, +0x100 and +0x12c when set, without marking them unused; nothing in the image calls it; part of vf4lib/libmission/src/msnm_disp.c; exercised 2026-11-12: called by the harness with msnm_disp_state +0xfc, +0x100, +0x12c poked 5, -1, 7: it called aet_still_stop(5) and aet_still_stop(7) and left the three words 5, -1, 7
  * matched: source/vf4lib/libmission/src/msnm_disp.c (tools/match/match.py)
  */
 void chlg_route_preview_parts_free(void)
@@ -2669,9 +2669,9 @@ void chlg_route_preview_parts_free(void)
 }
 
 /* 0x0c0acf60  size 0x134  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x14c
- * evidence: a debug viewer: prints the selected coin-prize layer name (chlg_coin_layer_names, 12 names "BURST".."FLAT_COIN_FLASH") and priority (coin_viewer_prio_values, 7 values) at cells (16, 20) / (16, 21); pad 0 up / down (0x80 / 0x40) steps the name, left / right (0x10 / 0x20) the priority, and any change restarts that layer alone in group 0x30000; indexes in coin_viewer_name_index / coin_viewer_prio_index; nothing in the image calls it; part of vf4lib/libmission/src/msnm_disp.c
+ * evidence: a debug viewer: prints the selected coin-prize layer name (chlg_coin_layer_names, 12 names "BURST".."FLAT_COIN_FLASH") and priority (coin_viewer_prio_values, 7 values) at cells (16, 20) / (16, 21); pad 0 up / down (0x80 / 0x40) steps the name, left / right (0x10 / 0x20) the priority, and any change restarts that layer alone in group 0x30000; indexes in coin_viewer_name_index / coin_viewer_prio_index; nothing in the image calls it; part of vf4lib/libmission/src/msnm_disp.c; exercised 2026-11-12: called by the harness with indexes 0 / 0 and pad 0's pressed word poked: with 0 it printed "BURST" at (16, 20) and 1 at (16, 21) and restarted nothing; 0x80 moved the name to 11 and restarted layer "FLAT_COIN_FLASH" with flags 1 in scene 0x30000 (aet_objs_stop_by_scene(0x30000) first); 0x20 at priority 6 wrapped to 0 (flags 1), 0x10 wrapped back to 6 (flags 64), 0x40 at name 11 wrapped to "BURST"
  * matched: source/vf4lib/libmission/src/msnm_disp.c (tools/match/match.py)
  */
 void chlg_coin_layer_viewer(void)

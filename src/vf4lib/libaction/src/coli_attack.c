@@ -1054,7 +1054,7 @@ void rob_wall_hit_react(rob_rec *rob, char wall_side, char wall_flags)
 
 /* 0x0c06ffa0  size 0x96  file by match with source
  * confidence: inferred
- * evidence: (attacker, defender): the reaction for kind 16 (attacker record +0x94 == 0x10): +0x68 = 0x11000000 + hit_reaction_move_pick, stun hit_stun, attack_recovery_apply, hit_reaction with reaction_length_get's frames, hit_knockback_set, hit light bit 3 and control_buffer_use(defender, 3); caller attack_hit_resolve; part of vf4lib/libaction/src/coli_attack.c
+ * evidence: (attacker, defender): the reaction for kind 16 (attacker record +0x94 == 0x10): +0x68 = 0x11000000 + hit_reaction_move_pick, stun hit_stun, attack_recovery_apply, hit_reaction with reaction_length_get's frames, hit_knockback_set, hit light bit 3 and control_buffer_use(the attacker's side, 3); caller attack_hit_resolve; part of vf4lib/libaction/src/coli_attack.c; corrected 2026-11-12 from harness calls: called by the harness with the attacker's coli record +0x94 poked 0x10: (robs[0], robs[1]) left robs[1] +0x68 0x11000196 (pick 0x196), +0x12 25 (hit_stun), hit_reaction length 25 (reaction_length_get), hit_light_flags 0x18, but control_buffer_use(0, 3): side 0 is the attacker; reversed it called control_buffer_use(1, 3). The C passes (char)attacker->side
  * matched: source/vf4lib/libaction/src/coli_attack.c (tools/match/match.py)
  */
 void rob_hit_react_kind16(rob_rec *attacker, rob_rec *defender)
@@ -1805,8 +1805,8 @@ int hit_result_guard_knockback(rob_rec *attacker, rob_rec *defender, int mode_ar
 }
 
 /* 0x0c071740  size 0x5e  file by match with source
- * confidence: inferred
- * evidence: (defender, attacker): called with the roles swapped: result 11 and flags 0x60 go on the defender (+0x115, +0x10C, (+0x3C) +0x94 / +0x3C, hit_result_flags), push power times block +0x10, hit sound 0x1000 on the defender, then rob_guard_react with the defender as the first rob, so the attacker gets the guard reaction; returns 1; callers attack_vs_crouch_guard (defender +0x24 bit 0x20 against a low attack) and attack_vs_stand_guard (bit 0x10); role beyond that unclear; part of vf4lib/libaction/src/coli_attack.c
+ * confidence: exercised
+ * evidence: (defender, attacker): called with the roles swapped: result 11 and flags 0x60 go on the defender (+0x115, +0x10C, (+0x3C) +0x94 / +0x3C, hit_result_flags), push power times block +0x10, hit sound 0x1000 on the defender, then rob_guard_react with the defender as the first rob, so the attacker gets the guard reaction; returns 1; callers attack_vs_crouch_guard (defender +0x24 bit 0x20 against a low attack) and attack_vs_stand_guard (bit 0x10); role beyond that unclear; part of vf4lib/libaction/src/coli_attack.c; exercised 2026-11-12: called by the harness with (robs[1], robs[0]) and hit_est_record's +0x10 poked 2.0: it returned 1, left robs[1] +0x115 11, +0x10C 0x60, its coli record +0x94 11 and +0x3C 0x60, hit_result_flags 0x60, hit_power doubled (0x3CF6C7DF to 0x3D76C7DF), and called attack_result_sounds_play(robs[1], robs[1], 0x1000) and rob_guard_react(robs[1], robs[0], 0); reversed, the same on robs[0]
  * matched: source/vf4lib/libaction/src/coli_attack.c (tools/match/match.py)
  */
 int hit_result_guard_reversed(rob_rec *defender, rob_rec *attacker)

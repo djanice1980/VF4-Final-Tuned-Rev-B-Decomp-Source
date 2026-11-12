@@ -7,31 +7,31 @@
 #include "vf4ft.h"
 
 /* 0x0c10a3c0  size 0x4c  file by match with source
- * confidence: inferred
- * evidence: (threshold fr4, gain fr5): stores the gain and minus the threshold in intensity_spill_params; when the gain is above 0 and the threshold not below 0 puts intensity_spill_send (0x0C10B640) in both the slot words at typed_send_slots and intensity_spill_send_alpha (0x0C10B642) in both the slot words at typed_send_slots_alpha, otherwise intensity_send and intensity_send_alpha; a start Ghidra never made (after zero fill 0x0C10A3B2-0x0C10A3BF); nothing in the image calls it; part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: (threshold fr4, gain fr5): stores the gain and minus the threshold in intensity_spill_params; when the gain is above 0 and the threshold not below 0 puts intensity_spill_send (0x0C10B640) in both the slot words at typed_send_slots and intensity_spill_send_alpha (0x0C10B642) in both the slot words at typed_send_slots_alpha, otherwise intensity_send and intensity_send_alpha; a start Ghidra never made (after zero fill 0x0C10A3B2-0x0C10A3BF); nothing in the image calls it; part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: called by the harness in one sandbox: (0.5, 2.0) stored intensity_spill_params (2.0, -0.5) and put 0x0C10B640 in both typed_send_slots words and 0x0C10B642 in both typed_send_slots_alpha words; (0.5, -1.0) stored (-1.0, -0.5) and put intensity_send and intensity_send_alpha (0x0C10A550, 0x0C10A552) back; (-0.25, 3.0) stored (3.0, 0.25) and left intensity_send; (0.0, 3.0) chose the spill senders again
  * convention: __keeps_r3_r4_r5_r6_r7_fr1_fr2_fr3_fr5_fr6_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c10a3c0.s (hand-written assembly, tools/match/match.py)
  */
 void intensity_spill_put(float threshold, float gain);
 
 /* 0x0c10a430  size 0x36  file by match with source
- * confidence: inferred
- * evidence: loads the 4x4 matrix at r4 into XMTRX (frchg) with each column of four words reordered to (word 3, word 0, word 1, minus word 3) and word 2 dropped, so that ftrv gives (depth, x, y, minus depth), the layout the renderers' near tests read; instruction for instruction the same as mtx_set_w_first (0x0C135890); a start Ghidra never made (after intensity_spill_put's pool, nops to 0x0C10A46F after it); nothing in the image calls it; part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: loads the 4x4 matrix at r4 into XMTRX (frchg) with each column of four words reordered to (word 3, word 0, word 1, minus word 3) and word 2 dropped, so that ftrv gives (depth, x, y, minus depth), the layout the renderers' near tests read; instruction for instruction the same as mtx_set_w_first (0x0C135890); a start Ghidra never made (after intensity_spill_put's pool, nops to 0x0C10A46F after it); nothing in the image calls it; part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through the register driver, which stores XMTRX after the call: source words 1..16 gave XMTRX (4, 1, 2, -4, 8, 5, 6, -8, 12, 9, 10, -12, 16, 13, 14, -16)
  * convention: __keeps_r1_r2_r3_r5_r6_r7 (AssignCallEffects)
  * matched: source/asm/0c10a430.s (hand-written assembly, tools/match/match.py)
  */
 void xmtrx_load_depth_x_y(float *mtx);
 
 /* 0x0c10a470  size 0x40  file by match with source
- * confidence: inferred
- * evidence: (obj r4): the routine obj_typed_send runs (pointer 0c103e14): from its table at 0x0C10A4B0 (mova) takes r5 = the header block obj_send_header (+0x14), runs the slot words at typed_send_slots[0] when obj word 0 is 0 or the slot words at typed_send_slots[1] when it is 1 (intensity_send in both in the image, intensity_spill_send after intensity_spill_put), nothing for other values, then mtx_pop(1) (table +0x20); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: (obj r4): the routine obj_typed_send runs (pointer 0c103e14): from its table at 0x0C10A4B0 (mova) takes r5 = the header block obj_send_header (+0x14), runs the slot words at typed_send_slots[0] when obj word 0 is 0 or the slot words at typed_send_slots[1] when it is 1 (intensity_send in both in the image, intensity_spill_send after intensity_spill_put), nothing for other values, then mtx_pop(1) (table +0x20); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: called by the harness with a zeroed scratch object, the callees traced: word 0 = 0 ran intensity_send(object, obj_send_header 0c417d18) and then mtx_pop(1); after intensity_spill_put(0.5, 2.0) in the same sandbox, word 0 = 1 ran intensity_spill_send(object, obj_send_header) and then mtx_pop(1); word 0 = 2 ran mtx_pop(1) only
  * matched: source/asm/0c10a470.s (hand-written assembly, tools/match/match.py)
  */
 void typed_send_by_slot(int *obj);
 
 /* 0x0c10a4e0  size 0x40  file by match with source
- * confidence: inferred
- * evidence: typed_send_by_slot through the slot words at typed_send_slots_alpha (its own table at 0x0C10A520), the float argument left in fr4 for the renderers' alpha entries; run by obj_typed_send_f (pointer 0c103e34); zero fill 0x0C10A544-0x0C10A54F after its table; part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: typed_send_by_slot through the slot words at typed_send_slots_alpha (its own table at 0x0C10A520), the float argument left in fr4 for the renderers' alpha entries; run by obj_typed_send_f (pointer 0c103e34); zero fill 0x0C10A544-0x0C10A54F after its table; part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: called by the harness with the slot words typed_send_slots_alpha poked to strip_len_code_set and fb_front_as_surface_desc: an object of type 0 with alpha 0.75 ran the first with r4 = the object, r5 = obj_send_header, fr4 = 0.75; type 1 ran the second (the object became its surface description); type 2 ran neither; mtx_pop(1) followed each time
  * matched: source/asm/0c10a4e0.s (hand-written assembly, tools/match/match.py)
  */
 void typed_send_by_slot_alpha(int *obj, float alpha);

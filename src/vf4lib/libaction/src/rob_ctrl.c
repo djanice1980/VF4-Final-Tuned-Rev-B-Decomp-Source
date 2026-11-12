@@ -808,8 +808,8 @@ void rob_card_flags_high_set(int side_arg)
 }
 
 /* 0x0c063b20  size 0x26  file by match with source
- * confidence: inferred
- * evidence: (no arguments): rob_chara_setup for side 0 with the character and costume kept at rob_reload_chara / rob_reload_costume, then robs_start; caller itmtst_next_chara; part of vf4lib/libaction/src/rob_ctrl.c
+ * confidence: exercised
+ * evidence: (no arguments): rob_chara_setup for side 0 with the character and costume kept at rob_reload_chara / rob_reload_costume, then robs_start; caller itmtst_next_chara; part of vf4lib/libaction/src/rob_ctrl.c; exercised 2026-11-12: called by the harness (irq max 30) with rob_reload_chara[0] poked 3 and rob_reload_costume[0] 1: it called rob_chara_setup(3, 1, 0) and robs_start once each, and left robs[0] at character 3 costume 1 with robs[1] still 14 / 1
  * matched: source/vf4lib/libaction/src/rob_ctrl.c (tools/match/match.py)
  */
 void rob0_reload(void)
@@ -820,8 +820,8 @@ void rob0_reload(void)
 }
 
 /* 0x0c063b60  size 0x26  file by match with source
- * confidence: inferred
- * evidence: (no arguments): the same for side 1 (rob_reload_chara[1] / rob_reload_costume[1]); caller itmtst_next_chara; part of vf4lib/libaction/src/rob_ctrl.c
+ * confidence: exercised
+ * evidence: (no arguments): the same for side 1 (rob_reload_chara[1] / rob_reload_costume[1]); caller itmtst_next_chara; part of vf4lib/libaction/src/rob_ctrl.c; exercised 2026-11-12: called by the harness (irq max 30) with rob_reload_chara[1] poked 5 and rob_reload_costume[1] 0: it called rob_chara_setup(5, 0, 1) and robs_start once each, and left robs[1] at character 5 costume 0 with robs[0] still 14 / 0
  * matched: source/vf4lib/libaction/src/rob_ctrl.c (tools/match/match.py)
  */
 void rob1_reload(void)
@@ -2369,8 +2369,8 @@ void move_cmd_04_frame_table(rob_rec *rob, short *arg)
 }
 
 /* 0x0c0663c0  size 0x128  file by match with source
- * confidence: inferred
- * evidence: s16 x12: patches the rows for hit-result bits 0x4000 (+0x2C6..+0x2CA), 0x8000 (+0x2CC..), 0x10000 (+0x2D2..) and 0x800 (+0x2D8..): a stun > 0, a recovery != -1 (clamped to the move length), a third value (the wait frames hit_reaction reads) != -1; unused in the data
+ * confidence: exercised
+ * evidence: s16 x12: patches the rows for hit-result bits 0x4000 (+0x2C6..+0x2CA), 0x8000 (+0x2CC..), 0x10000 (+0x2D2..) and 0x800 (+0x2D8..): a stun > 0, a recovery != -1 (clamped to the move length), a third value (the wait frames hit_reaction reads) != -1; unused in the data; exercised 2026-11-12: called by the harness on robs[0] (move length +0x2E4 = 34) with the rows at +0x2C6 poked (11,12,13), (21,22,23), (31,32,33), (41,42,43) and arguments (3,10,4), (0,-1,-1), (6,50,8), (-2,5,-1): the rows became (3,10,4), (21,22,23), (6,34,8), (41,5,43): stun set only when > 0, -1 kept the old value, 50 clamped to 34
  * matched: source/vf4lib/libaction/src/rob_ctrl.c (tools/match/match.py)
  */
 void move_cmd_05(rob_rec *rob, short *arg)
@@ -2470,8 +2470,8 @@ void move_cmd_07_guard_row(rob_rec *rob, short *arg)
 }
 
 /* 0x0c0665c0  size 0x50  file by match with source
- * confidence: inferred
- * evidence: s16 x3: patches the counter-hit row (+0x2AC / +0x2B6 / +0x2C0)
+ * confidence: exercised
+ * evidence: s16 x3: patches the counter-hit row (+0x2AC / +0x2B6 / +0x2C0) as move_cmd_05 does its rows: a stun > 0, a recovery != -1 (clamped to the move length +0x2E4), a third value != -1 (harness calls 2026-11-12: (0, -1, -1) changed nothing, (3, 40, -1) with move length 32 left 3, 32 and the old third value); exercised 2026-11-12: called by the harness in one sandbox on robs[1] (move length 32): with (5, 12, 9) it left +0x2AC 5, +0x2B6 12, +0x2C0 9; then (0, -1, -1) changed nothing and (3, 40, -1) left 3, 32, 9 (notes row)
  * matched: source/vf4lib/libaction/src/rob_ctrl.c (tools/match/match.py)
  */
 void move_cmd_08_counter_row(rob_rec *rob, short *arg)
@@ -2813,8 +2813,8 @@ void move_cmd_26(rob_rec *rob, uint *arg)
 }
 
 /* 0x0c066bc0  size 0x24  file by match with source
- * confidence: inferred
- * evidence: keeps the first argument pointer at rob +0x378, counts them in +0x28E; unused in the data
+ * confidence: exercised
+ * evidence: keeps the first argument pointer at rob +0x378, counts them in +0x28E; unused in the data; exercised 2026-11-12: called by the harness in one sandbox on robs[0] (+0x28E 0): with 0x0F004000 it left +0x378 0x0F004000 and +0x28E 1, then with 0x0F005000 +0x378 stayed 0x0F004000 and +0x28E became 2
  * matched: source/vf4lib/libaction/src/rob_ctrl.c (tools/match/match.py)
  */
 void move_cmd_27_list_378(rob_rec *rob, int arg)
@@ -2850,8 +2850,8 @@ void move_cmd_29_list_380(rob_rec *rob, est_row *arg)
 }
 
 /* 0x0c066c40  size 0x22  file by match with source
- * confidence: inferred
- * evidence: 8 bytes: rob +0x291 = 1, +0x29A = s16 +4, +0x348 = u32 +0
+ * confidence: exercised
+ * evidence: 8 bytes: rob +0x291 = 1, +0x29A = s16 +4, +0x348 = u32 +0; exercised 2026-11-12: called by the harness on robs[0] with the 8 bytes {0x3FC00000, 0x1234}: +0x291 1, +0x29A 0x1234, +0x348 0x3FC00000; then on robs[1] with {0x40490FDB, -5}: robs[1] +0x29A 0xFFFB and +0x348 0x40490FDB, robs[0] unchanged
  * matched: source/vf4lib/libaction/src/rob_ctrl.c (tools/match/match.py)
  */
 void move_cmd_30(rob_rec *rob, uint *arg)
@@ -2929,8 +2929,8 @@ void move_cmd_face_motion(rob_rec *rob, short *arg, int *cmd)
 }
 
 /* 0x0c066d40  size 0x18  file by match with source
- * confidence: inferred
- * evidence: rob +0x30E / +0x310 = s16 +0 / +2; unused in the data
+ * confidence: exercised
+ * evidence: rob +0x30E / +0x310 = s16 +0 / +2; unused in the data; exercised 2026-11-12: called by the harness on robs[0] with {7, -3} it left +0x30E 7 and +0x310 0xFFFD, then on robs[1] with {0x100, 0x200} robs[1] got 0x100 and 0x200 and robs[0] kept 7 and 0xFFFD
  * matched: source/vf4lib/libaction/src/rob_ctrl.c (tools/match/match.py)
  */
 void move_cmd_37(rob_rec *rob, short *arg)
@@ -3062,8 +3062,8 @@ void move_cmd_46_nop(void)
 }
 
 /* 0x0c066f60  size 0x12  file by match with source
- * confidence: inferred
- * evidence: rob +0x3AA = s16 +0; unused in the data
+ * confidence: exercised
+ * evidence: rob +0x3AA = s16 +0; unused in the data; exercised 2026-11-12: called by the harness on robs[0] with {0x55} it left +0x3AA 0x55, then on robs[1] with {0x8001} robs[1] +0x3AA became 0x8001 and robs[0] kept 0x55
  * matched: source/vf4lib/libaction/src/rob_ctrl.c (tools/match/match.py)
  */
 void move_cmd_47(rob_rec *rob, short *arg)
@@ -3705,9 +3705,9 @@ void move_tcmd_17_camera(rob_rec *rob, int arg)
 }
 
 /* 0x0c067fa0  size 0x8e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xcc
- * evidence: rob +0x545..+0x548 by u8 +2: 0 = (1, u8 +3, rope_link_at_distance(float +4)), 1 = 0, 2 = (2, u8 +3, rope_grip_link_index(u8 +3))
+ * evidence: rob +0x545..+0x548 by u8 +2: 0 = (1, u8 +3, rope_link_at_distance(float +4)), 1 = 0, 2 = (2, u8 +3, rope_grip_link_index(u8 +3)); exercised 2026-11-12: called by the harness in one sandbox on robs[1] (side 1, link length 0.02): kind 0, u8 +3 7, float 1.03 left +0x545..+0x548 = 1, 7, 76 (127 - 51 from rope_link_at_distance); kind 1 left 0, 0, 0; kind 2 with bone 7 left 2, 7, 85, what rope_grip_link_index(robs[1], 7) returned
  * matched: source/vf4lib/libaction/src/rob_ctrl.c (tools/match/match.py)
  */
 void move_tcmd_18(rob_rec *rob, int arg)
@@ -3813,9 +3813,9 @@ LAB_0c0681ca:
 }
 
 /* 0x0c068200  size 0x2ba  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x310
- * evidence: 32 bytes: a position target at rob +0x560 near the opponent (bits of u16 +4 pick the reference point), clamped by distance floats +8..+0x18, reached by frame s16 +2 (+0x55E); with bit 3 it sets the velocity to get there
+ * evidence: 32 bytes: a position target at rob +0x560 near the opponent (bits of u16 +4 pick the reference point), clamped by distance floats +8..+0x18, reached by frame s16 +2 (+0x55E); with bit 3 it sets the velocity to get there; exercised 2026-11-12: called by the harness on robs[0] (opponent distance 1.68, frame 9, +0x2F2 34) with flags 9, frame s16 +2 40, floats +8..+0x1C (0.3, 5, 0, 0, 10, 2): +0x55E 40, +0x560 a point toward the opponent 0.3 from the rob in x/z at its height, velocity x/z = that offset / 31 and y = world_gravity x 2; with +8 poked 0.8 the point was 0.8 away
  * matched: source/vf4lib/libaction/src/rob_ctrl.c (tools/match/match.py)
  */
 void move_tcmd_22_approach(rob_rec *rob, int arg)
@@ -4035,8 +4035,8 @@ void move_tcmd_26_clear_flag24(rob_rec *rob, int arg)
 }
 
 /* 0x0c068780  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: sets bit s16 +2 of rob +0x28
+ * confidence: exercised
+ * evidence: sets bit s16 +2 of rob +0x28; exercised 2026-11-12: called by the harness in one sandbox on robs[0] (+0x28 0): with s16 +2 = 5 +0x28 became 0x20, then with 31 0x80000020
  * matched: source/vf4lib/libaction/src/rob_ctrl.c (tools/match/match.py)
  */
 void move_tcmd_27_set_flag28(rob_rec *rob, int arg)
@@ -4096,8 +4096,8 @@ void move_tcmd_31_opponent_108(rob_rec *rob, short *arg)
 }
 
 /* 0x0c068860  size 0x3e  file by match with source
- * confidence: inferred
- * evidence: opponent +0x108 = its fighter's +0x1A + s16 +2 if u32 +4 is 0 or matches rob +0x110
+ * confidence: exercised
+ * evidence: opponent +0x108 = the stun (+0x1A) of the opponent's current old record (+0x584) + s16 +2, not below 0, if u32 +4 is 0 or shares a bit with rob +0x110; exercised 2026-11-12: called by the harness on robs[0] with the opponent's current old record (+0x584) +0x1A poked 20: s16 +2 5, u32 +4 0 left robs[1] +0x108 25, -3 left 17; with +0x1A 0: u32 +4 4 against rob +0x110 0 left a poked 777, after +0x110 0x10 and u32 +4 0x30 it set 7, and -1000 gave 0 (notes row)
  * matched: source/vf4lib/libaction/src/rob_ctrl.c (tools/match/match.py)
  */
 void move_tcmd_32_opponent_108_add(rob_rec *rob, char *arg)
@@ -4203,8 +4203,8 @@ void move_tcmd_35(rob_rec *rob, int arg)
 }
 
 /* 0x0c068ae0  size 0x20  file by match with source
- * confidence: inferred
- * evidence: sets bit s16 +2 of rob +0x318
+ * confidence: exercised
+ * evidence: sets bit s16 +2 of rob +0x318; exercised 2026-11-12: called by the harness in one sandbox on robs[1] (+0x318 0x40): with s16 +2 = 0 +0x318 became 0x41, then with 15 0x8041
  * matched: source/vf4lib/libaction/src/rob_ctrl.c (tools/match/match.py)
  */
 void move_tcmd_36_set_flag318(rob_rec *rob, int arg)
@@ -4214,8 +4214,8 @@ void move_tcmd_36_set_flag318(rob_rec *rob, int arg)
 }
 
 /* 0x0c068b20  size 0x22  file by match with source
- * confidence: inferred
- * evidence: clears bit s16 +2 of rob +0x318
+ * confidence: exercised
+ * evidence: clears bit s16 +2 of rob +0x318; exercised 2026-11-12: called by the harness in one sandbox on robs[1] after +0x318 was made 0x8041: with s16 +2 = 6 it became 0x8001 and with 3 (already clear) it stayed 0x8001
  * matched: source/vf4lib/libaction/src/rob_ctrl.c (tools/match/match.py)
  */
 void move_tcmd_37_clear_flag318(rob_rec *rob, int arg)
@@ -4255,9 +4255,9 @@ void move_tcmd_38(rob_rec *rob, short *arg)
 }
 
 /* 0x0c068c00  size 0x128  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x252
- * evidence: 20 bytes: one of the four limb records at rob +0x450 + 0x24 n (u8 +5, mirrored when facing left): weight over s16 +2 - frame frames, target float[3] at +8 (mirrored), kind u8 +6; u8 +4 releases it
+ * evidence: 20 bytes: one of the four limb records at rob +0x450 + 0x24 n (u8 +5, mirrored when facing left): weight +0x18 reset to 0 with its rate +0x1C = frame_speed (+0x74) / (s16 +2 - s16 +0), at most 1, target float[3] at +8 (mirrored: the kind swapped 6/11, 7/12, 16/20, 17/21 with x or z negated, y negated for kind 3), kind u8 +6 stored + 1 at +0x20; u8 +4 releases it (only the rate +0x1C is stored, negated); exercised 2026-11-12: called by the harness with the limb records poked 9.0: robs[1] (+0x318 bit 4 clear), frames 10..14, limb 2, kind 5, (1,2,3) gave limb 2 target (1,2,3), +0x18 0, +0x1C 0.25, +0x20 6; robs[0] (bit 4 set), frames 10..12, limb 2, kind 7 gave limb 3 target (1,2,-3), rate 0.5, +0x20 13; u8 +4 1 on limb 1 only set its +0x1C to -0.25
  * matched: source/vf4lib/libaction/src/rob_ctrl.c (tools/match/match.py)
  */
 void move_tcmd_39_limb_target(rob_rec *rob, short *arg)
@@ -4329,8 +4329,8 @@ void move_tcmd_39_limb_target(rob_rec *rob, short *arg)
 }
 
 /* 0x0c068e60  size 0x16  file by match with source
- * confidence: inferred
- * evidence: clears the horizontal velocity (rob +0xB4, +0xBC)
+ * confidence: exercised
+ * evidence: clears the horizontal velocity (rob +0xB4, +0xBC); exercised 2026-11-12: called by the harness on robs[0] with the velocity +0xB4 poked (1.5, 2.5, 3.5): it became (0, 2.5, 0)
  * matched: source/vf4lib/libaction/src/rob_ctrl.c (tools/match/match.py)
  */
 void move_tcmd_40_stop(rob_rec *rob)
@@ -4352,7 +4352,7 @@ void move_tcmd_41_eye_look(rob_rec *rob, int arg)
 
 /* 0x0c068ea0  size 0x1a  file by match with source
  * confidence: inferred
- * evidence: attack_result_sounds_play(rob, 0x400): walks the rob +0x384 list (move_cmd_44_list_384)
+ * evidence: attack_result_sounds_play(rob, rob, 0x400): walks the rob +0x384 list (move_cmd_44_list_384)
  * matched: source/vf4lib/libaction/src/rob_ctrl.c (tools/match/match.py)
  */
 void move_tcmd_42(rob_rec *rob)
@@ -4388,7 +4388,7 @@ void move_tcmd_44(rob_rec *rob, char *arg)
 
 /* 0x0c068f20  size 0x3e  file by match with source
  * confidence: inferred
- * evidence: rob_flag_11b_set: rob +0x11B = 1 when the opponent's state allows; unused in the data
+ * evidence: rob_flag_11b_set on the opponent: opponent +0x11B = 1 when the opponent's +0x30 bit 3, +0x28 bit 5 and +0x33 bit 1 are clear and the rob's own state +0x20 is not 0; unused in the data; corrected 2026-11-12 from harness calls: called by the harness with robs[0] (state +0x20 0x20D) it left robs[0] +0x11B 0 and set the OPPONENT's (robs[1]) +0x11B to 1 through rob_flag_11b_set(robs[1]); with robs[1] +0x28 poked 0x20, or with robs[0] +0x20 poked 0, neither changed. The C: rob_flag_11b_set(rob->opp) when opp +0x30 bit 3, +0x28 bit 5 and +0x33 bit 1 are clear and rob->state is not 0
  * matched: source/vf4lib/libaction/src/rob_ctrl.c (tools/match/match.py)
  */
 void move_tcmd_45(rob_rec *rob)
@@ -4855,8 +4855,8 @@ int move_branch_open(rob_rec *rob)
 }
 
 /* 0x0c069a40  size 0x12  file by match with source
- * confidence: inferred
- * evidence: (rob): rob +0x11B = 1; only caller move_tcmd_45; role unclear; part of vf4lib/libaction/src/rob_ctrl.c
+ * confidence: exercised
+ * evidence: (rob): rob +0x11B = 1; only caller move_tcmd_45; role unclear; part of vf4lib/libaction/src/rob_ctrl.c; exercised 2026-11-12: called by the harness with robs[1] it left robs[1] +0x11B 1 (from 0) and robs[0] +0x11B 0
  * matched: source/vf4lib/libaction/src/rob_ctrl.c (tools/match/match.py)
  */
 void rob_flag_11b_set(rob_rec *rob)
@@ -4927,9 +4927,9 @@ rob_rec *rob_get(uint side)
 }
 
 /* 0x0c069bc0  size 0x24  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x2a
- * evidence: (player): the address of robs[player].mtx for player 0 or 1, else 0; rob_get's twin for the matrix; nothing in the image calls it (uncalled code, made a function 2026-11-09); between rob_get and hit_wait_timer_get, so by link order part of vf4lib/libaction/src/rob_ctrl.c
+ * evidence: (player): the matrix pointer kept in robs[player].mtx (+0x54) for player 0 or 1, else 0; rob_get's twin for the matrix; nothing in the image calls it (uncalled code, made a function 2026-11-09); between rob_get and hit_wait_timer_get, so by link order part of vf4lib/libaction/src/rob_ctrl.c; exercised 2026-11-12: called by the harness rob_mtx_get(0) returned 0x0C43F930 and rob_mtx_get(1) 0x0C4421F0, the words at robs[0] +0x54 and robs[1] +0x54, and rob_mtx_get(2) returned 0 (notes row)
  * matched: source/vf4lib/libaction/src/rob_ctrl.c (tools/match/match.py)
  */
 float * rob_mtx_get(uchar side)

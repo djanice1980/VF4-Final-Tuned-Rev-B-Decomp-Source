@@ -45,42 +45,42 @@ void float_colour_tri_send(void);
 void float_colour_strip_near_clip_select(void);
 
 /* 0x0c044950  size 0x24e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x258
- * evidence: near-plane clipping strip walk, specular case: saves r10, r11 and pr, r3 = vertex count; per vertex float_colour_vtx_load_spec gives the near test in T, rotated into a 3-bit in/out history in r9, r11 the ring index; vertices go into the four-slot ring (float_colour_vtx_keep_spec) and, when r12 bit 0 (flat: run bit 6 clear) is set, the last color is copied back (float_colour_flat_copy_spec); a braf table on r9 & 7 (0x0C1097C8; eight entries, six reachable: 000 and 111 are nop pairs that fall through and cannot be reached) chooses which of the current vertex (float_colour_vtx_emit_spec), kept vertices (float_colour_kept_vtx_emit_spec) and near-plane crossings (float_colour_near_cut_emit_spec) go out, so the part of the strip in front of the near plane is sent as strips; runs wholly on one side are walked inline (vertices go into the ring only around a crossing: when a run in front ends, r4 steps back three records, sizing each by bit 0 of its last word, and the two earlier vertices are loaded and lit again, 0x0C109760-0x0C10978C); it assumes at least three vertices; in case 110 the cut on the edge from the previous vertex is sent twice when the vertex's strip index is odd, keeping the triangle's odd / even place; it returns r0 = 1; continues with the next run while its word is positive with bit 7 set; returns with r12 bit 0 set and r4 on the next run word; reached only by the bt from float_colour_strip_near_clip_select; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * evidence: near-plane clipping strip walk, specular case: saves r10, r11 and pr, r3 = vertex count; per vertex float_colour_vtx_load_spec gives the near test in T, rotated into a 3-bit in/out history in r9, r11 the ring index; vertices go into the four-slot ring (float_colour_vtx_keep_spec) and, when r12 bit 0 (flat: run bit 6 clear) is set, the last color is copied back (float_colour_flat_copy_spec); a braf table on r9 & 7 (0x0C1097C8; eight entries, six reachable: 000 and 111 are nop pairs that fall through and cannot be reached) chooses which of the current vertex (float_colour_vtx_emit_spec), kept vertices (float_colour_kept_vtx_emit_spec) and near-plane crossings (float_colour_near_cut_emit_spec) go out, so the part of the strip in front of the near plane is sent as strips; runs wholly on one side are walked inline (vertices go into the ring only around a crossing: when a run in front ends, r4 steps back three records, sizing each by bit 0 of its last word, and the two earlier vertices are loaded and lit again, 0x0C109760-0x0C10978C); it assumes at least three vertices; in case 110 the cut on the edge from the previous vertex is sent twice when the vertex's strip index is odd, keeping the triangle's odd / even place; it returns r0 = 1; continues with the next run while its word is positive with bit 7 set; returns with r12 bit 0 set and r4 on the next run word; reached only by the bt from float_colour_strip_near_clip_select; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: called through a register driver that sets every register, T and XMTRX with ambient .25, light colors, group base and offset .5, light and normals (0, 0, 1), N.H 400, row entry .8 at r8 + 1600, near limit -1, near_inv .5, XMTRX (z+.5, 2x, y): a strip of three beyond the plane went out as is (base .375, offset (.8, .2, .2, .2)), the third ending the strip; with the third vertex near: v0, v1, cut(v0,v2) at X 1, Y .58333, v1 again, cut(v1,v2) at X 1.16667, Y .5 with end of strip, and not v2; r0 1, r12 bit 0 set, r4 on the word after
  * same code as main.bin 0c109630 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c109630.s (hand-written assembly, tools/match/match.py)
  */
 void float_colour_strip_near_clip_spec(void);
 
 /* 0x0c044ba8  size 0xdc  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xfa
- * evidence: fetches the vertex record at r4 (inline or reference) and advances r4; transforms position and normal (ftrv: fr5, fr6 = x, y not yet divided, fr7 = 1/depth) and lights it as float_colour_strip_send's specular path: base ARGB in fr8-fr11 (held meanwhile in float_colour_base_stash), offset in fr0-fr3: second_light_color (+4, +8, +12) x the row entry for N.H x float_colour_group_offset on the highlight path; fr0 is not an alpha: it holds the row entry on the highlight path, N.L when lit without a highlight, and 0 only when the vertex faces away (the test is N.L below 0); returns r1, r2 = u, v, fr4 = minus the depth and T = the vertex lies behind the near plane (r12 above the depth's bits, unsigned); bsr from float_colour_strip_near_clip_spec and float_colour_tri_near_clip_spec; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * evidence: fetches the vertex record at r4 (inline or reference) and advances r4; transforms position and normal (ftrv: fr5, fr6 = x, y not yet divided, fr7 = 1/depth) and lights it as float_colour_strip_send's specular path: base ARGB in fr8-fr11 (held meanwhile in float_colour_base_stash), offset in fr0-fr3: second_light_color (+4, +8, +12) x the row entry for N.H x float_colour_group_offset on the highlight path; fr0 is not an alpha: it holds the row entry on the highlight path, N.L when lit without a highlight, and 0 only when the vertex faces away (the test is N.L below 0); returns r1, r2 = u, v, fr4 = minus the depth and T = the vertex lies behind the near plane (r12 above the depth's bits, unsigned); bsr from float_colour_strip_near_clip_spec and float_colour_tri_near_clip_spec; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: called through a register driver that sets every register, T and XMTRX with ambient .25, light colors, group base and offset .5, light and normals (0, 0, 1), N.H 400, row entry .8 at r8 + 1600, near limit -1, near_inv .5, XMTRX (z+.5, 2x, y): inline (1, 2, 3) gave base (.5, .375, .375, .375), offset (.2, .2, .2), fr0 .8, fr4-fr7 (-3.5, 2, 2, 1/3.5), u, v in r1, r2, T 0, r4 +32; with N.H 100 and a back reference to (1, 2, .25): offset 0, fr0 = N.L 1, fr4 -.75, T 1, r4 +8; with the light (0, 0, -1): base .125, offset 0, fr0 0
  * same code as main.bin 0c109888 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c109630.s (hand-written assembly, tools/match/match.py)
  */
 void float_colour_vtx_load_spec(void);
 
 /* 0x0c044ca2  size 0x36  file by match with source
- * confidence: inferred
- * evidence: writes the vertex float_colour_vtx_load_spec left as a 64-byte textured floating-color vertex at r6: control word r6, or r6 >> 1 with T set when dt r3 reaches 0 (end of strip); X = x/depth, Y = y/depth, 1/depth, u, v, base ARGB, offset ARGB; prefetches both halves; r5 and r6 + 64; bsr from float_colour_strip_near_clip_spec and float_colour_tri_near_clip_spec; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: writes the vertex float_colour_vtx_load_spec left as a 64-byte textured floating-color vertex at r6: control word r6, or r6 >> 1 with T set when dt r3 reaches 0 (end of strip); X = x/depth, Y = y/depth, 1/depth, u, v, base ARGB, offset ARGB; prefetches both halves; r5 and r6 + 64; bsr from float_colour_strip_near_clip_spec and float_colour_tri_near_clip_spec; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through the register driver with fr5, fr6 (2, 4), fr7 .5, base (1, .5, .25, .125), fr0-fr3 (.8, .2, .3, .4), u .25, v .75, r6 a scratch buffer: r3 2 wrote control word r6, X 1, Y 2, 1/w .5, u, v, the base and fr0-fr3 at +48, r3 1, T 0, r5 and r6 +64; r3 1 wrote control word r6 >> 1, T 1, r3 0
  * same code as main.bin 0c109982 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c109630.s (hand-written assembly, tools/match/match.py)
  */
 void float_colour_vtx_emit_spec(void);
 
 /* 0x0c044cd8  size 0x24  file by match with source
- * confidence: inferred
- * evidence: stores the vertex just loaded in slot r11 & 3 of float_colour_clip_ring (64 bytes: minus depth, x, y, 1/depth, u, v, two unused words, base ARGB, offset ARGB); bsr from float_colour_strip_near_clip_spec and float_colour_tri_near_clip_spec; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: stores the vertex just loaded in slot r11 & 3 of float_colour_clip_ring (64 bytes: minus depth, x, y, 1/depth, u, v, two unused words, base ARGB, offset ARGB); bsr from float_colour_strip_near_clip_spec and float_colour_tri_near_clip_spec; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through the register driver: r11 5 stored (-3.5, 2, 2, .25, u .25, v .75, two words untouched, base 1, .5, .25, .125, fr0-fr3 .8, .2, .3, .4) in slot 1 of float_colour_clip_ring; r11 2 stored a second vertex in slot 2; slots 0 and 3 untouched
  * same code as main.bin 0c1099b8 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c109630.s (hand-written assembly, tools/match/match.py)
  */
 void float_colour_vtx_keep_spec(void);
 
 /* 0x0c044d00  size 0x3e  file by match with source
- * confidence: inferred
- * evidence: copies the base and offset colors of ring slot r11 & 3 into the two slots before it (r11 - 1, r11 - 2, wrapping), so that a flat-shaded triangle cut at the near plane keeps one color; it does so through fr12-fr15, overwriting the light direction with the slot's base color (0x0C1099F0, 0x0C1099F4), and nothing reloads the direction: after a flat-shaded lit run has gone through the specular near clipper, N.L for the rest of the object is taken against (base alpha, red, green) (as the game has it; whether the game's data takes that path is not established); bsr from float_colour_strip_near_clip_spec and float_colour_tri_near_clip_spec when r12 bit 0 is set; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: copies the base and offset colors of ring slot r11 & 3 into the two slots before it (r11 - 1, r11 - 2, wrapping), so that a flat-shaded triangle cut at the near plane keeps one color; it does so through fr12-fr15, overwriting the light direction with the slot's base color (0x0C1099F0, 0x0C1099F4), and nothing reloads the direction: after a flat-shaded lit run has gone through the specular near clipper, N.L for the rest of the object is taken against (base alpha, red, green) (as the game has it; whether the game's data takes that path is not established); bsr from float_colour_strip_near_clip_spec and float_colour_tri_near_clip_spec when r12 bit 0 is set; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through the register driver with float_colour_clip_ring filled with the floats 0..63: r11 0 copied slot 0's base and offset (+32..+63) into slots 3 and 2, r11 6 slot 2's into slots 1 and 0, everything else unchanged; fr12-fr15 were left holding the copied base color
  * same code as main.bin 0c1099e0 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c109630.s (hand-written assembly, tools/match/match.py)
  */
@@ -88,7 +88,7 @@ void float_colour_flat_copy_spec(void);
 
 /* 0x0c044d44  size 0x4a  file by match with source
  * confidence: inferred
- * evidence: sends slot r0 & 3 of float_colour_clip_ring as a 64-byte vertex, X and Y times the stored 1/depth; control word r6, or r6 >> 1 when T is set on entry (end of strip; the callers clrt or sett first); r5 and r6 + 64; bsr from float_colour_strip_near_clip_spec and float_colour_tri_near_clip_spec; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * evidence: sends slot r0 & 3 of float_colour_clip_ring as a 64-byte vertex, X and Y times the stored 1/depth; control word r6 + 16 (r6 is taken when it has stepped back to vertex +16, 0x0C109A42), or that >> 1 when T is set on entry (end of strip; the callers clrt or sett first); r5 and r6 + 64; bsr from float_colour_strip_near_clip_spec and float_colour_tri_near_clip_spec; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); corrected 2026-11-12 from harness calls: called through a register driver with float_colour_clip_ring filled with the floats 0..63: the slot came out as described (r0 1: X 17 x 19, Y 18 x 19, 1/w 19, u 20, v 21, base 24-27, offset 28-31, r5 and r6 +64), but the control word was r6 + 16 (0x0f006010 for a vertex at 0x0f006000), and with T set (r6 + 16) >> 1 (0x07803028 for a vertex at 0x0f006040), not r6 or r6 >> 1: mov r6,r2 at 0x0C109A42 runs after r6 has stepped back to vertex +16
  * same code as main.bin 0c109a24 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c109630.s (hand-written assembly, tools/match/match.py)
  */
@@ -102,50 +102,50 @@ void float_colour_kept_vtx_emit_spec(void);
 void float_colour_near_cut_emit_spec(void);
 
 /* 0x0c044e60  size 0x24e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x258
- * evidence: float_colour_strip_near_clip_spec's walk (the same instructions and case table, at 0x0C109CD8, entries 000 and 111 unreachable) over the no-specular helpers float_colour_vtx_load_plain, float_colour_vtx_emit_plain, float_colour_vtx_keep_plain, float_colour_flat_copy_plain, float_colour_kept_vtx_emit_plain and float_colour_near_cut_emit_plain, for diffuse-only (r8 = 0) and unlit (odd r8) groups; reached only by the branches from float_colour_strip_near_clip_select; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * evidence: float_colour_strip_near_clip_spec's walk (the same instructions and case table, at 0x0C109CD8, entries 000 and 111 unreachable) over the no-specular helpers float_colour_vtx_load_plain, float_colour_vtx_emit_plain, float_colour_vtx_keep_plain, float_colour_flat_copy_plain, float_colour_kept_vtx_emit_plain and float_colour_near_cut_emit_plain, for diffuse-only (r8 = 0) and unlit (odd r8) groups; reached only by the branches from float_colour_strip_near_clip_select; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: called through a register driver that sets every register, T and XMTRX with r8 0, ambient .25, light colors, group base and offset .5, light and normals (0, 0, 1), N.H 400, row entry .8 at r8 + 1600, near limit -1, near_inv .5, XMTRX (z+.5, 2x, y): a strip of three beyond the plane went out as is (base .375, offset zeros), the third ending the strip; with the third vertex near: v0, v1, cut(v0,v2) at X 1, Y .58333, v1 again, cut(v1,v2) at X 1.16667, Y .5 with end of strip, and not v2; r0 1, r12 bit 0 set, r4 on the word after
  * same code as main.bin 0c109b40 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c109b40.s (hand-written assembly, tools/match/match.py)
  */
 void float_colour_strip_near_clip_plain(void);
 
 /* 0x0c0450b8  size 0x7a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x86
- * evidence: float_colour_vtx_load_spec without the specular term: base = (float_colour_ambient + max(0, N.L) x single_light_color) x float_colour_group_base for r8 = 0, or float_colour_group_base alone when r8 is odd (unlit; the normal is skipped); no offset color; returns u, v in r1, r2, minus the depth in fr4 and the near test in T; bsr from float_colour_strip_near_clip_plain and float_colour_tri_near_clip_plain; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * evidence: float_colour_vtx_load_spec without the specular term: base = (float_colour_ambient + max(0, N.L) x single_light_color) x float_colour_group_base for r8 = 0, or float_colour_group_base alone when r8 is odd (unlit; the normal is skipped); no offset color; returns u, v in r1, r2, minus the depth in fr4 and the near test in T; bsr from float_colour_strip_near_clip_plain and float_colour_tri_near_clip_plain; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: called through a register driver that sets every register, T and XMTRX with ambient .25, light colors, group base and offset .5, light and normals (0, 0, 1), N.H 400, row entry .8 at r8 + 1600, near limit -1, near_inv .5, XMTRX (z+.5, 2x, y): r8 0, inline vertex (1, 2, 3) gave base (.5, .375, .375, .375), fr4 -3.5, fr7 1/3.5, u, v in r1, r2, T 0, r4 +32; with the light (0, 0, -1) base .125; r8 1 (unlit) with a back reference to (1, 2, .25) gave the group base (.5, .5, .5, .5), fr4 -.75, T 1, r4 +8
  * same code as main.bin 0c109d98 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c109b40.s (hand-written assembly, tools/match/match.py)
  */
 void float_colour_vtx_load_plain(void);
 
 /* 0x0c04513e  size 0x3a  file by match with source
- * confidence: inferred
- * evidence: float_colour_vtx_emit_spec with the offset color words written as zero; control word r6, or r6 >> 1 and T when dt r3 reaches 0; bsr from float_colour_strip_near_clip_plain and float_colour_tri_near_clip_plain; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: float_colour_vtx_emit_spec with the offset color words written as zero; control word r6, or r6 >> 1 and T when dt r3 reaches 0; bsr from float_colour_strip_near_clip_plain and float_colour_tri_near_clip_plain; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through the register driver with fr5, fr6 (2, 4), fr7 .5, base (1, .5, .25, .125), fr0-fr3 (.8, .2, .3, .4), u .25, v .75: r3 2 wrote control word r6, X 1, Y 2, 1/w .5, u, v, the base and an offset of zeros (fr0-fr3 not used), r3 1, T 0, r5 and r6 +64; r3 1 wrote control word r6 >> 1, T 1, r3 0
  * same code as main.bin 0c109e1e (ghidra/TransferFromMain.java)
  * matched: source/asm/0c109b40.s (hand-written assembly, tools/match/match.py)
  */
 void float_colour_vtx_emit_plain(void);
 
 /* 0x0c045178  size 0x28  file by match with source
- * confidence: inferred
- * evidence: float_colour_vtx_keep_spec with the slot's offset color stored as zero; bsr from float_colour_strip_near_clip_plain and float_colour_tri_near_clip_plain; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: float_colour_vtx_keep_spec with the slot's offset color stored as zero; bsr from float_colour_strip_near_clip_plain and float_colour_tri_near_clip_plain; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through the register driver: r11 5 stored (-3.5, 2, 2, .25, u .25, v .75, base 1, .5, .25, .125) with the offset words zero (fr0-fr3 .8, .2, .3, .4 not used) in slot 1 of float_colour_clip_ring, r11 2 a second vertex in slot 2; slots 0 and 3 untouched
  * same code as main.bin 0c109e58 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c109b40.s (hand-written assembly, tools/match/match.py)
  */
 void float_colour_vtx_keep_plain(void);
 
 /* 0x0c0451a4  size 0x32  file by match with source
- * confidence: inferred
- * evidence: copies only the base color of ring slot r11 & 3 into the two slots before it (flat shading across a near-plane cut); bsr from float_colour_strip_near_clip_plain and float_colour_tri_near_clip_plain; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: copies only the base color of ring slot r11 & 3 into the two slots before it (flat shading across a near-plane cut); bsr from float_colour_strip_near_clip_plain and float_colour_tri_near_clip_plain; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through the register driver with float_colour_clip_ring filled with the floats 0..63: r11 0 copied only slot 0's base color (+32..+47) into slots 3 and 2, r11 6 slot 2's into slots 1 and 0; the offset words and everything else unchanged
  * same code as main.bin 0c109e84 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c109b40.s (hand-written assembly, tools/match/match.py)
  */
 void float_colour_flat_copy_plain(void);
 
 /* 0x0c0451dc  size 0x4e  file by match with source
- * confidence: inferred
- * evidence: sends slot r0 & 3 of float_colour_clip_ring as a 64-byte vertex with zero offset color; control word r6, or 0xf0000000 (end of strip) when T is set on entry; bsr from float_colour_strip_near_clip_plain and float_colour_tri_near_clip_plain; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: sends slot r0 & 3 of float_colour_clip_ring as a 64-byte vertex with zero offset color; control word r6, or 0xf0000000 (end of strip) when T is set on entry; bsr from float_colour_strip_near_clip_plain and float_colour_tri_near_clip_plain; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through the register driver with float_colour_clip_ring filled with 0..63: r0 1, T 0 sent slot 1 as control word r6, X 17 x 19, Y 18 x 19, 1/w 19, u 20, v 21, base 24-27, offset zeros, r5 and r6 +64; r0 6, T 1 sent slot 2 with control word 0xf0000000
  * same code as main.bin 0c109ebc (ghidra/TransferFromMain.java)
  * matched: source/asm/0c109b40.s (hand-written assembly, tools/match/match.py)
  */
@@ -166,9 +166,9 @@ void float_colour_near_cut_emit_plain(void);
 void float_colour_tri_near_clip_select(void);
 
 /* 0x0c0452f0  size 0x8e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xae
- * evidence: near-plane clipping for independent triangles, specular case: saves r10, r11 and pr, r3 = triangle count; per triangle float_colour_tri_classify_spec puts the three near tests in r9: 0 sends the triangle as a 3-vertex strip (float_colour_vtx_load_spec / float_colour_vtx_emit_spec), 7 steps over its three records, otherwise the three are loaded into ring slots 0-2 (float_colour_vtx_keep_spec; float_colour_flat_copy_spec when flat) and a braf table on r9 (0x0C10A00E) runs one of six cases sending the kept vertices and near-plane crossings (float_colour_kept_vtx_emit_spec, float_colour_near_cut_emit_spec) of the part in front; returns with r12 bit 0 set; reached only by the bt from float_colour_tri_near_clip_select; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * evidence: near-plane clipping for independent triangles, specular case: saves r10, r11 and pr, r3 = triangle count; per triangle float_colour_tri_classify_spec puts the three near tests in r9: 0 sends the triangle as a 3-vertex strip (float_colour_vtx_load_spec / float_colour_vtx_emit_spec), 7 steps over its three records, otherwise the three are loaded into ring slots 0-2 (float_colour_vtx_keep_spec; float_colour_flat_copy_spec when flat) and a braf table on r9 (0x0C10A00E) runs one of six cases sending the kept vertices and near-plane crossings (float_colour_kept_vtx_emit_spec, float_colour_near_cut_emit_spec) of the part in front; returns with r12 bit 0 set; reached only by the bt from float_colour_tri_near_clip_select; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: called through a register driver that sets every register, T and XMTRX with ambient .25, light colors, group base and offset .5, light and normals (0, 0, 1), N.H 400, row entry .8 at r8 + 1600, near limit -1, near_inv .5, XMTRX (z+.5, 2x, y), two triangles: one beyond the plane went out as its three vertices (base .375, offset (.8, .2, .2, .2)), end of strip on the third; one with its third vertex near as v1, v2, cut(v1,v3) at X 1, Y .58333 and cut(v2,v3) at X 1.16667, Y .5 with end of strip; r12 bit 0 set, r4 past the list
  * same code as main.bin 0c109fd0 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c109fc0.s (hand-written assembly, tools/match/match.py)
  */
@@ -182,9 +182,9 @@ void float_colour_tri_near_clip_spec(void);
 void float_colour_tri_classify_spec(void);
 
 /* 0x0c0454e2  size 0x8e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xae
- * evidence: float_colour_tri_near_clip_spec's walk (the same instructions, case table 0x0C10A200) over float_colour_tri_classify_plain and the no-specular helpers (float_colour_vtx_load_plain, float_colour_vtx_emit_plain, float_colour_vtx_keep_plain, float_colour_flat_copy_plain, float_colour_kept_vtx_emit_plain, float_colour_near_cut_emit_plain); reached only by the branches from float_colour_tri_near_clip_select; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * evidence: float_colour_tri_near_clip_spec's walk (the same instructions, case table 0x0C10A200) over float_colour_tri_classify_plain and the no-specular helpers (float_colour_vtx_load_plain, float_colour_vtx_emit_plain, float_colour_vtx_keep_plain, float_colour_flat_copy_plain, float_colour_kept_vtx_emit_plain, float_colour_near_cut_emit_plain); reached only by the branches from float_colour_tri_near_clip_select; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: called through a register driver that sets every register, T and XMTRX with r8 0, ambient .25, light colors, group base and offset .5, light and normals (0, 0, 1), N.H 400, row entry .8 at r8 + 1600, near limit -1, near_inv .5, XMTRX (z+.5, 2x, y), two triangles: one beyond the plane went out as its three vertices (base .375, offset zeros), end of strip on the third; one with its third vertex near as v1, v2, cut(v1,v3) at X 1, Y .58333 and cut(v2,v3) at X 1.16667, Y .5 with end of strip; r12 bit 0 set, r4 past the list
  * same code as main.bin 0c10a1c2 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c109fc0.s (hand-written assembly, tools/match/match.py)
  */

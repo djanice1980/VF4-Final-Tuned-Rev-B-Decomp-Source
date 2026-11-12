@@ -42,8 +42,8 @@ int ctl_reply_take(uint cmd_word, uint offset, uint param_lo, int param_hi)
 }
 
 /* 0x0c11fcc0  size 0x58  file by match with source
- * confidence: inferred
- * evidence: (text, value, state record): builds a 0x60-byte request: +0 the record's operation, +4 the request address + 0x20, +8 the value, the text (strncpy, up to 64 bytes) at +0x20; writes it to the request address (record +0xc) with the DIMM PIO write dimm_pio_write; caller ctl_call_text; part of NLASOCK
+ * confidence: exercised
+ * evidence: (text, value, state record): builds a 0x60-byte request: +0 the record's operation, +4 the request address + 0x20, +8 the value, the text (strncpy, up to 64 bytes) at +0x20; writes it to the request address (record +0xc) with the DIMM PIO write dimm_pio_write; caller ctl_call_text; part of NLASOCK; exercised 2026-11-12: called by the harness with a record of operation 1, request address 0xC00000, "hello" and 0x1234, read back with dimm_pio_read: 1, 0xC00020, 0x1234, five 0 words, "hello" zero-padded at +0x20, the bytes from +0x60 left as planted (0xEE); with operation 9 at 0xC00100, a 70-character text and 0xDEADBEEF only the first 64 characters reached +0x20
  * matched: source/sdk/nlasock/control.c (tools/match/match.py)
  */
 void ctl_request_write_text(char *text, uint value, ctl_call_block *call)
@@ -83,8 +83,8 @@ int ctl_call_text(char *text, uint value)
 }
 
 /* 0x0c11fde0  size 0x34  file by match with source
- * confidence: inferred
- * evidence: (state record): writes a 0x20-byte request holding only the record's operation word (the rest 0) to the request address (record +0xc) by PIO (dimm_pio_write); caller ctl_call_op2; part of NLASOCK
+ * confidence: exercised
+ * evidence: (state record): writes a 0x20-byte request holding only the record's operation word (the rest 0) to the request address (record +0xc) by PIO (dimm_pio_write); caller ctl_call_op2; part of NLASOCK; exercised 2026-11-12: called by the harness with a record of operation 2 and request address 0xC00200, read back with dimm_pio_read: 2 and seven 0 words, the following bytes left as planted (0xEE)
  * matched: source/sdk/nlasock/control.c (tools/match/match.py)
  */
 void ctl_request_write_op2(ctl_call_block *call)
@@ -125,8 +125,8 @@ int ctl_call_op2(void)
 }
 
 /* 0x0c11fea0  size 0x34  file by match with source
- * confidence: inferred
- * evidence: (state record): the same bytes as ctl_request_write_op2: a 0x20-byte request with only the operation word, written by PIO to the request address; callers ctl_call_op3 and ctl_call_op4; part of NLASOCK
+ * confidence: exercised
+ * evidence: (state record): the same bytes as ctl_request_write_op2: a 0x20-byte request with only the operation word, written by PIO to the request address; callers ctl_call_op3 and ctl_call_op4; part of NLASOCK; exercised 2026-11-12: called by the harness with a record of operation 3 and request address 0xC00240, read back with dimm_pio_read: 3 and seven 0 words, the following bytes left as planted (0xEE)
  * matched: source/sdk/nlasock/control.c (tools/match/match.py)
  */
 void ctl_request_write_op3(ctl_call_block *call)
@@ -170,8 +170,8 @@ int ctl_call_op3(void)
 }
 
 /* 0x0c11ff60  size 0x34  file by match with source
- * confidence: inferred
- * evidence: (state record): a third copy of the operation-only request writer (same bytes as ctl_request_write_op2); nothing in the image calls it: ctl_call_op4 uses ctl_request_write_op3 instead; part of NLASOCK
+ * confidence: exercised
+ * evidence: (state record): a third copy of the operation-only request writer (same bytes as ctl_request_write_op2); nothing in the image calls it: ctl_call_op4 uses ctl_request_write_op3 instead; part of NLASOCK; exercised 2026-11-12: called by the harness with a record of operation 0x44 and request address 0xC00280, read back with dimm_pio_read: 0x44 and seven 0 words, the following bytes left as planted (0xEE)
  * matched: source/sdk/nlasock/control.c (tools/match/match.py)
  */
 void ctl_request_write_op4(ctl_call_block *call)

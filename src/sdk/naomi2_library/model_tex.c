@@ -253,9 +253,9 @@ more:
 }
 
 /* 0x0c100060  size 0x60  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x72
- * evidence: (model, texture list): for a model of format 0x100 repeats model_tex_load_walk (texture numbers = list positions) until the cursor comes back 0 and returns the OR of the results; other formats go to obj_textures_load; nothing in the image calls it; part of the NAOMI2 library
+ * evidence: (model, texture list): for a model of format 0x100 repeats model_tex_load_walk (texture numbers = list positions) until the cursor comes back 0 and returns the OR of the results; other formats go to obj_textures_load; nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness on the snapshot's bank 5 model 0xAAB3BF60 (objects at +0x60, +0x120, +0x1E0 with refs 0x17-0x19), list 0x0D38A5F0, texidx_base put to 0x4850, after model_tex_unload had freed the three textures: it ran model_tex_load_walk with cursors 0, 0x120, 0x1E0, each taking a slot (166, 167, 168) and loading list entries 0x17, 0x18, 0x19 (tex_slot_create_and_load), map entries 0x4867-0x4869 back at use count 2, and returned 0; for a buffer object with word 0 = 0 it called obj_textures_load(object, list)
  * matched: source/sdk/naomi2_library/model_tex.c (tools/match/match.py)
  */
 uint model_tex_load(compiled_model_rec *model, int tex_list)
@@ -275,9 +275,9 @@ uint model_tex_load(compiled_model_rec *model, int tex_list)
 }
 
 /* 0x0c1000e0  size 0x60  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x72
- * evidence: as model_tex_load with the texture numbers taken from the list entries (+0xc); other formats go to obj_textures_load_mapped; nothing in the image calls it; part of the NAOMI2 library
+ * evidence: as model_tex_load with the texture numbers taken from the list entries (+0xc); other formats go to obj_textures_load_mapped; nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness on the snapshot's bank 5 model 0xAAB3BF60 (objects at +0x60, +0x120, +0x1E0 with refs 0x17-0x19), list 0x0D38A5F0, texidx_base put to 0x4850, after model_tex_unload, with a copy of the list whose entries 0x17-0x19 have id 0x19: two walks (by_entry_ids 1), one slot taken and loaded from the copy's entry 0x17, map entry 0x4869 at use count 6 and 0x4867, 0x4868 left at 0; returned 0; for a buffer object with word 0 = 0 it called obj_textures_load_mapped
  * matched: source/sdk/naomi2_library/model_tex.c (tools/match/match.py)
  */
 uint model_tex_load_by_entry_ids(compiled_model_rec *model, int tex_list)
@@ -313,9 +313,9 @@ void model_tex_load_step(compiled_model_rec *model, int tex_list, uint resume, u
 }
 
 /* 0x0c1001a0  size 0x2a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x32
- * evidence: one step of model_tex_load_walk with entry ids for a model of format 0x100, else obj_textures_load_from_mapped; returns its result; nothing in the image calls it; part of the NAOMI2 library
+ * evidence: one step of model_tex_load_walk with entry ids for a model of format 0x100, else obj_textures_load_from_mapped; returns its result; nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness on the snapshot's bank 5 model 0xAAB3BF60 (objects at +0x60, +0x120, +0x1E0 with refs 0x17-0x19), list 0x0D38A5F0, texidx_base put to 0x4850, after model_tex_unload, with a list copy mapping entry 0x17 to id 0x18: one model_tex_load_walk(model, list, 0, next, 1) that loaded the copy's entry 0x17 into map entry 0x4868 (use count 2) and left 0x120 in *next; returned 0; for a buffer object with word 0 = 0 it passed (object, list, resume, next) to obj_textures_load_from_mapped
  * matched: source/sdk/naomi2_library/model_tex.c (tools/match/match.py)
  */
 int model_tex_load_step_by_entry_ids(compiled_model_rec *model, int tex_list, uint resume, uint *next)
@@ -327,9 +327,9 @@ int model_tex_load_step_by_entry_ids(compiled_model_rec *model, int tex_list, ui
 }
 
 /* 0x0c1001e0  size 0x298  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x314
- * evidence: the inverse of model_tex_load_walk: walks the same objects from the cursor and for each texture ref drops one use in texidx_map; at the last use gives the surface's memory back (surface_memory_return_by_kind, when slot +0x28 is 0), clears slot +0x2c, sets +0x38 to -1, frees the slot bit (texidx_bit_clear) and marks the map entry -1; drops palette groups of palettized formats (pal_group_unref) unless pal_raw_mode is set; stops after the first object that freed something and leaves the resume cursor in *next; same error traps (model_error_record, trapa 0x38 / 0x39); returns the OR of the results; callers model_tex_unload, model_tex_unload_by_entry_ids, model_tex_unload_step, model_tex_unload_step_by_entry_ids; part of the NAOMI2 library
+ * evidence: the inverse of model_tex_load_walk: walks the same objects from the cursor and for each texture ref drops one use in texidx_map; at the last use gives the surface's memory back (surface_memory_return_by_kind, when slot +0x28 is 0), clears slot +0x2c, sets +0x38 to -1, frees the slot bit (texidx_bit_clear) and marks the map entry -1; drops palette groups of palettized formats (pal_group_unref) unless pal_raw_mode is set; stops after the first object that freed something and leaves the resume cursor in *next; same error traps (model_error_record, trapa 0x38 / 0x39); returns the OR of the results; callers model_tex_unload, model_tex_unload_by_entry_ids, model_tex_unload_step, model_tex_unload_step_by_entry_ids; part of the NAOMI2 library; exercised 2026-11-12: seen in the harness's calls of model_tex_unload_step on the snapshot's bank 5 model 0xAAB3BF60 (objects at +0x60, +0x120, +0x1E0 with refs 0x17-0x19), list 0x0D38A5F0, texidx_base put to 0x4850: from cursor 0 it dropped map entry 0x4867 (use count 2) to 0 over the object's two refs, returned slot 166 (surface_memory_return_by_kind, texidx_bit_clear), leaving it in_use 0, id -1 and the entry slot -1, and stopped with 0x120 in *next; from 0x120 it freed 0x4868 and gave 0x1E0, from 0x1E0 it freed 0x4869 and gave 0
  * matched: source/sdk/naomi2_library/model_tex.c (tools/match/match.py)
  */
 uint model_tex_unload_walk(compiled_model_rec *model, int tex_list, uint resume, uint *next, int by_entry_ids)
@@ -482,8 +482,8 @@ more:
 }
 
 /* 0x0c100540  size 0x48  file by match with source
- * confidence: inferred
- * evidence: repeats model_tex_unload_walk (no list, texture numbers direct) until the cursor is 0; returns the OR of the results; nothing in the image calls it; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: repeats model_tex_unload_walk (no list, texture numbers direct) until the cursor is 0; returns the OR of the results; nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness on the snapshot's bank 5 model 0xAAB3BF60 (objects at +0x60, +0x120, +0x1E0 with refs 0x17-0x19), list 0x0D38A5F0, texidx_base put to 0x4850: it ran model_tex_unload_walk three times (cursors 0, 0x120, 0x1E0, no list), freeing map entries 0x4867, 0x4868, 0x4869 (use counts 2 to 0, slots 166-168 returned and cleared, in_use 0, id -1), and returned 0
  * matched: source/sdk/naomi2_library/model_tex.c (tools/match/match.py)
  */
 uint model_tex_unload(compiled_model_rec *model)
@@ -502,8 +502,8 @@ uint model_tex_unload(compiled_model_rec *model)
 }
 
 /* 0x0c1005a0  size 0x4e  file by match with source
- * confidence: inferred
- * evidence: repeats model_tex_unload_walk with entry ids from the list until the cursor is 0; returns the OR of the results; nothing in the image calls it; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: repeats model_tex_unload_walk with entry ids from the list until the cursor is 0; returns the OR of the results; nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness on the snapshot's bank 5 model 0xAAB3BF60 (objects at +0x60, +0x120, +0x1E0 with refs 0x17-0x19), list 0x0D38A5F0, texidx_base put to 0x4850, with a copy of the list whose entries 0x17-0x19 all have id 0x18: two walks with entry ids (cursors 0, then 0x120); only map entry 0x4868 was freed (slot 167 returned, bit cleared), 0x4867 and 0x4869 kept use count 2; returned 0
  * matched: source/sdk/naomi2_library/model_tex.c (tools/match/match.py)
  */
 uint model_tex_unload_by_entry_ids(compiled_model_rec *model, int tex_list)
@@ -522,8 +522,8 @@ uint model_tex_unload_by_entry_ids(compiled_model_rec *model, int tex_list)
 }
 
 /* 0x0c100600  size 0x20  file by match with source
- * confidence: inferred
- * evidence: one step of model_tex_unload_walk from a cursor (no list); nothing in the image calls it; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: one step of model_tex_unload_walk from a cursor (no list); nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness on the snapshot's bank 5 model 0xAAB3BF60 (objects at +0x60, +0x120, +0x1E0 with refs 0x17-0x19), list 0x0D38A5F0, texidx_base put to 0x4850: from cursor 0 it freed map entry 0x4867 (slot 166) and left 0x120 in *next; from 0x120 it freed 0x4868 and left 0x1E0; from 0x1E0 it freed 0x4869 and left 0; each step one model_tex_unload_walk with no list
  * matched: source/sdk/naomi2_library/model_tex.c (tools/match/match.py)
  */
 void model_tex_unload_step(compiled_model_rec *model, uint resume, uint *next)
@@ -533,8 +533,8 @@ void model_tex_unload_step(compiled_model_rec *model, uint resume, uint *next)
 }
 
 /* 0x0c100640  size 0x18  file by match with source
- * confidence: inferred
- * evidence: one step of model_tex_unload_walk with entry ids; nothing in the image calls it; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: one step of model_tex_unload_walk with entry ids; nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness on the snapshot's bank 5 model 0xAAB3BF60 (objects at +0x60, +0x120, +0x1E0 with refs 0x17-0x19), list 0x0D38A5F0, texidx_base put to 0x4850, with a list copy mapping entry 0x17 to id 0x19: one walk with entry ids from cursor 0 freed map entry 0x4869 (slot 168), left 0x4867 at use count 2 and 0x120 in *next
  * matched: source/sdk/naomi2_library/model_tex.c (tools/match/match.py)
  */
 void model_tex_unload_step_by_entry_ids(compiled_model_rec *model, int tex_list, uint resume, uint *next)
@@ -544,9 +544,9 @@ void model_tex_unload_step_by_entry_ids(compiled_model_rec *model, int tex_list,
 }
 
 /* 0x0c100660  size 0x1f2  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x270
- * evidence: (model, texture list, nonzero for entry ids): for a model of format 0x100 whose word 6 is set, walks all three parts and rewrites the texture words of every kind-7 polygon block from the slots its object's two texture refs map to through texidx_map (tex_slot_bits_into_poly_hdr, or tex_builtin_bits_into_poly_hdr when the texture is not loaded), keeping the palette bits 21-26; returns 1 when some texture was not loaded, else 0; same error traps (model_error_record, trapa 0x38 / 0x39); callers model_tex_rebind, model_tex_rebind_by_entry_ids; part of the NAOMI2 library
+ * evidence: (model, texture list, nonzero for entry ids): for a model of format 0x100 whose word 6 is set, walks all three parts and rewrites the texture words of every kind-7 polygon block from the slots its object's two texture refs map to through texidx_map (tex_slot_bits_into_poly_hdr, or tex_builtin_bits_into_poly_hdr when the texture is not loaded), keeping the palette bits 21-26; returns 1 when some texture was not loaded, else 0; same error traps (model_error_record, trapa 0x38 / 0x39); callers model_tex_rebind, model_tex_rebind_by_entry_ids; part of the NAOMI2 library; exercised 2026-11-12: called by the harness on the snapshot's bank 5 model 0xAAB3BF60 (objects at +0x60, +0x120, +0x1E0 with refs 0x17-0x19), list 0x0D38A5F0, texidx_base put to 0x4850: (model, 0, 0) returned 0 and put slots 166, 167, 168 into both texture words of the three polygon blocks; after model_tex_unload_step freed the first object's texture it returned 1, put built-in bits there keeping palette bits 0x02A00000 / 0x00C00000 planted in them; with a list mapping 0x17, 0x18, 0x19 to 0x19, 0x17, 0x18 and 1 it put slots 168, 166, 167
  * matched: source/sdk/naomi2_library/model_tex.c (tools/match/match.py)
  */
 int model_tex_rebind_core(compiled_model_rec *model, int tex_list, int by_entry_ids)
@@ -652,8 +652,8 @@ int model_tex_rebind_core(compiled_model_rec *model, int tex_list, int by_entry_
 }
 
 /* 0x0c1008e0  size 0x16  file by match with source
- * confidence: inferred
- * evidence: model_tex_rebind_core(model, 0, 0); nothing in the image calls it; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: model_tex_rebind_core(model, 0, 0); nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness on the snapshot's bank 5 model 0xAAB3BF60 (objects at +0x60, +0x120, +0x1E0 with refs 0x17-0x19), list 0x0D38A5F0, texidx_base put to 0x4850, after model_tex_unload_step had freed the first object's texture: it called model_tex_rebind_core(model, 0, 0), which put the built-in bits in the first block and slots 167, 168 in the others, and returned 1
  * matched: source/sdk/naomi2_library/model_tex.c (tools/match/match.py)
  */
 void model_tex_rebind(compiled_model_rec *model)
@@ -663,8 +663,8 @@ void model_tex_rebind(compiled_model_rec *model)
 }
 
 /* 0x0c100900  size 0x14  file by match with source
- * confidence: inferred
- * evidence: model_tex_rebind_core(model, list, 1); nothing in the image calls it; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: model_tex_rebind_core(model, list, 1); nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness on the snapshot's bank 5 model 0xAAB3BF60 (objects at +0x60, +0x120, +0x1E0 with refs 0x17-0x19), list 0x0D38A5F0, texidx_base put to 0x4850, with a list copy mapping entries 0x17, 0x18, 0x19 to ids 0x19, 0x17, 0x18: it called model_tex_rebind_core(model, list, 1), which put slots 168, 166 and 167 (not 166, 167, 168) into the three polygon blocks
  * matched: source/sdk/naomi2_library/model_tex.c (tools/match/match.py)
  */
 void model_tex_rebind_by_entry_ids(compiled_model_rec *model, int tex_list)
@@ -674,8 +674,8 @@ void model_tex_rebind_by_entry_ids(compiled_model_rec *model, int tex_list)
 }
 
 /* 0x0c100920  size 0x34  file by match with source
- * confidence: inferred
- * evidence: (field 0-3, value): for a field up to 3 takes {mask, shift} from obj_flag_fields (one bit at 9, 10, 11 or 12), clears it from obj_flag_keep_mask and ORs value << shift into obj_flag_force_bits, the two words model_tex_load_walk applies to word 2 of each object header; nothing in the image calls it (uncalled code, made a function 2026-11-09); between model_tex_rebind_by_entry_ids and obj_flag_override_clear, so by link order part of sdk/naomi2_library/model_tex.c
+ * confidence: exercised
+ * evidence: (field 0-3, value): for a field up to 3 takes {mask, shift} from obj_flag_fields (one bit at 9, 10, 11 or 12), clears it from obj_flag_keep_mask and ORs value << shift into obj_flag_force_bits, the two words model_tex_load_walk applies to word 2 of each object header; nothing in the image calls it (uncalled code, made a function 2026-11-09); between model_tex_rebind_by_entry_ids and obj_flag_override_clear, so by link order part of sdk/naomi2_library/model_tex.c; exercised 2026-11-12: called by the harness in one sandbox with obj_flag_fields {1,9}, {1,10}, {1,11}, {1,12} and obj_flag_keep_mask / obj_flag_force_bits poked to 0xFFFFFFFF / 0: (1, 1) made them 0xFFFFFBFF / 0x400, then (3, 1) 0xFFFFEBFF / 0x1400; (4, 1) changed nothing
  * matched: source/sdk/naomi2_library/model_tex.c (tools/match/match.py)
  */
 void obj_flag_override_set(uint field, uint value)
@@ -691,8 +691,8 @@ void obj_flag_override_set(uint field, uint value)
 }
 
 /* 0x0c100960  size 0x30  file by match with source
- * confidence: inferred
- * evidence: (field 0-3): undoes obj_flag_override_set for one field: sets its bits in obj_flag_keep_mask and clears them in obj_flag_force_bits; nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_flag_override_set and obj_flag_overrides_reset, so by link order part of sdk/naomi2_library/model_tex.c
+ * confidence: exercised
+ * evidence: (field 0-3): undoes obj_flag_override_set for one field: sets its bits in obj_flag_keep_mask and clears them in obj_flag_force_bits; nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_flag_override_set and obj_flag_overrides_reset, so by link order part of sdk/naomi2_library/model_tex.c; exercised 2026-11-12: called by the harness after obj_flag_override_set(1, 1) and (3, 1) had left obj_flag_keep_mask 0xFFFFEBFF and obj_flag_force_bits 0x1400: clear(1) made them 0xFFFFEFFF and 0x1000; clear(5) changed nothing
  * matched: source/sdk/naomi2_library/model_tex.c (tools/match/match.py)
  */
 void obj_flag_override_clear(uint field)

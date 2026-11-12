@@ -49,8 +49,8 @@ int irq_hblank_relay(void)
 }
 
 /* 0x0c110b20  size 0x28  file by match with source
- * confidence: inferred
- * evidence: (no arguments): stores 3 in irq_last_event (0x0C3E0370) and calls slot 3's function in the block at irq_slot_fns when one is set, then writes 0x4000 to SB_ISTNRM (0xa05f6900, the Holly normal interrupt status; libnaomi holly.h, public) to clear bit 14, the G1 (ROM) DMA end; returns 0; installed by irq_slots_install on Holly normal interrupt 0xa40 only when its argument is non-zero; part of libintr; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (no arguments): stores 3 in irq_last_event (0x0C3E0370) and calls slot 3's function in the block at irq_slot_fns when one is set, then writes 0x4000 to SB_ISTNRM (0xa05f6900, the Holly normal interrupt status; libnaomi holly.h, public) to clear bit 14, the G1 (ROM) DMA end; returns 0; installed by irq_slots_install on Holly normal interrupt 0xa40 only when its argument is non-zero; part of libintr; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with irq_slot_fns slot 3 (+0xC) at 0 it stored 3 in irq_last_event, called nothing, wrote 0x4000 to 0xa05f6900 and returned 0; with slot 3 set to irq_last_event_get it called that routine once and did the same
  * matched: source/sdk/libintr/irq_slots.c (tools/match/match.py)
  */
 int irq_rom_dma_end_relay(void)
@@ -64,8 +64,8 @@ int irq_rom_dma_end_relay(void)
 }
 
 /* 0x0c110b60  size 0x28  file by match with source
- * confidence: inferred
- * evidence: (no arguments): stores 5 in irq_last_event (0x0C3E0370) and calls slot 4's function in the block at irq_slot_fns when one is set, then writes 3 to the cartridge board register 0xa05f705c to acknowledge it; returns 0; installed by irq_slots_install on Holly external interrupt 0xb00 only when its argument is non-zero; part of libintr; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (no arguments): stores 5 in irq_last_event (0x0C3E0370) and calls slot 4's function in the block at irq_slot_fns when one is set, then writes 3 to the cartridge board register 0xa05f705c to acknowledge it; returns 0; installed by irq_slots_install on Holly external interrupt 0xb00 only when its argument is non-zero; part of libintr; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with irq_slot_fns slot 4 (+0x10) at 0 it stored 5 in irq_last_event, called nothing, wrote 3 to 0xa05f705c and returned 0; with slot 4 set to irq_last_event_get (and slot 3 at 0) it called that routine once and did the same
  * matched: source/sdk/libintr/irq_slots.c (tools/match/match.py)
  */
 int irq_cart_board_relay(void)
@@ -79,8 +79,8 @@ int irq_cart_board_relay(void)
 }
 
 /* 0x0c110ba0  size 0x22  file by match with source
- * confidence: inferred
- * evidence: (no arguments): stores 4 in irq_last_event (0x0C3E0370) and calls slot 12's function in the block at irq_slot_fns when one is set (+0x30); returns 0; installed by irq_slots_install as the texture-memory-full hook (surface_alloc_fail_hook_put); part of libintr; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (no arguments): stores 4 in irq_last_event (0x0C3E0370) and calls slot 12's function in the block at irq_slot_fns when one is set (+0x30); returns 0; installed by irq_slots_install as the texture-memory-full hook (surface_alloc_fail_hook_put); part of libintr; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with irq_slot_fns +0x30 (slot 12) at 0 it stored 4 in irq_last_event, called nothing and returned 0; with +0x30 set to irq_last_event_get it called that routine once, stored 4 and returned 0
  * matched: source/sdk/libintr/irq_slots.c (tools/match/match.py)
  */
 int irq_tex_overflow_relay(void)
@@ -294,8 +294,8 @@ int irq_slot_fn_fetch(int slot, uint *out)
 }
 
 /* 0x0c110f20  size 0xe  file by match with source
- * confidence: inferred
- * evidence: returns irq_last_event; nothing in the image calls it (uncalled code, made a function 2026-11-09); between irq_slot_fn_fetch and irq_event_ack_none, so by link order part of sdk/libintr/irq_slots.c
+ * confidence: exercised
+ * evidence: returns irq_last_event; nothing in the image calls it (uncalled code, made a function 2026-11-09); between irq_slot_fn_fetch and irq_event_ack_none, so by link order part of sdk/libintr/irq_slots.c; exercised 2026-11-12: called by the harness in one sandbox, with irq_last_event poked to 7 it returned 7 and with 0x123 it returned 0x123
  * matched: source/sdk/libintr/irq_slots.c (tools/match/match.py)
  */
 int irq_last_event_get(void)
@@ -336,8 +336,8 @@ void irq_cart_board_ack(void)
 }
 
 /* 0x0c110fa0  size 0x20  file by match with source
- * confidence: inferred
- * evidence: (event): for events 0-5 calls the routine in irq_event_ack_fns (irq_event_ack_none, irq_rom_dma_end_ack, irq_cart_board_ack); nothing in the image calls it; part of libintr; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (event): for events 0-5 calls the routine in irq_event_ack_fns (irq_event_ack_none, irq_rom_dma_end_ack, irq_cart_board_ack); nothing in the image calls it; part of libintr; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness (irq_event_ack_fns is none, none, none, irq_rom_dma_end_ack, none, irq_cart_board_ack as the snapshot has it): event 3 called irq_rom_dma_end_ack (0x4000 to 0xa05f6900), 5 called irq_cart_board_ack (3 to 0xa05f705c), 0 called irq_event_ack_none, and 6 called nothing
  * matched: source/sdk/libintr/irq_slots.c (tools/match/match.py)
  */
 void irq_event_ack(int event)
@@ -376,8 +376,8 @@ int intc_ipr_level_write(int source, uint level)
 }
 
 /* 0x0c111040  size 0x30  file by match with source
- * confidence: inferred
- * evidence: (source, out): reads the source's 4-bit priority field through irq_ipr_fields into *out and returns 1; 0 for a source above 12; the read-back partner of intc_ipr_level_write; nothing in the image calls it (uncalled code, made a function 2026-11-09); between intc_ipr_level_write and busy_wait_fn_install, so by link order part of sdk/libintr/irq_slots.c
+ * confidence: exercised
+ * evidence: (source, out): reads the source's 4-bit priority field through irq_ipr_fields into *out and returns 1; 0 for a source above 12; the read-back partner of intc_ipr_level_write; nothing in the image calls it (uncalled code, made a function 2026-11-09); between intc_ipr_level_write and busy_wait_fn_install, so by link order part of sdk/libintr/irq_slots.c; exercised 2026-11-12: called by the harness in one sandbox: source 13 returned 0; after intc_ipr_level_write(3, 5) wrote IPRA (0xffd00004) = 0x5000 it returned 1 and stored 5, after writing 9 it stored 9, and after intc_ipr_level_write(4, 6) (the same register, bits 8-11) source 3 gave 9 and source 4 gave 6 while source 2 (IPRC) stayed 0
  * matched: source/sdk/libintr/irq_slots.c (tools/match/match.py)
  */
 int intc_ipr_level_read(int source, uint *level)
@@ -433,8 +433,8 @@ void irq_hblank_line_store(int line)
 }
 
 /* 0x0c111100  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (stack): writes 0x80000000 to startup_stack_mode and the stack to startup_irq_stack, the two words the start-up passes to the interrupt set-up; nothing in the image calls it (uncalled code, made a function 2026-11-09); between irq_hblank_line_store and aica_word_store, so by link order part of sdk/libintr/irq_slots.c
+ * confidence: exercised
+ * evidence: (stack): writes 0x80000000 to startup_stack_mode and the stack to startup_irq_stack, the two words the start-up passes to the interrupt set-up; nothing in the image calls it (uncalled code, made a function 2026-11-09); between irq_hblank_line_store and aica_word_store, so by link order part of sdk/libintr/irq_slots.c; exercised 2026-11-12: called by the harness in one sandbox with 0x8C001000 it left startup_stack_mode 0x80000000 and startup_irq_stack 0x8C001000, and then with 0x0C00F000 the mode 0x80000000 and the stack 0x0C00F000
  * matched: source/sdk/libintr/irq_slots.c (tools/match/match.py)
  */
 void startup_stack_words_set(uint stack)

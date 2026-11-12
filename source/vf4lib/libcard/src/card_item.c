@@ -205,10 +205,9 @@ void item_slot_unlock(int side, uint slot)
   return;
 }
 
-void item_has_88(int side)
+int item_has_88(int side)
 {
-  item_has(side,0x88);
-  return;
+  return item_has(side,0x88);
 }
 
 int item_has_79(int side)
@@ -267,10 +266,9 @@ int item_has_7f(int side)
   return has;
 }
 
-void item_has_83(int side)
+int item_has_83(int side)
 {
-  item_has(side,0x83);
-  return;
+  return item_has(side,0x83);
 }
 
 uchar item_slot_get(int side, int costume, int slot)

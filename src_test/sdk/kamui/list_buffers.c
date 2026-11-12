@@ -160,8 +160,8 @@ void listbuf_bank_select(uint bank)
 }
 
 /* 0x0c069300  size 0x4c  file by match with source
- * confidence: inferred
- * evidence: (list): starts a transfer of one list's words written so far (from its start in list_buffer_starts to its cursor, rounded down to whole words) to the 0xa9000000 window through cmd_area_write_ticketed, keeps the transfer's ticket in state+0x434 and resets the list's cursor to its start plus the header words; nothing in the image calls it; part of KamuiTL
+ * confidence: exercised
+ * evidence: (list): starts a transfer of one list's words written so far (from its start in list_buffer_starts to its cursor, rounded down to whole words) to the 0xa9000000 window through cmd_area_write_ticketed, keeps the transfer's ticket in state+0x434 and resets the list's cursor to its start plus the header words; nothing in the image calls it; part of KamuiTL; exercised 2026-11-12: called by the harness in one sandbox for list 1 with its cursor (list_cursors+4) poked to its start 0xabebc000 + 0x4b and list_header_counts[1] 3, it called cmd_area_write_ticketed(0xabebc000, 0x48), stored that call's result (-1) at gfx_state+0x434, left the cursor at 0xabebc00c and returned 0
  * same code as main.bin 0c13f2c0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/list_buffers.c (tools/match/match.py)
  */
@@ -175,8 +175,8 @@ int listbuf_list_transfer(int list)
 }
 
 /* 0x0c069360  size 0x20  file by match with source
- * confidence: inferred
- * evidence: returns 0 when the transfer ticket kept in state+0x434 has completed (ticket_done_poll, which runs the interrupt routine once while it has not), else 0xd; called by scene_lists_close; part of KamuiTL; checked against reference material (not in this repo); prototype: its body ignores both parameters and its one caller scene_lists_close passes none; header pass 4: with this prototype every matched file still matches (trial 5951/5951) and scene_lists_close matches without a cast (w567)
+ * confidence: exercised
+ * evidence: returns 0 when the transfer ticket kept in state+0x434 has completed (ticket_done_poll, which runs the interrupt routine once while it has not), else 0xd; called by scene_lists_close; part of KamuiTL; checked against reference material (not in this repo); prototype: its body ignores both parameters and its one caller scene_lists_close passes none; header pass 4: with this prototype every matched file still matches (trial 5951/5951) and scene_lists_close matches without a cast (w567); exercised 2026-11-12: called by the harness with xfer_done_count 0x2a0 (the snapshot's) and the ticket at gfx_state+0x434 poked 0x100 it returned 0, poked 0x7fff0000 it returned 0xd; ticket_done_poll got the ticket each time
  * same code as main.bin 0c13f320 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/list_buffers.c (tools/match/match.py)
  */
@@ -245,8 +245,8 @@ int ta_direct_lay_out(int desc, uint size)
 }
 
 /* 0x0c069580  size 0x34  file by match with source
- * confidence: inferred
- * evidence: frees the two texture memory blocks holding the TA parameter area (addresses in ta_param_area/ta_param_area+0x4, through vram32_pair_free) and clears the five list header word counts (list_header_counts); returns the free routine's status; called by the NAOMI library's one-line wrapper ta_param_area_free; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: frees the two texture memory blocks holding the TA parameter area (addresses in ta_param_area/ta_param_area+0x4, through vram32_pair_free) and clears the five list header word counts (list_header_counts); returns the free routine's status; called by the NAOMI library's one-line wrapper ta_param_area_free; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness in one sandbox after listbuf_lay_out_four had placed the TA parameter area (ta_param_area 0x308c00 / 0x708c00) and left list_header_counts 8, 8, 0, 8, 8, it called vram32_pair_free(0x308c00, 0x708c00), cleared all five counts and returned 0
  * same code as main.bin 0c13f540 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/list_buffers.c (tools/match/match.py)
  */
@@ -298,8 +298,8 @@ int listbuf_list_used_words(int list)
 }
 
 /* 0x0c0696a0  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: (list, words): sets the list's write pointer to its buffer start plus words x 4; returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between listbuf_list_used_words and listbuf_list_put_word, so by link order part of sdk/kamui/list_buffers.c
+ * confidence: exercised
+ * evidence: (list, words): sets the list's write pointer to its buffer start plus words x 4; returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between listbuf_list_used_words and listbuf_list_put_word, so by link order part of sdk/kamui/list_buffers.c; exercised 2026-11-12: called by the harness in one sandbox with the snapshot's list starts (0xabebc000 for list 1, 0xabf7c000 for list 3): seek(1, 10) left list_cursors+4 at 0xabebc028 and seek(3, 0) list_cursors+0xc at 0xabf7c000, the other cursors unchanged; returned 0
  * same code as main.bin 0c13f660 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/list_buffers.c (tools/match/match.py)
  */
@@ -310,8 +310,8 @@ int listbuf_list_seek(int list, int words)
 }
 
 /* 0x0c0696e0  size 0x40  file by match with source
- * confidence: inferred
- * evidence: (list, word, count): copies one word at a list's cursor (through list_cursor_slot 0c41df8c and copy_by_pairs_or_words) and advances the cursor by count words; nothing in the image calls it; part of KamuiTL
+ * confidence: exercised
+ * evidence: (list, word, count): copies one word at a list's cursor (through list_cursor_slot 0c41df8c and copy_by_pairs_or_words) and advances the cursor by count words; nothing in the image calls it; part of KamuiTL; exercised 2026-11-12: called by the harness in one sandbox with list 2's write pointer (0c5d5ce8) poked to a buffer: (2, 0xcafebabe, 3) stored the word at buffer+0 and left the pointer at buffer+0xc, then (2, 0x12345678, 1) stored it at buffer+0xc and left buffer+0x10; list_cursor_slot read 0c5d5ce8
  * same code as main.bin 0c13f6a0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/list_buffers.c (tools/match/match.py)
  */
@@ -866,8 +866,8 @@ int render_setup_finish(int step_kind)
 }
 
 /* 0x0c06a7e0  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (bits): ORs bits into the set-up steps word setup_steps_done and returns the new value (0x100 list buffers, 0x800 frame buffer pair, 0x200 surfaces; 0xb00 when all are in); called by fb_pair_install, fb_vram_alloc, listbuf_lay_out_four, ta_direct_lay_out; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (bits): ORs bits into the set-up steps word setup_steps_done and returns the new value (0x100 list buffers, 0x800 frame buffer pair, 0x200 surfaces; 0xb00 when all are in); called by fb_pair_install, fb_vram_alloc, listbuf_lay_out_four, ta_direct_lay_out; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness in one sandbox with setup_steps_done poked 0x100: mark(0x800) returned 0x900, mark(0x200) 0xb00 and mark(0x200) again 0xb00, and the word read 0xb00
  * same code as main.bin 0c1407a0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/list_buffers.c (tools/match/match.py)
  */

@@ -305,7 +305,7 @@ void spg_timing_load(args_0c148080 c)
 /* 0x0c1482e0  size 0x158  file by match with source
  * confidence: inferred
  * extent: 0x16a
- * evidence: fills the timing block for the 50 Hz mode (display mode 2): 864 clocks a line (0x35F), 625 / 313 lines (0x270 / 0x138) by the interlace flags, the PAL blanking and start values, and sends it to spg_timing_load; called by display_timing_and_fb_program; part of KamuiTL; checked against reference material (not in this repo)
+ * evidence: fills the timing block for the 50 Hz mode (display mode 2): 864 clocks a line (0x35F), 625 / 313 lines (0x270 / 0x138), 625 when bit 0 of the display mode at state +0x24 is clear and any of bits 0x2c is set (checked in the harness: display mode 4 gave 0x270, 0, 1 and 5 gave 0x138), the PAL blanking and start values, and sends it to spg_timing_load; called by display_timing_and_fb_program; part of KamuiTL; checked against reference material (not in this repo)
  * matched: source/sdk/kamui/sync_timing.c (tools/match/match.py)
  */
 void spg_timing_pal(void)
@@ -373,9 +373,9 @@ void spg_timing_pal(void)
 }
 
 /* 0x0c148480  size 0x244  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x350
- * evidence: fills the timing block for the 15 kHz 60 Hz mode (display mode 0): 0x353 or 0x329 clocks a line by the word at state +0x528, 0x218 / 0x10C lines by the interlace flags, and sends it to spg_timing_load; called by display_timing_and_fb_program; part of KamuiTL; checked against reference material (not in this repo)
+ * evidence: fills the timing block for the 15 kHz 60 Hz mode (display mode 0): 0x353 or 0x329 clocks a line by the word at state +0x528, 0x218 / 0x10C lines by the display mode at state +0x24 (0x218 when its bit 0 is clear and any of bits 0x2c is set; checked in the harness with 0x24 and 1), and sends it to spg_timing_load; called by display_timing_and_fb_program; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness (irq, display mode 1 as the snapshot has it) with the word at state +0x528 (short_line_timing) 0 it left gfx_state +0x2E8 at 0x010C0353 (0x10C lines, 0x353 clocks) and the hblank word at 0x008C0334; with the word 1 0x010C0329 and 0x007B0323
  * matched: source/sdk/kamui/sync_timing.c (tools/match/match.py)
  */
 void spg_timing_ntsc(void)

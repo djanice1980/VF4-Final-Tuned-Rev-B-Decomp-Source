@@ -194,7 +194,7 @@ char trap_serial_read_key(void)
 
 /* 0x0c138c40  size 0x40  file by match with source
  * confidence: inferred
- * evidence: resets the SCIF registers (0xffe80000-24) to their idle values and stops the SCI module clock again (STBCR bit 0)
+ * evidence: when the SCIF was the port chosen (trap_serial_is_sci 0) resets the SCIF registers (0xffe80000-24) to their idle values; in either case stops the SCI module clock again (STBCR bit 0)
  * matched: source/sdk/sy/address_checker.c (tools/match/match.py)
  */
 void trap_serial_teardown(void)

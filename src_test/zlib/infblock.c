@@ -314,7 +314,7 @@ int inflate_blocks_free(inflate_blocks_state *s, z_streamp z)
 
 /* 0x0c080b60  size 0x28  file by match with source
  * confidence: named
- * evidence: zlib 1.1.4 infblock.c: zmemcpy into the window
+ * evidence: zlib 1.1.4 infblock.c: zmemcpy into the window; exercised 2026-11-12: called by the harness in one sandbox after inflateInit_, with the stream's blocks state, "abcdefgh" and 8 the window began with abcdefgh and read and write (+0x30, +0x34) both became the window + 8; then with "XYZ" and 3 the window read XYZdefgh and read = write = the window + 3
  * same code as main.bin 0c156b20 (ghidra/TransferFromMain.java)
  * matched: source/zlib/infblock.c (tools/match/match.py)
  */
@@ -328,7 +328,7 @@ void inflate_set_dictionary(inflate_blocks_state *s, const Bytef *d, uInt n)
 
 /* 0x0c080ba0  size 0x10  file by match with source
  * confidence: named
- * evidence: zlib 1.1.4 infblock.c: returns mode == LENS; last in infblock.c
+ * evidence: zlib 1.1.4 infblock.c: returns mode == LENS; last in infblock.c; exercised 2026-11-12: called by the harness in one sandbox with the blocks state inflateInit_ built: 0 with the mode TYPE (0) it starts in, 1 after inflate had read the bytes 78 01 00 (mode LENS, 1), and 0 with the mode word poked to 2 (STORED)
  * same code as main.bin 0c156b60 (ghidra/TransferFromMain.java)
  * matched: source/zlib/infblock.c (tools/match/match.py)
  */

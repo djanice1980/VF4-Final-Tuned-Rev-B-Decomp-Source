@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c03dce0  size 0x20  file by match with source
- * confidence: inferred
- * evidence: counts a stack word from 0 to 5000 and returns (a busy delay); nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_tex_bases_clear and obj_textures_load_step, so by link order part of sdk/naomi2_library/object_put.c
+ * confidence: exercised
+ * evidence: counts a stack word from 0 to 5000 and returns (a busy delay); nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_tex_bases_clear and obj_textures_load_step, so by link order part of sdk/naomi2_library/object_put.c; exercised 2026-11-12: called by the harness it returned after 30,016 instructions (six for each of 5,001 tests of the counter) with r1 left at 5001, the counter's last value, and wrote nothing outside its own stack frame
  * same code as main.bin 0c1029c0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
@@ -144,8 +144,8 @@ uint obj_textures_load_step(int *obj, int texlist, uint *from, uint **next_out, 
 }
 
 /* 0x0c03dfe0  size 0x18  file by match with source
- * confidence: inferred
- * evidence: obj_textures_load_step without mapping (mapped 0); called by model_tex_load_step; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: obj_textures_load_step without mapping (mapped 0); called by model_tex_load_step; part of NLOBJPUT; exercised 2026-11-12: called by the harness on a buffer object (records at +0x18, +0x68, +0xC8) on the snapshot's texture tables, texidx_base 0x4850, after obj_textures_load_step had stopped at the second record: from it, ref 0x18 (map entry 0x4868, slot 167) went to use count 3 and in_use 3 with no load, slot 167's bits went into its header, the -1 record got built-in bits (word 0 0x808C0001, word 1 0x400000), and *next was 0
  * same code as main.bin 0c102cc0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
@@ -156,8 +156,8 @@ void obj_textures_load_from(int *obj, int texlist, uint *from, uint **next_out)
 }
 
 /* 0x0c03e000  size 0x4e  file by match with source
- * confidence: inferred
- * evidence: runs obj_textures_load_step (mapped 0) until the walk ends, ORing the results; called by model_tex_load; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: runs obj_textures_load_step (mapped 0) until the walk ends, ORing the results; called by model_tex_load; part of NLOBJPUT; exercised 2026-11-12: called by the harness on a buffer object (records at +0x18, +0x68, +0xC8) on the snapshot's texture tables, texidx_base 0x4850, with refs 0x17 (freed first by model_tex_unload_step), 0x18, -1 and the list 0x0D38A5F0: two obj_textures_load_step calls (from 0, then from the second record), one texture loaded into slot 166, map entries 0x4867 / 0x4868 at use counts 1 / 3; returned 0
  * same code as main.bin 0c102ce0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
@@ -400,8 +400,8 @@ uint obj_textures_release_mapped(int *obj, int texlist)
 }
 
 /* 0x0c03e500  size 0x5a  file by match with source
- * confidence: inferred
- * evidence: (object, offset): in the raw palette mode (pal_raw_mode 1) and for an object that is not empty, sets the palette bits (bits 21-26 of word +0xc) of every palette-format (5, 6) polygon record to its word +0x3c plus offset; nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_palette_table_put and modvol_shadow_set_up, so by link order part of sdk/naomi2_library/object_put.c
+ * confidence: exercised
+ * evidence: (object, offset): in the raw palette mode (pal_raw_mode 1) and for an object that is not empty, sets the palette bits (bits 21-26 of word +0xc) of every palette-format (5, 6) polygon record to its word +0x3c plus offset; nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_palette_table_put and modvol_shadow_set_up, so by link order part of sdk/naomi2_library/object_put.c; exercised 2026-11-12: called by the harness on a buffer object with records of format 5 (+0x3c 4), 1 (+0x3c 9) and 6 (+0x3c 10), offset 3: with pal_raw_mode 0 (snapshot) nothing changed; with it poked 1 the +0xc words went 0x28A00000 to 0x28E00000 and 0x37E00000 to 0x31A00000, the format 1 record untouched; with object word 0 poked -1, offset 5 changed nothing
  * same code as main.bin 0c1031e0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
@@ -470,8 +470,8 @@ void modvol_instruction_put(int mode)
 }
 
 /* 0x0c03e600  size 0x12  file by match with source
- * confidence: inferred
- * evidence: returns modvol_instruction >> 29, the value modvol_instruction_put shifts in; nothing in the image calls it (uncalled code, made a function 2026-11-09); between modvol_instruction_put and modvol_sign_put, so by link order part of sdk/naomi2_library/object_put.c
+ * confidence: exercised
+ * evidence: returns modvol_instruction >> 29, the value modvol_instruction_put shifts in; nothing in the image calls it (uncalled code, made a function 2026-11-09); between modvol_instruction_put and modvol_sign_put, so by link order part of sdk/naomi2_library/object_put.c; exercised 2026-11-12: called by the harness in one sandbox: after modvol_instruction_put(2) it returned 2, after modvol_instruction_put(0) 1, and with modvol_instruction poked 0x60000000 it returned 3
  * same code as main.bin 0c1032e0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
@@ -542,8 +542,8 @@ void obj_modvol_put_world_alt(uint *obj)
 }
 
 /* 0x0c03e760  size 0x60  file by match with source
- * confidence: inferred
- * evidence: when obj word 0 is not negative and word +0x18 is set: points QACR0/1 at the opaque list's write pointer (the list_write_ptrs record +4), fills the header block obj_send_header with a modifier volume parameter control word 0x818c0000 | user clip bits of poly_header_or_words or word +0x18, 0, modvol_instruction, and runs the volume renderer modvol_strips_send(obj, header, mode, modvol_sign); then pops the matrix stack (mtx_pop 1); callers obj_modvol_put, obj_modvol_put_alt, obj_modvol_put_world, obj_modvol_put_world_alt; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: when obj word 0 is not negative and word +0x18 is set: points QACR0/1 at the opaque list's write pointer (the list_write_ptrs record +4), fills the header block obj_send_header with a modifier volume parameter control word 0x818c0000 | user clip bits of poly_header_or_words or word +0x18, 0, modvol_instruction, and runs the volume renderer modvol_strips_send(obj, header, mode, modvol_sign); then pops the matrix stack (mtx_pop 1); callers obj_modvol_put, obj_modvol_put_alt, obj_modvol_put_world, obj_modvol_put_world_alt; part of NLOBJPUT; exercised 2026-11-12: called by the harness with an object of word 0 = 0 and word +0x18 = 0x81FD0000, poly_header_or_words 0x20000, modvol_instruction 0x12345678, modvol_sign -1 and mode 7, it wrote QACR0/1 = 0xAB (list_cursors[1] 0xABEBC020 >> 24) and header words 0x818F0000, 0, 0x12345678 and called modvol_strips_send(obj, obj_send_header, 7, -1) and mtx_pop(1); with +0x18 = 0x00FC0000 and no OR bits word 0 was 0x818C0000; with word 0 = -1, or +0x18 = 0, it only called mtx_pop(1) and left the header alone
  * same code as main.bin 0c103440 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
@@ -579,8 +579,8 @@ void obj_poly_texture_hook(uint *rec)
 }
 
 /* 0x0c03e900  size 0x32  file by match with source
- * confidence: inferred
- * evidence: stores the current matrix in obj_saved_mtx, multiplies rect_x_proj_matrix onto it from the left (mtx_premul_by_pairs), keeps the product in rect_x_proj_work and reloads the saved matrix; nothing in the image calls it; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: stores the current matrix in obj_saved_mtx, multiplies rect_x_proj_matrix onto it from the left (mtx_premul_by_pairs), keeps the product in rect_x_proj_work and reloads the saved matrix; nothing in the image calls it; part of NLOBJPUT; exercised 2026-11-12: called by the harness through a harness driver with the current matrix M (columns (2, 0.5, 0, 0), (-1, 3, 0.25, 0), (0.5, 0, 1.5, 0), (10, 20, 30, 1)): obj_saved_mtx held M, rect_x_proj_work held rect_x_proj_matrix x M (last column (-30, -3805.89, -18788.2, 30), which M x rect_x_proj_matrix would not give) and the current matrix at the return was M again
  * same code as main.bin 0c1035e0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
@@ -594,8 +594,8 @@ void obj_proj_view_capture(void)
 }
 
 /* 0x0c03e960  size 0x36  file by match with source
- * confidence: inferred
- * evidence: unless bit 1 of obj word +4 is set, brings the light vectors into the object's space (obj_light_vecs_to_model); pushes the matrix stack, multiplies rect_x_proj_work on from the left and sends the object to the renderer chosen by its word 0 (obj_typed_send); callers stage_far_objs_draw, objbank_draw_all; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: unless bit 1 of obj word +4 is set, brings the light vectors into the object's space (obj_light_vecs_to_model); pushes the matrix stack, multiplies rect_x_proj_work on from the left and sends the object to the renderer chosen by its word 0 (obj_typed_send); callers stage_far_objs_draw, objbank_draw_all; part of NLOBJPUT; exercised 2026-11-12: called by the harness with an object of word 0 = 2 (a type typed_send_by_slot draws nothing for): with word +4 = 0 it called obj_light_vecs_to_model, mtx_push(0), mtx_premul_by_pairs(rect_x_proj_work) and obj_typed_send(obj); with word +4 = 2 the same calls without obj_light_vecs_to_model
  * same code as main.bin 0c103640 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
@@ -612,8 +612,8 @@ void obj_put_typed(int *obj)
 }
 
 /* 0x0c03e9c0  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: as obj_put_typed with the view from the view stack (obj_light_vecs_to_model_view, obj_mtx_push_proj_view); nothing in the image calls it; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: as obj_put_typed with the view from the view stack (obj_light_vecs_to_model_view, obj_mtx_push_proj_view); nothing in the image calls it; part of NLOBJPUT; exercised 2026-11-12: called by the harness with an object of word 0 = 2: with word +4 = 0 it called obj_light_vecs_to_model_view, obj_mtx_push_proj_view and obj_typed_send(obj); with word +4 = 2 only the last two
  * same code as main.bin 0c1036a0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
@@ -630,8 +630,8 @@ void obj_put_typed_world(int *obj)
 }
 
 /* 0x0c03ea00  size 0x3e  file by match with source
- * confidence: inferred
- * evidence: as obj_put_typed passing a float on (obj_typed_send_f); nothing in the image calls it; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: as obj_put_typed passing a float on (obj_typed_send_f); nothing in the image calls it; part of NLOBJPUT; exercised 2026-11-12: called by the harness with an object of word 0 = 2 and 1.25: with word +4 = 0 it called obj_light_vecs_to_model, mtx_push(0), mtx_premul_by_pairs(rect_x_proj_work) and obj_typed_send_f(obj, 1.25); with word +4 = 2 the same without obj_light_vecs_to_model
  * same code as main.bin 0c1036e0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
@@ -648,8 +648,8 @@ void obj_put_typed_f(int *obj, float alpha)
 }
 
 /* 0x0c03ea60  size 0x36  file by match with source
- * confidence: inferred
- * evidence: as obj_put_typed_world passing a float on (obj_typed_send_f); nothing in the image calls it; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: as obj_put_typed_world passing a float on (obj_typed_send_f); nothing in the image calls it; part of NLOBJPUT; exercised 2026-11-12: called by the harness with an object of word 0 = 2 and 0.5: with word +4 = 0 it called obj_light_vecs_to_model_view, obj_mtx_push_proj_view and obj_typed_send_f(obj, 0.5); with word +4 = 2 only the last two
  * same code as main.bin 0c103740 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
@@ -666,8 +666,8 @@ void obj_put_typed_world_f(int *obj, float alpha)
 }
 
 /* 0x0c03eac0  size 0x12  file by match with source
- * confidence: inferred
- * evidence: (float): stores it in obj_light_scalar and in the header block's light_scalar word; nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_put_typed_world_f and obj_view_dir_put, so by link order part of sdk/naomi2_library/object_put.c
+ * confidence: exercised
+ * evidence: (float): stores it in obj_light_scalar and in the header block's light_scalar word; nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_put_typed_world_f and obj_view_dir_put, so by link order part of sdk/naomi2_library/object_put.c; exercised 2026-11-12: called by the harness in one sandbox, obj_light_scalar_set(2.5) left 2.5 in both obj_light_scalar and obj_send_header+0x1c (0.3 in both before) and obj_light_scalar_set(0.75) then left 0.75 in both
  * same code as main.bin 0c1037a0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
@@ -679,8 +679,8 @@ void obj_light_scalar_set(float value)
 }
 
 /* 0x0c03eae0  size 0x38  file by match with source
- * confidence: inferred
- * evidence: stores the view vector the block at obj_view_dir and the half vector the block at obj_half_vector = the block at obj_light_dir + it; caller obj_view_dir_put_v; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: stores the view vector the block at obj_view_dir and the half vector the block at obj_half_vector = the block at obj_light_dir + it; caller obj_view_dir_put_v; part of NLOBJPUT; exercised 2026-11-12: called by the harness with (0.25, -0.5, 2.0) and obj_light_dir (1, 0, 0) as the snapshot has it, it left obj_view_dir (0.25, -0.5, 2) and obj_half_vector (1.25, -0.5, 2); called through obj_view_dir_put_v with obj_light_dir planted (1, 2, 3) and (3, 4, -1) it left (3, 4, -1) and (4, 6, 2)
  * same code as main.bin 0c1037c0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
@@ -739,8 +739,8 @@ void obj_light_dir_put(float x, float y, float z)
 }
 
 /* 0x0c03ec20  size 0x26  file by match with source
- * confidence: inferred
- * evidence: (r, g, b): stores them in obj_light_color and copies them to obj_light_colour2; nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_light_dir_put and obj_light_colour_put, so by link order part of sdk/naomi2_library/object_put.c
+ * confidence: exercised
+ * evidence: (r, g, b): stores them in obj_light_color and copies them to obj_light_colour2; nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_light_dir_put and obj_light_colour_put, so by link order part of sdk/naomi2_library/object_put.c; exercised 2026-11-12: called by the harness with (0.1, 0.2, 0.3) it left obj_light_color and obj_light_colour2 both (0.1, 0.2, 0.3) (both 1, 1, 1 before); obj_light_colour2_set(0.7, 0.8, 0.9) after it in the same sandbox changed obj_light_colour2 only
  * same code as main.bin 0c103900 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
@@ -754,8 +754,8 @@ void obj_light_color_set(float r, float g, float b)
 }
 
 /* 0x0c03ed40  size 0x20  file by match with source
- * confidence: inferred
- * evidence: copies the first four list write pointers into gfx_counters_saved; nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_vertex_hook_select and list_write_ptrs_since_mark, so by link order part of sdk/naomi2_library/object_put.c
+ * confidence: exercised
+ * evidence: copies the first four list write pointers into gfx_counters_saved; nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_vertex_hook_select and list_write_ptrs_since_mark, so by link order part of sdk/naomi2_library/object_put.c; exercised 2026-11-12: called by the harness on the snapshot's cursor record (list_cursors, what list_write_ptrs points at) it copied 0xABCBC020, 0xABEBC020, 0xABEFC020, 0xABF7C020 into gfx_counters_saved; with the five cursors planted 0x11000000 to 0x15000000 it copied the first four and the fifth saved word stayed 0xABC7C020
  * same code as main.bin 0c103a20 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
@@ -769,8 +769,8 @@ void list_write_ptrs_mark(void)
 }
 
 /* 0x0c03ed80  size 0x36  file by match with source
- * confidence: inferred
- * evidence: (four int out pointers): each of the four list write pointers minus the word list_write_ptrs_mark saved in gfx_counters_saved; nothing in the image calls it (uncalled code, made a function 2026-11-09); between list_write_ptrs_mark and obj_sphere_visible, so by link order part of sdk/naomi2_library/object_put.c
+ * confidence: exercised
+ * evidence: (four int out pointers): each of the four list write pointers minus the word list_write_ptrs_mark saved in gfx_counters_saved; nothing in the image calls it (uncalled code, made a function 2026-11-09); between list_write_ptrs_mark and obj_sphere_visible, so by link order part of sdk/naomi2_library/object_put.c; exercised 2026-11-12: called by the harness after list_write_ptrs_mark with the cursors (list_cursors) planted 0x11000000, 0x12000000, 0x13000000, 0x14000000 and then moved to 0x11000040, 0x12000080, 0x13000100, 0x13FFFFF0, it wrote 0x40, 0x80, 0x100 and -16 through the four pointers
  * same code as main.bin 0c103a60 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
@@ -813,8 +813,8 @@ bool obj_sphere_visible(compiled_model_rec *model)
 }
 
 /* 0x0c03eec0  size 0xb4  file by match with source
- * confidence: inferred
- * evidence: as obj_sphere_visible, also false beyond the far value (obj_send_header+0x28) and without the rectangle's left/top offsets; nothing in the image calls it; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: as obj_sphere_visible, also false beyond the far value (obj_send_header+0x28) and without the rectangle's left/top offsets; nothing in the image calls it; part of NLOBJPUT; exercised 2026-11-12: called by the harness through a harness driver with an identity current matrix (near 0.1, far 1000 as the snapshot has them): centers (0, 0, -10) and (0, 0, -999) radius 1 gave 1, (0, 0, -1002) 0, (0, 0, -0.05) radius 0.01 gave 0 and radius 0.1 gave 1, (-6, 0, -10) 1 and (-7, 0, -10) 0; with proj_rect_px_left poked 1000, (0, 0, -10) still gave 1 where obj_sphere_visible gave 0, and obj_sphere_visible gave 1 for (0, 0, -1002)
  * same code as main.bin 0c103ba0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
@@ -841,8 +841,8 @@ bool obj_sphere_visible_near_far(compiled_model_rec *model)
 }
 
 /* 0x0c03f000  size 0x40  file by match with source
- * confidence: inferred
- * evidence: with the current matrix transposed (mtx_transpose), puts the block at obj_light_dir into header block +0x10 and the block at obj_half_vector into +0 (mtx_xform_dir), scales the latter to length 436.5 (vec3_set_length) and transposes back; callers obj_put_typed, obj_put_typed_f, obj_put_lit, obj_put_lit_f, obj_put_second_path and obj_put_second_path_float; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: with the current matrix transposed (mtx_transpose), puts the block at obj_light_dir into header block +0x10 and the block at obj_half_vector into +0 (mtx_xform_dir), scales the latter to length 436.5 (vec3_set_length) and transposes back; callers obj_put_typed, obj_put_typed_f, obj_put_lit, obj_put_lit_f, obj_put_second_path and obj_put_second_path_float; part of NLOBJPUT; exercised 2026-11-12: called by the harness through a harness driver with the current matrix M (columns (2, 0.5, 0, 0), (-1, 3, 0.25, 0), (0.5, 0, 1.5, 0), (10, 20, 30, 1)), obj_light_dir planted (0.6, 0, 0.8) and obj_half_vector (1, 2, 3): header +0x10 got (1.2, -0.4, 1.5) = M transposed times the light, header +0 got (159.9, 306.5, 266.5) = 436.5 x the unit vector along M transposed times (1, 2, 3) = (3, 5.75, 5), and the current matrix at the return was M
  * same code as main.bin 0c103ce0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
@@ -857,8 +857,8 @@ int obj_light_vecs_to_model(void)
 }
 
 /* 0x0c03f060  size 0x84  file by match with source
- * confidence: inferred
- * evidence: the same with the view kept apart: puts the block at obj_view_dir through the view stack's matrix (mtx_stack_select 2), then on the model stack (1) puts the block at obj_light_dir into header +0x10, adds the block at obj_light_dir to the turned view vector, turns the sum, scales it to 436.5 and stores it at header +0; callers obj_put_typed_world, obj_put_typed_world_f, obj_put_lit_world, obj_put_lit_world_f; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: the same with the view kept apart: puts the block at obj_view_dir through the view stack's matrix transposed (mtx_stack_select 2, mtx_transpose before and after), then on the model stack (1) puts the block at obj_light_dir into header +0x10, adds the block at obj_light_dir to the turned view vector, turns the sum, scales it to 436.5 and stores it at header +0; callers obj_put_typed_world, obj_put_typed_world_f, obj_put_lit_world, obj_put_lit_world_f; part of NLOBJPUT; exercised 2026-11-12: called by the harness through a harness driver with M as for obj_light_vecs_to_model, the view stack's top slot planted with V (columns (0, 1, 0, 0), (-1, 0, 0, 0), (0, 0, 1, 0), (3, 4, 5, 1)), obj_view_dir (0, 1, 0) and obj_light_dir (0.6, 0, 0.8): header +0x10 got (1.2, -0.4, 1.5) and header +0 got (347.0, -151.8, 216.9), 436.5 along M^T x (V^T x view + light) = (3.2, -1.4, 2); the current matrix at the return was M
  * same code as main.bin 0c103d40 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
@@ -906,8 +906,8 @@ void obj_typed_send_f(int *obj, float alpha)
 }
 
 /* 0x0c03f160  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: mtx_push(0) then multiplies rect_x_proj_work on from the left (mtx_premul_by_pairs); callers obj_modvol_put, obj_modvol_put_alt, obj_put_lit, obj_put_lit_f; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: mtx_push(0) then multiplies rect_x_proj_work on from the left (mtx_premul_by_pairs); callers obj_modvol_put, obj_modvol_put_alt, obj_put_lit, obj_put_lit_f; part of NLOBJPUT; exercised 2026-11-12: called by the harness through a harness driver with the current matrix M (columns (2, 0.5, 0, 0), (-1, 3, 0.25, 0), (0.5, 0, 1.5, 0), (10, 20, 30, 1)): the stack depth went from 0 to 1 with M in the slot pushed, and the current matrix at the return was rect_x_proj_work x M (last column (-30, -3805.89, -18788.2, 30))
  * same code as main.bin 0c103e40 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
@@ -918,8 +918,8 @@ uint obj_mtx_push_proj(void)
 }
 
 /* 0x0c03f1a0  size 0x24  file by match with source
- * confidence: inferred
- * evidence: pushes the current matrix and loads rect_x_proj_work (mtx_push), multiplies by the view stack's top matrix (the pointer at mtx_stack_records+0x20, record 2 of the stack records) and by the pushed matrix (mtx_times_last_pushed); callers obj_modvol_put_world, obj_modvol_put_world_alt, obj_put_typed_world, obj_put_typed_world_f, obj_put_lit_world, obj_put_lit_world_f; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: pushes the current matrix and loads rect_x_proj_work (mtx_push), multiplies by the view stack's top matrix (the pointer at mtx_stack_records+0x20, record 2 of the stack records) and by the pushed matrix (mtx_times_last_pushed); callers obj_modvol_put_world, obj_modvol_put_world_alt, obj_put_typed_world, obj_put_typed_world_f, obj_put_lit_world, obj_put_lit_world_f; part of NLOBJPUT; exercised 2026-11-12: called by the harness through a harness driver with the current matrix M (columns (2, 0.5, 0, 0), (-1, 3, 0.25, 0), (0.5, 0, 1.5, 0), (10, 20, 30, 1)) and the view stack's top slot (the pointer at mtx_stack_records+0x20, 0x0C41C8A0) planted with V (columns (0, 1, 0, 0), (-1, 0, 0, 0), (0, 0, 1, 0), (3, 4, 5, 1)): the current matrix at the return was rect_x_proj_work x V x M, last column (-35, -21050, -16511.8, 35), where W x M x V would end (-38.5, -3918.5, -28650.3, 38.5)
  * same code as main.bin 0c103e80 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
@@ -1019,8 +1019,8 @@ void obj_alt_lighting_off(void)
 }
 
 /* 0x0c03f3a0  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: unless obj word 0 is negative runs the assembly renderer lit_groups_send, or lit_offset_groups_send when obj_alt_lighting is set, with the header block obj_send_header; then mtx_pop(1); callers obj_put_lit, obj_put_lit_world; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: unless obj word 0 is negative runs the assembly renderer lit_groups_send, or lit_offset_groups_send when obj_alt_lighting is set, with the header block obj_send_header; then mtx_pop(1); callers obj_put_lit, obj_put_lit_world; part of NLOBJPUT; exercised 2026-11-12: called by the harness with an object of word 0 = -1 it only called mtx_pop(1); with word 0 = 0 (no groups) and obj_alt_lighting 0 it called lit_groups_send(obj, obj_send_header) and then mtx_pop(1), and with obj_alt_lighting 1 lit_offset_groups_send(obj, obj_send_header) and then mtx_pop(1)
  * same code as main.bin 0c104080 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
@@ -1039,8 +1039,8 @@ void obj_lit_send(int *obj)
 }
 
 /* 0x0c03f400  size 0x36  file by match with source
- * confidence: inferred
- * evidence: sets QACR0/1 to 0xc, then as obj_lit_send through the float-taking entries lit_groups_send_alpha / lit_offset_groups_send_alpha; callers obj_put_lit_f, obj_put_lit_world_f; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: sets QACR0/1 to 0xc, then as obj_lit_send through the float-taking entries lit_groups_send_alpha / lit_offset_groups_send_alpha; callers obj_put_lit_f, obj_put_lit_world_f; part of NLOBJPUT; exercised 2026-11-12: called by the harness with 0.6, each call wrote 0xC to QACR0/1 (0xff000038, 0xff00003c); with object word 0 = 0 it then called lit_groups_send_alpha(obj, obj_send_header, 0.6) under obj_alt_lighting 0 and lit_offset_groups_send_alpha(obj, obj_send_header, 0.6) under 1, with word 0 = -1 neither; mtx_pop(1) every time
  * same code as main.bin 0c1040e0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
@@ -1062,8 +1062,8 @@ void obj_lit_send_f(int *obj, float alpha)
 }
 
 /* 0x0c03f460  size 0x44  file by match with source
- * confidence: inferred
- * evidence: unless obj word 0 is negative: light vectors into the object's space unless bit 1 of word +4 (obj_light_vecs_to_model), pushes and multiplies rect_x_proj_work on, runs the assembly renderer float_colour_send with the header block obj_send_header and pops; nothing in the image calls it; obj_put_second_path_float at 0c1041a0 follows it; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: unless obj word 0 is negative: light vectors into the object's space unless bit 1 of word +4 (obj_light_vecs_to_model), pushes and multiplies rect_x_proj_work on, runs the assembly renderer float_colour_send with the header block obj_send_header and pops; nothing in the image calls it; obj_put_second_path_float at 0c1041a0 follows it; part of NLOBJPUT; exercised 2026-11-12: called by the harness with an object of word 0 = -1 it called nothing; with word 0 = 0 and word +4 = 0 it called obj_light_vecs_to_model, mtx_push(0), mtx_premul_by_pairs(rect_x_proj_work), float_colour_send(obj, obj_send_header) and mtx_pop(1); with word +4 = 2 the same without obj_light_vecs_to_model
  * same code as main.bin 0c104140 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
@@ -1081,8 +1081,8 @@ void obj_put_second_path(int *obj)
 }
 
 /* 0x0c03f4c0  size 0x4c  file by match with source
- * confidence: inferred
- * evidence: (obj, float): obj_put_second_path with one float argument: unless obj word 0 is negative, light vectors into the object's space unless bit 1 of word +4 (obj_light_vecs_to_model), pushes and multiplies rect_x_proj_work on, runs the assembly renderer at its second entry float_colour_send_alpha (two bytes into float_colour_send) with the header block obj_send_header and the float, and pops; nothing in the image calls it; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: (obj, float): obj_put_second_path with one float argument: unless obj word 0 is negative, light vectors into the object's space unless bit 1 of word +4 (obj_light_vecs_to_model), pushes and multiplies rect_x_proj_work on, runs the assembly renderer at its second entry float_colour_send_alpha (two bytes into float_colour_send) with the header block obj_send_header and the float, and pops; nothing in the image calls it; part of NLOBJPUT; exercised 2026-11-12: called by the harness with 0.4 and an object of word 0 = -1 it called nothing; with word 0 = 0 and word +4 = 0 it called obj_light_vecs_to_model, mtx_push(0), mtx_premul_by_pairs(rect_x_proj_work), float_colour_send_alpha(obj, obj_send_header, 0.4) and mtx_pop(1); with word +4 = 2 the same without obj_light_vecs_to_model
  * same code as main.bin 0c1041a0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */

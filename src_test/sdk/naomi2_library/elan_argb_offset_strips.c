@@ -15,34 +15,34 @@
 void argb_offset_strips_send(void);
 
 /* 0x0c0400f0  size 0x106  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x108
- * evidence: (r3 = vertex count from the stream; argb_offset_strips_send's registers): sends one strip without clipping: per vertex (inline or back reference) puts x, y, z, 1 through ftrv, takes the reciprocal of the first component and writes a 32-byte TA vertex through the store queue (word 0 = the store-queue address itself, i.e. a vertex parameter control word, shifted right once for the last vertex to set end-of-strip; X, Y, 1/w; the vertex's u, v; the packed base and offset color words), software-pipelined two vertices per turn with pref ahead; a following strip whose flags word has bit 7 set continues under the same header; only caller argb_offset_strips_send (flags bit 3 clear, no clipping); takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * evidence: (r3 = vertex count from the stream; argb_offset_strips_send's registers): sends one strip without clipping: per vertex (inline or back reference) puts x, y, z, 1 through ftrv, takes the reciprocal of the first component and writes a 32-byte TA vertex through the store queue (word 0 = the store-queue address itself, i.e. a vertex parameter control word, shifted right once for the last vertex to set end-of-strip; X, Y, 1/w; the vertex's u, v; the packed base and offset color words), software-pipelined two vertices per turn with pref ahead; a following strip whose flags word has bit 7 set continues under the same header; only caller argb_offset_strips_send (flags bit 3 clear, no clipping); takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: run by the harness via lit_groups_send (harness driver, matrix rect_x_proj_work) on a type -3 group after obj_vertex_hook_select(2) on a strip of (1, 0.5, -10), (-1, 0.5, -10), (0, -1, -12) with color pairs 0xFF102030/0x11223344, 0x80405060/0x55667788, 0x00A0B0C0/0x99AABBCC: three 32-byte vertices went out with X, Y, 1/w (377.94, 211.03, 0.1), (262.06, 211.03, 0.1), (320, 288.28, 1/12), u, v and both color words, the last with control word 0xF1E5E04C (end-of-strip)
  * same code as main.bin 0c104dd0 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c104cf0.s (hand-written assembly, tools/match/match.py)
  */
 void argb_offset_strip_send(void);
 
 /* 0x0c040200  size 0xf4  file by match with source
- * confidence: inferred
- * evidence: as argb_offset_strip_send for a triangle list: the stream's count is the number of triangles, each sent as a three-vertex strip (end-of-strip on every third vertex); only caller argb_offset_strips_send (flags bit 3 set, no clipping); takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: as argb_offset_strip_send for a triangle list: the stream's count is the number of triangles, each sent as a three-vertex strip (end-of-strip on every third vertex); only caller argb_offset_strips_send (flags bit 3 set, no clipping); takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: run by the harness via lit_groups_send (harness driver, matrix rect_x_proj_work) on a type -3 group after obj_vertex_hook_select(2) on a triangle list of count 2 with six vertices: six 32-byte vertices went out, the third and the sixth with bit 28 set in the control word (0xF1E5E04C, 0xF1E5E07C) and the others without, each with its own base and offset color words (0xFF102030, 0x11223344 for the first)
  * same code as main.bin 0c104ee0 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c104cf0.s (hand-written assembly, tools/match/match.py)
  */
 void argb_offset_tris_send(void);
 
 /* 0x0c040300  size 0x324  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x36e
- * evidence: (r3 = vertex count): sends one strip of an object that straddles the near limit: loads each vertex with argb_offset_vertex_load, keeps the last ones in the ring argb_offset_clip_ring (argb_offset_vertex_keep), shifts the near/far bits into r9 and, through a braf table on the last three bits, sends vertices on the visible side as they are (argb_offset_vertex_emit, argb_offset_kept_vertex_emit) and inserts points cut on the near limit (argb_offset_near_vertex_emit), restarting the strip where it re-enters; r12 bit 0 means flat shaded here (see the group routine) and runs the flat color spread for every clipped triangle of such a strip; it assumes at least three vertices (the first two are loaded and sent without the count being tested); the braf table's slots for history 000 and 111 are nop pairs no path reaches; follows bit-7 continuation strips; returns r0 = 1 and sets r12 bit 0 again; only caller argb_offset_strips_send (r12 bit 0 set, flags bit 4); takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * evidence: (r3 = vertex count): sends one strip of an object that straddles the near limit: loads each vertex with argb_offset_vertex_load, keeps the last ones in the ring argb_offset_clip_ring (argb_offset_vertex_keep), shifts the near/far bits into r9 and, through a braf table on the last three bits, sends vertices on the visible side as they are (argb_offset_vertex_emit, argb_offset_kept_vertex_emit) and inserts points cut on the near limit (argb_offset_near_vertex_emit), restarting the strip where it re-enters; r12 bit 0 means flat shaded here (see the group routine) and runs the flat color spread for every clipped triangle of such a strip; it assumes at least three vertices (the first two are loaded and sent without the count being tested); the braf table's slots for history 000 and 111 are nop pairs no path reaches; follows bit-7 continuation strips; returns r0 = 1 and sets r12 bit 0 again; only caller argb_offset_strips_send (r12 bit 0 set, flags bit 4); takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: run by the harness via lit_groups_send (harness driver, matrix rect_x_proj_work) on a type -3 group after obj_vertex_hook_select(2) straddling the near limit, a strip of A (1, 0.5, -10), B (-1, 0.5, -10), C (0, -1, 5) (C cut, offsets 0x11223344, 0x55667788, 0x0F1E2D3C): it sent A, B, the cut on A-C (X 2290, 1/w 10, 0x6B99A910 and 0x0F1F2F3E), B again and the cut on B-C (X -1650, 0x40A9B920 and 0x26364655) ending the strip, returning r0 = 1; flat (flags 0x10) gave the last three C's pair 0x20E0F000, 0x0F1E2D3C
  * same code as main.bin 0c104fe0 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c104cf0.s (hand-written assembly, tools/match/match.py)
  */
 void argb_offset_strip_send_near_clip(void);
 
 /* 0x0c040670  size 0x34  file by match with source
- * confidence: inferred
- * evidence: loads the vertex at r4 (inline, or the 8-byte back reference followed), steps r4 past it with pref ahead, puts x, y, z, 1 through ftrv, loads the vertex's two color words into fr2, fr3 and leaves r2 pointing at the vertex's u, v, which it does not load (the emit and keep routines read them through r2; fr0 and fr1 are not touched); returns fr4 = the fourth transformed component (the near-test value), fr5, fr6 = the second and third, fr7 = 1 / the first, and T = the fourth component lies on the near side of the limit in r12 (unsigned compare of the float bits); callers argb_offset_strip_send_near_clip and argb_offset_tris_send_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: loads the vertex at r4 (inline, or the 8-byte back reference followed), steps r4 past it with pref ahead, puts x, y, z, 1 through ftrv, loads the vertex's two color words into fr2, fr3 and leaves r2 pointing at the vertex's u, v, which it does not load (the emit and keep routines read them through r2; fr0 and fr1 are not touched); returns fr4 = the fourth transformed component (the near-test value), fr5, fr6 = the second and third, fr7 = 1 / the first, and T = the fourth component lies on the near side of the limit in r12 (unsigned compare of the float bits); callers argb_offset_strip_send_near_clip and argb_offset_tris_send_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: seen in its records within the harness's lit_groups_send runs (kind 2): after loading A (1, 0.5, -10) the next routine was entered with fr4-fr7 = (-10, 3779.41, 2110.29, 0.1), after C (0, -1, 5) with (5, -1600, -620.59, -0.2), and the keep that followed stored both of the vertex's color words (0xFF102030, 0x11223344 for A)
  * same code as main.bin 0c105350 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c104cf0.s (hand-written assembly, tools/match/match.py)
  */
@@ -56,41 +56,41 @@ void argb_offset_vertex_load(void);
 void argb_offset_vertex_emit(void);
 
 /* 0x0c0406e0  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: stores fr2-fr7 and the u, v it loads itself through r2 (slot layout: near-test value, second and third transformed components, 1 / the first, u, v, the two color words) in slot r11 & 3 of the four 32-byte slots at argb_offset_clip_ring; callers argb_offset_strip_send_near_clip and argb_offset_tris_send_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: stores fr2-fr7 and the u, v it loads itself through r2 (slot layout: near-test value, second and third transformed components, 1 / the first, u, v, the two color words) in slot r11 & 3 of the four 32-byte slots at argb_offset_clip_ring; callers argb_offset_strip_send_near_clip and argb_offset_tris_send_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: seen in its records within the harness's lit_groups_send runs (kind 2): with r11 = 0, 1, 2 it stored A, B and C in argb_offset_clip_ring slots 0, 1, 2 (0x0C5C9EE0, +0x20, +0x40), for A -10, 3779.41, 2110.29, 0.1, 0.25, 0.75, 0xFF102030, 0x11223344 and for C (0, -1, 5) 5, -1600, -620.59, -0.2, 1, 0, 0x20E0F000, 0x0F1E2D3C
  * same code as main.bin 0c1053c0 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c104cf0.s (hand-written assembly, tools/match/match.py)
  */
 void argb_offset_vertex_keep(void);
 
 /* 0x0c040700  size 0x32  file by match with source
- * confidence: inferred
- * evidence: copies the color pair (+0x18) of ring slot r11 into the two slots before it, so a flat-shaded triangle keeps its last vertex's color after clipping; called by argb_offset_strip_send_near_clip and argb_offset_tris_send_near_clip when r12 bit 0 is set, which on the clipped path means the strip is flat shaded (argb_offset_strips_send clears the straddling flag and sets the bit again from the strip's Gouraud bit), so it runs for every clipped triangle of a flat-shaded strip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: copies the color pair (+0x18) of ring slot r11 into the two slots before it, so a flat-shaded triangle keeps its last vertex's color after clipping; called by argb_offset_strip_send_near_clip and argb_offset_tris_send_near_clip when r12 bit 0 is set, which on the clipped path means the strip is flat shaded (argb_offset_strips_send clears the straddling flag and sets the bit again from the strip's Gouraud bit), so it runs for every clipped triangle of a flat-shaded strip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: in the harness's lit_groups_send run (kind 2) on a flat (flags 0x10) strip of A (1, 0.5, -10), B (-1, 0.5, -10), C (0, -1, 5), entered with r11 = 2 it copied slot 2's color pair 0x20E0F000, 0x0F1E2D3C to +0x18 of slots 1 and 0 (0x0C5C9F18, 0x0C5C9EF8), and the kept B and both cut points went out with that pair
  * same code as main.bin 0c1053e0 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c104cf0.s (hand-written assembly, tools/match/match.py)
  */
 void argb_offset_flat_colour_spread(void);
 
 /* 0x0c040740  size 0x36  file by match with source
- * confidence: inferred
- * evidence: (r0 = ring slot, T = last of the strip): sends ring slot r0 & 3 of argb_offset_clip_ring as a 32-byte TA vertex (X and Y times the kept 1/w), end-of-strip when T; r5 += 32; callers argb_offset_strip_send_near_clip and argb_offset_tris_send_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: (r0 = ring slot, T = last of the strip): sends ring slot r0 & 3 of argb_offset_clip_ring as a 32-byte TA vertex (X and Y times the kept 1/w), end-of-strip when T; r5 += 32; callers argb_offset_strip_send_near_clip and argb_offset_tris_send_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: in the harness's lit_groups_send run (kind 2) on the triangle A (1, 0.5, -10), B (-1, 0.5, -10), C (0, -1, 5) it sent ring slot 0 (A) and slot 1 (B) as X 377.94 and 262.06, Y 211.03 (the kept values times the kept 1/w 0.1), 1/w 0.1, u, v and both kept color words (0xFF102030, 0x11223344; 0x80405060, 0x55667788), end-of-strip clear
  * same code as main.bin 0c105420 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c104cf0.s (hand-written assembly, tools/match/match.py)
  */
 void argb_offset_kept_vertex_emit(void);
 
 /* 0x0c040780  size 0x194  file by match with source
- * confidence: inferred
- * evidence: (r0 = the ring slot at one end of the edge, r11 = the slot at the other, T = last): sends the point where the edge between the two kept vertices meets the near limit: a + t x (b - a) with a = slot r0, b = slot r11 and t = (r12 - a's near-test value) / (b's - a's) (the slots' first words, not the w whose reciprocal is sent); the callers pass the visible and the cut vertex in either order; position, u and v interpolated, the packed ARGB base color interpolated byte by byte (offset color interpolated byte by byte as well), 1/w = r7 (the header block's word +0x20); end-of-strip when T; r5 += 32; callers argb_offset_strip_send_near_clip and argb_offset_tris_send_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: (r0 = the ring slot at one end of the edge, r11 = the slot at the other, T = last): sends the point where the edge between the two kept vertices meets the near limit: a + t x (b - a) with a = slot r0, b = slot r11 and t = (r12 - a's near-test value) / (b's - a's) (the slots' first words, not the w whose reciprocal is sent); the callers pass the visible and the cut vertex in either order; position, u and v interpolated, the packed ARGB base color interpolated byte by byte (offset color interpolated byte by byte as well), 1/w = r7 (the header block's word +0x20); end-of-strip when T; r5 += 32; callers argb_offset_strip_send_near_clip and argb_offset_tris_send_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: in the harness's lit_groups_send runs (kind 2, near limit -0.1, near_inv 10), for the edges from A (0xFF102030, 0x11223344) and B (0x80405060, 0x55667788) at n -10 to C (0x20E0F000, 0x0F1E2D3C) at n 5 it sent the points at t = 0.66: X 2290 and -1650, Y 3079.1, 1/w 10, u 0.745 and 0.83, base 0x6B99A910 and 0x40A9B920, offset 0x0F1F2F3E and 0x26364655 (each byte interpolated, truncated)
  * same code as main.bin 0c105460 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c104cf0.s (hand-written assembly, tools/match/match.py)
  */
 void argb_offset_near_vertex_emit(void);
 
 /* 0x0c040920  size 0xb4  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xcc
- * evidence: (r3 = triangle count): for each triangle classifies its three vertices (argb_offset_tri_near_test): none on the near side sends them unchanged (argb_offset_vertex_load / argb_offset_vertex_emit), all three skips them, else keeps them in the ring and through a braf table on the three bits sends the visible part as a three- or four-vertex strip of kept and cut vertices (argb_offset_kept_vertex_emit, argb_offset_near_vertex_emit); r12 bit 0 means flat shaded here (see the group routine); returns r0 = 1 and sets r12 bit 0 again; only caller argb_offset_strips_send (r12 bit 0 set, flags bit 3); takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * evidence: (r3 = triangle count): for each triangle classifies its three vertices (argb_offset_tri_near_test): none on the near side sends them unchanged (argb_offset_vertex_load / argb_offset_vertex_emit), all three skips them, else keeps them in the ring and through a braf table on the three bits sends the visible part as a three- or four-vertex strip of kept and cut vertices (argb_offset_kept_vertex_emit, argb_offset_near_vertex_emit); r12 bit 0 means flat shaded here (see the group routine); returns r0 = 1 and sets r12 bit 0 again; only caller argb_offset_strips_send (r12 bit 0 set, flags bit 3); takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: run by the harness via lit_groups_send (harness driver, matrix rect_x_proj_work) on a type -3 group after obj_vertex_hook_select(2) straddling the near limit, three triangles: A (1, 0.5, -10), B, D (0, -1, -12) went out unchanged with D ending the strip, one with z 5, 6, 7 (all cut) sent nothing, and A, B, C (C at z 5) went out as the strip A, B, cut A-C, cut B-C with offsets 0x11223344, 0x55667788, 0x0F1F2F3E, 0x26364655; it returned r0 = 1
  * same code as main.bin 0c105600 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c104cf0.s (hand-written assembly, tools/match/match.py)
  */

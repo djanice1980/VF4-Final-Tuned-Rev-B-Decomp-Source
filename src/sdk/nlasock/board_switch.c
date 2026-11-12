@@ -23,9 +23,9 @@ void board_switch_request_write(uint value, sock_slot_rec *slot)
 }
 
 /* 0x0c121b40  size 0xbc  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xc0
- * evidence: (value 0 or 1): socket operation 0x14 on slot 0, blocking: -3 unless bit 27 (0x08000000) of the board record's first word is set (a board feature this needs), -2 for a value above 1, -4 when busy; posts DIMM command 0x12, waits and returns the result; nothing in the image calls it; part of NLASOCK
+ * evidence: (value 0 or 1): socket operation 0x14 on slot 0, blocking: -3 unless bit 27 (0x08000000) of the board record's first word is set (a board feature this needs), -2 for a value above 1, -4 when busy; posts DIMM command 0x12, waits and returns the result; nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): with the board word 0x600200f0 (bit 27 clear) it returned -3; with 0x680200f0 poked, value 2 gave -2, dimm_busy_word 1 gave -4, and value 1 wrote {0x14, 1, 0...} (0x60 bytes) to slot 0 at 0x0f800000, posted dimm_cmd_post(0x12, 0), waited and returned the board model's 0
  * matched: source/sdk/nlasock/board_switch.c (tools/match/match.py)
  */
 int board_switch_call(uint value)

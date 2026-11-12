@@ -262,8 +262,8 @@ out:
 }
 
 /* 0x0c06eb00  size 0x78  file by match with source
- * confidence: inferred
- * evidence: (size, surface A, surface B): finds an offset free in half 0 whose mirror (offset + the half size at vram_half0_size) is free in half 1 (vram_find_mirrored_offset_for_surface), takes it for A and the mirror for B (vram_take_range_at, linked and live), and frees A's block again when B's fails; 3 when no such offset; nothing in the image calls it; part of KamuiTL
+ * confidence: exercised
+ * evidence: (size, surface A, surface B): finds an offset free in half 0 whose mirror (offset + the half size at vram_half0_size) is free in half 1 (vram_find_mirrored_offset_for_surface), takes it for A and the mirror for B (vram_take_range_at, linked and live), and frees A's block again when B's fails; 3 when no such offset; nothing in the image calls it; part of KamuiTL; exercised 2026-11-12: called by the harness with size 0x100 on the snapshot's texture memory: A got 0x611800 in half 0 and B its mirror 0xE11800 in half 1, both blocks linked and live (0x87, 0x107); size 0x1EF000 (more than any free block of half 0) returned 3
  * same code as main.bin 0c144ac0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
@@ -424,8 +424,8 @@ int vram_free_at(int addr)
 }
 
 /* 0x0c06ef20  size 0x32  file by match with source
- * confidence: inferred
- * evidence: (address A, address B): converts a 32-bit-area address back to its 64-bit-area offset (vram32_to_64_offset) and frees the block starting there (vram_free_at); when none starts there tries B the same way; frees a buffer pair from vram32_buffer_pair_alloc by either half; only caller ta_param_area_release; part of KamuiTL
+ * confidence: exercised
+ * evidence: (address A, address B): converts a 32-bit-area address back to its 64-bit-area offset (vram32_to_64_offset) and frees the block starting there (vram_free_at); when none starts there tries B the same way; frees a buffer pair from vram32_buffer_pair_alloc by either half; only caller ta_param_area_release; part of KamuiTL; exercised 2026-11-12: called by the harness after fb_surfaces_alloc_together had taken 0x611800 in half 0: (0x708C00, 0x308C00) found no block at the first (0x611804), freed 0x611800 by the second and returned 0; after it had taken 0xE10800, (0xB08400, 0xF08400) freed it by the first; (0x123400, 0x123404) returned 7
  * same code as main.bin 0c144ee0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
@@ -598,8 +598,8 @@ int vram_largest_free_per_half(int *largest0, int *largest1)
 }
 
 /* 0x0c06f2c0  size 0x42  file by match with source
- * confidence: inferred
- * evidence: sorts the used and free lists of both halves (the record vram_halves) by start address with node_list_sort_by_start; with vram_compact_halves, the two steps of vram_pool_sort_and_compact (texture memory compaction); part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: sorts the used and free lists of both halves (the record vram_halves) by start address with node_list_sort_by_start; with vram_compact_halves, the two steps of vram_pool_sort_and_compact (texture memory compaction); part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on the snapshot's lists (half 0 used in descending order, the other three unsorted: 60, 11, 332 and 38 nodes) it left all four in ascending order of start address and returned 0
  * same code as main.bin 0c145280 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
@@ -613,8 +613,8 @@ int vram_lists_sort(void)
 }
 
 /* 0x0c06f320  size 0x36  file by match with source
- * confidence: inferred
- * evidence: runs vram_half_compact on half 0's free and used lists, then on half 1's; returns the first failure; called by vram_pool_sort_and_compact after vram_lists_sort; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: runs vram_half_compact on half 0's free and used lists, then on half 1's; returns the first failure; called by vram_pool_sort_and_compact after vram_lists_sort; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness after vram_lists_sort on the snapshot's lists: it returned 0 and left one free block in each half, 0x60F9A0 to 0x800000 (0x1F0660 bytes) and 0xE07C00 to 0x1000000 (0x1F8400), the buffers (marks 0x2000 at 0 and 0x4D4000, 8 at 0x800000) where they were
  * same code as main.bin 0c1452e0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
@@ -659,8 +659,8 @@ uint vram_page_fit_start(vram_node *node, uint size, surface_rec *surface)
 }
 
 /* 0x0c06f400  size 0x112  file by match with source
- * confidence: inferred
- * evidence: (size, surface): walks half 0's free blocks for an offset whose mirror (offset + the half size at vram_half0_size) is a free range in half 1 (vram_range_is_free): for a surface whose +0x18 flags give (flags & 0x29) == 1 it tries the starts vram_page_fit_start proposes, 2 KB apart, falling back to any 32-byte step; other surfaces any 32-byte step; -1 when none; callers surface_alloc_both_halves and surface_alloc_with_shadow (both uncalled); part of KamuiTL
+ * confidence: exercised
+ * evidence: (size, surface): walks half 0's free blocks for an offset whose mirror (offset + the half size at vram_half0_size) is a free range in half 1 (vram_range_is_free): for a surface whose +0x18 flags give (flags & 0x29) == 1 it tries the starts vram_page_fit_start proposes, 2 KB apart, falling back to any 32-byte step; other surfaces any 32-byte step; -1 when none; callers surface_alloc_both_halves and surface_alloc_with_shadow (both uncalled); part of KamuiTL; exercised 2026-11-12: called by the harness after vram_take_range_at took 0xE11800 to 0xE11840 in half 1: with size 0x20 a surface with +0x18 = 0 or 9 got 0x611840 (32-byte steps), one with +0x18 = 1 got 0x612000 (the 2 KB step after 0x611800); size 0x1EF000 returned -1
  * same code as main.bin 0c1453c0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
@@ -1410,8 +1410,8 @@ void node_list_unlink(vram_node **head, vram_node **tail, vram_node *node)
 }
 
 /* 0x0c070520  size 0xae  file by match with source
- * confidence: inferred
- * evidence: (destination, source, bytes): copies texture memory to texture memory in 2 KB pieces through a stack buffer: reads with vram64_read (from the uncached 0xa4000000 window), writes back each 32-byte line of the buffer from the operand cache (ocbwb, ocbwb_line) and writes with vram64_write; only caller vram_half_compact; part of KamuiTL
+ * confidence: exercised
+ * evidence: (destination, source, bytes): copies texture memory to texture memory in 2 KB pieces through a stack buffer: reads with vram64_read (from the uncached 0xa4000000 window), writes back each 32-byte line of the buffer from the operand cache (ocbwb, ocbwb_line) and writes with vram64_write; only caller vram_half_compact; part of KamuiTL; exercised 2026-11-12: called by the harness with texture memory at 0x700000 filled with 0x5a, +0 poked 0x01010101, +0x8FC 0x03030303 and +0x900 0x04040404: copying 0x900 bytes to 0x702000 gave 0x01010101, 0x5a bytes across the 2 KB piece boundary, 0x03030303 at +0x8FC and left +0x900 0
  * same code as main.bin 0c1464e0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
@@ -1441,8 +1441,8 @@ void vram_block_copy(int dst, int src, uint n)
 }
 
 /* 0x0c070600  size 0xb4  file by match with source
- * confidence: inferred
- * evidence: (int *head, int *tail): selection sort of a node list by start address (+0xc): repeatedly moves the node with the highest start among those not yet placed to the end; only caller vram_lists_sort; part of KamuiTL
+ * confidence: exercised
+ * evidence: (int *head, int *tail): selection sort of a node list by start address (+0xc): repeatedly moves the node with the highest start among those not yet placed to the end; only caller vram_lists_sort; part of KamuiTL; exercised 2026-11-12: called by the harness on half 0's free list as the snapshot has it (vram_halves +8 / +0xC, 11 nodes unsorted): it left the list in ascending order of start address (0x5AB560 first, 0x611800 last) and the other lists as they were
  * same code as main.bin 0c1465c0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
@@ -1831,8 +1831,8 @@ packed_chunk_rec * packed_chunk_record_take(void)
 }
 
 /* 0x0c070ea0  size 0x2c  file by match with source
- * confidence: inferred
- * evidence: clears the in-use bit of a chunk record of the pool at packed_chunk_pool (scans all 1024 for the pointer); callers vram_lists_clear, packed_tex_alloc, packed_tex_free; part of KamuiTL
+ * confidence: exercised
+ * evidence: clears the in-use bit of a chunk record of the pool at packed_chunk_pool (scans all 1024 for the pointer); callers vram_lists_clear, packed_tex_alloc, packed_tex_free; part of KamuiTL; exercised 2026-11-12: called by the harness after two packed_chunk_record_take calls: returning 0x0C5EDD24 cleared that record's bit 0 (the next take returned it again), returning 0x0C5EDD70 cleared its bit
  * same code as main.bin 0c146e60 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
@@ -1849,8 +1849,8 @@ void packed_chunk_record_return(packed_chunk_rec *chunk)
 }
 
 /* 0x0c070ee0  size 0x16  file by match with source
- * confidence: inferred
- * evidence: (int *head, record): puts a record at the head of a singly linked list (next at +4); only caller packed_tex_alloc, on the chunk list packed_chunk_list; part of KamuiTL
+ * confidence: exercised
+ * evidence: (int *head, record): puts a record at the head of a singly linked list (next at +4); only caller packed_tex_alloc, on the chunk list packed_chunk_list; part of KamuiTL; exercised 2026-11-12: called by the harness with a head word 0 in a buffer: pushing A left head A and A's +4 0; pushing B and then C left head C, C's +4 B and B's +4 A
  * same code as main.bin 0c146ea0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
@@ -1923,8 +1923,8 @@ vram_node * packed_chunk_find_shadow(int half_no, int size, packed_chunk_rec *ch
 }
 
 /* 0x0c071020  size 0x82  file by match with source
- * confidence: inferred
- * evidence: (size): the first offset, in 32-byte steps through half 0's free blocks, whose mirror (offset + the half size at vram_half0_size) is a free range in half 1 (vram_range_is_free); -1 when none; only caller packed_chunk_alloc_with_shadow; part of KamuiTL
+ * confidence: exercised
+ * evidence: (size): the first offset, in 32-byte steps through half 0's free blocks, whose mirror (offset + the half size at vram_half0_size) is a free range in half 1 (vram_range_is_free); -1 when none; only caller packed_chunk_alloc_with_shadow; part of KamuiTL; exercised 2026-11-12: called by the harness on the snapshot's lists: size 0x20 returned 0x611800 and 0x1EF000 -1; after vram_take_range_at took 0xE11800 to 0xE11840 in half 1, size 0x20 returned 0x611840 (two 32-byte steps on)
  * same code as main.bin 0c146fe0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */

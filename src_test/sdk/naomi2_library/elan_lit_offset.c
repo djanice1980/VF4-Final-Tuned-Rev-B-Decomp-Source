@@ -22,18 +22,18 @@ int lit_offset_groups_send(int *obj, obj_send_header_rec *header);
 int lit_offset_groups_send_alpha(int *obj, obj_send_header_rec *header, float alpha);
 
 /* 0x0c0421f0  size 0x2f6  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x352
- * evidence: (registers of lit_offset_groups_send_alpha, r8 = material type; r3 is not an input: the routine reads the vertex count itself from the stream, mov.l @r4+,r3 at 0x0C106ED8 and at 0x0C107100 on the unlit path, the caller leaving r4 on the count word): sends one strip without clipping as 64-byte floating-color TA vertices: per vertex the color starts from the ambient in lit_offset_ambient_scaled and adds, for each light in the mask lit_offset_group_light_mask, its color (+0x18) times the lighting term from the light_table record (0xb0 bytes; type +2: 2 directional = normal . model-space direction, 3 point and others spot: normal . direction to the model-space position over distance, with the record's values: a point or spot light adds nothing unless the squared distance is below range_sq (+0x98); its term is divided by atten[0] + atten[1] x distance + atten[2] x distance squared (+0x4c) only when that is above 1; cone_scale multiplies (cosine - cone_cos)), then multiplies by the group color lit_offset_group_colours; position through ftrv and 1/w, u, v; the offset color is (light sum - 1) x the group's offset color (lit_offset_group_colours +0x10), alpha 0, so the light above full strength drives a second color; continuation strips (bit 7); for an unlit group (r8 < 0) the path at 0c107100 sends 32-byte vertices with both intensities 1.0; only caller lit_offset_groups_send_alpha; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * evidence: (registers of lit_offset_groups_send_alpha, r8 = material type; r3 is not an input: the routine reads the vertex count itself from the stream, mov.l @r4+,r3 at 0x0C106ED8 and at 0x0C107100 on the unlit path, the caller leaving r4 on the count word): sends one strip without clipping as 64-byte floating-color TA vertices: per vertex the color starts from the ambient in lit_offset_ambient_scaled and adds, for each light in the mask lit_offset_group_light_mask, its color (+0x18) times the lighting term from the light_table record (0xb0 bytes; type +2: 2 directional = normal . model-space direction, 3 point and others spot: normal . direction to the model-space position over distance, with the record's values: a point or spot light adds nothing unless the squared distance is below range_sq (+0x98); its term is divided by atten[0] + atten[1] x distance + atten[2] x distance squared (+0x4c) only when that is above 1; cone_scale multiplies (cosine - cone_cos)), then multiplies by the group color lit_offset_group_colours; position through ftrv and 1/w, u, v; the offset color is (light sum - 1) x the group's offset color (lit_offset_group_colours +0x10), alpha 0, so the light above full strength drives a second color; continuation strips (bit 7); for an unlit group (r8 < 0) the path at 0c107100 sends 32-byte vertices with both intensities 1.0; only caller lit_offset_groups_send_alpha; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: called through a register driver that sets every register, T and XMTRX with ambient .25, mask 3, light 0 directional (0, 0, 1) color 1, light 1 point at (1, 2, 7) color .3, range_sq 100, atten (1, .5, 0), group colors (1, .5, .25, .125, 9, .5, .25, 2): strips of two and one: (1, 2, 3) sum 1.35 gave base (1, .675, .3375, .16875) and offset (0, .175, .0875, .7); (2, 1, .25) and (1, 1, 3) gave the predicted sums 1.316, 1.345; strip ends on 2 and 3; unlit: 32-byte vertices, intensities 1.0
  * same code as main.bin 0c106ed0 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c106a70.s (hand-written assembly, tools/match/match.py)
  */
 void lit_offset_strip_send(void);
 
 /* 0x0c042550  size 0x2ca  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x306
- * evidence: as lit_offset_strip_send for a triangle list (the triangle count is read from the stream into r9; end-of-strip every third vertex; the unlit variant at 0c107430); only caller lit_offset_groups_send_alpha; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * evidence: as lit_offset_strip_send for a triangle list (the triangle count is read from the stream into r9; end-of-strip every third vertex; the unlit variant at 0c107430); only caller lit_offset_groups_send_alpha; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: called through a register driver that sets every register, T and XMTRX with lit_offset_strip_send's inputs (ambient .25, mask 3, light 0 directional (0, 0, 1) color 1, light 1 point at (1, 2, 7) color .3, range_sq 100, atten (1, .5, 0), group colors (1, .5, .25, .125, 9, .5, .25, 2)) as one triangle: the same three lit vertices (sums 1.35, 1.316, 1.345: base = group color x sum, offset = offset color x (sum - 1), alpha 0), end of strip only on the third, r4 on the word after; unlit (r8 -1) three 32-byte vertices with intensities 1.0
  * same code as main.bin 0c107230 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c106a70.s (hand-written assembly, tools/match/match.py)
  */
@@ -55,32 +55,32 @@ void lit_offset_strip_send_near_clip(void);
 void lit_offset_vertex_load(void);
 
 /* 0x0c042c12  size 0x5c  file by match with source
- * confidence: inferred
- * evidence: writes the vertex lit_offset_vertex_load produced as a 64-byte floating-color TA vertex (X, Y, 1/w, u, v, base color, offset color from the light above 1.0), counting r3 down and marking end-of-strip at 0; r5 += 64; callers lit_offset_strip_send_near_clip and lit_offset_tris_send_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: writes the vertex lit_offset_vertex_load produced as a 64-byte floating-color TA vertex (X, Y, 1/w, u, v, base color, offset color from the light above 1.0), counting r3 down and marking end-of-strip at 0; r5 += 64; callers lit_offset_strip_send_near_clip and lit_offset_tris_send_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through the register driver with x', y' (2, 4), 1/w 0.5, base (1, .5, .25, .125), u .25, v .75, r8 0, light sum (1.5, 2, 1) in fr13-fr15 and lit_offset_group_colours[4..7] (9, .5, .25, 2), r6 a scratch buffer: r3 2 wrote control word r6, X 1, Y 2, 1/w .5, u, v, the base color and offset (0, .25, .25, 0), r3 1, T 0, r5 and r6 +64; r3 1 with r8 -1 wrote control word r6 >> 1, offset 0, T 1, r3 0
  * same code as main.bin 0c1078f2 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c106a70.s (hand-written assembly, tools/match/match.py)
  */
 void lit_offset_vertex_emit(void);
 
 /* 0x0c042c6e  size 0x4c  file by match with source
- * confidence: inferred
- * evidence: stores the lit vertex (position, u, v, color, offset color) in slot r11 & 3 of the four 64-byte slots at lit_offset_clip_ring; callers lit_offset_strip_send_near_clip and lit_offset_tris_send_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: stores the lit vertex (position, u, v, color, offset color) in slot r11 & 3 of the four 64-byte slots at lit_offset_clip_ring; callers lit_offset_strip_send_near_clip and lit_offset_tris_send_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through the register driver: r11 5, r8 0, light sum (1.5, 2, 1), lit_offset_group_colours[4..7] (9, .5, .25, 2) stored (-3.5, 2, 2, .25, u .25, v .75, base 1, .5, .25, .125, offset 0, .25, .25, 0) in slot 1 of lit_offset_clip_ring; r11 2 with r8 -1 stored the second vertex in slot 2 with offset zeros; slots 0 and 3 and words +24, +28 kept their fill
  * same code as main.bin 0c10794e (ghidra/TransferFromMain.java)
  * matched: source/asm/0c106a70.s (hand-written assembly, tools/match/match.py)
  */
 void lit_offset_vertex_keep(void);
 
 /* 0x0c042cba  size 0x3e  file by match with source
- * confidence: inferred
- * evidence: as argb_flat_colour_spread for the 64-byte slots of lit_offset_clip_ring: copies slot r11's color to the two slots before it; called by lit_offset_strip_send_near_clip and lit_offset_tris_send_near_clip when r12 bit 0 is set, which in the clipping senders means the strip is flat shaded (the group routine clears the straddling flag and sets the bit again from the strip's Gouraud bit), so it runs for exactly those strips; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: as argb_flat_colour_spread for the 64-byte slots of lit_offset_clip_ring: copies slot r11's color to the two slots before it; called by lit_offset_strip_send_near_clip and lit_offset_tris_send_near_clip when r12 bit 0 is set, which in the clipping senders means the strip is flat shaded (the group routine clears the straddling flag and sets the bit again from the strip's Gouraud bit), so it runs for exactly those strips; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through the register driver with lit_offset_clip_ring filled with the floats 0..63: r11 0 copied slot 0's base and offset colors (+32..+63) into slots 3 and 2; r11 6 copied slot 2's into slots 1 and 0; everything else unchanged
  * same code as main.bin 0c10799a (ghidra/TransferFromMain.java)
  * matched: source/asm/0c106a70.s (hand-written assembly, tools/match/match.py)
  */
 void lit_offset_flat_colour_spread(void);
 
 /* 0x0c042cf8  size 0x52  file by match with source
- * confidence: inferred
- * evidence: (r0 = slot, T = last): sends ring slot r0 & 3 of lit_offset_clip_ring as a 64-byte TA vertex, end-of-strip when T; r5 += 64; callers lit_offset_strip_send_near_clip and lit_offset_tris_send_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: (r0 = slot, T = last): sends ring slot r0 & 3 of lit_offset_clip_ring as a 64-byte TA vertex, end-of-strip when T; r5 += 64; callers lit_offset_strip_send_near_clip and lit_offset_tris_send_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through the register driver with lit_offset_clip_ring filled with 0..63: r0 1, T 0 sent slot 1 as control word r6, X 17 x 19, Y 18 x 19, 1/w 19, u 20, v 21, base 24-27, offset 28-31, r5 and r6 +64; r0 6, T 1 sent slot 2 with control word 0xf0000000
  * same code as main.bin 0c1079d8 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c106a70.s (hand-written assembly, tools/match/match.py)
  */
@@ -94,9 +94,9 @@ void lit_offset_kept_vertex_emit(void);
 void lit_offset_near_vertex_emit(void);
 
 /* 0x0c042e40  size 0xb4  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xcc
- * evidence: as argb_tris_send_near_clip for lit triangles: per triangle lit_offset_tri_near_test, none near sent as is, all three skipped, else the visible part through a braf table of kept and cut vertices; returns r0 = 1, r12 bit 0 set; only caller lit_offset_groups_send_alpha (r12 bit 0, flags bit 3); takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * evidence: as argb_tris_send_near_clip for lit triangles: per triangle lit_offset_tri_near_test, none near sent as is, all three skipped, else the visible part through a braf table of kept and cut vertices; returns r0 = 1, r12 bit 0 set; only caller lit_offset_groups_send_alpha (r12 bit 0, flags bit 3); takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: called through a register driver that sets every register, T and XMTRX, unlit (r8 -1), XMTRX (z+.5, 2x, y), near limit -1, near_inv 0.5, two triangles: one wholly beyond the limit went out as its three vertices, end of strip on the third; one with its third vertex near went out as v1, v2, cut(v1,v3) at X 1, Y .58333, v .8333 and cut(v2,v3) at X 1.16667, Y .5, u .16667 with end of strip; r0 1, r12 bit 0 set, r4 past the list
  * same code as main.bin 0c107b20 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c106a70.s (hand-written assembly, tools/match/match.py)
  */

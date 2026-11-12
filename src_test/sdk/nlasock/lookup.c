@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c0547c0  size 0x5a  file by match with source
- * confidence: inferred
- * evidence: (host name, slot record): writes a 0x60-byte request {operation, request address + 0x20, name length} with the name (up to 64 bytes) at +0x20, by PIO; caller host_lookup; part of NLASOCK
+ * confidence: exercised
+ * evidence: (host name, slot record): writes a 0x60-byte request {operation, request address + 0x20, name length} with the name (up to 64 bytes) at +0x20, by PIO; caller host_lookup; part of NLASOCK; exercised 2026-11-12: called by the harness on slot 0 (op poked 6): "naominet.jp" gave dimm_pio_write of 0x60 bytes {6, 0x0f800020, 11, 0...} with the name at +0x20 to 0x0f800000; a 70-character name put length 70 and only its first 64 bytes (strncpy 64)
  * same code as main.bin 0c121fc0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/nlasock/lookup.c (tools/match/match.py)
  */

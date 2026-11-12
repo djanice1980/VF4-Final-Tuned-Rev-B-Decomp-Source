@@ -126,8 +126,8 @@ int list_tile_clip_param_write(vertex_buffer_desc_rec *desc, uint list, int x_mi
 }
 
 /* 0x0c13eea0  size 0x16  file by match with source
- * confidence: inferred
- * evidence: returns the address of the write pointer of the list strips go to (list_write_ptrs[strip_list_type]); nothing in the image calls it (uncalled code, made a function 2026-11-09); between list_tile_clip_param_write and listbuf_lay_out_four, so by link order part of sdk/kamui/list_writes.c
+ * confidence: exercised
+ * evidence: returns the address of the write pointer of the list strips go to (list_write_ptrs[strip_list_type]); nothing in the image calls it (uncalled code, made a function 2026-11-09); between list_tile_clip_param_write and listbuf_lay_out_four, so by link order part of sdk/kamui/list_writes.c; exercised 2026-11-12: called by the harness with list_write_ptrs at list_cursors (0c5d5ce0, the snapshot's) and strip_list_type poked 1 it returned 0c5d5ce4, with type 4 0c5d5cf0
  * matched: source/sdk/kamui/list_writes.c (tools/match/match.py)
  */
 uint * strip_list_write_ptr_addr(void)

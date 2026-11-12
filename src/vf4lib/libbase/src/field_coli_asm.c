@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c04f520  size 0x88  file by match with source
- * confidence: inferred
- * evidence: Hand-written: (vertex pointer list, count, normal, point): for each edge takes the cross product of the edge and the point offset and its dot product with the normal; returns 1 when every one is above 0 (the point is inside the convex polygon; a point exactly on an edge is not), else 0. Nothing in the image calls it; part of vf4lib/libbase/src/field_coli_asm.c
+ * confidence: exercised
+ * evidence: Hand-written: (vertex pointer list, count, normal, point): for each edge takes the cross product of the edge and the point offset and its dot product with the normal; returns 1 when every one is above 0 (the point is inside the convex polygon; a point exactly on an edge is not), else 0. Nothing in the image calls it; part of vf4lib/libbase/src/field_coli_asm.c; exercised 2026-11-12: called by the harness with the vertex pointer list of a planted square ((0,0,0), (0,0,1), (1,0,1), (1,0,0), closed), count 4 and normal (0,1,0): (0.5, 0, 0.5) and (0.5, 5, 0.5) returned 1, (1.5, 0, 0.5) 0 and the edge point (0, 0, 0.5) 0; with the list in the opposite order (0.5, 0, 0.5) returned 0
  * convention: __keeps_r1_fr11 (AssignCallEffects)
  * matched: source/asm/0c04f520.s (hand-written assembly, tools/match/match.py)
  */

@@ -2626,8 +2626,8 @@ void action_18_update(rob_rec *rob)
 }
 
 /* 0x0c076bc0  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: (rob): rob_action_handlers start for type 19: clears the current action (+0x60), step +5 and +0x100 and starts the request's move at once; part of vf4lib/libaction/src/rob_action.c
+ * confidence: exercised
+ * evidence: (rob): rob_action_handlers start for type 19: clears the current action (+0x60), step +5 and +0x100 and starts the request's move at once; part of vf4lib/libaction/src/rob_action.c; exercised 2026-11-12: called by the harness on robs[0] with +0x60 poked 0x12345678, +5 3 and +0x100 753: request +0x64 0x130080E1 gave rob_move_set(robs[0], 0xE1), request 0x13000005 rob_move_set(robs[0], 5), and both times +0x60, +5 and +0x100 were 0 afterwards
  * matched: source/vf4lib/libaction/src/rob_action.c (tools/match/match.py)
  */
 void action_19_start(rob_rec *rob)
@@ -2640,8 +2640,8 @@ void action_19_start(rob_rec *rob)
 }
 
 /* 0x0c076c00  size 0x12  file by match with source
- * confidence: inferred
- * evidence: (rob): rob_action_handlers update for type 19: clears +0x60 (ends the action); 16 bytes Ghidra did not list (only the table points at it); part of the proposed rob_action.c
+ * confidence: exercised
+ * evidence: (rob): rob_action_handlers update for type 19: clears +0x60 (ends the action); 16 bytes Ghidra did not list (only the table points at it); part of the proposed rob_action.c; exercised 2026-11-12: called by the harness with robs[1] (+0x60 poked 0x12345678) it left robs[1] +0x60 0 and robs[0] +0x60 0x070000E1 as it was
  * matched: source/vf4lib/libaction/src/rob_action.c (tools/match/match.py)
  */
 void action_19_update(rob_rec *rob)
@@ -2685,8 +2685,8 @@ void action_20_start(rob_rec *rob)
 }
 
 /* 0x0c076d00  size 0x12  file by match with source
- * confidence: inferred
- * evidence: (rob): rob_action_handlers update for type 20: clears +0x60, the same 16 bytes as action_19_update; Ghidra did not list it; part of the proposed rob_action.c
+ * confidence: exercised
+ * evidence: (rob): rob_action_handlers update for type 20: clears +0x60, the same 16 bytes as action_19_update; Ghidra did not list it; part of the proposed rob_action.c; exercised 2026-11-12: called by the harness with robs[0] it left robs[0] +0x60 0 (from 0x070000E1) and robs[1] +0x60 0x13BE as it was
  * matched: source/vf4lib/libaction/src/rob_action.c (tools/match/match.py)
  */
 void action_20_update(rob_rec *rob)
@@ -2696,9 +2696,9 @@ void action_20_update(rob_rec *rob)
 }
 
 /* 0x0c076d20  size 0x64  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x72
- * evidence: (rob): rob_action_handlers start for type 27: the action word +0x60 = the request with the move replaced by basic entry 0x57 for +0x66 bit 1 (skipped while +0x20 bit 12) or 0x56 for bit 0, else the request's move; clears +5; Ghidra did not list it (0x0C076D20-0x0C076D9F); part of the proposed rob_action.c
+ * evidence: (rob): rob_action_handlers start for type 27: the action word +0x60 = the request with the move replaced by basic entry 0x57 for +0x66 bit 1 (skipped while +0x20 bit 12) or 0x56 for bit 0, else the request's move; clears +5; Ghidra did not list it (0x0C076D20-0x0C076D9F); part of the proposed rob_action.c; exercised 2026-11-12: called by the harness on robs[0] (basic entries 0x56 / 0x57 = 0x11D / 0x11E, +0x60 poked 0xDEADBEEF, +5 3): request 0x1B0000E1 gave +0x60 0x1B0000E1, 0x1B0100E1 0x1B01011D, 0x1B0200E1 and 0x1B0300E1 0x1B02011E / 0x1B03011E, each with +5 0; 0x1B0200E1 with +0x20 bit 12 set left +0x60 and +5 untouched
  * matched: source/vf4lib/libaction/src/rob_action.c (tools/match/match.py)
  */
 void action_27_start(rob_rec *rob)
@@ -2722,8 +2722,8 @@ void action_27_start(rob_rec *rob)
 }
 
 /* 0x0c076da0  size 0x34  file by match with source
- * confidence: inferred
- * evidence: (rob): rob_action_handlers update for type 27: plays the move once (step +5); part of vf4lib/libaction/src/rob_action.c
+ * confidence: exercised
+ * evidence: (rob): rob_action_handlers update for type 27: plays the move once (step +5); part of vf4lib/libaction/src/rob_action.c; exercised 2026-11-12: called by the harness in one sandbox on robs[0] with +0x60 0x1B0000E1 and +5 0: it called rob_move_set(robs[0], 0xE1) and left +5 1; a second call made no call and left +5 1 (with 0x1B000005 it called rob_move_set(robs[0], 5))
  * matched: source/vf4lib/libaction/src/rob_action.c (tools/match/match.py)
  */
 void action_27_update(rob_rec *rob)
@@ -2896,8 +2896,8 @@ int throw_position_follow(rob_rec *rob, rob_rec *opp)
 }
 
 /* 0x0c077180  size 0xa8  file by match with source
- * confidence: inferred
- * evidence: (rob, partner, out): the offset between the two robs' hold points (rob_base_pos_get with 1.0) turned by the partner's record facing and taken between both record positions (+0x584 +0x60), y = partner record +0x64 - rob height +0x88; caller throw_position_follow; part of vf4lib/libaction/src/rob_action.c
+ * confidence: exercised
+ * evidence: (rob, partner, out): the offset between the two robs' hold points (rob_base_pos_get with 1.0) turned by the partner's record facing and taken between both record positions (+0x584 +0x60), y = partner record +0x64 - rob height +0x88; caller throw_position_follow; part of vf4lib/libaction/src/rob_action.c; exercised 2026-11-12: called by the harness (robs[0], robs[1], out): out was (0.06723, 0, -1.51204), equal to robs[0]'s minus robs[1]'s rob_base_pos_get(.., 1.0) turned by vec3_rot_y_s16 with robs[1]'s old-record heading 0x81B8, plus robs[1]'s minus robs[0]'s old-record +0x60 position; with robs[0] +0x88 poked 3.5 y became 0.5 (4 - 3.5); reversed it gave (-0.06016, 0, 1.37955), predicted the same way
  * matched: source/vf4lib/libaction/src/rob_action.c (tools/match/match.py)
  */
 void throw_offset_compute(rob_rec *rob, rob_rec *opp, float *out)

@@ -7,9 +7,9 @@
 #include "vf4ft.h"
 
 /* 0x0c12c500  size 0x1a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x28
- * evidence: (condition): when the condition is 0 writes magenta (0xff00ff) to the border color register of both chips (0xa85f8040) and spins forever; the same check that opens several KamuiTL objects, here at the start of this object; caller check_pass_stub; part of the unidentified game-built graphics library (helper object, 0x0C12C500-0x0C12C75F)
+ * evidence: (condition): when the condition is 0 writes magenta (0xff00ff) to the border color register of both chips (0xa85f8040) and spins forever; the same check that opens several KamuiTL objects, here at the start of this object; caller check_pass_stub; part of the unidentified game-built graphics library (helper object, 0x0C12C500-0x0C12C75F); exercised 2026-11-12: called by the harness: with 1 and with 5 it returned at once; with 0 it wrote 0xff00ff to 0xa85f8040 and did not return within its budget
  * matched: source/gfxlib/gfx_helpers.c (tools/match/match.py)
  */
 void check_or_magenta_halt(int condition)

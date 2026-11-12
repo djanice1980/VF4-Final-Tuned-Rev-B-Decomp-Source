@@ -19,8 +19,8 @@ void mtx_xform_points(float (*src)[3], float (*dst)[3], int count)
 }
 
 /* 0x0c1330a0  size 0x3e  file by match with source
- * confidence: inferred
- * evidence: like mtx_xform_points but through mtx_xform_dir, which takes w as 0, so directions are rotated and scaled but not moved; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: like mtx_xform_points but through mtx_xform_dir, which takes w as 0, so directions are rotated and scaled but not moved; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the snapshot's current matrix M0 (a Y turn, X axis (0.2017, 0, 0.9795), translation (-0.096, -5, -3.945)), src (1, 0, 0), (0, 2, 3), (9, 9, 9) and count 2: dst got (0.2017, 0, 0.9795) and (-2.938, 2, 0.6050), rotated with no translation, and the third dst vector kept its 77s
  * matched: source/sdk/naomi_library/matrix.c (tools/match/match.py)
  */
 void mtx_xform_dirs(float (*src)[3], float (*dst)[3], int count)
@@ -31,8 +31,8 @@ void mtx_xform_dirs(float (*src)[3], float (*dst)[3], int count)
 }
 
 /* 0x0c133100  size 0x24  file by match with source
- * confidence: inferred
- * evidence: spills the current matrix into the active stack's top slot (mtx_store_wordwise(0)), puts the top back at the stack's base, sets the depth to 0 and reloads the base slot, i.e. returns to the matrix that was current before the first push; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: spills the current matrix into the active stack's top slot (mtx_store_wordwise(0)), puts the top back at the stack's base, sets the depth to 0 and reloads the base slot, i.e. returns to the matrix that was current before the first push; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the snapshot's current matrix M0 (a Y turn, X axis (0.2017, 0, 0.9795), translation (-0.096, -5, -3.945)), the active stack poked to depth 2 with top at base+0x80 and the base slot filled with 0.5, 1 ... 8: M0 was stored at base+0x80, top went back to base, depth to 0, and the current matrix at the return (traced loader) was 0.5, 1 ... 8
  * matched: source/sdk/naomi_library/matrix.c (tools/match/match.py)
  */
 void mtx_pop_all(void)
@@ -45,9 +45,9 @@ void mtx_pop_all(void)
 }
 
 /* 0x0c133140  size 0x3e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x54
- * evidence: (dst, src): copies 16 floats from src to dst; a null dst loads src as the current matrix (mtx_set_current_wordwise), a null src stores the current matrix to dst (mtx_store_wordwise); used by the inverse, cofactor and peek routines; part of the NAOMI library; checked against reference material (not in this repo)
+ * evidence: (dst, src): copies 16 floats from src to dst; a null dst loads src as the current matrix (mtx_set_current_wordwise), a null src stores the current matrix to dst (mtx_store_wordwise); used by the inverse, cofactor and peek routines; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the snapshot's current matrix M0 (a Y turn, X axis (0.2017, 0, 0.9795), translation (-0.096, -5, -3.945)): (buf, src of 0.5, 1 ... 8) copied the 16 floats; (buf, null) stored M0; (null, src) left 0.5, 1 ... 8 as the current matrix (the traced mtx_set_current_wordwise's back bank at its return)
  * matched: source/sdk/naomi_library/matrix.c (tools/match/match.py)
  */
 void mtx_copy_or_current(float *dst, float *src)
@@ -71,18 +71,17 @@ void mtx_copy_or_current(float *dst, float *src)
 }
 
 /* 0x0c1331a0  size 0x2a  file by match with source
- * confidence: inferred
- * evidence: copies the matrix (null: the current one) to the stack, factors the copy with mtx_lu_pivoted and leaves its result, the determinant, in fr0; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: copies the matrix (null: the current one) to the stack, factors the copy with mtx_lu_pivoted and leaves its result, the determinant, in fr0; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with diag(2, 3, 4, 1) (row 3 starting 7) fr0 held 24, with a row swap of diag(1, 1, 5, 1) -5 (the matrix itself unchanged), and with null 1.0000001, the snapshot's current rotation
  * matched: source/sdk/naomi_library/matrix.c (tools/match/match.py)
  */
-void mtx_determinant(float *mtx)
+float mtx_determinant(float *mtx)
 {
   char order [4];
   float copy [16];
   
   mtx_copy_or_current(copy,mtx);
-  mtx_lu_pivoted(copy,order);
-  return;
+  return mtx_lu_pivoted(copy,order);
 }
 
 /* 0x0c1331e0  size 0x1c  file by match with source
@@ -102,8 +101,8 @@ float * mtx_store_wordwise(float *mtx)
 }
 
 /* 0x0c133220  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: stores the upper-left 3x3 of the current matrix as nine packed floats (xmtrx_to_3x3_packed); returns 0 for a null pointer, else the pointer; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: stores the upper-left 3x3 of the current matrix as nine packed floats (xmtrx_to_3x3_packed); returns 0 for a null pointer, else the pointer; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the snapshot's current matrix M0 (a Y turn, X axis (0.2017, 0, 0.9795), translation (-0.096, -5, -3.945)) into a buffer of 0x55 bytes: nine packed floats 0.2017, 0, 0.9795, 0, 1, 0, -0.9795, 0, 0.2017, the tenth word still 0x55555555, returning the pointer; with null it returned 0
  * matched: source/sdk/naomi_library/matrix.c (tools/match/match.py)
  */
 float * mtx_store_3x3(float *dst)
@@ -118,8 +117,8 @@ float * mtx_store_3x3(float *dst)
 }
 
 /* 0x0c133240  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: stores the upper-left 3x3 of the current matrix into three rows of four floats, leaving the fourth float of each row as it was (xmtrx_to_3x3_in_4x4, 44 bytes); returns 0 for a null pointer, else the pointer; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: stores the upper-left 3x3 of the current matrix into three rows of four floats, leaving the fourth float of each row as it was (xmtrx_to_3x3_in_4x4, 44 bytes); returns 0 for a null pointer, else the pointer; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the snapshot's current matrix M0 (a Y turn, X axis (0.2017, 0, 0.9795), translation (-0.096, -5, -3.945)) into a buffer of 0x55 bytes: rows (0.2017, 0, 0.9795), (0, 1, 0), (-0.9795, 0, 0.2017) at a 16-byte stride, each fourth word and everything from byte 44 still 0x55555555, returning the pointer; with null it returned 0
  * matched: source/sdk/naomi_library/matrix.c (tools/match/match.py)
  */
 float * mtx_store_3x3_stride4(float *dst)
@@ -134,8 +133,8 @@ float * mtx_store_3x3_stride4(float *dst)
 }
 
 /* 0x0c133260  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: stores the current matrix without its fourth column: four rows of three floats, the last row the translation (xmtrx_to_4x3); returns 0 for a null pointer, else the pointer; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: stores the current matrix without its fourth column: four rows of three floats, the last row the translation (xmtrx_to_4x3); returns 0 for a null pointer, else the pointer; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the snapshot's current matrix M0 (a Y turn, X axis (0.2017, 0, 0.9795), translation (-0.096, -5, -3.945)) into a buffer of 0x55 bytes: twelve floats, the three axes and then the translation (-0.0961, -5, -3.9447), the 13th word still 0x55555555, returning the pointer; with null it returned 0
  * matched: source/sdk/naomi_library/matrix.c (tools/match/match.py)
  */
 float * mtx_store_4x3(float *dst)
@@ -163,9 +162,9 @@ float * mtx_store(float *mtx)
 }
 
 /* 0x0c1332c0  size 0x82  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x9a
- * evidence: replaces the three upper rows of the matrix (null: the current one, through a stack copy) with the cross products of the other two rows (r1 x r2, r2 x r0, r0 x r1, vec3_cross): the cofactor matrix normals are carried by when the matrix scales unevenly; the fourth row is kept; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * evidence: replaces the three upper rows of the matrix (null: the current one, through a stack copy) with the cross products of the other two rows (r1 x r2, r2 x r0, r0 x r1, vec3_cross): the cofactor matrix normals are carried by when the matrix scales unevenly; the fourth row is kept; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with rows (1, 2, 3, 9), (4, 5, 6, 9), (7, 8, 10, 9), (11, 12, 13, 1): the rows became (2, 2, -3, 9), (4, -11, 6, 9), (-3, 6, -3, 9), the crosses r1 x r2, r2 x r0, r0 x r1 with each fourth float kept, and the fourth row stayed (11, 12, 13, 1)
  * matched: source/sdk/naomi_library/matrix.c (tools/match/match.py)
  */
 void mtx_cofactor_rows(float *mtx)
@@ -255,8 +254,8 @@ int mtx_stacks_start(float *buffer, int depth)
 }
 
 /* 0x0c1334a0  size 0x150  file by match with source
- * confidence: inferred
- * evidence: inverts the matrix (null: the current one) in place: factors it with mtx_lu_pivoted, solves for each column of the identity by forward and back substitution in the row order the pivoting chose, copies the result back (mtx_copy_or_current) and reloads it when it was the current matrix; returns the determinant (0 leaves the matrix factored but not inverted); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: inverts the matrix (null: the current one) in place: factors it with mtx_lu_pivoted, solves for each column of the identity by forward and back substitution in the row order the pivoting chose, copies the result back (mtx_copy_or_current) and reloads it when it was the current matrix; returns the determinant (0 leaves the matrix factored but not inverted); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with rows (2, 1, 0, 0), (1, 3, 1, 0), (0, 1, 4, 0), (5, 6, 7, 1) it returned 18 and left the inverse in place (0.6111, -0.2222, 0.0556 ...; translation -2.111, -0.7778, -1.556); with a singular one (row 2 = 2 x row 1) it returned 0 and the matrix was factored, not inverted; with null the inverse of the snapshot's rotation (det 1) went to the top slot and became current
  * matched: source/sdk/naomi_library/matrix.c (tools/match/match.py)
  */
 float mtx_inverse_lu(float *mtx)
@@ -305,8 +304,8 @@ float mtx_inverse_lu(float *mtx)
 }
 
 /* 0x0c133600  size 0x18  file by match with source
- * confidence: inferred
- * evidence: for a non-null pointer, xmtrx_from_3x3_packed: nine packed floats become the upper-left 3x3 of the current matrix with zeros in its fourth column; the translation row is kept; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: for a non-null pointer, xmtrx_from_3x3_packed: nine packed floats become the upper-left 3x3 of the current matrix with zeros in its fourth column; the translation row is kept; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the snapshot's current matrix M0 (a Y turn, X axis (0.2017, 0, 0.9795), translation (-0.096, -5, -3.945)) and nine floats 1 ... 9: the back bank at the return (in the log) was rows (1, 2, 3, 0), (4, 5, 6, 0), (7, 8, 9, 0) with M0's translation row (-0.0961, -5, -3.9447, 1) kept
  * matched: source/sdk/naomi_library/matrix.c (tools/match/match.py)
  */
 void mtx_set_rot_3x3(float *src)
@@ -331,8 +330,8 @@ void mtx_set_rot_3x3_stride4(float *src)
 }
 
 /* 0x0c133640  size 0x18  file by match with source
- * confidence: inferred
- * evidence: for a non-null pointer, xmtrx_from_4x3: four rows of three floats become the current matrix, its fourth column (0, 0, 0, 1); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: for a non-null pointer, xmtrx_from_4x3: four rows of three floats become the current matrix, its fourth column (0, 0, 0, 1); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the snapshot's current matrix M0 (a Y turn, X axis (0.2017, 0, 0.9795), translation (-0.096, -5, -3.945)) and twelve floats 1 ... 12: the back bank at the return (in the log) was rows (1, 2, 3, 0), (4, 5, 6, 0), (7, 8, 9, 0), (10, 11, 12, 1)
  * matched: source/sdk/naomi_library/matrix.c (tools/match/match.py)
  */
 void mtx_set_from_4x3(float *src)
@@ -344,8 +343,8 @@ void mtx_set_from_4x3(float *src)
 }
 
 /* 0x0c133660  size 0xa4  file by match with source
- * confidence: inferred
- * evidence: (eye, target, 16-bit roll): rotates about Z by the roll (mtx_rot_z_s16) when it is not 0, then about X and Y by sine/cosine pairs taken from the eye-to-target direction (mtx_rot_x_sincos, mtx_rot_y_sincos, with reciprocal square roots from rsqrt_float of the horizontal and full lengths), then moves by minus the eye (mtx_translate_by_minus_v): a camera matrix looking from the eye at the target; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (eye, target, 16-bit roll): rotates about Z by the roll (mtx_rot_z_s16) when it is not 0, then about X and Y by sine/cosine pairs taken from the eye-to-target direction (mtx_rot_x_sincos, mtx_rot_y_sincos, with reciprocal square roots from rsqrt_float of the horizontal and full lengths), then moves by minus the eye (mtx_translate_by_minus_v): a camera matrix looking from the eye at the target; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the snapshot's current matrix M0 (a Y turn, X axis (0.2017, 0, 0.9795), translation (-0.096, -5, -3.945)), eye (1, 2, 3), target (4, 6, -9): the matrix it multiplied in (back bank at the return times M0's inverse) took the eye to (0, 0, 0) and the target to (0, 0, -13) on the view axis; with roll 0x2000 the target stayed at (0, 0, -13) and the point above the eye turned 45 degrees about Z, (0, 0.9515) to (-0.6728, 0.6728)
  * matched: source/sdk/naomi_library/matrix.c (tools/match/match.py)
  */
 void mtx_mul_eye_to_target_roll(float *eye, float *target, uint roll)
@@ -370,8 +369,8 @@ void mtx_mul_eye_to_target_roll(float *eye, float *target, uint roll)
 }
 
 /* 0x0c133720  size 0xcc  file by match with source
- * confidence: inferred
- * evidence: (eye, target, up): forward = target - eye, side = up x forward, up' = forward x side (vec3_cross), all three normalized (vec3_normalize) and multiplied into the current matrix as its axes (mtx_mul_by), then moves by minus the eye (mtx_translate_by_minus_v); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (eye, target, up): forward = target - eye, side = up x forward, up' = forward x side (vec3_cross), all three normalized (vec3_normalize) and multiplied into the current matrix as its axes (mtx_mul_by), then moves by minus the eye (mtx_translate_by_minus_v); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the snapshot's current matrix M0 (a Y turn, X axis (0.2017, 0, 0.9795), translation (-0.096, -5, -3.945)), eye (1, 2, 3), target (4, 6, -9), up (0, 1, 0): the matrix it multiplied in (back bank at the return times M0's inverse) took the eye to (0, 0, 0), the target to (0, 0, 13) on the forward axis and the eye plus up to (0, 0.9515, 0.3077), in the up half of the x = 0 plane
  * matched: source/sdk/naomi_library/matrix.c (tools/match/match.py)
  */
 void mtx_mul_eye_target_up(float *eye, float *target, float *up)
@@ -476,8 +475,8 @@ void mtx_set_current(float *mtx)
 }
 
 /* 0x0c133980  size 0x156  file by match with source
- * confidence: inferred
- * evidence: (matrix or null for the current one, char[4] row order): LU factorization in place with scaled partial pivoting (each row scaled by 1 over its largest element; the row order recorded instead of moving rows); returns the determinant, 0 for a singular matrix; used by mtx_determinant and mtx_inverse_lu; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (matrix or null for the current one, char[4] row order): LU factorization in place with scaled partial pivoting (each row scaled by 1 over its largest element; the row order recorded instead of moving rows); returns the determinant, 0 for a singular matrix; used by mtx_determinant and mtx_inverse_lu; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with rows (0, 1, 0, 0), (1, 0, 0, 0), (0, 0, 5, 0), (0, 0, 0, 1) it returned -5 and wrote the row order 1, 0, 2, 3; with a zero row it returned 0 (the factoring in place is borne out through mtx_inverse_lu and mtx_determinant)
  * matched: source/sdk/naomi_library/matrix.c (tools/match/match.py)
  */
 float mtx_lu_pivoted(float *mtx, char *order)
@@ -545,8 +544,8 @@ out:
 }
 
 /* 0x0c133b00  size 0xc2  file by match with source
- * confidence: inferred
- * evidence: (plane = point then unit normal n): multiplies the current matrix by the reflection in the plane, I - 2 n n^T with translation 2 (point . n) n (vec3_dot for the dot product, mtx_mul_by to multiply); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (plane = point then unit normal n): multiplies the current matrix by the reflection in the plane, I - 2 n n^T with translation 2 (point . n) n (vec3_dot for the dot product, mtx_mul_by to multiply); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the snapshot's current matrix M0 (a Y turn, X axis (0.2017, 0, 0.9795), translation (-0.096, -5, -3.945)) and the plane through (1, 1, 0) with normal (0.6, 0.8, 0): the back bank at the return was R x M0 with R = I - 2 n n^T (0.28, -0.96 / -0.96, -0.28 / z kept) and translation (1.68, 2.24, 0) = 2 (point . n) n
  * matched: source/sdk/naomi_library/matrix.c (tools/match/match.py)
  */
 void mtx_mul_plane_reflect(float *plane)
@@ -606,8 +605,8 @@ void mtx_times_last_pushed(void)
 }
 
 /* 0x0c133c60  size 0x16  file by match with source
- * confidence: inferred
- * evidence: current = the view stack's top matrix (record mtx_stack_records+0x18, its top word mtx_stack_records+0x20) x current, through mtx_premul_by; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: current = the view stack's top matrix (record mtx_stack_records+0x18, its top word mtx_stack_records+0x20) x current, through mtx_premul_by; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the snapshot's current matrix M0 (a Y turn, X axis (0.2017, 0, 0.9795), translation (-0.096, -5, -3.945)) and the view stack's top slot poked to V (axes (0, 2, 0), (-1, 0, 0), (0, 0, 3), translation (10, 20, 30)): the back bank at the return was M0 x V (memory order), M0 applied first, translation (15, 19.81, 18.17)
  * matched: source/sdk/naomi_library/matrix.c (tools/match/match.py)
  */
 void mtx_premul_view_top(void)
@@ -617,8 +616,8 @@ void mtx_premul_view_top(void)
 }
 
 /* 0x0c133c80  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: pushes the current matrix and loads the view stack's top (mtx_push), then mtx_times_last_pushed: the current matrix becomes view x the old current one, the old one kept on the stack; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: pushes the current matrix and loads the view stack's top (mtx_push), then mtx_times_last_pushed: the current matrix becomes view x the old current one, the old one kept on the stack; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the snapshot's current matrix M0 (a Y turn, X axis (0.2017, 0, 0.9795), translation (-0.096, -5, -3.945)) and the view top poked to V (axes (0, 2, 0), (-1, 0, 0), (0, 0, 3), translation (10, 20, 30)): M0 went into the active stack's base slot, depth became 1 and top base+0x40, and the back bank at the return was M0 x V, the same as mtx_premul_view_top gave
  * matched: source/sdk/naomi_library/matrix.c (tools/match/match.py)
  */
 void mtx_push_view_times_current(void)
@@ -629,8 +628,8 @@ void mtx_push_view_times_current(void)
 }
 
 /* 0x0c133cc0  size 0x16  file by match with source
- * confidence: inferred
- * evidence: pushes the current matrix and loads the view stack's top as the current one (mtx_push with that slot); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: pushes the current matrix and loads the view stack's top as the current one (mtx_push with that slot); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the snapshot's current matrix M0 (a Y turn, X axis (0.2017, 0, 0.9795), translation (-0.096, -5, -3.945)) and the view top poked to V (axes (0, 2, 0), (-1, 0, 0), (0, 0, 3), translation (10, 20, 30)): M0 went into the active stack's base slot, depth became 1 and top base+0x40, and the back bank at the return was V itself
  * matched: source/sdk/naomi_library/matrix.c (tools/match/match.py)
  */
 void mtx_push_then_view(void)
@@ -640,8 +639,8 @@ void mtx_push_then_view(void)
 }
 
 /* 0x0c133ce0  size 0xb6  file by match with source
- * confidence: inferred
- * evidence: (plane = point then unit normal n): multiplies the current matrix by the orthogonal projection onto the plane, I - n n^T with translation (point . n) n; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (plane = point then unit normal n): multiplies the current matrix by the orthogonal projection onto the plane, I - n n^T with translation (point . n) n; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the snapshot's current matrix M0 (a Y turn, X axis (0.2017, 0, 0.9795), translation (-0.096, -5, -3.945)) and the plane through (1, 1, 0) with normal (0.6, 0.8, 0): the back bank at the return was F x M0 with F = I - n n^T (0.64, -0.48 / -0.48, 0.36 / z kept) and translation (0.84, 1.12, 0) = (point . n) n
  * matched: source/sdk/naomi_library/matrix.c (tools/match/match.py)
  */
 void mtx_mul_plane_flatten(float *plane)
@@ -669,8 +668,8 @@ void mtx_mul_plane_flatten(float *plane)
 }
 
 /* 0x0c133da0  size 0x120  file by match with source
- * confidence: inferred
- * evidence: (plane, a, b): multiplies the current matrix by the projection onto the plane along the direction v = b - a (I - v n^T / (n . v), translation from the plane point), then moves by a (mtx_translate_by_vec3): flattens geometry onto the plane along a fixed direction, as for a shadow; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (plane, a, b): multiplies the current matrix by the projection onto the plane along the direction v = b - a (I - v n^T / (n . v), translation from the plane point), then moves by a (mtx_translate_by_vec3): flattens geometry onto the plane along a fixed direction, as for a shadow; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the snapshot's current matrix M0 (a Y turn, X axis (0.2017, 0, 0.9795), translation (-0.096, -5, -3.945)), the plane z = 2 (point (0, 0, 2), normal (0, 0, 1)), a = (0, 0, 10), b = (1, 0, 9): the matrix multiplied in was rows (1, 0, 0), (0, 1, 0), (1, 0, 0), translation (8, 0, 2): points moved by a and then projected along b - a onto z = 2
  * matched: source/sdk/naomi_library/matrix.c (tools/match/match.py)
  */
 void mtx_mul_plane_flatten_along(float *plane, float *from, float *to)
@@ -711,14 +710,13 @@ void mtx_mul_plane_flatten_along(float *plane, float *from, float *to)
 }
 
 /* 0x0c133ee0  size 0x14  file by match with source
- * confidence: inferred
- * evidence: mtx_stack_drop_in(n, active stack record mtx_stack_records): lowers the depth by n (at least 1, never below 0) and moves the top pointer down without loading anything, so the current matrix is unchanged; returns whether the stack was deep enough. Not newlib's _cleanup_r (stdio/findfp.c), which it was named before: that one has the same one-call shape, but this one passes the matrix stack record; mtx_premul_rect_proj_view calls it to undo its own push; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: mtx_stack_drop_in(n, active stack record mtx_stack_records): lowers the depth by n (at least 1, never below 0) and moves the top pointer down without loading anything, so the current matrix is unchanged; returns whether the stack was deep enough. Not newlib's _cleanup_r (stdio/findfp.c), which it was named before: that one has the same one-call shape, but this one passes the matrix stack record; mtx_premul_rect_proj_view calls it to undo its own push; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness in one sandbox with the active stack poked to depth 3, top base+0xc0: drop 2 left depth 1, top base+0x40, r0 1; drop 0 (counted as 1) left depth 0, top base, r0 1; drop 3 at depth 0 left depth 0 and r0 0
  * matched: source/sdk/naomi_library/matrix.c (tools/match/match.py)
  */
-void mtx_stack_drop(int count)
+bool mtx_stack_drop(int count)
 {
-  mtx_stack_drop_in(count,&mtx_stack_records.active);
-  return;
+  return mtx_stack_drop_in(count,&mtx_stack_records.active);
 }
 
 /* 0x0c133f00  size 0x24  file by match with source
@@ -736,8 +734,8 @@ bool mtx_push_identity(void)
 }
 
 /* 0x0c133f40  size 0x3c  file by match with source
- * confidence: inferred
- * evidence: (axis, 16-bit angle): normalizes a copy of the axis (vec3_normalize) and rotates about it (mtx_rot_unit_axis_s16); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (axis, 16-bit angle): normalizes a copy of the axis (vec3_normalize) and rotates about it (mtx_rot_unit_axis_s16); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the snapshot's current matrix M0 (a Y turn, X axis (0.2017, 0, 0.9795), translation (-0.096, -5, -3.945)): axis (0, 0, 2) and 0x4000 gave R x M0 with R the 90-degree turn about Z (X axis to (0, 1, 0)); axis (1, 1, 0) and 0x2000 gave the 45-degree turn about the unit (0.7071, 0.7071, 0), R rows (0.8536, 0.1464, -0.5), (0.1464, 0.8536, 0.5) (back bank of the traced mtx_rot_unit_axis_sincos); both axes were left unchanged in memory
  * matched: source/sdk/naomi_library/matrix.c (tools/match/match.py)
  */
 void mtx_rot_axis_s16(float *axis, uint angle)
@@ -751,8 +749,8 @@ void mtx_rot_axis_s16(float *axis, uint angle)
 }
 
 /* 0x0c133fa0  size 0x30  file by match with source
- * confidence: inferred
- * evidence: (unit axis, 16-bit angle): sine and cosine of the angle by fsca (fsca_sincos16), then mtx_rot_unit_axis_sincos; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (unit axis, 16-bit angle): sine and cosine of the angle by fsca (fsca_sincos16), then mtx_rot_unit_axis_sincos; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the snapshot's current matrix M0 (a Y turn, X axis (0.2017, 0, 0.9795), translation (-0.096, -5, -3.945)): unit axis (0, 0, 1) and 0x4000 gave the 90-degree turn about Z, and (0.6, 0, 0.8) and 0x1555 the 30-degree turn about that axis (R rows (0.9143, 0.4, 0.0643), (-0.4, 0.866, 0.3), (0.0643, -0.3, 0.9518)), R x M0 in the back bank of the traced mtx_rot_unit_axis_sincos
  * matched: source/sdk/naomi_library/matrix.c (tools/match/match.py)
  */
 void mtx_rot_unit_axis_s16(float *axis, uint angle)
@@ -821,7 +819,7 @@ void mtx_rot_unit_axis_sincos(float *axis, float sine, float cosine)
 
 /* 0x0c1340a0  size 0x2c  file by match with source
  * confidence: inferred
- * evidence: angle in radians: sine (sin_radians) and cosine (cos_radians), then mtx_rot_x_sincos_opposite, which rotates the current matrix about X in the opposite sense to mtx_rot_x_s16 (the sine's sign swapped); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * evidence: angle in radians: sine (sin_radians) and cosine (cos_radians), then mtx_rot_x_sincos_opposite, which is not a rotation: it multiplies the current matrix by the matrix with the Y axis (0, c, s) and the Z axis (0, s, c), neither sine negated, so the Y axis comes out as mtx_rot_x_s16 makes it and only the Z axis's sine differs (the Y and Z siblings are true opposite rotations); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); record as the game has it: mtx_rot_x_rad_reversed(a) multiplies by Y axis (0, cos a, sin a), Z axis (0, sin a, cos a); shown by the harness 2026-11-12 with a = 0.5; corrected 2026-11-12 from harness calls: called by the harness with the snapshot's current matrix M0 (a Y turn, X axis (0.2017, 0, 0.9795), translation (-0.096, -5, -3.945)) and 0.5: the matrix multiplied in (back bank at the return times M0's inverse) had the Y axis (0, 0.8776, 0.4794) and the Z axis (0, 0.4794, 0.8776): (0, c, s) and (0, s, c), not a rotation; mtx_rot_x_s16 with 0x145f gave (0, c, s) and (0, -s, c), so the Y axis is the same, not reversed, and only the Z axis's sine changed sign
  * matched: source/sdk/naomi_library/matrix.c (tools/match/match.py)
  */
 void mtx_rot_x_rad_reversed(float angle)
@@ -836,8 +834,8 @@ void mtx_rot_x_rad_reversed(float angle)
 }
 
 /* 0x0c1340e0  size 0x2c  file by match with source
- * confidence: inferred
- * evidence: as mtx_rot_x_rad_reversed about Y (mtx_rot_y_sincos_opposite, the opposite sense to mtx_rot_y_s16); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: as mtx_rot_x_rad_reversed about Y (mtx_rot_y_sincos_opposite, the opposite sense to mtx_rot_y_s16); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the snapshot's current matrix M0 (a Y turn, X axis (0.2017, 0, 0.9795), translation (-0.096, -5, -3.945)) and 0.5: the matrix multiplied in had X axis (0.8776, 0, 0.4794) and Z axis (-0.4794, 0, 0.8776), while mtx_rot_y_s16 with 0x145f (0.5 rad) gave (0.8776, 0, -0.4794) and (0.4794, 0, 0.8776): the same rotation in the opposite sense
  * matched: source/sdk/naomi_library/matrix.c (tools/match/match.py)
  */
 void mtx_rot_y_rad_reversed(float angle)
@@ -852,8 +850,8 @@ void mtx_rot_y_rad_reversed(float angle)
 }
 
 /* 0x0c134120  size 0x2c  file by match with source
- * confidence: inferred
- * evidence: as mtx_rot_x_rad_reversed about Z (mtx_rot_z_sincos_opposite, the opposite sense to mtx_rot_z_s16); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: as mtx_rot_x_rad_reversed about Z (mtx_rot_z_sincos_opposite, the opposite sense to mtx_rot_z_s16); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the snapshot's current matrix M0 (a Y turn, X axis (0.2017, 0, 0.9795), translation (-0.096, -5, -3.945)) and 0.5: the matrix multiplied in had X axis (0.8776, -0.4794, 0) and Y axis (0.4794, 0.8776, 0), while mtx_rot_z_s16 with 0x145f (0.5 rad) gave (0.8776, 0.4794, 0) and (-0.4794, 0.8776, 0): the same rotation in the opposite sense
  * matched: source/sdk/naomi_library/matrix.c (tools/match/match.py)
  */
 void mtx_rot_z_rad_reversed(float angle)
@@ -868,20 +866,20 @@ void mtx_rot_z_rad_reversed(float angle)
 }
 
 /* 0x0c134160  size 0x70  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x7a
- * evidence: (a, b, unit vectors): rotates the current matrix by the rotation taking a to b: about a x b, normalized (its length the sine), with a . b as the cosine (mtx_rot_unit_axis_sincos); for opposite vectors it turns half a circle about a's components rotated (y, z, x); called by rob_fx_draw and flare_dir_rotate; part of the NAOMI library; checked against reference material (not in this repo)
+ * evidence: (a, b, unit vectors): rotates the current matrix by the rotation taking a to b: about a x b, normalized (its length the sine), with a . b as the cosine (mtx_rot_unit_axis_sincos); for opposite vectors it turns half a circle about a's components rotated (y, z, x); called by rob_fx_draw and flare_dir_rotate; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with a = (1,0,0) and b = (0,1,0) it called mtx_rot_unit_axis_sincos with axis (0,0,1), sine 1, cosine 0; with b = (0.6,0,0.8) axis (0,-1,0), sine 0.8, cosine 0.6; with the opposite pair (0,1,0), (0,-1,0) axis (1,0,0), sine 0, cosine -1; each time the current matrix came back as the snapshot's current matrix times the rotation taking a to b; with a = b = (0,0,1) it made no rotation call
  * matched: source/sdk/naomi_library/matrix.c (tools/match/match.py)
  */
-void mtx_rot_vec_to_vec(uint *from, float *to)
+void mtx_rot_vec_to_vec(float *from, float *to)
 {
   float sine;
   float cosine;
   float axis[3];
   
-  vec3_cross((float *)from,to,axis);
+  vec3_cross(from,to,axis);
   sine = vec3_normalize(axis);
-  cosine = vec3_dot((float *)from,to);
+  cosine = vec3_dot(from,to);
   if (sine != 0.0f) {
     mtx_rot_unit_axis_sincos(axis,sine,cosine);
   }

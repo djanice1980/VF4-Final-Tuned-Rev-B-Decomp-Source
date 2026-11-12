@@ -119,8 +119,8 @@ int irq_hook_insert(int event_code,irq_hook_fn fn,uint priority,void *arg)
 }
 
 /* 0x0c061220  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: calls every hook of the event code's list with its argument; installed in the VBR handler table by irq_hook_insert, called by holly_irq_dispatch; part of syChain; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: calls every hook of the event code's list with its argument; installed in the VBR handler table by irq_hook_insert, called by holly_irq_dispatch; part of syChain; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with 0x400 after irq_hook_insert had put g2dma_slot_mark_unused on that list with the buffers 0x0f002000 (priority 5) and 0x0f004000 (priority 3), and on list 0x420 with 0x0f006000, it called g2dma_slot_mark_unused(0x0f004000) and then (0x0f002000), clearing their +0x28 bytes, and left the 0x420 hook's byte at 1
  * same code as main.bin 0c136dc0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/sy/sychain.c (tools/match/match.py)
  */

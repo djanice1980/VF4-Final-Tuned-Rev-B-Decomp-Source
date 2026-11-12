@@ -149,8 +149,8 @@ uchar card_write_start(int side, int crc_update)
 }
 
 /* 0x0c027340  size 0x24  file by match with source
- * confidence: inferred
- * evidence: (unit, destination): copies out the 0x6C raw data bytes of the unit's card_read_buffer (from +0x14), the bytes card_read_finish keeps at record +0x174; nothing in the image calls it (uncalled code, made a function 2026-11-09); between card_write_start and card_read_finish, so by link order part of vf4lib/libcard/src/card_common.c
+ * confidence: exercised
+ * evidence: (unit, destination): copies out the 0x6C raw data bytes of the unit's card_read_buffer (from +0x14), the bytes card_read_finish keeps at record +0x174; nothing in the image calls it (uncalled code, made a function 2026-11-09); between card_write_start and card_read_finish, so by link order part of vf4lib/libcard/src/card_common.c; exercised 2026-11-12: called by the harness in one sandbox after the first 0x100 bytes of card_read_buffer were poked with the values 0x00-0xFF (each byte its offset) and buf:1, buf:2 filled with 0xEE: card_read_raw_copy(1, buf:1) copied 0x94-0xFF (unit 1, 0x80 bytes on, from +0x14) and card_read_raw_copy(0, buf:2) 0x14-0x7F, 0x6C bytes each; byte 0x6C of both buffers stayed 0xEE
  * same code as main.bin 0c08cde0 (ghidra/TransferFromMain.java)
  * matched: source/vf4lib/libcard/src/card_common.c (tools/match/match.py)
  */
@@ -483,8 +483,8 @@ void card_pack(int side, uchar *dst)
 }
 
 /* 0x0c028120  size 0x68  file by match with source
- * confidence: inferred
- * evidence: (unit, word offset 5-31, word): queues card_queue_begin, card_queue_d0, a one-word card_queue_write and card_queue_c1 when the unit is not busy; returns 1 for an offset outside 5-31, else the busy byte; nothing in the image calls it; part of vf4lib/libcard/src/card_common.c (assigned by position: between the assert-named card_crc16 and sol.c, no data of its own; see notes)
+ * confidence: exercised
+ * evidence: (unit, word offset 5-31, word): queues card_queue_begin, card_queue_d0, a one-word card_queue_write and card_queue_c1 when the unit is not busy; returns 1 for an offset outside 5-31, else the unit's busy byte (card_status + unit x 8 + 2); nothing in the image calls it; part of vf4lib/libcard/src/card_common.c (assigned by position: between the assert-named card_crc16 and sol.c, no data of its own; see notes); exercised 2026-11-12: called by the harness in one sandbox with the word 0x11223344: offsets 4 and 32 returned 1 and queued nothing; unit 0 offset 5 returned 0 and called card_queue_begin(0), card_queue_d0(0), card_queue_write(0, 5, 1, a pointer to 0x11223344) and card_queue_c1(0); with unit 0's busy byte (card_status+2) poked 3, offset 10 returned 3 and queued nothing, while unit 1 offset 31 still queued its word and returned 0
  * same code as main.bin 0c08dbc0 (ghidra/TransferFromMain.java)
  * matched: source/vf4lib/libcard/src/card_common.c (tools/match/match.py)
  */

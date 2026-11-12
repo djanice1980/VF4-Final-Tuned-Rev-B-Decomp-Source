@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c05e860  size 0xbc  file by match with source
- * confidence: inferred
- * evidence: (left, right, bottom, top, near, far): multiplies the current matrix (mtx_mul_by) by the perspective projection through that rectangle of the near plane (2n/(r-l), 2n/(t-b), (r+l)/(r-l), (t+b)/(t-b), -(f+n)/(f-n), -2fn/(f-n), w = -z); records near, far and 1/near in the work area at 0x0C5D481C-24 and in the 3D library's state at obj_send_header, then proj_rebuild_rect_proj; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (left, right, bottom, top, near, far): multiplies the current matrix (mtx_mul_by) by the perspective projection through that rectangle of the near plane (2n/(r-l), 2n/(t-b), (r+l)/(r-l), (t+b)/(t-b), -(f+n)/(f-n), -2fn/(f-n), w = -z); records near, far and 1/near in the work area at 0x0C5D481C-24 and in the 3D library's state at obj_send_header, then proj_rebuild_rect_proj; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with (left -1, right 3, bottom -2, top 2, near 1, far 101) it left the snapshot's current matrix times (0.5, 0.5, z to x 0.5, depth -1.02 and -2.02, w = -z) in proj_saved_matrix (through proj_rebuild_rect_proj) and near 1, far 101, 1/near 1 at graphics_work+0x1c and in obj_send_header (+0xc = -1); with near 2, far 102 the scales were 1 and 1, the depth terms -1.04 and -4.08, 1/near 0.5
  * same code as main.bin 0c134400 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi_library/projection.c (tools/match/match.py)
  */
@@ -43,8 +43,8 @@ void proj_from_near_rect(float left, float right, float bottom, float top, float
 }
 
 /* 0x0c05e940  size 0xb8  file by match with source
- * confidence: inferred
- * evidence: as proj_from_near_rect with w = +z (and the depth row's translation sign changed): the projection for the other handedness; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: as proj_from_near_rect with w = +z (and the depth row's translation sign changed): the projection for the other handedness; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with (left -1, right 3, bottom -2, top 2, near 1, far 101) the matrix it multiplied in (seen in proj_saved_matrix) had w = +z and depth translation +2.02 where proj_from_near_rect gives w = -z and -2.02, the rest the same (0.5, 0.5, 0.5, -1.02); with near 2, far 102 the translation was +4.08; near, far and 1/near were recorded as by proj_from_near_rect
  * same code as main.bin 0c1344e0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi_library/projection.c (tools/match/match.py)
  */
@@ -96,8 +96,8 @@ void mtx_save_proj_x_current(float unused_a, float unused_b)
 }
 
 /* 0x0c05ea80  size 0x34  file by match with source
- * confidence: inferred
- * evidence: as mtx_save_proj_x_current with the view stack's top multiplied in as well (mtx_mul_by on mtx_stack_records+0x20): projection x view x current into proj_x_model_matrix; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: as mtx_save_proj_x_current with the view stack's top multiplied in as well (mtx_mul_by on mtx_stack_records+0x20): projection x view x current into proj_x_model_matrix; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with a shear (x += 0.5 y) poked as the projection stack's top and scale (2,3,4) with move (10,20,30) as the view stack's top, proj_x_model_matrix became shear x view x the snapshot's current matrix (to five digits) and the matrix stack record was as before
  * same code as main.bin 0c134620 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi_library/projection.c (tools/match/match.py)
  */
@@ -111,8 +111,8 @@ void mtx_save_proj_view_x_current(void)
 }
 
 /* 0x0c05eae0  size 0x2a  file by match with source
- * confidence: inferred
- * evidence: pushes the current matrix, loads the view stack's top, multiplies by the pushed one and stores view x current at view_x_model_matrix (mtx_store_wordwise), then pops back; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: pushes the current matrix, loads the view stack's top, multiplies by the pushed one and stores view x current at view_x_model_matrix (mtx_store_wordwise), then pops back; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with scale (2,3,4) and move (10,20,30) poked as the view stack's top, view_x_model_matrix became that matrix times the snapshot's current matrix (translation 9.81, 5, 14.22; the other order would give -27.46, 15, 11.9) and the current matrix came back unchanged
  * same code as main.bin 0c134680 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi_library/projection.c (tools/match/match.py)
  */
@@ -126,8 +126,8 @@ void mtx_save_view_x_current(void)
 }
 
 /* 0x0c05eb40  size 0x24  file by match with source
- * confidence: inferred
- * evidence: (x, y): keeps |x| and |y| in proj_pending_offset_x/y, which widen the edge-angle terms of the next perspective set-up (proj_from_vfov and its kin, which clear them), and moves the current matrix by (x, y, 0) (mtx_translate); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (x, y): keeps |x| and |y| in proj_pending_offset_x/y, which widen the edge-angle terms of the next perspective set-up (proj_from_vfov and its kin, which clear them), and moves the current matrix by (x, y, 0) (mtx_translate); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with (-0.5, 0.25) it stored 0.5 and 0.25 in proj_pending_offset_x/y and moved the current matrix by (-0.5, 0.25, 0) (mtx_translate); a proj_from_vfov(0x4000, 1, 1, 101) after it in the same sandbox gave x and y factors 0.9014 and 0.8004 instead of 0.7071 and 0.7071 and left both offsets 0; (3, -2) stored 3 and 2
  * same code as main.bin 0c1346e0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi_library/projection.c (tools/match/match.py)
  */
@@ -448,8 +448,8 @@ void proj_point_to_pixel_xy(float *point, float *out)
 }
 
 /* 0x0c05f5c0  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: (point, out): the point through view_x_model_matrix (pushed as the current matrix, mtx_xform_point), then pops back; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (point, out): the point through view_x_model_matrix (pushed as the current matrix, mtx_xform_point), then pops back; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with scale (2,3,4) and move (10,20,30) poked into view_x_model_matrix, the point (1,2,3) came out (12,26,42) and (-1,0,0.5) came out (8,20,32)
  * same code as main.bin 0c135160 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi_library/projection.c (tools/match/match.py)
  */
@@ -594,8 +594,8 @@ void render_clip_from_rect(float left, float top, float width, float height)
 }
 
 /* 0x0c05fa00  size 0x7e  file by match with source
- * confidence: inferred
- * evidence: (x, y, z, out x, out y, out w): pushes and loads rect_from_clip_matrix, multiplies by proj_x_model_matrix, takes (x, y, z, 1) through it (mtx_xform_point_xyzw) and returns x / w, y / w (pixels) and 1 / w, then pops back; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (x, y, z, out x, out y, out w): pushes and loads rect_from_clip_matrix, multiplies by proj_x_model_matrix, takes (x, y, z, 1) through it (mtx_xform_point_xyzw) and returns x / w, y / w (pixels) and 1 / w, then pops back; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with proj_x_model_matrix poked as the identity with w = -z and the snapshot's rect_from_clip_matrix (half sizes 320 and -240 about 320, 240), the point (1, 0.5, -2) gave x 480, y 180, w 0.5 and (-1, 1, -4) gave 240, 180, 0.25
  * same code as main.bin 0c1355a0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi_library/projection.c (tools/match/match.py)
  */
@@ -619,8 +619,8 @@ void proj_point_to_pixel_xyw(float x, float y, float z, float *out_x, float *out
 }
 
 /* 0x0c05faa0  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: loads rect_from_clip_matrix as the current matrix and multiplies by proj_x_model_matrix (mtx_mul_by): the current matrix then takes model points straight to pixels; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: loads rect_from_clip_matrix as the current matrix and multiplies by proj_x_model_matrix (mtx_mul_by): the current matrix then takes model points straight to pixels; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with proj_x_model_matrix poked as the identity with w = -z, the current matrix came back (the log's back bank at the return) as the snapshot's rect_from_clip_matrix times it: by columns 320 0 0 0, 0 -240 0 0, -320 -240 -1 -1, 0 0 0 0
  * same code as main.bin 0c135640 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi_library/projection.c (tools/match/match.py)
  */
@@ -631,8 +631,8 @@ void mtx_set_rect_x_saved_proj(void)
 }
 
 /* 0x0c05fae0  size 0x3e  file by match with source
- * confidence: inferred
- * evidence: (point, out[3]): the point through the current matrix (mtx_xform_point_xyzw, w kept) and out = (x / w, y / w, 1 / w); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (point, out[3]): the point through the current matrix (mtx_xform_point_xyzw, w kept) and out = (x / w, y / w, 1 / w); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness at the entry of proj_rebuild_rect_proj, the game's projection matrix current (w = -z), the point (1,2,-10) gave (0.181066, 0.482843, 0.1) and (-3,0.5,-2) gave (-2.71599, 0.603553, 0.5): x / w, y / w and 1 / w; with the snapshot's current matrix (w row 0 0 0 1) (1,2,3) gave its transformed x and y and 1
  * same code as main.bin 0c135680 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi_library/projection.c (tools/match/match.py)
  */
@@ -662,8 +662,8 @@ void mtx_premul_rect_proj(float unused_a, float unused_b)
 }
 
 /* 0x0c05fb80  size 0x34  file by match with source
- * confidence: inferred
- * evidence: pushes the current matrix and loads rect_from_clip_matrix, multiplies by the projection and view stacks' tops (mtx_mul_by twice) and by the pushed matrix (mtx_times_last_pushed), then drops the pushed level without reloading (mtx_stack_drop(1)): the current matrix becomes rect x projection x view x current; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: pushes the current matrix and loads rect_from_clip_matrix, multiplies by the projection and view stacks' tops (mtx_mul_by twice) and by the pushed matrix (mtx_times_last_pushed), then drops the pushed level without reloading (mtx_stack_drop(1)): the current matrix becomes rect x projection x view x current; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with a shear (x += 0.5 y) poked as the projection stack's top and scale (2,3,4) with move (10,20,30) as the view stack's top, the current matrix came back as rect_from_clip_matrix x shear x view x the snapshot's current matrix (translation 4258.5, -960, -6.61) and the matrix stack's depth and top were as before
  * same code as main.bin 0c135720 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi_library/projection.c (tools/match/match.py)
  */

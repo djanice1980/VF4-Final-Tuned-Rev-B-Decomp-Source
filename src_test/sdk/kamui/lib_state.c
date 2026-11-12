@@ -107,8 +107,8 @@ void lib_state_set_up_from_cfg(void)
 }
 
 /* 0x0c06e4c0  size 0x24  file by match with source
- * confidence: inferred
- * evidence: when lib_state_ptr is set, calls the empty teardown_empty_step and clears it; nothing in the image calls it; part of KamuiTL
+ * confidence: exercised
+ * evidence: when lib_state_ptr is set, calls the empty teardown_empty_step and clears it; nothing in the image calls it; part of KamuiTL; exercised 2026-11-12: called by the harness with lib_state_ptr 0x0C41E010 (as the snapshot has it) it called teardown_empty_step and left the word 0; called again with the word 0 it called nothing
  * same code as main.bin 0c144480 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/lib_state.c (tools/match/match.py)
  */
@@ -144,8 +144,8 @@ void chips_pool_irq_set_up(void)
 }
 
 /* 0x0c06e5a0  size 0x38  file by match with source
- * confidence: inferred
- * evidence: (float units): spins a volatile counter up to units * 2000; called by elan_vram_read_batch and render_hang_recover; part of KamuiTL
+ * confidence: exercised
+ * evidence: (float units): spins a volatile counter up to units * 2000; called by elan_vram_read_batch and render_hang_recover; part of KamuiTL; exercised 2026-11-12: called by the harness with 1.0, 3.0 and 0.5 it ran 12,022, 36,022 and 6,022 instructions (22 + 6 per pass for 2000, 6000 and 1000 passes) and wrote nothing outside its own stack
  * same code as main.bin 0c144560 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/lib_state.c (tools/match/match.py)
  */
@@ -157,8 +157,8 @@ void busy_wait_scaled(float units)
 }
 
 /* 0x0c06e5e0  size 0x16  file by match with source
- * confidence: inferred
- * evidence: calls the error handler in the state block (+0x270, the default border_color_by_code_hang put there by hook_slots_defaults), the error code passed on in r4 (2, 3 and 4 from the render and interrupt code); 6 library callers and the game's token_list_split; part of KamuiTL
+ * confidence: exercised
+ * evidence: calls the error handler in the state block (+0x270, the default border_color_by_code_hang put there by hook_slots_defaults), the error code passed on in r4 (2, 3 and 4 from the render and interrupt code); 6 library callers and the game's token_list_split; part of KamuiTL; exercised 2026-11-12: called by the harness with quant_error_6bit (0x0C143CE0) poked into gfx_state +0x270: error_hook_run(3) called it with r4 = 3 and error_hook_run(4) with r4 = 4
  * same code as main.bin 0c1445a0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/lib_state.c (tools/match/match.py)
  */

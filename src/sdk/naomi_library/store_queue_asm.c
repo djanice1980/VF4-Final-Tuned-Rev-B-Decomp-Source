@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c12c780  size 0x4a  file by match with source
- * confidence: inferred
- * evidence: hand-written: (destination, source, bytes): when all three are multiples of 32, copies through the store queues (the destination's area bits into both queue address registers, 32 bytes a round with a prefetch that sends the queue); otherwise branches into words_copy at 0x0C12C7D6; nothing in the image calls it (uncalled code, made a function 2026-11-09); between dcache_purge_lines and prefetch_line_at, so by link order part of sdk/naomi_library/store_queue_asm.c
+ * confidence: exercised
+ * evidence: hand-written: (destination, source, bytes): when all three are multiples of 32, copies through the store queues (the destination's area bits into both queue address registers, 32 bytes a round with a prefetch that sends the queue); otherwise branches into words_copy at 0x0C12C7D6; nothing in the image calls it (uncalled code, made a function 2026-11-09); between dcache_purge_lines and prefetch_line_at, so by link order part of sdk/naomi_library/store_queue_asm.c; exercised 2026-11-12: called by the harness with a scratch destination and a source of 96 pattern bytes: with 64 bytes exactly 64 were copied, the record showing both queue address registers (0xFF000038, 0xFF00003C) written with 0x0F (the destination's top byte) and r4 left at 0xE3004040 in the store queue area; with 40 bytes (not a multiple of 32) exactly 40 were copied by words_copy's 8-byte path and no queue register was written
  * convention: __keeps_r2_r3_r7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c12c780.s (hand-written assembly, tools/match/match.py)
  */
@@ -23,8 +23,8 @@ void sq_copy_by_32(undefined4 *param_1,undefined4 *param_2,uint param_3);
 void prefetch_line_at(void *addr);
 
 /* 0x0c12c7ce  size 0x36  file by match with source
- * confidence: inferred
- * evidence: hand-written: (destination, source, bytes): nothing for 0 bytes; when all three are multiples of 8 copies by 8-byte moves, otherwise by words; nothing in the image calls it (uncalled code, made a function 2026-11-09); between prefetch_line_at and atan2_ang8_table, so by link order part of sdk/naomi_library/store_queue_asm.c
+ * confidence: exercised
+ * evidence: hand-written: (destination, source, bytes): nothing for 0 bytes; when all three are multiples of 8 copies by 8-byte moves, otherwise by words; nothing in the image calls it (uncalled code, made a function 2026-11-09); between prefetch_line_at and atan2_ang8_table, so by link order part of sdk/naomi_library/store_queue_asm.c; exercised 2026-11-12: called by the harness with a destination filled with 0xAA and a source of pattern words: 0 bytes wrote nothing, 16 bytes (all multiples of 8) copied exactly 16 bytes, and 12 bytes copied exactly 12 by words, the words after them untouched
  * convention: __keeps_r1_r2_r3_r7_fr2_fr3_fr4_fr5_fr6_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c12c7ce.s (hand-written assembly, tools/match/match.py)
  */

@@ -53,8 +53,8 @@ int bg_plane_skip_from_isp_word(uint isp)
 }
 
 /* 0x0c074680  size 0x22  file by match with source
- * confidence: inferred
- * evidence: (instruction word, index, color): when the instruction word asks for an offset color (bit 24) stores the word at the index in the background plane block (state +0xa4) and returns the next index, else returns the index; used by the textured background plane loaders; part of KamuiTL
+ * confidence: exercised
+ * evidence: (instruction word, index, color): when the instruction word asks for an offset color (bit 24) stores the word at the index in the background plane block (state +0xa4) and returns the next index, else returns the index; used by the textured background plane loaders; part of KamuiTL; exercised 2026-11-12: called by the harness: (0x01000000, 5, 0x12345678) stored 0x12345678 at gfx_state+0xa4 + 5 * 4 and returned 6; (0x02000000, 5, 0x12345678) returned 5 and left that word (0xDEADBEEF) alone
  * same code as main.bin 0c14a640 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/bg_plane_loaders.c (tools/match/match.py)
  */
@@ -88,8 +88,8 @@ int bg_plane_append_uv16(uint isp, int n, uint uv)
 }
 
 /* 0x0c074740  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: (instruction word, index, u, v): for a textured polygon (bit 25) stores u and v as two words of the background plane block and returns the next index; used by the loaders of the layouts with float UV; part of KamuiTL
+ * confidence: exercised
+ * evidence: (instruction word, index, u, v): for a textured polygon (bit 25) stores u and v as two words of the background plane block and returns the next index; used by the loaders of the layouts with float UV; part of KamuiTL; exercised 2026-11-12: called by the harness with index 4, u 0x3F000000, v 0x3E800000: word 0x02000000 stored them at block words 4 and 5 and returned 6; 0x01000000 (bit 25 clear) stored nothing and returned 4
  * same code as main.bin 0c14a700 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/bg_plane_loaders.c (tools/match/match.py)
  */
@@ -172,8 +172,8 @@ int bg_plane_from_flat_packed(int *vertex_ptrs)
 }
 
 /* 0x0c074900  size 0x188  file by match with source
- * confidence: inferred
- * evidence: (three vertex pointers): background plane loader for entry 1 of the vertex-layout table bg_plane_loaders (0x0C32ABE8), the hardware's vertex parameter type 1: untextured, color as four floats (words 4-7), packed to ARGB bytes; copies the instruction words (state +0x1a0..+0x1a8) and the three vertices' x, y, z and color words into the background plane block at state +0xa4, stores the block's byte size (+0x19c), sets the tag bits through bg_plane_skip_from_isp_word and bg_plane_tag_bits_set and the depth from the first vertex's z (+0x1b0); returns 0; reached only through the table, which bg_plane_vertices_by_type indexes; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (three vertex pointers): background plane loader for entry 1 of the vertex-layout table bg_plane_loaders (0x0C32ABE8), the hardware's vertex parameter type 1: untextured, color as four floats (words 4-7), packed to ARGB bytes; copies the instruction words (state +0x1a0..+0x1a8) and the three vertices' x, y, z and color words into the background plane block at state +0xa4, stores the block's byte size (+0x19c), sets the tag bits through bg_plane_skip_from_isp_word and bg_plane_tag_bits_set and the depth from the first vertex's z (+0x1b0); returns 0; reached only through the table, which bg_plane_vertices_by_type indexes; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on vertex records of marker words 0x1111wwww, 0x2222wwww, 0x3333wwww (w the word) and float colors, 0xAAAA0001 and 0xBBBB0002 at state +0x1a4/+0x1a8 and 0x80800000 at +0x1a0: the block at +0xa4 held the three words, then x, y, z and the packed color of each vertex (vertex 0 floats 0.75, 0.125, 0.0625, 0.875 gave 0xBF1F0FDF, vertex 1 0xDFFF7F3F), 15 words; +0x19c 60, tag skip 1, depth 0x11110303 (vertex 0 z); returned 0
  * same code as main.bin 0c14a8c0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/bg_plane_loaders.c (tools/match/match.py)
  */
@@ -213,8 +213,8 @@ int bg_plane_from_flat_argb_floats(int *vertex_ptrs)
 }
 
 /* 0x0c074aa0  size 0x136  file by match with source
- * confidence: inferred
- * evidence: (three vertex pointers): background plane loader for entry 2 of the vertex-layout table bg_plane_loaders (0x0C32ABE8), the hardware's vertex parameter type 2: untextured, one intensity float (word 6) repeated into all four color bytes; copies the instruction words (state +0x1a0..+0x1a8) and the three vertices' x, y, z and color words into the background plane block at state +0xa4, stores the block's byte size (+0x19c), sets the tag bits through bg_plane_skip_from_isp_word and bg_plane_tag_bits_set and the depth from the first vertex's z (+0x1b0); returns 0; reached only through the table, which bg_plane_vertices_by_type indexes; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (three vertex pointers): background plane loader for entry 2 of the vertex-layout table bg_plane_loaders (0x0C32ABE8), the hardware's vertex parameter type 2: untextured, one intensity float (word 6) repeated into all four color bytes; copies the instruction words (state +0x1a0..+0x1a8) and the three vertices' x, y, z and color words into the background plane block at state +0xa4, stores the block's byte size (+0x19c), sets the tag bits through bg_plane_skip_from_isp_word and bg_plane_tag_bits_set and the depth from the first vertex's z (+0x1b0); returns 0; reached only through the table, which bg_plane_vertices_by_type indexes; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on vertex records of marker words 0x1111wwww, 0x2222wwww, 0x3333wwww (w the word) and float colors, 0xAAAA0001 and 0xBBBB0002 at state +0x1a4/+0x1a8 and 0x80800000 at +0x1a0: the block at +0xa4 held the three words, then x, y, z and the intensity of word 6 in all four bytes (0.0625, 0.5, 0.75 gave 0x0F0F0F0F, 0x7F7F7F7F, 0xBFBFBFBF), 15 words; +0x19c 60, tag skip 1, depth 0x11110303; returned 0
  * same code as main.bin 0c14aa60 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/bg_plane_loaders.c (tools/match/match.py)
  */
@@ -297,7 +297,7 @@ int bg_plane_from_tex_packed(int *vertex_ptrs)
 
 /* 0x0c074d80  size 0x154  file by match with source
  * confidence: inferred
- * evidence: (three vertex pointers): background plane loader for entry 4 of the vertex-layout table bg_plane_loaders (0x0C32ABE8), the hardware's vertex parameter type 4: textured, 16-bit U/V pair (word 4), packed base and offset colors (words 6-7); copies the instruction words (state +0x1a0..+0x1a8) and the three vertices' x, y, z and color words into the background plane block at state +0xa4, stores the block's byte size (+0x19c), sets the tag bits through bg_plane_skip_from_isp_word and bg_plane_tag_bits_set and the depth from the first vertex's z (+0x1b0); returns 0; reached only through the table, which bg_plane_vertices_by_type indexes; part of KamuiTL; checked against reference material (not in this repo)
+ * evidence: (three vertex pointers): background plane loader for entry 4 of the vertex-layout table bg_plane_loaders (0x0C32ABE8), the hardware's vertex parameter type 4: textured, 16-bit U/V pair (word 4), packed base and offset colors (words 6-7); copies the instruction words (state +0x1a0..+0x1a8) and the three vertices' x, y, z and color words into the background plane block at state +0xa4, stores the block's byte size (+0x19c), sets the tag bits through bg_plane_skip_from_isp_word and bg_plane_tag_bits_set and the depth from the first vertex's z (+0x1b0); returns 0; as the game has it, all three vertices get the first vertex's offset color (word 7); reached only through the table, which bg_plane_vertices_by_type indexes; part of KamuiTL; checked against reference material (not in this repo); record as the game has it: the second and third vertices' offset colors are replaced by the first vertex's; corrected 2026-11-12 from harness calls: the second and third vertices do not get their own offset colors: with 0x83000000 at +0x1a0 and vertex records holding 0x1111wwww, 0x2222wwww, 0x3333wwww, the block held 0x11110707 (vertex 0's word 7) as the offset color of all three vertices; the rest fit (16-bit UV split to 0x11110000, 0x04040000 with bit 22 clear, one word 0x11110404 with 0x82400000; 96 and 72 bytes, skip 4 and 2, depth 0x11110303)
  * same code as main.bin 0c14ad40 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/bg_plane_loaders.c (tools/match/match.py)
  */
@@ -479,8 +479,8 @@ int bg_plane_from_tex_intensity(int *vertex_ptrs)
 }
 
 /* 0x0c075720  size 0x204  file by match with source
- * confidence: inferred
- * evidence: (three vertex pointers): background plane loader for entry 8 of the vertex-layout table bg_plane_loaders (0x0C32ABE8), the hardware's vertex parameter type 8: textured, 16-bit U/V pair, base and offset intensities; copies the instruction words (state +0x1a0..+0x1a8) and the three vertices' x, y, z and color words into the background plane block at state +0xa4, stores the block's byte size (+0x19c), sets the tag bits through bg_plane_skip_from_isp_word and bg_plane_tag_bits_set and the depth from the first vertex's z (+0x1b0); returns 0; reached only through the table, which bg_plane_vertices_by_type indexes; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (three vertex pointers): background plane loader for entry 8 of the vertex-layout table bg_plane_loaders (0x0C32ABE8), the hardware's vertex parameter type 8: textured, 16-bit U/V pair, base and offset intensities; copies the instruction words (state +0x1a0..+0x1a8) and the three vertices' x, y, z and color words into the background plane block at state +0xa4, stores the block's byte size (+0x19c), sets the tag bits through bg_plane_skip_from_isp_word and bg_plane_tag_bits_set and the depth from the first vertex's z (+0x1b0); returns 0; as the game has it, all three vertices get the first vertex's U/V word; reached only through the table, which bg_plane_vertices_by_type indexes; part of KamuiTL; checked against reference material (not in this repo); record as the game has it; exercised 2026-11-12: called by the harness on vertex records of marker words 0x1111wwww, 0x2222wwww, 0x3333wwww (w the word) and float colors, 0xAAAA0001 and 0xBBBB0002 at state +0x1a4/+0x1a8: with 0x83000000 at +0x1a0 the block held the three words, then per vertex x, y, z, the U/V split in two, base and offset intensity (vertex 0: 0x0F0F0F0F, 0xDFDFDFDF), 96 bytes, skip 4; with 0x82400000 one U/V word, no offset, 72 bytes, skip 2; but all three vertices got vertex 0's U/V
  * same code as main.bin 0c14b6e0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/bg_plane_loaders.c (tools/match/match.py)
  */
@@ -524,8 +524,8 @@ int bg_plane_from_tex_intensity_uv16(int *vertex_ptrs)
 }
 
 /* 0x0c075960  size 0xda  file by match with source
- * confidence: inferred
- * evidence: (three vertex pointers): background plane loader for entry 9 of the vertex-layout table bg_plane_loaders (0x0C32ABE8), the hardware's vertex parameter type 9: untextured two-volume layout, the first volume's packed color (word 4); copies the instruction words (state +0x1a0..+0x1a8) and the three vertices' x, y, z and color words into the background plane block at state +0xa4, stores the block's byte size (+0x19c), sets the tag bits through bg_plane_skip_from_isp_word and bg_plane_tag_bits_set and the depth from the first vertex's z (+0x1b0); returns 0; reached only through the table, which bg_plane_vertices_by_type indexes; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (three vertex pointers): background plane loader for entry 9 of the vertex-layout table bg_plane_loaders (0x0C32ABE8), the hardware's vertex parameter type 9: untextured two-volume layout, the first volume's packed color (word 4); copies the instruction words (state +0x1a0..+0x1a8) and the three vertices' x, y, z and color words into the background plane block at state +0xa4, stores the block's byte size (+0x19c), sets the tag bits through bg_plane_skip_from_isp_word and bg_plane_tag_bits_set and the depth from the first vertex's z (+0x1b0); returns 0; reached only through the table, which bg_plane_vertices_by_type indexes; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on vertex records of marker words 0x1111wwww, 0x2222wwww, 0x3333wwww (w the word) and float colors, 0xAAAA0001 and 0xBBBB0002 at state +0x1a4/+0x1a8 and 0x80800000 at +0x1a0: the block at +0xa4 held the three words, then x, y, z and word 4 (0x11110404, 0x22220404, 0x33330404) of each vertex, 15 words; +0x19c 60, tag skip 1, depth 0x11110303; returned 0
  * same code as main.bin 0c14b920 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/bg_plane_loaders.c (tools/match/match.py)
  */
@@ -563,8 +563,8 @@ int bg_plane_from_flat_packed_2vol(int *vertex_ptrs)
 }
 
 /* 0x0c075a60  size 0x136  file by match with source
- * confidence: inferred
- * evidence: (three vertex pointers): background plane loader for entry 10 of the vertex-layout table bg_plane_loaders (0x0C32ABE8), the hardware's vertex parameter type 10: untextured two-volume layout, the first volume's intensity (word 4); copies the instruction words (state +0x1a0..+0x1a8) and the three vertices' x, y, z and color words into the background plane block at state +0xa4, stores the block's byte size (+0x19c), sets the tag bits through bg_plane_skip_from_isp_word and bg_plane_tag_bits_set and the depth from the first vertex's z (+0x1b0); returns 0; reached only through the table, which bg_plane_vertices_by_type indexes; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (three vertex pointers): background plane loader for entry 10 of the vertex-layout table bg_plane_loaders (0x0C32ABE8), the hardware's vertex parameter type 10: untextured two-volume layout, the first volume's intensity (word 4); copies the instruction words (state +0x1a0..+0x1a8) and the three vertices' x, y, z and color words into the background plane block at state +0xa4, stores the block's byte size (+0x19c), sets the tag bits through bg_plane_skip_from_isp_word and bg_plane_tag_bits_set and the depth from the first vertex's z (+0x1b0); returns 0; reached only through the table, which bg_plane_vertices_by_type indexes; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on vertex records of marker words 0x1111wwww, 0x2222wwww, 0x3333wwww (w the word) and float colors, 0xAAAA0001 and 0xBBBB0002 at state +0x1a4/+0x1a8 and 0x80800000 at +0x1a0: the block held the three words, then x, y, z and the word 4 intensity in all four bytes (0.75, 0.875, 0.25 gave 0xBFBFBFBF, 0xDFDFDFDF, 0x3F3F3F3F), 15 words; +0x19c 60, tag skip 1, depth 0x11110303; returned 0
  * same code as main.bin 0c14ba20 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/bg_plane_loaders.c (tools/match/match.py)
  */
@@ -646,8 +646,8 @@ int bg_plane_from_tex_packed_2vol(int *vertex_ptrs)
 }
 
 /* 0x0c075d40  size 0x152  file by match with source
- * confidence: inferred
- * evidence: (three vertex pointers): background plane loader for entry 12 of the vertex-layout table bg_plane_loaders (0x0C32ABE8), the hardware's vertex parameter type 12: textured two-volume layout, the first volume's 16-bit U/V and packed colors; copies the instruction words (state +0x1a0..+0x1a8) and the three vertices' x, y, z and color words into the background plane block at state +0xa4, stores the block's byte size (+0x19c), sets the tag bits through bg_plane_skip_from_isp_word and bg_plane_tag_bits_set and the depth from the first vertex's z (+0x1b0); returns 0; reached only through the table, which bg_plane_vertices_by_type indexes; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (three vertex pointers): background plane loader for entry 12 of the vertex-layout table bg_plane_loaders (0x0C32ABE8), the hardware's vertex parameter type 12: textured two-volume layout, the first volume's 16-bit U/V and packed colors; copies the instruction words (state +0x1a0..+0x1a8) and the three vertices' x, y, z and color words into the background plane block at state +0xa4, stores the block's byte size (+0x19c), sets the tag bits through bg_plane_skip_from_isp_word and bg_plane_tag_bits_set and the depth from the first vertex's z (+0x1b0); returns 0; as the game has it, the second vertex gets the first vertex's U/V word; reached only through the table, which bg_plane_vertices_by_type indexes; part of KamuiTL; checked against reference material (not in this repo); record as the game has it; exercised 2026-11-12: called by the harness on vertex records of marker words 0x1111wwww, 0x2222wwww, 0x3333wwww (w the word) and float colors, 0xAAAA0001 and 0xBBBB0002 at state +0x1a4/+0x1a8: with 0x83000000 at +0x1a0 the block held the three words then x, y, z, the U/V split in two, base and offset (words 6, 7) of each vertex, 96 bytes, skip 4; with 0x82400000 one U/V word and no offset, 72 bytes, skip 2; but the second vertex got the first vertex's U/V (0x11110404), the third its own
  * same code as main.bin 0c14bd00 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/bg_plane_loaders.c (tools/match/match.py)
  */
@@ -691,8 +691,8 @@ int bg_plane_from_tex_packed_uv16_2vol(int *vertex_ptrs)
 }
 
 /* 0x0c075ec0  size 0x206  file by match with source
- * confidence: inferred
- * evidence: (three vertex pointers): background plane loader for entry 13 of the vertex-layout table bg_plane_loaders (0x0C32ABE8), the hardware's vertex parameter type 13: textured two-volume layout, the first volume's float U/V and intensities; copies the instruction words (state +0x1a0..+0x1a8) and the three vertices' x, y, z and color words into the background plane block at state +0xa4, stores the block's byte size (+0x19c), sets the tag bits through bg_plane_skip_from_isp_word and bg_plane_tag_bits_set and the depth from the first vertex's z (+0x1b0); returns 0; reached only through the table, which bg_plane_vertices_by_type indexes; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (three vertex pointers): background plane loader for entry 13 of the vertex-layout table bg_plane_loaders (0x0C32ABE8), the hardware's vertex parameter type 13: textured two-volume layout, the first volume's float U/V and intensities; copies the instruction words (state +0x1a0..+0x1a8) and the three vertices' x, y, z and color words into the background plane block at state +0xa4, stores the block's byte size (+0x19c), sets the tag bits through bg_plane_skip_from_isp_word and bg_plane_tag_bits_set and the depth from the first vertex's z (+0x1b0); returns 0; reached only through the table, which bg_plane_vertices_by_type indexes; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on vertex records of marker words 0x1111wwww, 0x2222wwww, 0x3333wwww (w the word) and float colors, 0xAAAA0001 and 0xBBBB0002 at state +0x1a4/+0x1a8: with 0x83000000 at +0x1a0 the block held the three words then x, y, z, u, v and the base and offset intensities of words 6, 7 (vertex 0: 0x0F0F0F0F, 0xDFDFDFDF) of each vertex, 24 words, 96 bytes, skip 4, depth 0x11110303; with 0x82000000 the offsets were left out (84 bytes, skip 3)
  * same code as main.bin 0c14be80 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/bg_plane_loaders.c (tools/match/match.py)
  */
@@ -736,8 +736,8 @@ int bg_plane_from_tex_intensity_2vol(int *vertex_ptrs)
 }
 
 /* 0x0c076100  size 0x200  file by match with source
- * confidence: inferred
- * evidence: (three vertex pointers): background plane loader for entry 14 of the vertex-layout table bg_plane_loaders (0x0C32ABE8), the hardware's vertex parameter type 14: textured two-volume layout, the first volume's 16-bit U/V and intensities; copies the instruction words (state +0x1a0..+0x1a8) and the three vertices' x, y, z and color words into the background plane block at state +0xa4, stores the block's byte size (+0x19c), sets the tag bits through bg_plane_skip_from_isp_word and bg_plane_tag_bits_set and the depth from the first vertex's z (+0x1b0); returns 0; reached only through the table, which bg_plane_vertices_by_type indexes; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (three vertex pointers): background plane loader for entry 14 of the vertex-layout table bg_plane_loaders (0x0C32ABE8), the hardware's vertex parameter type 14: textured two-volume layout, the first volume's 16-bit U/V and intensities; copies the instruction words (state +0x1a0..+0x1a8) and the three vertices' x, y, z and color words into the background plane block at state +0xa4, stores the block's byte size (+0x19c), sets the tag bits through bg_plane_skip_from_isp_word and bg_plane_tag_bits_set and the depth from the first vertex's z (+0x1b0); returns 0; reached only through the table, which bg_plane_vertices_by_type indexes; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on vertex records of marker words 0x1111wwww, 0x2222wwww, 0x3333wwww (w the word) and float colors, 0xAAAA0001 and 0xBBBB0002 at state +0x1a4/+0x1a8: with 0x83000000 at +0x1a0 the block held the three words then x, y, z, each vertex's U/V split in two (0x11110000, 0x04040000 ...), base and offset intensities (vertex 0: 0x0F0F0F0F, 0xDFDFDFDF), 96 bytes, skip 4; with 0x82400000 one U/V word each and no offset, 72 bytes, skip 2; depth 0x11110303
  * same code as main.bin 0c14c0c0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/bg_plane_loaders.c (tools/match/match.py)
  */

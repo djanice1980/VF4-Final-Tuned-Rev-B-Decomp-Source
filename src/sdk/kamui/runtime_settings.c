@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c147140  size 0x12  file by match with source
- * confidence: inferred
- * evidence: (base, size): stores the vertex buffer base and size in the library state (gfx_state +0x44C/+0x450), the words the VertexBuffer BufferBase / BufferSize settings fill at start-up; called by ta_param_base_put on chips before revision 8; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (base, size): stores the vertex buffer base and size in the library state (gfx_state +0x44C/+0x450), the words the VertexBuffer BufferBase / BufferSize settings fill at start-up; called by ta_param_base_put on chips before revision 8; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with (0x123400, 0x5600) it left gfx_state +0x44C / +0x450 at 0x123400 / 0x5600, then with (0x200000, 0x40000) at those; it returned 0
  * matched: source/sdk/kamui/runtime_settings.c (tools/match/match.py)
  */
 int vertex_area_base_size_put(uint base, uint size)
@@ -101,9 +101,9 @@ int frame_stall_limits_put(uint vertex_limit, int render_limit)
 }
 
 /* 0x0c1473a0  size 0x60  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x70
- * evidence: (surface, format, mode, width, height): writes the TA YUV converter control (0xa05f814c: block counts width-1 and height-1 in 6 bits each, bit 16 from the mode, bit 24 for format 3) and its texture base (0xa05f8148) from the surface's address word (+0x1C) through the both-chips register window; nothing references it; part of KamuiTL; checked against reference material (not in this repo)
+ * evidence: (surface, format, mode, width, height): writes the TA YUV converter control (0xa05f814c: block counts width-1 and height-1 in 6 bits each, bit 16 from the mode, bit 24 for format 3) and its texture base (0xa05f8148) from the surface's address word (+0x1C) through the both-chips register window; nothing references it; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with surface +0x1c 0x123400, format 0, mode 0, 4 x 3 it passed pvr_reg_write_both (0x14C, 0x203) and (0x148, 0x123400); with +0x1c 0x2A0000, format 3, mode 1, 10 x 20 (0x14C, 0x1011309) and (0x148, 0x2A0000)
  * matched: source/sdk/kamui/runtime_settings.c (tools/match/match.py)
  */
 int ta_yuv_regs_write(surface_rec *surface, int format, int mode, int width, int height)
@@ -126,9 +126,9 @@ int ta_yuv_regs_write(surface_rec *surface, int format, int mode, int width, int
 }
 
 /* 0x0c147420  size 0x3e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x4e
- * evidence: (buffer, bytes): 0 bytes turns gfx_state.mv_hdr_on off and returns 0; otherwise both must be multiples of 32: then keeps them in gfx_state.mv_hdr / mv_hdr_bytes with mv_hdr_on set and returns 0, else turns it off and returns the error code 7; nothing in the image calls it (uncalled code, made a function 2026-11-09); between ta_yuv_regs_write and cfg_setting_or_default, so by link order part of sdk/kamui/runtime_settings.c
+ * evidence: (buffer, bytes): 0 bytes turns gfx_state.mv_hdr_on off and returns 0; otherwise both must be multiples of 32: then keeps them in gfx_state.mv_hdr / mv_hdr_bytes with mv_hdr_on set and returns 0, else turns it off and returns the error code 7; nothing in the image calls it (uncalled code, made a function 2026-11-09); between ta_yuv_regs_write and cfg_setting_or_default, so by link order part of sdk/kamui/runtime_settings.c; exercised 2026-11-12: called by the harness with (buffer, 0x40) it returned 0 and left mv_hdr_on 1, mv_hdr the buffer and mv_hdr_bytes 0x40 (gfx_state +0x440 to +0x448); (buffer, 0) returned 0 with mv_hdr_on 0; (buffer, 0x60) 0 with 0x60 kept; (buffer + 4, 0x40) and (buffer, 0x44) returned 7 with mv_hdr_on 0
  * matched: source/sdk/kamui/runtime_settings.c (tools/match/match.py)
  */
 int mv_hdr_buffer_set(uint *buffer, uint bytes)

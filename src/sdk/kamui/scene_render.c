@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c13b900  size 0x66  file by match with source
- * confidence: inferred
- * evidence: copies the 128-byte block at far_triangle_block (a polygon header for the opaque list and one triangle at depth 1e-10, far behind everything) through the store queue (QACR0/1 0xff000038/3c) to the opaque list's write pointer (list 0 of the pointer array at list_write_ptrs) and advances it by 0x80; scene_lists_close calls it when bit 0x40 of the state flags (0c41e018) and three state words are set; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: copies the 128-byte block at far_triangle_block (a polygon header for the opaque list and one triangle at depth 1e-10, far behind everything) through the store queue (QACR0/1 0xff000038/3c) to the opaque list's write pointer (list 0 of the pointer array at list_write_ptrs) and advances it by 0x80; scene_lists_close calls it when bit 0x40 of the state flags (0c41e018) and three state words are set; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with list 0's write pointer (the record list_write_ptrs points at) poked to a scratch buffer: the buffer received the 32 words of far_triangle_block through the store queue and the pointer moved on 0x80; with the snapshot's pointer the four 32-byte copies went to its store-queue address and it moved on 0x80
  * matched: source/sdk/kamui/scene_render.c (tools/match/match.py)
  */
 void opaque_list_far_triangle(void)
@@ -88,7 +88,7 @@ int fb_pair_install(surface_rec *front, surface_rec *back, int mode, uint pair_w
 
 /* 0x0c13bae0  size 0xa8  file by match with source
  * confidence: inferred
- * evidence: (list to skip or 0xff): for each of the five TA lists with a non-zero size in the current buffer (sizes at 0c41e3dc, addresses at 0c41e38c, ring slot 0c41e364) except the skipped one, queues the list for transfer to the tile accelerator with list_seg_append_padded (when the state at 0c41e44c is 1, lists 1 and 3 first get their list-type bits patched and a second block queued), then starts the queued transfers with bank_close_and_submit; callers frame_lists_send_and_rearm, close_lists_and_draw_to_surface and the NAOMI library (ring_slot_send_all, capture_send_via_slot); part of KamuiTL
+ * evidence: (list to skip or 0xff): for each of the five TA lists with a non-zero size in the current buffer (sizes at 0c41e3dc, addresses at 0c41e38c, ring slot 0c41e364) except the skipped one, queues the list for transfer to the tile accelerator with list_seg_append_padded (when the word at 0c41e450, gfx_state.mv_hdr_on, is 1, lists 1 and 3 are each preceded by the block at gfx_state.mv_hdr (0c41e454, its size at 0c41e458), its list-type bits 24-27 first set to the list's number), then starts the queued transfers with bank_close_and_submit; callers frame_lists_send_and_rearm, close_lists_and_draw_to_surface and the NAOMI library (ring_slot_send_all, capture_send_via_slot); part of KamuiTL; corrected 2026-11-12 from harness calls: the switch for the extra block is the word at 0c41e450 (gfx_state.mv_hdr_on), not 0c41e44c: called by the harness with the snapshot (0c41e44c = 1, 0c41e450 = 0) and 0xff it queued only the five lists (sizes 0x140, 0x140, 0x1d60, 0x140, 0x140 of slot 3) and called bank_close_and_submit(0x3ff, 0xff); skip 1 left list 1 out; with 0c41e450 poked 1 and mv_hdr a buffer, lists 1 and 3 were each preceded by that block, its bits 24-27 set to the list
  * matched: source/sdk/kamui/scene_render.c (tools/match/match.py)
  */
 void lists_send_to_ta(uint skip_list)
@@ -228,9 +228,9 @@ void fb_pair_index_toggle(void)
 }
 
 /* 0x0c13bf00  size 0x17a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x1ac
- * evidence: reads the five words of the frame write block (fb_write_block) into FB_W_CTRL, FB_W_LINESTRIDE, FB_W_SOF1 and the two clip registers
+ * evidence: reads the five words of the frame write block (fb_write_block) into FB_W_CTRL, FB_W_LINESTRIDE, FB_W_SOF1 and the two clip registers; exercised 2026-11-12: called by the harness with the blocks (0x11, 0x22, 0x33, 0x44, 0x55) and (0x1001-0x1005): pvr_reg_write_both got 0x2c and 0x20 from the current half, then 0x60 = word 2, 0x48 = word 0, 0x4c = word 1, 0x68 = word 3, 0x6c = word 4, then 0x8c, 0x88 and 0x14 = 0xffffffff; state +0x208 became 3
  * matched: source/sdk/kamui/scene_render.c (tools/match/match.py)
  */
 void pvr_render_pass_start(fb_write_rec *wr)
@@ -290,9 +290,9 @@ void pvr_render_pass_start(fb_write_rec *wr)
 }
 
 /* 0x0c13c100  size 0x58  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xb8
- * evidence: (texture surface): fails (4) unless the surface is a plain texture of kind 1; maps its pixel format bits (0x38000000: 1555, 565, 4444) to the frame write packing mode 3, 1 or 2 and keeps it, with the other bits of the saved FB_W_CTRL value (state +0x2c4), as the first word of the frame write block at fb_write_block; callers close_lists_and_draw_to_surface, redraw_lists_to_surface; part of KamuiTL
+ * evidence: (texture surface): fails (4) unless the surface is a plain texture of kind 1; maps its pixel format bits (0x38000000: 1555, 565, 4444) to the frame write packing mode 3, 1 or 2 and keeps it, with the other bits of the saved FB_W_CTRL value (state +0x2c4), as the first word of the frame write block at fb_write_block; callers close_lists_and_draw_to_surface, redraw_lists_to_surface; part of KamuiTL; exercised 2026-11-12: called by the harness with the saved FB_W_CTRL (state +0x2c4) poked 0x12345675 and a surface of class 1: formats 0, 0x08000000, 0x10000000 returned 0 with fb_write_block word 0 = 0x12345673, ..71, ..72; flags bit 2 set, or class 2, returned 4 and left the word alone
  * matched: source/sdk/kamui/scene_render.c (tools/match/match.py)
  */
 int fb_pack_mode_from_texture(surface_rec *surf)
@@ -476,8 +476,8 @@ int scene_lists_close(void)
 }
 
 /* 0x0c13c780  size 0x18  file by match with source
- * confidence: inferred
- * evidence: sets gfx_state.frame_pending and list_send_skip to 1 and clears gfx_state.stall_scan_hold; nothing in the image calls it (uncalled code, made a function 2026-11-09); between scene_lists_close and close_lists_and_draw_to_surface, so by link order part of sdk/kamui/scene_render.c
+ * confidence: exercised
+ * evidence: sets gfx_state.frame_pending and list_send_skip to 1 and clears gfx_state.stall_scan_hold; nothing in the image calls it (uncalled code, made a function 2026-11-09); between scene_lists_close and close_lists_and_draw_to_surface, so by link order part of sdk/kamui/scene_render.c; exercised 2026-11-12: called by the harness after gfx_state.frame_pending was poked 0, stall_scan_hold 5 and list_send_skip 7: they became 1, 0 and 1, the words around them unchanged
  * matched: source/sdk/kamui/scene_render.c (tools/match/match.py)
  */
 void scene_frame_pending_mark(void)
@@ -489,9 +489,9 @@ void scene_frame_pending_mark(void)
 }
 
 /* 0x0c13c7a0  size 0x3ec  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x566
- * evidence: (texture surface): picks the frame write packing for the surface (fb_pack_mode_from_texture), fills the frame write block (stride from the width, write start from the surface's VRAM address | 0x1000000), waits for list input to end, records the lists' starts and sizes like scene_lists_close and appends an end word (list_end_word) to each enabled list, waits for the render to be idle, re-arms the TA list registers, sends the lists (lists_send_to_ta), clips the frame write to the surface (fb_clip_rect_store) and starts the render (pvr_render_pass_start), then reopens the list buffers; returns 0, -1, -2 or -3 on the waits' time-outs; nothing in the image calls it; part of KamuiTL; checked against reference material (not in this repo)
+ * evidence: (texture surface): picks the frame write packing for the surface (fb_pack_mode_from_texture), fills the frame write block (stride from the width, write start from the surface's VRAM address | 0x1000000), waits for list input to end, records the lists' starts and sizes like scene_lists_close and appends an end word (list_end_word) to each enabled list, waits for the render to be idle, re-arms the TA list registers, sends the lists (lists_send_to_ta), clips the frame write to the surface (fb_clip_rect_store) and starts the render (pvr_render_pass_start), then reopens the list buffers; returns 4 (after reopening the list buffers) when fb_pack_mode_from_texture refuses the surface, otherwise 0, or -1, -2 or -3 on the waits' time-outs; nothing in the image calls it; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with a 256 x 128 surface of class 1, format 0x08000000 at VRAM 0x200000 (irq): returned 0 with fb_write_block (9, 0x40, 0x1200000, clip 0xff0000, 0x7f0000) after end words to the lists, xfer_wait_idle, the TA registers, lists_send_to_ta(0xff), fb_clip_rect_store(0, 0, 255, 127), pvr_render_pass_start and listbuf_bank_select; a surface with flags bit 2 returned 4
  * matched: source/sdk/kamui/scene_render.c (tools/match/match.py)
  */
 int close_lists_and_draw_to_surface(surface_rec *surf)
@@ -667,9 +667,9 @@ int close_lists_and_draw_to_surface(surface_rec *surf)
 }
 
 /* 0x0c13cd60  size 0x21c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x2be
- * evidence: (texture surface): the variant of close_lists_and_draw_to_surface that does not close or measure the lists: waits for list input and the render to be idle, clips the frame write to the surface, starts the render (pvr_render_pass_start), then re-arms the TA list registers and marks the ring slot as rendering; nothing in the image calls it; part of KamuiTL; checked against reference material (not in this repo)
+ * evidence: (texture surface): the variant of close_lists_and_draw_to_surface that does not close or measure the lists: waits for list input and the render to be idle, clips the frame write to the surface, starts the render (pvr_render_pass_start), then re-arms the TA list registers and marks the ring slot as rendering; nothing in the image calls it; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the same 256 x 128 surface at 0x200000 (irq): returned 0 with fb_write_block (9, 0x40, 0x1200000, 0xff0000, 0x7f0000), fb_clip_rect_store(0, 0, 255, 127), pvr_render_pass_start, then the TA list registers; no lists_send_to_ta; slot 3's state went from 1 to 2
  * matched: source/sdk/kamui/scene_render.c (tools/match/match.py)
  */
 int redraw_lists_to_surface(surface_rec *surf)
@@ -759,9 +759,9 @@ int redraw_lists_to_surface(surface_rec *surf)
 }
 
 /* 0x0c13d0a0  size 0x86  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xf2
- * evidence: (surface descriptor): describes the current frame buffer (fb_pair_index selects the VRAM address kept at state +0x32c) as a 16-bit texture surface: kind 2, 1024 x 1024 stride words, size width x height x 2 (640 x 480 or by the display flags), format from the display's pixel mode (0x08000000 or 0); fails (4) for pixel modes 2, 4, 5; only caller texidx_bind_frame_buffer; part of KamuiTL
+ * evidence: (surface descriptor): describes the current frame buffer (fb_pair_index selects the VRAM address kept at state +0x32c) as a 16-bit texture surface: kind 2, 1024 x 1024 stride words, size width x height x 2 (640 x 480 or by the display flags), format from the display's pixel mode (0x08000000 or 0); fails (4) for pixel modes 2, 4, 5; only caller texidx_bind_frame_buffer; part of KamuiTL; exercised 2026-11-12: called by the harness with the snapshot (video out 1, pixel mode 0, fb_pair_index 1, frame buffers 0x800000, 0xc00000) it wrote 2, 1, 0x08000000, 0x400, 0x400, 0x96000 (640 x 480 x 2), 0x10, 0xc00000 and returned 0; pixel mode 1 gave format 0; mode 2 returned 4, nothing written; video out 0 with display flags 0x10 gave 0x4b000 (640 x 240 x 2)
  * matched: source/sdk/kamui/scene_render.c (tools/match/match.py)
  */
 int fb_front_as_surface_desc(surface_rec *desc)
@@ -803,8 +803,8 @@ int fb_front_as_surface_desc(surface_rec *desc)
 }
 
 /* 0x0c13d1c0  size 0xa0  file by match with source
- * confidence: inferred
- * evidence: in the stored-list mode (state +0x33c == 1): waits for the list DMA to be idle (xfer_wait_idle), resets the TA (0xa05f8008), writes the list bases and limits, TA_NEXT_OPB_INIT and TA_LIST_INIT for the current half; then reopens the list buffers (listbuf_bank_select); nothing in the image calls it; part of KamuiTL
+ * confidence: exercised
+ * evidence: in the stored-list mode (state +0x33c == 1): waits for the list DMA to be idle (xfer_wait_idle), resets the TA (0xa05f8008), writes the list bases and limits, TA_NEXT_OPB_INIT and TA_LIST_INIT for the current half; then reopens the list buffers (listbuf_bank_select); nothing in the image calls it; part of KamuiTL; exercised 2026-11-12: called by the harness: with state +0x33c 0 (the snapshot) it only called listbuf_bank_select(1); poked 1 it called xfer_wait_idle, pvr_reg_write_both 0x08 = 1 then 0, 0x124, 0x12c, 0x128, 0x130, 0x164 with the words of the current half's buffer record, 0x144 = 0x80000000, then listbuf_bank_select(1)
  * matched: source/sdk/kamui/scene_render.c (tools/match/match.py)
  */
 void ta_lists_rearm(void)

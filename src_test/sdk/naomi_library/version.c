@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c059fe0  size 0x10  file by match with source
- * confidence: inferred
- * evidence: copies clip_stretch_step into the second word of the record it is given; the start-up graphics_bring_up and the display mode change video_reconfigure pass it to the 3D library's hook_request_ignored (which does nothing with it) when clip_stretch_on is 1; called through that pointer only, so Ghidra never made it a function; part of the NAOMI library
+ * confidence: exercised
+ * evidence: copies clip_stretch_step into the second word of the record it is given; the start-up graphics_bring_up and the display mode change video_reconfigure pass it to the 3D library's hook_request_ignored (which does nothing with it) when clip_stretch_on is 1; called through that pointer only, so Ghidra never made it a function; part of the NAOMI library; exercised 2026-11-12: called by the harness in one sandbox after clip_stretch_step_set(3), clip_stretch_step_report on a buffer of 0x55555555 words stored 3 in its second word and left the first and third alone; after clip_stretch_step_set(4) it stored 4
  * same code as main.bin 0c12f860 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi_library/version.c (tools/match/match.py)
  */

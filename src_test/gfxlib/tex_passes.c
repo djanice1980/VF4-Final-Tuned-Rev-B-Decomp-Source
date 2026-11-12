@@ -265,8 +265,8 @@ void target_bind_texture_core(render_target_rec *rt, int block, int texidx, int 
 }
 
 /* 0x0c033d20  size 0x22  file by match with source
- * confidence: inferred
- * evidence: (target, texture index): target_bind_texture_core with block 0 (a new VRAM block) and the texture's own size; nothing in the image calls it; part of the unidentified game-built graphics library (render-to-texture pass object, 0x0C12A120-0x0C12B89F)
+ * confidence: exercised
+ * evidence: (target, texture index): target_bind_texture_core with block 0 (a new VRAM block) and the texture's own size; nothing in the image calls it; part of the unidentified game-built graphics library (render-to-texture pass object, 0x0C12A120-0x0C12B89F); exercised 2026-11-12: called by the harness on a target in scratch memory after target_texidx_create(0x4f00, 512, 256, 0x901) and (0x4f01, 64, 128, 0x901): with 0x4f00 the target held the slot 0x0c51434c, index 0x4f00, tile clip 0x0007000f, tiles 16 x 8 = 128, size 512 x 256 and a new VRAM block; with 0x4f01 slot 0x0c514388, tile clip 0x00030001, tiles 2 x 4 = 8, size 64 x 128 and another block
  * same code as main.bin 0c12a740 (ghidra/TransferFromMain.java)
  * matched: source/gfxlib/tex_passes.c (tools/match/match.py)
  */
@@ -277,8 +277,8 @@ void target_bind_texture(render_target_rec *rt, int texidx)
 }
 
 /* 0x0c033d60  size 0x24  file by match with source
- * confidence: inferred
- * evidence: (target, texture index, width, height): target_bind_texture_core with block 0 (a new VRAM block) and the given size; nothing in the image calls it; part of the unidentified game-built graphics library (render-to-texture pass object, 0x0C12A120-0x0C12B89F)
+ * confidence: exercised
+ * evidence: (target, texture index, width, height): target_bind_texture_core with block 0 (a new VRAM block) and the given size; nothing in the image calls it; part of the unidentified game-built graphics library (render-to-texture pass object, 0x0C12A120-0x0C12B89F); exercised 2026-11-12: called by the harness in the same sandbox as target_bind_texture on index 0x4f00 (a 512 x 256 texture) with size 256 x 128: the target held the slot 0x0c51434c, index 0x4f00, tile clip 0x00030007, tiles 8 x 4 = 32, size 256 x 128 (not the texture's 512 x 256) and a VRAM block of its own
  * same code as main.bin 0c12a780 (ghidra/TransferFromMain.java)
  * matched: source/gfxlib/tex_passes.c (tools/match/match.py)
  */
@@ -423,8 +423,8 @@ void target_screen_state_restore(void)
 }
 
 /* 0x0c0340c0  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: (target, buffer half): picks a target's buffer half for the CPU object list writer: base word into cpu_ol_param_base and two more into cpu_ol_target +0 / +4, the target's tile clip and block size words (+0x78 / +0x7c) into +0x14 / +0x18; nothing in the image calls it (uncalled code, made a function 2026-11-09); between target_screen_state_restore and cpu_ol_background_write, so by link order part of gfxlib/tex_passes.c
+ * confidence: exercised
+ * evidence: (target, buffer half): picks a target's buffer half for the CPU object list writer: base word into cpu_ol_param_base and two more into cpu_ol_target +0 / +4, the target's tile clip and block size words (+0x78 / +0x7c) into +0x14 / +0x18; nothing in the image calls it (uncalled code, made a function 2026-11-09); between target_screen_state_restore and cpu_ol_background_write, so by link order part of gfxlib/tex_passes.c; exercised 2026-11-12: called by the harness on a target in scratch memory whose word at offset o is 0x11000000 + o: with half 0 cpu_ol_param_base became 0x11000000 and cpu_ol_target +0/+4 0x11000008/0x1100000c, with half 1 0x11000018 and 0x11000020/0x11000024; +0x14/+0x18 took 0x11000078/0x1100007c both times
  * same code as main.bin 0c12aae0 (ghidra/TransferFromMain.java)
  * matched: source/gfxlib/tex_passes.c (tools/match/match.py)
  */
@@ -441,8 +441,8 @@ void cpu_ol_target_select(tex_target_rec *target, int half)
 }
 
 /* 0x0c034100  size 0x2c  file by match with source
- * confidence: inferred
- * evidence: (color word): writes a background plane for the selected target (bg_plane_256x128_write_link_out at the block at cpu_ol_target +0x10 with the base in cpu_ol_param_base), keeps the next free address back in the block at cpu_ol_target +0x10 and returns the word bg_plane_256x128_write_link_out produced; nothing in the image calls it (the target select routine for the block at cpu_ol_target, cpu_ol_target_select, was never made a function and nothing reaches it); part of the unidentified game-built graphics library (render-to-texture pass object, 0x0C12A120-0x0C12B89F)
+ * confidence: exercised
+ * evidence: (color word): writes a background plane for the selected target (bg_plane_256x128_write_link_out at the block at cpu_ol_target +0x10 with the base in cpu_ol_param_base), keeps the next free address back in the block at cpu_ol_target +0x10 and returns the word bg_plane_256x128_write_link_out produced; nothing in the image calls it (nor does anything call cpu_ol_target_select, which selects the block at cpu_ol_target); part of the unidentified game-built graphics library (render-to-texture pass object, 0x0C12A120-0x0C12B89F); exercised 2026-11-12: called by the harness after cpu_ol_target_select of a target with base 0x400000 and parameter start 0x410000: color 0xff112233 wrote at 0xa5410000 e0800000 20800000 and three vertices with the color, +0x10 became 0x41003c and it returned 0x80204000; a second call with 0xff445566 wrote at 0xa541003c, left 0x410078 and returned 0x8020400f
  * same code as main.bin 0c12ab20 (ghidra/TransferFromMain.java)
  * matched: source/gfxlib/tex_passes.c (tools/match/match.py)
  */
@@ -456,8 +456,8 @@ uint cpu_ol_background_write(uint color)
 }
 
 /* 0x0c034140  size 0x7c  file by match with source
- * confidence: inferred
- * evidence: (buffer set 0 or 1): pulses the graphics core reset (offset 8: 1 then 0) and sets up the tile accelerator's list input for buffer set n of the library state (+0x484 + n * 0x38): object buffer base and limit (0x124, 0x12c), parameter base and limit (0x128, 0x130), next block (0x164), then writes 0x80000000 to the list init register (0x144) and reads it back (pvr_reg_write_both, pvr_reg_read; the same sequence as libnaomi libnaomi/ta.c, public); nothing in the image calls it; part of the unidentified game-built graphics library (render-to-texture pass object, 0x0C12A120-0x0C12B89F)
+ * confidence: exercised
+ * evidence: (buffer set 0 or 1): pulses the graphics core reset (offset 8: 1 then 0) and sets up the tile accelerator's list input for buffer set n of the library state (+0x484 + n * 0x38): object buffer base and limit (0x124, 0x12c), parameter base and limit (0x128, 0x130), next block (0x164), then writes 0x80000000 to the list init register (0x144) and reads it back (pvr_reg_write_both, pvr_reg_read; the same sequence as libnaomi libnaomi/ta.c, public); nothing in the image calls it; part of the unidentified game-built graphics library (render-to-texture pass object, 0x0C12A120-0x0C12B89F); exercised 2026-11-12: called by the harness with set 0 and set 1 on the snapshot's library state: both pulsed offset 8 (1 then 0); set 0 wrote 0x124 = 0x650c80, 0x12c = 0x5cf800, 0x128 = 0x400000, 0x130 = 0x5cf700, 0x164 = 0x650c80, set 1 the words 0x38 further on (0x250c80, 0x1cf800, 0, 0x1cf700, 0x250c80); both then wrote 0x80000000 to 0x144 and read it
  * same code as main.bin 0c12ab60 (ghidra/TransferFromMain.java)
  * matched: source/gfxlib/tex_passes.c (tools/match/match.py)
  */
@@ -516,8 +516,8 @@ void ta_tile_alloc_regs_restore(void)
 }
 
 /* 0x0c034300  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: (destination, count, first, step): fills count words with first, first + step, first + 2 * step...; caller cpu_ol_tile_ptrs_build; part of the unidentified game-built graphics library (render-to-texture pass object, 0x0C12A120-0x0C12B89F)
+ * confidence: exercised
+ * evidence: (destination, count, first, step): fills count words with first, first + step, first + 2 * step...; caller cpu_ol_tile_ptrs_build; part of the unidentified game-built graphics library (render-to-texture pass object, 0x0C12A120-0x0C12B89F); exercised 2026-11-12: called by the harness with (buffer, 5, 100, 7) it wrote 100 107 114 121 128 and left the sixth word 0xdeadbeef; with (buffer, 3, 10, -4) 10 6 2 and the fourth word stayed 121; with count 0 nothing changed
  * same code as main.bin 0c12ad20 (ghidra/TransferFromMain.java)
  * matched: source/gfxlib/tex_passes.c (tools/match/match.py)
  */
@@ -533,8 +533,8 @@ void words_fill_arith(int *dst, uint count, int value, int step)
 }
 
 /* 0x0c034320  size 0x18  file by match with source
- * confidence: inferred
- * evidence: (&address, value): stores the value at the address in the uncached 64-bit texture memory window (| 0xa5000000) and moves the address on 4; caller cpu_ol_all_tiles_put; part of the unidentified game-built graphics library (render-to-texture pass object, 0x0C12A120-0x0C12B89F)
+ * confidence: exercised
+ * evidence: (&address, value): stores the value at the address in the uncached 64-bit texture memory window (| 0xa5000000) and moves the address on 4; caller cpu_ol_all_tiles_put; part of the unidentified game-built graphics library (render-to-texture pass object, 0x0C12A120-0x0C12B89F); exercised 2026-11-12: called by the harness in one sandbox with the address word 0x00200000 and 0x12345678: the word at 0xa5200000 became 0x12345678 and the address 0x00200004; with 0x9abcdef0 the word at 0xa5200004 and the address 0x00200008
  * same code as main.bin 0c12ad40 (ghidra/TransferFromMain.java)
  * matched: source/gfxlib/tex_passes.c (tools/match/match.py)
  */
@@ -549,8 +549,8 @@ void vram64_word_put_advance(uint *addr, uint value)
 }
 
 /* 0x0c034340  size 0x84  file by match with source
- * confidence: inferred
- * evidence: (value): for every tile of the block at cpu_ol_target's grid (columns +0x97c, rows +0x980) writes the value at that tile's object list pointer (the table at +0x1c) and moves the pointer on (vram64_word_put_advance), so the CPU adds the same entry to every tile's object list; nothing in the image calls it; part of the unidentified game-built graphics library (render-to-texture pass object, 0x0C12A120-0x0C12B89F)
+ * confidence: exercised
+ * evidence: (value): for every tile of the block at cpu_ol_target's grid (columns +0x97c, rows +0x980) writes the value at that tile's object list pointer (the table at +0x1c) and moves the pointer on (vram64_word_put_advance), so the CPU adds the same entry to every tile's object list; nothing in the image calls it; part of the unidentified game-built graphics library (render-to-texture pass object, 0x0C12A120-0x0C12B89F); exercised 2026-11-12: called by the harness after cpu_ol_target_select and cpu_ol_tile_ptrs_build of a 4 x 3 tile target with pointers 0x300000 + 64 i: 0xcafe0001 went to 0xa5300000, ..., 0xa53002c0 (nothing at 0xa5300300) and every pointer moved 4; a second call put 0xcafe0002 in the next word of each
  * same code as main.bin 0c12ad60 (ghidra/TransferFromMain.java)
  * matched: source/gfxlib/tex_passes.c (tools/match/match.py)
  */
@@ -579,8 +579,8 @@ void cpu_ol_all_tiles_put(uint value)
 }
 
 /* 0x0c0343e0  size 0x6a  file by match with source
- * confidence: inferred
- * evidence: sets up the block at cpu_ol_target for CPU-written object lists: tile columns and rows from the tile clip word (+0x14, low and third bytes plus 1) and their product, the five lists' block sizes from the block size word (+0x18, list_block_sizes_from_alloc) and their starts from the object buffer base (+0, list_area_starts_lay_out), the parameter write address (+0x10) from +4, and one object list pointer per tile for list 0 (words_fill_arith into +0x1c); nothing in the image calls it; part of the unidentified game-built graphics library (render-to-texture pass object, 0x0C12A120-0x0C12B89F)
+ * confidence: exercised
+ * evidence: sets up the block at cpu_ol_target for CPU-written object lists: tile columns and rows from the tile clip word (+0x14, low and third bytes plus 1) and their product, the five lists' block sizes from the block size word (+0x18, list_block_sizes_from_alloc) and their starts from the object buffer base (+0, list_area_starts_lay_out), the parameter write address (+0x10) from +4, and one object list pointer per tile for list 0 (words_fill_arith into +0x1c); nothing in the image calls it; part of the unidentified game-built graphics library (render-to-texture pass object, 0x0C12A120-0x0C12B89F); exercised 2026-11-12: called by the harness after cpu_ol_target_select of a target with tile clip 0x00020003, block size word 0x00111312, object buffer 0x300000 and parameter start 0x410000: columns 4, rows 3, product 12, +0x10 = 0x410000 and twelve tile pointers 0x300000, 0x300040, ..., 0x3002c0 at +0x1c (the thirteenth word not written)
  * same code as main.bin 0c12ae00 (ghidra/TransferFromMain.java)
  * matched: source/gfxlib/tex_passes.c (tools/match/match.py)
  */
@@ -782,8 +782,8 @@ int tex_type_to_desc(surface_rec *desc, int width, int height, uint type)
 }
 
 /* 0x0c034b40  size 0x42  file by match with source
- * confidence: inferred
- * evidence: (texture index, texture type): for a used index (texidx_slot_get) redecodes the slot for the type at its own size (tex_type_to_desc) and rebuilds its hardware words (rt_tex_hw_words_build); returns the decode result, or -1 for an unused index; nothing in the image calls it; part of the unidentified game-built graphics library (render-to-texture pass object, 0x0C12A120-0x0C12B89F)
+ * confidence: exercised
+ * evidence: (texture index, texture type): for a used index (texidx_slot_get) redecodes the slot for the type at its own size (tex_type_to_desc) and rebuilds its hardware words (rt_tex_hw_words_build); returns the decode result, or -1 for an unused index; nothing in the image calls it; part of the unidentified game-built graphics library (render-to-texture pass object, 0x0C12A120-0x0C12B89F); exercised 2026-11-12: called by the harness: index 0x4f00 before it was made returned -1; after target_texidx_create(0x4f00, 512, 256, 0x901) type 0x902 returned 0 and the slot's format became 0x10000000 (control 0x141c2100), 0xd01 returned 0 with flags 4 (control 0x081c2100), 0x102 returned 4 (not square) and 0x905 4 (bad format), the size staying 512 x 256
  * same code as main.bin 0c12b560 (ghidra/TransferFromMain.java)
  * matched: source/gfxlib/tex_passes.c (tools/match/match.py)
  */
@@ -801,8 +801,8 @@ int target_tex_retype(int texidx, uint type)
 }
 
 /* 0x0c034ba0  size 0x66  file by match with source
- * confidence: inferred
- * evidence: (texture index): describes the current frame buffer into the index's slot (fb_front_as_surface_desc, result at +0x28 and returned on failure), builds its hardware words (rt_tex_hw_words_build) and sets bit 21 (0x200000) of the control word; returns -1 for an unused index; nothing in the image calls it; part of the unidentified game-built graphics library (render-to-texture pass object, 0x0C12A120-0x0C12B89F)
+ * confidence: exercised
+ * evidence: (texture index): describes the current frame buffer into the index's slot (fb_front_as_surface_desc, result at +0x28 and returned on failure), builds its hardware words (rt_tex_hw_words_build) and sets bit 21 (0x200000) of the control word; returns -1 for an unused index; nothing in the image calls it; part of the unidentified game-built graphics library (render-to-texture pass object, 0x0C12A120-0x0C12B89F); exercised 2026-11-12: called by the harness: the unused index 0x4f05 returned -1; 0x4f02 (made with target_texidx_create(0x4f02, 0, 0, 0)) returned 0 and its slot became kind 2, 1024 x 1024, 0x96000 bytes (640 x 480 x 2), address 0xc00000, status +0x28 = 0, size word 0x3f and control word 0x0e380000 (address >> 3 with bit 21 set)
  * same code as main.bin 0c12b5c0 (ghidra/TransferFromMain.java)
  * matched: source/gfxlib/tex_passes.c (tools/match/match.py)
  */
@@ -863,8 +863,8 @@ tex_slot_rec * texidx_slot_get(int texidx)
 }
 
 /* 0x0c034d20  size 0x44  file by match with source
- * confidence: inferred
- * evidence: (texture index, &width, &height): for a used index stores the width and height its hardware size codes give (8 << code, from +0x30); nothing in the image calls it; part of the unidentified game-built graphics library (render-to-texture pass object, 0x0C12A120-0x0C12B89F)
+ * confidence: exercised
+ * evidence: (texture index, &width, &height): for a used index stores the width and height its hardware size codes give (8 << code, from +0x30); nothing in the image calls it; part of the unidentified game-built graphics library (render-to-texture pass object, 0x0C12A120-0x0C12B89F); exercised 2026-11-12: called by the harness: for index 0x4f00 made 512 x 256 it stored 512 and 256, for 0x4f01 made 64 x 128 64 and 128, and for the unused 0x4f05 it left the planted 0x5555 and 0x6666
  * same code as main.bin 0c12b740 (ghidra/TransferFromMain.java)
  * matched: source/gfxlib/tex_passes.c (tools/match/match.py)
  */
@@ -899,8 +899,8 @@ void texidx_size_get(int texidx, int *width, int *height)
 }
 
 /* 0x0c034dc0  size 0x54  file by match with source
- * confidence: inferred
- * evidence: (destination, source bytes, count): converts 4-byte pixels to 16-bit ARGB1555: the top 5 bits of bytes 0-2, and bit 7 of byte 3 as alpha; nothing in the image calls it (uncalled code, made a function 2026-11-09); between texidx_size_get and pixels_to_rgb565, so by link order part of gfxlib/tex_passes.c
+ * confidence: exercised
+ * evidence: (destination, source bytes, count): converts 4-byte pixels to 16-bit ARGB1555: the top 5 bits of bytes 0-2, and bit 7 of byte 3 as alpha; nothing in the image calls it (uncalled code, made a function 2026-11-09); between texidx_size_get and pixels_to_rgb565, so by link order part of gfxlib/tex_passes.c; exercised 2026-11-12: called by the harness with the pixels (bytes) ff 00 00 00, 00 ff 00 00, 00 00 ff 00, 00 00 00 80, 12 34 56 78, 07 07 07 7f and count 6: it wrote 7c00 03e0 001f 8000 08ca 0000 and left the seventh halfword 0x5a5a
  * same code as main.bin 0c12b7e0 (ghidra/TransferFromMain.java)
  * matched: source/gfxlib/tex_passes.c (tools/match/match.py)
  */
@@ -920,8 +920,8 @@ void pixels_to_argb1555(ushort *out, uchar *pixels, int count)
 }
 
 /* 0x0c034e20  size 0x4a  file by match with source
- * confidence: inferred
- * evidence: (destination, source bytes, count): converts 4-byte pixels to 16-bit RGB565, skipping the fourth byte; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pixels_to_argb1555 and vram_pair_pool_alloc, so by link order part of gfxlib/tex_passes.c
+ * confidence: exercised
+ * evidence: (destination, source bytes, count): converts 4-byte pixels to 16-bit RGB565, skipping the fourth byte; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pixels_to_argb1555 and vram_pair_pool_alloc, so by link order part of gfxlib/tex_passes.c; exercised 2026-11-12: called by the harness with the pixels (bytes) ff 00 00 00, 00 ff 00 00, 00 00 ff 00, 00 00 00 80, 12 34 56 78, 07 07 07 7f and count 6: it wrote f800 07e0 001f 0000 11aa 0020 and left the seventh halfword 0x5a5a
  * same code as main.bin 0c12b840 (ghidra/TransferFromMain.java)
  * matched: source/gfxlib/tex_passes.c (tools/match/match.py)
  */

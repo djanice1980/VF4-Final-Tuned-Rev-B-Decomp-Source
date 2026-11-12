@@ -18,9 +18,9 @@ void mmu_control_default_put(void)
 }
 
 /* 0x0c1393e0  size 0x98  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xe8
- * evidence: (physical address, virtual address, size code 1-4): from the replace boundary in MMUCR (0xff000010 bits 18-23) finds a UTLB entry whose address array word (0xf6000000 + n * 256) has V clear, returns 0xff when there is none; writes the virtual page with V to the address array and the physical address masked to the size code's page, the size code's flag bits and 0x13e to the data array (0xf7000000 + n * 256); returns the entry number; called by sq_windows_map; part of syMmu; checked against reference material (not in this repo)
+ * evidence: (physical address, virtual address, size code 1-4): from the replace boundary in MMUCR (0xff000010 bits 18-23) finds a UTLB entry whose address array word (0xf6000000 + n * 256) has V clear, returns 0xff when there is none; writes the virtual page with V to the address array and the physical address masked to the size code's page, the size code's flag bits and 0x13e to the data array (0xf7000000 + n * 256); returns the entry number; called by sq_windows_map; part of syMmu; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with (0x0c123456, 0xe0012345, 4) it wrote 0xe0012100 to the address array word f6000000 and 0x0c1001be (1 MB page, size bits 0x90, 0x13e) to the data array word f7000000, and with size code 1 the data word 0x0c12353e (1 KB page); the entry chosen (0, from the model's reads of MMUCR and f6000000) is the harness's answer
  * matched: source/sdk/sy/symmu.c (tools/match/match.py)
  */
 uint utlb_install(uint phys, uint virt, uint page_size)
@@ -63,8 +63,8 @@ uint utlb_install(uint phys, uint virt, uint page_size)
 }
 
 /* 0x0c139500  size 0x28  file by match with source
- * confidence: inferred
- * evidence: for an entry number below 64: clears V in its UTLB address array word and zeroes its data array word; called by sq_windows_unmap; part of syMmu; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: for an entry number below 64: clears V in its UTLB address array word and zeroes its data array word; called by sq_windows_unmap; part of syMmu; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with entry 1 it wrote f6000100 back with bit 8 (V) clear and 0 to f7000100; with 64 it wrote nothing; called by sq_windows_unmap it took the 25 entry numbers poked there
  * matched: source/sdk/sy/symmu.c (tools/match/match.py)
  */
 void utlb_uninstall(uint entry)
@@ -78,7 +78,7 @@ void utlb_uninstall(uint entry)
 
 /* 0x0c139540  size 0x24  file by match with source
  * confidence: inferred
- * evidence: (entry, bits): for an entry below 64, replaces bits 0 and 3 of its UTLB address array word (0xF7000000 + entry x 0x100) with the byte given; nothing in the image calls it (uncalled code, made a function 2026-11-09); between utlb_uninstall and aica_fifo_idle_flag, so by link order part of sdk/sy/symmu.c
+ * evidence: (entry, bits): for an entry below 64, clears bits 0 and 3 of its UTLB data array word (0xF7000000 + entry x 0x100) and ORs in the byte given (all of its bits, not only 0 and 3); nothing in the image calls it (uncalled code, made a function 2026-11-09); between utlb_uninstall and aica_fifo_idle_flag, so by link order part of sdk/sy/symmu.c; corrected 2026-11-12 from harness calls: the results contradict the description: the whole byte is ORed in, not just bits 0 and 3, and the word is the data array's. Called by the harness (the model reads 0 there), (1, 9) wrote 9 to f7000100, (2, 0x46) wrote 0x46 to f7000200 (bits 1, 2 and 6 set as well) and (64, 9) wrote nothing
  * matched: source/sdk/sy/symmu.c (tools/match/match.py)
  */
 void utlb_entry_low_bits_set(uint entry, char bits)

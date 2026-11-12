@@ -84,8 +84,8 @@ int item_has(uint side, int item)
 }
 
 /* 0x0c08f0e0  size 0x64  file by match with source
- * confidence: inferred
- * evidence: (player, item): sets the item's bit in the play record (card_hdr_item_put); returns 0 when it was newly given, -1 when the character has no such item or already had it; callers item_pending_redeem, item_lottery_judge, item_award_rule_check; part of vf4lib/libcard/src/card_item.c
+ * confidence: exercised
+ * evidence: (player, item): sets the item's bit in the play record (card_hdr_item_put); returns 0 when it was newly given, -1 when the character has no such item or already had it; callers item_pending_redeem, item_lottery_judge, item_award_rule_check; part of vf4lib/libcard/src/card_item.c; exercised 2026-11-12: called by the harness in one sandbox for side 0 (character 14 in the snapshot, no card in): item_give(0, 0x6F) returned 0 and set bit 57 (header byte +0x11 0 -> 0x02; item_has(0, 0x6F) then gave 2); a second item_give(0, 0x6F) returned -1; item_give(0, 0x10), an item character 14 does not have (item_bit_index -1), returned -1 and changed nothing
  * matched: source/vf4lib/libcard/src/card_item.c (tools/match/match.py)
  */
 int item_give(uint side, int item)
@@ -174,8 +174,8 @@ int item_give_carded(uint side, int item)
 }
 
 /* 0x0c08f320  size 0x7e  file by match with source
- * confidence: inferred
- * evidence: (player, item): sets the item's bit in both the play record and the card record (card_record_get) without a card check; returns 0, -1 for no such item; only caller card_item_log_restore; part of vf4lib/libcard/src/card_item.c
+ * confidence: exercised
+ * evidence: (player, item): sets the item's bit in both the play record and the card record (card_record_get) without a card check; returns 0, -1 for no such item; only caller card_item_log_restore; part of vf4lib/libcard/src/card_item.c; exercised 2026-11-12: called by the harness in one sandbox for side 0 (character 14, no card in): item_give_both(0, 0x70) returned 0 and set bit 58 in both the play record (card_images+0x11 0x04) and the card record (card_records+0x11 0x04); a second call also returned 0; item_give_both(0, 0x10), no such item for character 14, returned -1
  * matched: source/vf4lib/libcard/src/card_item.c (tools/match/match.py)
  */
 int item_give_both(uint side, int item)
@@ -230,8 +230,8 @@ int item_slot_lock_match(int side, int costume, uint slot, int item)
 }
 
 /* 0x0c08f460  size 0x38  file by match with source
- * confidence: inferred
- * evidence: (player, slot): clears the slot's lock bit in play record +0x38; only caller item_unequip; part of vf4lib/libcard/src/card_item.c
+ * confidence: exercised
+ * evidence: (player, slot): clears the slot's lock bit in play record +0x38; only caller item_unequip; part of vf4lib/libcard/src/card_item.c; exercised 2026-11-12: called by the harness in one sandbox for side 0 with play record +0x38 poked 0x0F: slot 2 left 0x0B, then slot 0 left 0x0A
  * matched: source/vf4lib/libcard/src/card_item.c (tools/match/match.py)
  */
 void item_slot_unlock(int side, uint slot)
@@ -244,14 +244,13 @@ void item_slot_unlock(int side, uint slot)
 }
 
 /* 0x0c08f4a0  size 0x18  file by match with source
- * confidence: inferred
- * evidence: (player): item_has(player, 0x88); nothing in the image calls it (sel_exit_hold_check tests item 0x88 through item_has_carded); part of vf4lib/libcard/src/card_item.c
+ * confidence: exercised
+ * evidence: (player): item_has(player, 0x88); nothing in the image calls it (sel_exit_hold_check tests item 0x88 through item_has_carded); part of vf4lib/libcard/src/card_item.c; exercised 2026-11-12: called by the harness in one sandbox for side 0 (character 14): it called item_has(0, 0x88) and left 0 in r0; after item_give(0, 0x83) still 0; after item_give(0, 0x88) it left 1 (bit 56, the low bit of header byte +0x11), item_has's value (the header declares void: notes row)
  * matched: source/vf4lib/libcard/src/card_item.c (tools/match/match.py)
  */
-void item_has_88(int side)
+int item_has_88(int side)
 {
-  item_has(side,0x88);
-  return;
+  return item_has(side,0x88);
 }
 
 /* 0x0c08f4c0  size 0x18  file by match with source
@@ -346,20 +345,19 @@ int item_has_7f(int side)
 }
 
 /* 0x0c08f5a0  size 0x18  file by match with source
- * confidence: inferred
- * evidence: (player): item_has(player, 0x83); nothing in the image calls it; part of vf4lib/libcard/src/card_item.c
+ * confidence: exercised
+ * evidence: (player): item_has(player, 0x83); nothing in the image calls it; part of vf4lib/libcard/src/card_item.c; exercised 2026-11-12: called by the harness in one sandbox for side 0 (character 14): it called item_has(0, 0x83) and left 0 in r0; after item_give(0, 0x83) it left 0x80 (bit 55, the top bit of header byte +0x10) while item_has_88 still left 0 (the header declares void: notes row)
  * matched: source/vf4lib/libcard/src/card_item.c (tools/match/match.py)
  */
-void item_has_83(int side)
+int item_has_83(int side)
 {
-  item_has(side,0x83);
-  return;
+  return item_has(side,0x83);
 }
 
 /* 0x0c08f5c0  size 0x3a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x58
- * evidence: (player, costume, slot): the item number equipped in the slot, play record +0x30[slot] for costume 0, +0x34[slot] for costume 1; callers item_slot_lock_match, item_award_rule_check, level_change_open; part of vf4lib/libcard/src/card_item.c
+ * evidence: (player, costume, slot): the item number equipped in the slot, play record +0x30[slot] for costume 0, +0x34[slot] for costume 1; callers item_slot_lock_match, item_award_rule_check, level_change_open; part of vf4lib/libcard/src/card_item.c; exercised 2026-11-12: called by the harness in one sandbox for side 0 with play record +0x30-+0x33 poked 0x11-0x14 and +0x34-+0x37 0x21-0x24: (0, 0, 2) returned 0x13, (0, 1, 1) 0x22, (0, 0, 0) 0x11 and (0, 1, 3) 0x24
  * matched: source/vf4lib/libcard/src/card_item.c (tools/match/match.py)
  */
 uchar item_slot_get(int side, int costume, int slot)
@@ -378,9 +376,9 @@ uchar item_slot_get(int side, int costume, int slot)
 }
 
 /* 0x0c08f620  size 0x7c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x9a
- * evidence: (player, costume, slot, item): when item_has_carded and the slot is not locked: clears the costume's bit (0 or 1) of play record +0x5C and puts the item in the slot (+0x30 / +0x34); callers item_give_and_equip; part of vf4lib/libcard/src/card_item.c
+ * evidence: (player, costume, slot, item): when item_has_carded and the slot is not locked: clears the costume's bit (0 or 1) of play record +0x5C and puts the item in the slot (+0x30 / +0x34); callers item_give_and_equip; part of vf4lib/libcard/src/card_item.c; exercised 2026-11-12: called by the harness in one sandbox for side 0 with card_records+0x104 (item_has_carded's card-in word) poked 1, +0x5C 0xFF and item 0x71 given: (0, 0, 1, 0x71) put 0x71 at +0x31 and +0x5C became 0xFE; (0, 1, 2, 0x72) did nothing before 0x72 was given and nothing with slot 2 locked (+0x38 0x04), and unlocked put 0x72 at +0x36 (+0x5C 0xFC); with the card word back at 0, (0, 0, 3, 0x71) did nothing
  * matched: source/vf4lib/libcard/src/card_item.c (tools/match/match.py)
  */
 void item_equip(int side, int costume, int slot, int item)
@@ -406,9 +404,9 @@ void item_equip(int side, int costume, int slot, int item)
 }
 
 /* 0x0c08f6e0  size 0x7c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x9a
- * evidence: (player, costume, slot, item): item_equip with item_has_unchecked instead of item_has_carded; only caller card_item_log_restore; part of vf4lib/libcard/src/card_item.c
+ * evidence: (player, costume, slot, item): item_equip with item_has_unchecked instead of item_has_carded; only caller card_item_log_restore; part of vf4lib/libcard/src/card_item.c; exercised 2026-11-12: called by the harness in one sandbox for side 0 with no card in (card_records+0x104 0), +0x5C poked 0xFF and item 0x71 given: (0, 0, 0, 0x71) put 0x71 at +0x30 (+0x5C 0xFE); (0, 1, 1, 0x72) did nothing before 0x72 was given and nothing with slot 1 locked (+0x38 0x02), and unlocked put 0x72 at +0x35 (+0x5C 0xFC)
  * matched: source/vf4lib/libcard/src/card_item.c (tools/match/match.py)
  */
 void item_equip_unchecked(int side, int costume, int slot, int item)
@@ -430,9 +428,9 @@ void item_equip_unchecked(int side, int costume, int slot, int item)
 }
 
 /* 0x0c08f7a0  size 0x6e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x7e
- * evidence: (player, costume, slot): item_slot_unlock, empties the slot and clears the costume's bit of play record +0x5C; callers item_take_and_unequip, item_award_rule_check; part of vf4lib/libcard/src/card_item.c
+ * evidence: (player, costume, slot): item_slot_unlock, empties the slot and clears the costume's bit of play record +0x5C; callers item_take_and_unequip, item_award_rule_check; part of vf4lib/libcard/src/card_item.c; exercised 2026-11-12: called by the harness in one sandbox for side 0 with +0x38 poked 0x0F, +0x30-+0x37 0x11-0x14, 0x21-0x24 and +0x5C 0xFF: (0, 1, 2) called item_slot_unlock(0, 2) (+0x38 0x0B), zeroed +0x36 and left +0x5C 0xFD; then (0, 0, 0) left +0x38 0x0A, +0x30 0 and +0x5C 0xFC
  * matched: source/vf4lib/libcard/src/card_item.c (tools/match/match.py)
  */
 void item_unequip(int side, int costume, int slot)
@@ -814,9 +812,9 @@ bool item_lottery_hit_test(int key, int other_key, uint bits, int count, int win
 }
 
 /* 0x0c090160  size 0x82  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xf8
- * evidence: (player, a, b, table 0/1): v = (a + (a >> 8) + b + (b >> 8)) & 0xFF and the item of the first (limit, item) pair of item_lottery_table_set (table 0) or item_lottery_table_alt (table 1) with v <= limit, 0 past the end; only caller item_lottery_roll; part of vf4lib/libcard/src/card_item.c
+ * evidence: (player, a, b, table 0/1): v = (a + (a >> 8) + b + (b >> 8)) & 0xFF and the item of the first (limit, item) pair of item_lottery_table_set (table 0) or item_lottery_table_alt (table 1) with v <= limit, 0 past the end; only caller item_lottery_roll; part of vf4lib/libcard/src/card_item.c; exercised 2026-11-12: called by the harness for side 0; item_lottery_table_set reads (0x19, 0x6F), (0x31, 0x70), (0x4A, 0x71) ... (0xAE, 0x75), (0, 0) and item_lottery_table_alt (0xC7, 0x43) x4, (0, 0): table 0 with (0x10, 0) gave 0x6F, (0x19, 0) 0x6F, (0x1A, 0) 0x70, (0x130, 5) (v 0x36) 0x71, (0xAE, 0) 0x75, (0x80, 0x230) (v 0xB2) 0; table 1 with (0x10, 0) 0x43 and (0xC8, 0) 0; table 2 gave 0
  * matched: source/vf4lib/libcard/src/card_item.c (tools/match/match.py)
  */
 byte item_lottery_table_pick(int side, int key, int other_key, int table)
@@ -973,9 +971,9 @@ int item_pending_redeem(int side)
 }
 
 /* 0x0c090520  size 0x48  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x5c
- * evidence: (player): the first of the set items 0x6F-0x75 the player does not own (item_has), 0 when all are owned; only caller item_pending_redeem; part of vf4lib/libcard/src/card_item.c
+ * evidence: (player): the first of the set items 0x6F-0x75 the player does not own (item_has), 0 when all are owned; only caller item_pending_redeem; part of vf4lib/libcard/src/card_item.c; exercised 2026-11-12: called by the harness in one sandbox for side 0 (character 14, none of the set items owned): it returned 0x6F; after item_give of 0x6F and 0x70 it returned 0x71; after 0x71-0x75 were given too it returned 0
  * matched: source/vf4lib/libcard/src/card_item.c (tools/match/match.py)
  */
 int item_set_first_missing(int side)
@@ -993,8 +991,8 @@ int item_set_first_missing(int side)
 }
 
 /* 0x0c090580  size 0x8c  file by match with source
- * confidence: inferred
- * evidence: (card id): adds {item_pending_time_now, card id, 1} to the pending table (dropping the last entry when 10 are in), re-sorts it and, for a new id, sets the last id and clears its count; then item_pending_save_mark; only caller item_lottery_judge; part of vf4lib/libcard/src/card_item.c
+ * confidence: exercised
+ * evidence: (card id): adds {item_pending_time_now, card id, 1} to the pending table (dropping the last entry when 10 are in), re-sorts it and, for a new id, sets the last id and clears its count; then item_pending_save_mark; only caller item_lottery_judge; part of vf4lib/libcard/src/card_item.c; exercised 2026-11-12: called by the harness on the snapshot's empty pending table (user_back_data+0x243C) with its last-id count (+0x80) poked 5: item_pending_add(0x1234) wrote {0x270218 (item_pending_time_now), 0x1234, 1}, count 1, last id 0x1234 and count 0; with that count poked 5 again a second 0x1234 made count 2 and left the 5; with 10 entries poked (stamps 100 down to 10, ids 0xA0-0xA9) 0x777 replaced the last one, sorted first, count stayed 10
  * matched: source/vf4lib/libcard/src/card_item.c (tools/match/match.py)
  */
 void item_pending_add(int card_id)
@@ -1442,8 +1440,8 @@ void item_plate_hidden_clear(void)
 }
 
 /* 0x0c091000  size 0x12  file by match with source
- * confidence: inferred
- * evidence: (player, item): item_plate_hidden[player] = item: the item player_plate_item_icons_draw leaves out in GAME sub-mode 13 while game_flags 0x400 is set; only caller game_judge_init; part of vf4lib/libcard/src/card_item.c
+ * confidence: exercised
+ * evidence: (player, item): item_plate_hidden[player] = item: the item player_plate_item_icons_draw leaves out in GAME sub-mode 13 while game_flags 0x400 is set; only caller game_judge_init; part of vf4lib/libcard/src/card_item.c; exercised 2026-11-12: called by the harness in one sandbox: (1, 0x42) left item_plate_hidden as {0, 0x42}, then (0, 7) as {7, 0x42}
  * matched: source/vf4lib/libcard/src/card_item.c (tools/match/match.py)
  */
 void item_plate_hidden_set(int side, int item)

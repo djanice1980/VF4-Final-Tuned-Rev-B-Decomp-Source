@@ -1144,7 +1144,7 @@ address	name	size	file	evidence
 0c060f80	script_move_if	162	vf4lib/libaction/src/control.c	matched-source
 0c061080	script_op_60_move_if_side	26	vf4lib/libaction/src/control.c	matched-source
 0c0610a0	script_op_61_move_if_other_side	26	vf4lib/libaction/src/control.c	matched-source
-0c0610c0	script_op_62_move_if_opponent	32	vf4lib/libaction/src/control.c	matched-source
+0c0610c0	script_op_62_move_if_chara	32	vf4lib/libaction/src/control.c	matched-source
 0c061100	script_op_63_escape	100	vf4lib/libaction/src/control.c	matched-source
 0c0611a0	script_op_64_hold	222	vf4lib/libaction/src/control.c	matched-source
 0c061300	script_op_66_if_frame_flag	56	vf4lib/libaction/src/control.c	matched-source

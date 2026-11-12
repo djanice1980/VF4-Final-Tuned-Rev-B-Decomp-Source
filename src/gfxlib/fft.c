@@ -22,9 +22,9 @@ int bitrev_counter_step(int index, int half)
 }
 
 /* 0x0c126a60  size 0xb8  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xd6
- * evidence: (no arguments): for i = 0-3 stores {cos, sin} of i * pi/4 (cos_radians, sin_radians) at bit-reversed position bitrev_counter_step in fft_twiddles_fwd and {cos, -sin} in fft_twiddles_inv; nothing in the image calls it; part of an unidentified module (complex FFT, game-built, not network code)
+ * evidence: (no arguments): for i = 0-3 stores {cos, sin} of i * pi/4 (cos_radians, sin_radians) at bit-reversed position bitrev_counter_step in fft_twiddles_fwd and {cos, -sin} in fft_twiddles_inv; nothing in the image calls it; part of an unidentified module (complex FFT, game-built, not network code); exercised 2026-11-12: called by the harness with both tables filled with 0x40 bytes, it stored fft_twiddles_fwd entries 0-3 = (1, 0), (0, 1), (0.7071, 0.7071), (-0.7071, 0.7071), the angles 0, pi/2, pi/4, 3 pi/4 in bit-reversed order, the same with the sine negated in fft_twiddles_inv, and left entry 4 on untouched
  * matched: source/gfxlib/fft.c (tools/match/match.py)
  */
 void fft8_twiddles_build(void)
@@ -83,9 +83,9 @@ void fft16_twiddles_build(void)
 }
 
 /* 0x0c126c60  size 0xb8  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xd6
- * evidence: (no arguments): as fft8_twiddles_build for sixteen angles of pi/16 (the tables for 32 points); nothing in the image calls it; part of an unidentified module (complex FFT, game-built, not network code)
+ * evidence: (no arguments): as fft8_twiddles_build for sixteen angles of pi/16 (the tables for 32 points); nothing in the image calls it; part of an unidentified module (complex FFT, game-built, not network code); exercised 2026-11-12: called by the harness with both tables filled with 0x40 bytes, it stored 16 entries in each, entry j = (cos, sin) of (j bit-reversed in 4 bits) x pi/16 (entry 1 (0, 1), entry 8 (0.98079, 0.19509)) in fft_twiddles_fwd and the sine negated in fft_twiddles_inv, within 2e-7, and left entry 16 on untouched
  * matched: source/gfxlib/fft.c (tools/match/match.py)
  */
 void fft32_twiddles_build(void)
@@ -118,8 +118,8 @@ void fft32_twiddles_build(void)
 }
 
 /* 0x0c126d60  size 0x44  file by match with source
- * confidence: inferred
- * evidence: (8 complex floats): swaps the pairs 1/4 and 3/6, the bit-reversal order for 8 points; callers fft8_forward, fft8_inverse; part of an unidentified module (complex FFT, game-built, not network code)
+ * confidence: exercised
+ * evidence: (8 complex floats): swaps the pairs 1/4 and 3/6, the bit-reversal order for 8 points; callers fft8_forward, fft8_inverse; part of an unidentified module (complex FFT, game-built, not network code); exercised 2026-11-12: called by the harness on 8 complex values (k, 100 + k), it left them in the order 0, 4, 2, 6, 1, 5, 3, 7
  * matched: source/gfxlib/fft.c (tools/match/match.py)
  */
 void fft8_bitrev_permute(float *data)
@@ -174,8 +174,8 @@ void fft16_bitrev_permute(float *p)
 }
 
 /* 0x0c126e80  size 0x140  file by match with source
- * confidence: inferred
- * evidence: (32 complex floats): the twelve swaps of the bit-reversal order for 32 points, unrolled; callers fft32_forward, fft32_inverse; part of an unidentified module (complex FFT, game-built, not network code)
+ * confidence: exercised
+ * evidence: (32 complex floats): the twelve swaps of the bit-reversal order for 32 points, unrolled; callers fft32_forward, fft32_inverse; part of an unidentified module (complex FFT, game-built, not network code); exercised 2026-11-12: called by the harness on 32 complex values (k, 100 + k), it left value k at position (k bit-reversed in 5 bits) for all 32 (order 0, 16, 8, 24, ...)
  * matched: source/gfxlib/fft.c (tools/match/match.py)
  */
 void fft32_bitrev_permute(float *data)
@@ -287,8 +287,8 @@ void fft32_bitrev_permute(float *data)
 }
 
 /* 0x0c126fe0  size 0xc4  file by match with source
- * confidence: inferred
- * evidence: (complex floats, point count n): bit-reversal reordering for any power of two, stepping a bit-reversed counter over the first half and swapping each element with its partner (and the matching pair in the upper half); callers fft_forward, fft_inverse; part of an unidentified module (complex FFT, game-built, not network code)
+ * confidence: exercised
+ * evidence: (complex floats, point count n): bit-reversal reordering for any power of two, stepping a bit-reversed counter over the first half and swapping each element with its partner (and the matching pair in the upper half); callers fft_forward, fft_inverse; part of an unidentified module (complex FFT, game-built, not network code); exercised 2026-11-12: called by the harness on complex values (k, 100 + k) with n 16 and with n 64, it left value k at position (k bit-reversed in 4 and in 6 bits) for every k (orders 0, 8, 4, 12, ... and 0, 32, 16, 48, ...)
  * matched: source/gfxlib/fft.c (tools/match/match.py)
  */
 void fft_bitrev_permute(float *data, int n)
@@ -432,8 +432,8 @@ void fft_pass_spans_1_2(float *data, uint log2n, float *twiddles)
 }
 
 /* 0x0c1271c0  size 0xaa  file by match with source
- * confidence: inferred
- * evidence: (complex floats, log2 n, twiddles): the twiddled levels with spans 4 up to n/8, log2 n - 4 of them (do-while, so it needs n of 32 or more); callers fft32_forward, fft32_inverse, fft_forward, fft_inverse; part of an unidentified module (complex FFT, game-built, not network code)
+ * confidence: exercised
+ * evidence: (complex floats, log2 n, twiddles): the twiddled levels with spans 4 up to n/8, log2 n - 4 of them (do-while, so it needs n of 32 or more); callers fft32_forward, fft32_inverse, fft_forward, fft_inverse; part of an unidentified module (complex FFT, game-built, not network code); exercised 2026-11-12: called by the harness after fft32_twiddles_build with random complex quarters and fft_twiddles_fwd, log2 n 5 gave one level of span 4 and log2 n 6 the levels of span 4 and 8, each matching (within 2e-6) blocks of twice the span where block b keeps a + c and stores (a - c) times the conjugate of table entry b
  * matched: source/gfxlib/fft.c (tools/match/match.py)
  */
 void fft_passes_middle(float *data, uint log2n, float *twiddles)
@@ -497,8 +497,8 @@ void fft_passes_middle(float *data, uint log2n, float *twiddles)
 }
 
 /* 0x0c127280  size 0x8a  file by match with source
- * confidence: inferred
- * evidence: (complex floats, log2 n): the level with span n/4 with the fixed twiddles 1 and -i (sum and difference in the first quarter pair, the difference rotated in the second); callers fft16_forward, fft32_forward, fft_forward; part of an unidentified module (complex FFT, game-built, not network code)
+ * confidence: exercised
+ * evidence: (complex floats, log2 n): the level with span n/4 with the fixed twiddles 1 and -i (sum and difference in the first quarter pair, the difference rotated in the second); callers fft16_forward, fft32_forward, fft_forward; part of an unidentified module (complex FFT, game-built, not network code); exercised 2026-11-12: called by the harness on random complex quarters with log2 n 4 and 5, it left a + c and a - c for the pairs a quarter apart in the first half and a + c and (a - c) x (-i) in the second half, exactly
  * matched: source/gfxlib/fft.c (tools/match/match.py)
  */
 void fft_pass_quarter_fwd(float *data, uint log2n)
@@ -584,8 +584,8 @@ void fft_pass_quarter_inv(float *data, uint log2n)
 }
 
 /* 0x0c1273c0  size 0x7a  file by match with source
- * confidence: inferred
- * evidence: (complex floats, log2 n): the last level, span n/2, plain sums and differences of the two halves; callers fft8_forward, fft16_forward, fft32_forward, fft_forward; part of an unidentified module (complex FFT, game-built, not network code)
+ * confidence: exercised
+ * evidence: (complex floats, log2 n): the last level, span n/2, plain sums and differences of the two halves; callers fft8_forward, fft16_forward, fft32_forward, fft_forward; part of an unidentified module (complex FFT, game-built, not network code); exercised 2026-11-12: called by the harness on random complex quarters with log2 n 3 and 4, it left a + c in the first half and a - c in the second for the pairs half the length apart, exactly
  * matched: source/gfxlib/fft.c (tools/match/match.py)
  */
 void fft_pass_half(float *data, uint log2n)
@@ -685,8 +685,8 @@ void fft_pass_half_scaled(float *data, uint log2n, float *scale)
 }
 
 /* 0x0c1274e0  size 0x32  file by match with source
- * confidence: inferred
- * evidence: (8 complex floats): in-place forward transform: fft8_bitrev_permute, fft_pass_spans_1_2 with fft_twiddles_fwd and fft_pass_half; nothing in the image calls it; part of an unidentified module (complex FFT, game-built, not network code)
+ * confidence: exercised
+ * evidence: (8 complex floats): in-place forward transform: fft8_bitrev_permute, fft_pass_spans_1_2 with fft_twiddles_fwd and fft_pass_half; nothing in the image calls it; part of an unidentified module (complex FFT, game-built, not network code); exercised 2026-11-12: called by the harness after fft32_twiddles_build (whose first four entries are fft8_twiddles_build's) on 8 random complex quarters, it left the forward DFT, the sums of x[n] e^(-2 pi i k n / 8) in natural order, within 4e-7
  * matched: source/gfxlib/fft.c (tools/match/match.py)
  */
 void fft8_forward(float *data)
@@ -698,8 +698,8 @@ void fft8_forward(float *data)
 }
 
 /* 0x0c127540  size 0x34  file by match with source
- * confidence: inferred
- * evidence: (8 complex floats): fft8_bitrev_permute, fft_pass_spans_1_2 with fft_twiddles_inv, fft_pass_half_scaled with fft8_inverse_scale (0.125); nothing in the image calls it; part of an unidentified module (complex FFT, game-built, not network code)
+ * confidence: exercised
+ * evidence: (8 complex floats): fft8_bitrev_permute, fft_pass_spans_1_2 with fft_twiddles_inv, fft_pass_half_scaled with fft8_inverse_scale (0.125); nothing in the image calls it; part of an unidentified module (complex FFT, game-built, not network code); exercised 2026-11-12: called by the harness after fft32_twiddles_build on 8 random complex quarters, it left the inverse DFT with the 1/8 scale, (1/8) times the sums of x[n] e^(+2 pi i k n / 8) in natural order, within 1e-7
  * matched: source/gfxlib/fft.c (tools/match/match.py)
  */
 void fft8_inverse(float *data)
@@ -711,8 +711,8 @@ void fft8_inverse(float *data)
 }
 
 /* 0x0c1275a0  size 0x3c  file by match with source
- * confidence: inferred
- * evidence: (16 complex floats): fft16_bitrev_permute, fft_pass_spans_1_2 (fft_twiddles_fwd), fft_pass_quarter_fwd, fft_pass_half; nothing in the image calls it; part of an unidentified module (complex FFT, game-built, not network code)
+ * confidence: exercised
+ * evidence: (16 complex floats): fft16_bitrev_permute, fft_pass_spans_1_2 (fft_twiddles_fwd), fft_pass_quarter_fwd, fft_pass_half; nothing in the image calls it; part of an unidentified module (complex FFT, game-built, not network code); exercised 2026-11-12: called by the harness after fft32_twiddles_build on 16 random complex quarters, it left the forward DFT, the sums of x[n] e^(-2 pi i k n / 16) in natural order, within 2e-6
  * matched: source/gfxlib/fft.c (tools/match/match.py)
  */
 void fft16_forward(float *data)
@@ -739,8 +739,8 @@ void fft16_inverse(float *data)
 }
 
 /* 0x0c127660  size 0x4e  file by match with source
- * confidence: inferred
- * evidence: (32 complex floats): fft32_bitrev_permute, fft_pass_spans_1_2 and fft_passes_middle (fft_twiddles_fwd), fft_pass_quarter_fwd, fft_pass_half; nothing in the image calls it; part of an unidentified module (complex FFT, game-built, not network code)
+ * confidence: exercised
+ * evidence: (32 complex floats): fft32_bitrev_permute, fft_pass_spans_1_2 and fft_passes_middle (fft_twiddles_fwd), fft_pass_quarter_fwd, fft_pass_half; nothing in the image calls it; part of an unidentified module (complex FFT, game-built, not network code); exercised 2026-11-12: called by the harness after fft32_twiddles_build on 32 random complex quarters, it left the forward DFT, the sums of x[n] e^(-2 pi i k n / 32) in natural order, within 2e-6; followed by fft32_inverse in the same sandbox it gave back the input within 8e-7
  * matched: source/gfxlib/fft.c (tools/match/match.py)
  */
 void fft32_forward(float *data)
@@ -754,8 +754,8 @@ void fft32_forward(float *data)
 }
 
 /* 0x0c1276e0  size 0x50  file by match with source
- * confidence: inferred
- * evidence: (32 complex floats): as fft32_forward with fft_twiddles_inv, fft_pass_quarter_inv and fft_pass_half_scaled with fft32_inverse_scale (0.03125); nothing in the image calls it; part of an unidentified module (complex FFT, game-built, not network code)
+ * confidence: exercised
+ * evidence: (32 complex floats): as fft32_forward with fft_twiddles_inv, fft_pass_quarter_inv and fft_pass_half_scaled with fft32_inverse_scale (0.03125); nothing in the image calls it; part of an unidentified module (complex FFT, game-built, not network code); exercised 2026-11-12: called by the harness after fft32_twiddles_build on 32 random complex quarters, it left the inverse DFT with the 1/32 scale in natural order, within 2e-7, and after fft32_forward of other quarters it gave those back within 8e-7
  * matched: source/gfxlib/fft.c (tools/match/match.py)
  */
 void fft32_inverse(float *data)
@@ -769,8 +769,8 @@ void fft32_inverse(float *data)
 }
 
 /* 0x0c127760  size 0x58  file by match with source
- * confidence: inferred
- * evidence: (complex floats, log2 n): the forward transform for any size the twiddle tables cover: fft_bitrev_permute(1 << log2 n), fft_pass_spans_1_2, fft_passes_middle, fft_pass_quarter_fwd, fft_pass_half; nothing in the image calls it; part of an unidentified module (complex FFT, game-built, not network code)
+ * confidence: exercised
+ * evidence: (complex floats, log2 n): the forward transform for any size of 32 points or more that the twiddle tables cover (below 32 points fft_passes_middle does not end; the builders fill the tables for at most 32 points): fft_bitrev_permute(1 << log2 n), fft_pass_spans_1_2, fft_passes_middle, fft_pass_quarter_fwd, fft_pass_half; nothing in the image calls it; part of an unidentified module (complex FFT, game-built, not network code); exercised 2026-11-12: called by the harness after fft32_twiddles_build on 32 random complex quarters with log2 n 5, it left the forward DFT in natural order within 5e-6; with log2 n 4 it did not return within a frame (fft_passes_middle needs 32 points or more: see the notes)
  * matched: source/gfxlib/fft.c (tools/match/match.py)
  */
 void fft_forward(float *data, uint log2n)
@@ -784,9 +784,9 @@ void fft_forward(float *data, uint log2n)
 }
 
 /* 0x0c1277e0  size 0x86  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xa2
- * evidence: (complex floats, log2 n): as fft_forward in the inverse direction, with the scale 1 / n made on the stack for fft_pass_half_scaled; nothing in the image calls it; part of an unidentified module (complex FFT, game-built, not network code)
+ * evidence: (complex floats, log2 n): as fft_forward in the inverse direction, with the scale 1 / n made on the stack for fft_pass_half_scaled; nothing in the image calls it; part of an unidentified module (complex FFT, game-built, not network code); exercised 2026-11-12: called by the harness after fft32_twiddles_build on 32 random complex quarters with log2 n 5, it left the inverse DFT with the 1/32 scale in natural order, within 1e-7
  * matched: source/gfxlib/fft.c (tools/match/match.py)
  */
 void fft_inverse(float *data, uint log2n)

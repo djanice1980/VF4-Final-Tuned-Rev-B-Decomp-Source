@@ -154,9 +154,9 @@ void load_init(void)
 }
 
 /* 0x0c0f4d80  size 0xa0  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xae
- * evidence: (dst, src): takes the next free load slot (the load_req_type search), names it "file_ungzip_req", sets read_to and cursor to src, dst to dst, state 6 and size 0x1000000, marks it in load_pending and returns its bit; asserts (load.c:221) when all 32 are taken; nothing in the image calls it; part of vf4lib/libcore/src/load.c
+ * evidence: (dst, src): takes the next free load slot (the load_req_type search), names it "file_ungzip_req", sets read_to and cursor to src, dst to dst, state 6 and size 0x1000000, marks it in load_pending and returns its bit; asserts (load.c:221) when all 32 are taken; nothing in the image calls it; part of vf4lib/libcore/src/load.c; exercised 2026-11-12: called by the harness with all 32 slots free and load_next_slot 0, (buf:2, buf:3) returned 1 (load_pending 1, load_next_slot 1) and a second call 2 (load_pending 3); with load_next_slot poked to 31 it returned 0x80000000, wrapped load_next_slot to 0, and slot 31 held state 6, the name "file_ungzip_req", read_to and cursor buf:3, dst buf:2, size 0x1000000 and done 0
  * assert load.c:221: 0
  * matched: source/vf4lib/libcore/src/load.c (tools/match/match.py)
  */

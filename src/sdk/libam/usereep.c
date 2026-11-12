@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c117240  size 0x20  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file usereep.c: zeroes n bytes of the game's EEPROM buffer
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file usereep.c: zeroes n bytes of the game's EEPROM buffer; exercised 2026-11-12: called by the harness with (5, buffer) over eight 0xAA bytes it left 00 00 00 00 00 AA AA AA, and with n 0 it stored nothing
  * matched: source/sdk/libam/usereep.c (tools/match/match.py)
  */
 void eeprom_save_zero(int n, uchar *dst)
@@ -21,8 +21,8 @@ void eeprom_save_zero(int n, uchar *dst)
 }
 
 /* 0x0c117260  size 0x30  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file usereep.c: copies the two 4-byte headers (CRC, size, padded size) of the game's EEPROM area out of eeprom_image (+0x24, +0x28)
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file usereep.c: copies the two 4-byte headers (CRC, size, padded size) of the game's EEPROM area out of eeprom_image (+0x24, +0x28); exercised 2026-11-12: called by the harness after eeprom_image+0x24 was poked to D4 C3 B2 A1 and +0x28 to 04 03 02 01, eeprom_save_header_a read 0xA1B2C3D4 and eeprom_save_header_b 0x01020304
  * matched: source/sdk/libam/usereep.c (tools/match/match.py)
  */
 void eeprom_save_read_headers(void)
@@ -56,8 +56,8 @@ void eeprom_save_read_headers(void)
 }
 
 /* 0x0c1172a0  size 0x30  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file usereep.c: copies both headers back into eeprom_image
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file usereep.c: copies both headers back into eeprom_image; exercised 2026-11-12: called by the harness after eeprom_save_header_a was poked to 0x11223344 and eeprom_save_header_b to 0x55667788, eeprom_image+0x24 read 44 33 22 11 and +0x28 88 77 66 55, with the bytes before (+0x20) and after (+0x2c) unchanged
  * matched: source/sdk/libam/usereep.c (tools/match/match.py)
  */
 void eeprom_save_write_headers(void)
@@ -91,8 +91,8 @@ void eeprom_save_write_headers(void)
 }
 
 /* 0x0c1172e0  size 0x4a  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file usereep.c: copies the game's buffer into both copies in eeprom_image (+0x2c and after it)
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file usereep.c: copies the game's buffer into both copies in eeprom_image (+0x2c and after it); exercised 2026-11-12: called by the harness after eeprom_save_load(6, buffer) in the same sandbox (padded size 8) and the buffer filled with "abcdefgh", it wrote those 8 bytes to eeprom_image+0x2c and again at +0x34, leaving the headers at +0x24 and +0x28 as they were
  * matched: source/sdk/libam/usereep.c (tools/match/match.py)
  */
 void eeprom_save_write_copies(void)
@@ -124,8 +124,8 @@ void eeprom_save_write_copies(void)
 }
 
 /* 0x0c117340  size 0x50  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file usereep.c: computes the buffer's CRC, fills both headers and puts headers and copies into eeprom_image (the EEPROM itself is written by the caller)
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file usereep.c: computes the buffer's CRC, fills both headers and puts headers and copies into eeprom_image (the EEPROM itself is written by the caller); exercised 2026-11-12: called by the harness after eeprom_save_load(6, buffer) and the buffer filled with "ABCDEFGH", it wrote the headers 65 B6 06 08 at eeprom_image+0x24 and +0x28 (CRC 0xB665, which crc16_ccitt gave for those 8 bytes in the same sandbox, low byte first, then size 6 and padded size 8) and the 8 bytes at +0x2c and +0x34; it made no EEPROM write
  * matched: source/sdk/libam/usereep.c (tools/match/match.py)
  */
 void eeprom_save_store(void)
@@ -144,8 +144,8 @@ void eeprom_save_store(void)
 }
 
 /* 0x0c1173c0  size 0x22  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file usereep.c: reads the first copy out of eeprom_image
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file usereep.c: reads the first copy out of eeprom_image; exercised 2026-11-12: called by the harness with (4, buffer) after eeprom_image+0x2c was poked to 11 22 33 44 55 66 77 88, the buffer read 11 22 33 44 and its next bytes kept the planted EE
  * matched: source/sdk/libam/usereep.c (tools/match/match.py)
  */
 void eeprom_save_read_copy_a(int n, uchar *dst)
@@ -164,8 +164,8 @@ void eeprom_save_read_copy_a(int n, uchar *dst)
 }
 
 /* 0x0c117400  size 0x26  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file usereep.c: reads the second copy out of eeprom_image
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file usereep.c: reads the second copy out of eeprom_image; exercised 2026-11-12: called by the harness after eeprom_image+0x2c was poked to 11 22 33 44 55 66 77 88: with n 4 it copied 55 66 77 88 (from +0x30) and with n 2 it copied 33 44 (from +0x2e), the second copy starting n bytes after the first
  * matched: source/sdk/libam/usereep.c (tools/match/match.py)
  */
 void eeprom_save_read_copy_b(int n, uchar *dst)
@@ -185,7 +185,7 @@ void eeprom_save_read_copy_b(int n, uchar *dst)
 
 /* 0x0c117440  size 0xe  file by match with source
  * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file usereep.c: returns 0x2a, the largest area two copies can have in the 0x80-byte EEPROM after its first 0x2c bytes
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file usereep.c: returns 0x2a, the largest area two copies can have in the 0x80-byte EEPROM after its first 0x2c bytes; record as the library has it: the largest size eeprom_save_load accepts is 0x28, below the 0x2A this routine returns
  * matched: source/sdk/libam/usereep.c (tools/match/match.py)
  */
 int eeprom_save_max_size(void)
@@ -194,9 +194,9 @@ int eeprom_save_max_size(void)
 }
 
 /* 0x0c117460  size 0x11c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x186
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file usereep.c: sram_save_load for the EEPROM area: pads the size to 4 (-1 when 0 or too large), checks both copies and repairs or resets as needed (0-3)
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file usereep.c: sram_save_load for the EEPROM area: pads the size to 4 (-1 when 0 or too large), checks both copies and repairs or resets as needed (0-3); exercised 2026-11-12: called by the harness: sizes 0, 0x2B and 0x2A returned -1 (0x2A pads to 0x2C, too large) and 0x28 did not; size 6 over the snapshot's unmatched headers returned 3, zeroed the 8-byte padded buffer and stored headers 7A BA 06 08 and zero copies; called again it returned 0; after one byte of copy A was poked it returned 2 and after one of copy B 1, each time rewriting the bad copy to 0; both bad gave 3
  * matched: source/sdk/libam/usereep.c (tools/match/match.py)
  */
 uint eeprom_save_load(uint size, uchar *buffer)

@@ -55,14 +55,13 @@ void mtx_copy_or_current(float *dst, float *src)
   }
 }
 
-void mtx_determinant(float *mtx)
+float mtx_determinant(float *mtx)
 {
   char order [4];
   float copy [16];
   
   mtx_copy_or_current(copy,mtx);
-  mtx_lu_pivoted(copy,order);
-  return;
+  return mtx_lu_pivoted(copy,order);
 }
 
 float * mtx_store_wordwise(float *mtx)
@@ -553,10 +552,9 @@ void mtx_mul_plane_flatten_along(float *plane, float *from, float *to)
   mtx_translate_by_vec3(from);
 }
 
-void mtx_stack_drop(int count)
+bool mtx_stack_drop(int count)
 {
-  mtx_stack_drop_in(count,&mtx_stack_records.active);
-  return;
+  return mtx_stack_drop_in(count,&mtx_stack_records.active);
 }
 
 bool mtx_push_identity(void)
@@ -670,15 +668,15 @@ void mtx_rot_z_rad_reversed(float angle)
   return;
 }
 
-void mtx_rot_vec_to_vec(uint *from, float *to)
+void mtx_rot_vec_to_vec(float *from, float *to)
 {
   float sine;
   float cosine;
   float axis[3];
   
-  vec3_cross((float *)from,to,axis);
+  vec3_cross(from,to,axis);
   sine = vec3_normalize(axis);
-  cosine = vec3_dot((float *)from,to);
+  cosine = vec3_dot(from,to);
   if (sine != 0.0f) {
     mtx_rot_unit_axis_sincos(axis,sine,cosine);
   }

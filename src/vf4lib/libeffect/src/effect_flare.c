@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c0cb840  size 0xbc  file by match with source
- * confidence: inferred
- * evidence: (model, distance, scale, intensity): unless the model is -1, keeps only the translation of the current matrix after moving distance along z, scales by scale, sets the parallel extra light to intensity (extra_light_parallel_set) and draws the model (obj_draw_translucent); only caller lens_flare_draw; part of vf4lib/libeffect/src/effect_flare.c
+ * confidence: exercised
+ * evidence: (model, distance, scale, intensity): unless the model is -1, keeps only the translation of the current matrix after moving distance along z, scales by scale, sets the parallel extra light to intensity (extra_light_parallel_set) and draws the model (obj_draw_translucent); only caller lens_flare_draw; part of vf4lib/libeffect/src/effect_flare.c; exercised 2026-11-12: called by the harness on the snapshot's current matrix (translation (-0.096, -5, -3.945), z row (-0.979, 0, 0.202)): (-1, 2.0, 0.5, 0.7) drew nothing; (0x1234, 2.0, 0.5, 0.7) set the matrix identity with translation (-2.055, -5, -3.541) (2 along z), scaled it by 0.5, called extra_light_parallel_set(0.7) and obj_draw_translucent(0x1234)
  * matched: source/vf4lib/libeffect/src/effect_flare.c (tools/match/match.py)
  */
 void flare_element_draw(int model, float dist, float scale, float intensity)
@@ -38,8 +38,8 @@ void flare_element_draw(int model, float dist, float scale, float intensity)
 }
 
 /* 0x0c0cb920  size 0xa4  file by match with source
- * confidence: inferred
- * evidence: (direction): turns the current matrix so its z axis points along the direction: first about y by the horizontal part (mtx_rot_vec_to_vec), then about the tilted axis by the vertical part between mtx_rot_z_s16(0x4000) and (0xC000); only caller lens_flare_draw; part of vf4lib/libeffect/src/effect_flare.c
+ * confidence: exercised
+ * evidence: (direction): turns the current matrix so its z axis points along the direction: first about y by the horizontal part (mtx_rot_vec_to_vec), then about the tilted axis by the vertical part between mtx_rot_z_s16(0x4000) and (0xC000); only caller lens_flare_draw; part of vf4lib/libeffect/src/effect_flare.c; exercised 2026-11-12: called by the harness on the snapshot's current matrix M: for (0.48, 0.6, 0.64) the matrix at the return was R M with R's z row (0.480, 0.600, 0.640), for (-0.6, 0, 0.8) R's z row was (-0.600, 0, 0.800), and for (0, 0, 1) the matrix came back M
  * matched: source/vf4lib/libeffect/src/effect_flare.c (tools/match/match.py)
  */
 void flare_dir_rotate(float *dir)
@@ -65,9 +65,9 @@ void flare_dir_rotate(float *dir)
 }
 
 /* 0x0c0cb9e0  size 0xde  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xf0
- * evidence: (cosine of the view-to-light angle): when fog flag 2 of fog_flags is set, writes the fog offsets (fog_offset, the block fog_frame_update adds to the fog) from the light record lens_flare_src: zero below the cosine of its angle (+0x24 degrees), else its color shorts and floats scaled by how far past that cosine the view is; only caller lens_flare_draw; part of vf4lib/libeffect/src/effect_flare.c
+ * evidence: (cosine of the view-to-light angle): when fog flag 2 of fog_flags is set, writes the fog offsets (fog_offset, the block fog_frame_update adds to the fog) from the light record lens_flare_src: zero below the cosine of its angle (+0x24 degrees), else scaled by t = (cosine - cosine of the angle) / (1 - cosine of the angle): red, green, blue, near distance and strength times t, alpha and far distance copied as they are; only caller lens_flare_draw; part of vf4lib/libeffect/src/effect_flare.c; exercised 2026-11-12: called by the harness after lens_flare_src_load on stage 4's record (angle 15, color 0/255/255/192, near -50, far 0, strength 1) with fog_offset filled with 0x11: 0.99 gave color 0, 180, 180, 135, near -35.3, far 0, strength 0.706 (t 0.706); 0.97 gave 30, 30, 22 and strength 0.119; 0.9 (below cos 15 = 0.966) gave zeros; with fog_flags 1 it changed nothing
  * matched: source/vf4lib/libeffect/src/effect_flare.c (tools/match/match.py)
  */
 void flare_fog_glare_set(float cos_view)
@@ -100,8 +100,8 @@ void flare_fog_glare_set(float cos_view)
 }
 
 /* 0x0c0cbb00  size 0x38  file by match with source
- * confidence: inferred
- * evidence: when fog flag 2 of fog_flags is set, clears the fog offsets fog_offset; called by lens_flare_draw when the light is behind the camera or off screen; part of vf4lib/libeffect/src/effect_flare.c
+ * confidence: exercised
+ * evidence: when fog flag 2 of fog_flags is set, clears the fog offsets fog_offset; called by lens_flare_draw when the light is behind the camera or off screen; part of vf4lib/libeffect/src/effect_flare.c; exercised 2026-11-12: called by the harness with fog_offset filled with 0x11 bytes: with fog_flags 3 it zeroed all five words, with fog_flags 1 it left them
  * matched: source/vf4lib/libeffect/src/effect_flare.c (tools/match/match.py)
  */
 void flare_fog_glare_clear(void)
@@ -119,9 +119,9 @@ void flare_fog_glare_clear(void)
 }
 
 /* 0x0c0cbb40  size 0x40e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x4a6
- * evidence: (camera, light position, size, intensity): projects the light (mtx_xform_point, proj_point_to_pixel_xy on 640 x 480); when in front and within 200 pixels of the screen, fades by the distance to the edges, sets the fog glare from the angle between the view (camera +0x0C to +0x18) and the light, and, when lens_flare_src +0x28 is set, draws the models of its element table (lens_flare_src +0): three at the light's point on the view plane (+0x0C, +0x18, +0x24 with scales +0x14, +0x20, +0x2C), one at the fixed point (0, 0, -0.4) and up to 15 elements (model, fraction, scale from +0x30) spaced along the line between them; only caller lens_flare_effect_draw; part of vf4lib/libeffect/src/effect_flare.c
+ * evidence: (camera, light position, size, intensity): projects the light (mtx_xform_point, proj_point_to_pixel_xy on 640 x 480); when in front and within 200 pixels of the screen, fades by the distance to the edges, sets the fog glare from the angle between the view (camera +0x0C to +0x18) and the light, and, when lens_flare_src +0x28 is set, draws the models of its element table (lens_flare_src +0): three at the light's point on the view plane (+0x0C, +0x18, +0x24 with scales +0x14, +0x20, +0x2C), one at the fixed point (0, 0, -0.4) and up to 15 elements (model, fraction, scale from +0x30) spaced along the line between them; only caller lens_flare_effect_draw; part of vf4lib/libeffect/src/effect_flare.c; exercised 2026-11-12: called by the harness after lens_flare_src_load on stage 4's record, size 0.4, intensity 0.1: the light at the camera target set the glare with cosine 1.0 and drew 0x180263 (scale 0.4), 0x180262 (0.44), 0x18025F (1.6) at the view-plane point, 0x180259 (0.1) at (0, 0, -0.4), then flare_element_draw for 0x180256 on with distances 0.6 x fraction (-0.18, -0.15, -0.09, ...); the light behind the eye only called flare_fog_glare_clear
  * matched: source/vf4lib/libeffect/src/effect_flare.c (tools/match/match.py)
  */
 void lens_flare_draw(camera_state *cam,float *light_pos,float size,float intensity)
@@ -266,9 +266,9 @@ void lens_flare_draw(camera_state *cam,float *light_pos,float size,float intensi
 }
 
 /* 0x0c0cc040  size 0x50  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x6e
- * evidence: when the stage record (stage_cur) has a flare record at +0x5C, copies its 11 words to lens_flare_copy and points lens_flare_src there, else clears it; stage 4 (YAM, 0x0C1E2248) is the only stage with one; nothing in the image points at it; Ghidra did not make this a function; part of vf4lib/libeffect/src/effect_flare.c
+ * evidence: when the stage record (stage_cur) has a flare record at +0x5C, copies its 11 words to lens_flare_copy and points lens_flare_src there, else clears it; stage 4 (YAM, 0x0C1E2248) is the only stage with one; nothing in the image points at it; Ghidra did not make this a function; part of vf4lib/libeffect/src/effect_flare.c; exercised 2026-11-12: called by the harness on the snapshot's stage 17 (record +0x5C 0) it set lens_flare_src, poked 0x12345678, to 0; with stage_cur poked to stage 4's record (0x0C306748) it pointed lens_flare_src at lens_flare_copy (0x0C3985B0) holding the 11 words of 0x0C1E2248
  * matched: source/vf4lib/libeffect/src/effect_flare.c (tools/match/match.py)
  */
 void lens_flare_src_load(void)
@@ -286,8 +286,8 @@ void lens_flare_src_load(void)
 }
 
 /* 0x0c0cc0c0  size 0x32  file by match with source
- * confidence: inferred
- * evidence: when lens_flare_src is set, lens_flare_draw(&camera, lens_flare_src +0x18, 0.4, lens_flare_alpha) then extra_light_off; its only pointer is the last word (0x0C2AA190) of the terminator record (flag -1) that ends stage 4's effect list (BIRD, FENCE, BREAK), so the list walk never reaches it; stage 4 (YAM) is also the only stage record with a flare record (+0x5C = 0x0C1E2248), which the uncalled routine lens_flare_src_load (missed by Ghidra, see notes) copies into lens_flare_src: the flare looks switched off in this build; part of vf4lib/libeffect/src/effect_flare.c
+ * confidence: exercised
+ * evidence: when lens_flare_src is set, lens_flare_draw(&camera, lens_flare_src +0x18, 0.4, lens_flare_alpha) then extra_light_off; its only pointer is the last word (0x0C2AA190) of the terminator record (flag -1) that ends stage 4's effect list (BIRD, FENCE, BREAK), so the list walk never reaches it; stage 4 (YAM) is also the only stage record with a flare record (+0x5C = 0x0C1E2248), which the uncalled routine lens_flare_src_load (missed by Ghidra, see notes) copies into lens_flare_src: the flare looks switched off in this build; part of vf4lib/libeffect/src/effect_flare.c; exercised 2026-11-12: called by the harness with the snapshot's lens_flare_src 0 it called nothing; after lens_flare_src_load on stage 4's record it called lens_flare_draw(camera 0x0C370CE0, 0x0C3985C8 (+0x18), 0.4, 0.1) and then extra_light_off
  * matched: source/vf4lib/libeffect/src/effect_flare.c (tools/match/match.py)
  */
 void lens_flare_effect_draw(void)

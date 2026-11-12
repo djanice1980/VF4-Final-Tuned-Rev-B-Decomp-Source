@@ -120,8 +120,8 @@ uint form_map_uint(form_map *map, char *name)
 }
 
 /* 0x0c032ee0  size 0x2c  file by match with source
- * confidence: inferred
- * evidence: (map, key): the key's value read as an unsigned hexadecimal number (strtoul, base 16), 0 when missing; nothing in the image calls it; part of libnl2http map.c
+ * confidence: exercised
+ * evidence: (map, key): the key's value read as an unsigned hexadecimal number (strtoul, base 16), 0 when missing; nothing in the image calls it; part of libnl2http map.c; exercised 2026-11-12: called by the harness after form_map_parse(buf:2, "a=-42&h=1f&z=") it returned 0x1F for "h", 0xFFFFFFBE for "a" (strtoul of -42 in base 16) and 0 for the missing key "q"
  * same code as main.bin 0c11ef60 (ghidra/TransferFromMain.java)
  * matched: source/naomi2lib/libnl2http/src/map.c (tools/match/match.py)
  */

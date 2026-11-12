@@ -410,9 +410,10 @@ void free(void *p)
  * evidence: (pointer, size): with interrupts masked, main_heap_init then realloc_internal(&main_heap, the caller's return address, pointer, size); the test.bin build of main.bin's realloc (0x0C0F46A0); nothing in the image calls it; part of the test.bin build of vf4lib/libcore/src/malloc.c
  * matched: source/vf4lib/libcore/src/malloc.c (tools/match/match.py)
  */
-void realloc(void *p, int size)
+void *realloc(void *p, int size)
 {
   void *ra;
+  void *r;
   unsigned int sr;
   unsigned int lvl;
   unsigned int t, u;
@@ -425,11 +426,11 @@ void realloc(void *p, int size)
   h = &main_heap;
   main_heap_init();
   check_heap_internal(h);
-  realloc_internal(h,ra,p,size);
+  r = realloc_internal(h,ra,p,size);
   __asm__ volatile ("stc sr,%0" : "=r" (t));
   u = t & 0xffffff0f; t = u | (lvl << 4);
   __asm__ volatile ("ldc %0,sr" : : "r" (t));
-
+  return r;
 }
 
 /* 0x0c082860  size 0x64  file by match with source

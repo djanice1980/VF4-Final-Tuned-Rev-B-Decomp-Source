@@ -31,9 +31,9 @@ void cart_timing_slowest(void)
 }
 
 /* 0x0c1144c0  size 0x7c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x26c
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file boot.c: programs the same G1 cartridge timing registers for an access time given in ns: 80/90 -> 0x211, 100/110 -> 0x311 ... 200/210 -> 0x811, anything else 0x511 (140/150); keeps the DMA timing word at bios_g1_dma_timing when the BIOS helper flag is set; board_start_core calls it with 0 when the BIOS signature is missing; checked against reference material (not in this repo)
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file boot.c: programs the same G1 cartridge timing registers for an access time given in ns: 80/90 -> 0x211, 100/110 -> 0x311 ... 200/210 -> 0x811, anything else 0x511 (140/150); keeps the DMA timing word at bios_g1_dma_timing when the BIOS helper flag is set; board_start_core calls it with 0 when the BIOS signature is missing; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness (bios_helper_50 returned -1, so no BIOS flag): 80 wrote 0x211 to 0xa05f7490/94 and 0x1003 to 0xa05f74a4/a0, 110 0x311 and 0x1004, 150 0x511 and 0x1006, 200 0x811 and 0x1009, and 0 0x511 and 0x1006; each also wrote 0x8843007f to 0xa05f74b8, 0x600 to 0xa05f7480/84 and 0x200 to 0xa05f7488/8c
  * matched: source/sdk/libam/boot.c (tools/match/match.py)
  */
 void cart_timing_from_ns(int access_ns)

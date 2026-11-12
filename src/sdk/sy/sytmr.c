@@ -35,8 +35,8 @@ uint ticks_between(uint first, uint second);
 uint tmu0_ticks_to_usec(uint ticks);
 
 /* 0x0c1359a0  size 0x24  file by match with source
- * confidence: inferred
- * evidence: (microseconds x 1.28... ): value x 100 / 128 without overflow ((v >> 7) x 100 + ((v & 0x7f) x 100 >> 7)); the inverse of tmu0_ticks_to_usec; nothing in the image calls it (uncalled code, made a function 2026-11-09); between tmu0_ticks_to_usec and tmu1_oneshot, so by link order part of sdk/sy/sytmr.c
+ * confidence: exercised
+ * evidence: (microseconds): the TMU0 ticks for that span (1.28 us a tick), value x 100 / 128 without overflow ((v >> 7) x 100 + ((v & 0x7f) x 100 >> 7)); the inverse of tmu0_ticks_to_usec; nothing in the image calls it (uncalled code, made a function 2026-11-09); between tmu0_ticks_to_usec and tmu1_oneshot, so by link order part of sdk/sy/sytmr.c; exercised 2026-11-12: called by the harness with 1280 it returned 1000, with 1000 781, and with 0xffffffff 0xc7ffffff (3,355,443,199: no overflow)
  * matched: source/sdk/sy/sytmr.c (tools/match/match.py)
  */
 int usec_to_tmu0_ticks(uint usec)
@@ -45,8 +45,8 @@ int usec_to_tmu0_ticks(uint usec)
 }
 
 /* 0x0c1359e0  size 0x14  file by match with source
- * confidence: inferred
- * evidence: tmu1_oneshot_clocked(count, fn, arg, 2): the TMU1 one-shot at Pclk/64; nothing in the game calls it; part of syTmr; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: tmu1_oneshot_clocked(count, fn, arg, 2): the TMU1 one-shot at Pclk/64; nothing in the game calls it; part of syTmr; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with (500, g2dma_slot_mark_unused, 0x0f002000) it called tmu1_oneshot_clocked(500, that routine, 0x0f002000, 2), which wrote TCR1 0x22 and 500 to TCOR1 and TCNT1
  * matched: source/sdk/sy/sytmr.c (tools/match/match.py)
  */
 void tmu1_oneshot(uint count, timer_done_handler fn, int arg)
@@ -56,8 +56,8 @@ void tmu1_oneshot(uint count, timer_done_handler fn, int arg)
 }
 
 /* 0x0c135a00  size 0x9a  file by match with source
- * confidence: inferred
- * evidence: returns -1 while TMU1 runs; otherwise stops TMU1 and sets its control word (TCR1 0xffd8001c) from the fourth argument; with a function, installs tmu1_underflow_isr in the VBR handler table slot of the TMU1 underflow event (VBR+0x244), keeps fn and arg (tmu1_done_fn / tmu1_done_arg), enables the underflow interrupt and gives TMU1 priority 15 in IPRA; loads the count into TCOR1 and TCNT1 and starts TMU1; without a function it spins until the underflow flag and stops TMU1 again; part of syTmr; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: returns -1 while TMU1 runs; otherwise stops TMU1 and sets its control word (TCR1 0xffd8001c) from the fourth argument; with a function, installs tmu1_underflow_isr in the VBR handler table slot of the TMU1 underflow event (VBR+0x244), keeps fn and arg (tmu1_done_fn / tmu1_done_arg), enables the underflow interrupt and gives TMU1 priority 15 in IPRA; loads the count into TCOR1 and TCNT1 and starts TMU1; without a function it spins until the underflow flag and stops TMU1 again; part of syTmr; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with (1000, g2dma_slot_mark_unused, 7, 3) it returned 0, put tmu1_underflow_isr at irq_handler_table+0x44, kept the routine and 7 in tmu1_done_fn / tmu1_done_arg and wrote TCR1 0x23, IPRA 0xf00, 1000 to TCOR1 and TCNT1 and TSTR 3 (bit 1 added); called again in the same sandbox with (50, 0, 0, 2) it returned -1 and wrote nothing
  * matched: source/sdk/sy/sytmr.c (tools/match/match.py)
  */
 int tmu1_oneshot_clocked(uint count, timer_done_handler fn, int arg, ushort control)
@@ -88,8 +88,8 @@ int tmu1_oneshot_clocked(uint count, timer_done_handler fn, int arg, ushort cont
 }
 
 /* 0x0c135ae0  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: stops TMU1 (TSTR bit 1) and clears its interrupt enable (TCR1 bit 5); nothing in the image calls it (uncalled code, made a function 2026-11-09); between tmu1_oneshot_clocked and tmu1_underflow_isr, so by link order part of sdk/sy/sytmr.c
+ * confidence: exercised
+ * evidence: stops TMU1 (TSTR bit 1) and clears its interrupt enable (TCR1 bit 5); nothing in the image calls it (uncalled code, made a function 2026-11-09); between tmu1_oneshot_clocked and tmu1_underflow_isr, so by link order part of sdk/sy/sytmr.c; exercised 2026-11-12: called by the harness after tmu1_oneshot_clocked had left TSTR 3 and TCR1 0x23, it wrote TSTR 1 and TCR1 0x03 (bits 1 and 5 cleared)
  * matched: source/sdk/sy/sytmr.c (tools/match/match.py)
  */
 void tmu1_stop(void)
@@ -100,8 +100,8 @@ void tmu1_stop(void)
 }
 
 /* 0x0c135b20  size 0x36  file by match with source
- * confidence: inferred
- * evidence: installed by tmu1_oneshot_clocked: stops TMU1, clears its underflow interrupt enable and flag, then calls the kept function with the kept argument; part of syTmr
+ * confidence: exercised
+ * evidence: installed by tmu1_oneshot_clocked: stops TMU1, clears its underflow interrupt enable and flag, then calls the kept function with the kept argument; part of syTmr; exercised 2026-11-12: called by the harness after tmu1_oneshot(500, g2dma_slot_mark_unused, 0x0f002000) in the same sandbox, it wrote TSTR 1 (from 3) and TCR1 0x02 (from 0x22), called g2dma_slot_mark_unused(0x0f002000), which cleared the +0x28 byte I had set to 1, and returned 0
  * matched: source/sdk/sy/sytmr.c (tools/match/match.py)
  */
 int tmu1_underflow_isr(void)
@@ -114,8 +114,8 @@ int tmu1_underflow_isr(void)
 }
 
 /* 0x0c135b80  size 0x36  file by match with source
- * confidence: inferred
- * evidence: the same for TMU2 (TSTR bit 2, TCR2 0xffd80028, tmu2_done_fn / tmu2_done_arg); installed by the uncalled TMU2 routine tmu2_handler_set; part of syTmr
+ * confidence: exercised
+ * evidence: the same for TMU2 (TSTR bit 2, TCR2 0xffd80028, tmu2_done_fn / tmu2_done_arg); installed by the uncalled TMU2 routine tmu2_handler_set; part of syTmr; exercised 2026-11-12: called by the harness after tmu2_handler_set(g2dma_slot_mark_unused, 0x0f004000) and tmu2_start in the same sandbox, it wrote TSTR 1 (from 5), called g2dma_slot_mark_unused(0x0f004000), which cleared the +0x28 byte I had set to 1, and returned 0
  * matched: source/sdk/sy/sytmr.c (tools/match/match.py)
  */
 int tmu2_underflow_isr(void)
@@ -128,8 +128,8 @@ int tmu2_underflow_isr(void)
 }
 
 /* 0x0c135be0  size 0x18  file by match with source
- * confidence: inferred
- * evidence: clears TOCR and starts TMU2 (TSTR bit 2); nothing in the image calls it (uncalled code, made a function 2026-11-09); between tmu2_underflow_isr and tmu2_stop, so by link order part of sdk/sy/sytmr.c
+ * confidence: exercised
+ * evidence: clears TOCR and starts TMU2 (TSTR bit 2); nothing in the image calls it (uncalled code, made a function 2026-11-09); between tmu2_underflow_isr and tmu2_stop, so by link order part of sdk/sy/sytmr.c; exercised 2026-11-12: called by the harness with TSTR reading 1 it wrote 0 to TOCR and 5 to TSTR (bit 2 added)
  * matched: source/sdk/sy/sytmr.c (tools/match/match.py)
  */
 void tmu2_start(void)
@@ -140,8 +140,8 @@ void tmu2_start(void)
 }
 
 /* 0x0c135c00  size 0x14  file by match with source
- * confidence: inferred
- * evidence: stops TMU2 (TSTR bit 2); nothing in the image calls it (uncalled code, made a function 2026-11-09); between tmu2_start and tmu2_handler_set, so by link order part of sdk/sy/sytmr.c
+ * confidence: exercised
+ * evidence: stops TMU2 (TSTR bit 2); nothing in the image calls it (uncalled code, made a function 2026-11-09); between tmu2_start and tmu2_handler_set, so by link order part of sdk/sy/sytmr.c; exercised 2026-11-12: called by the harness after tmu2_start had left TSTR 5, it wrote TSTR 1 (bit 2 cleared)
  * matched: source/sdk/sy/sytmr.c (tools/match/match.py)
  */
 void tmu2_stop(void)
@@ -151,8 +151,8 @@ void tmu2_stop(void)
 }
 
 /* 0x0c135c20  size 0x74  file by match with source
- * confidence: inferred
- * evidence: (routine, argument): with TMU2 stopped: for a routine, installs tmu2_underflow_isr in the interrupt table (VBR +0x248), enables TMU2's interrupt (TCR2 bit 5, IPRA bits 4-7 = 15), clears its underflow flag and keeps the routine and argument in tmu2_done_fn / tmu2_done_arg; restores TSTR; for no routine it then clears TOCR, runs TMU2 until it underflows, stops it and clears the flag; nothing in the image calls it (uncalled code, made a function 2026-11-09); between tmu2_stop and tmu2_irq_off, so by link order part of sdk/sy/sytmr.c
+ * confidence: exercised
+ * evidence: (routine, argument): with TMU2 stopped: for a routine, installs tmu2_underflow_isr in the interrupt table (VBR +0x248), enables TMU2's interrupt (TCR2 bit 5, IPRA bits 4-7 = 15), clears its underflow flag and keeps the routine and argument in tmu2_done_fn / tmu2_done_arg; restores TSTR; for no routine it then clears TOCR, runs TMU2 until it underflows, stops it and clears the flag; nothing in the image calls it (uncalled code, made a function 2026-11-09); between tmu2_stop and tmu2_irq_off, so by link order part of sdk/sy/sytmr.c; exercised 2026-11-12: called by the harness with (g2dma_slot_mark_unused, 0x0f004000) it put tmu2_underflow_isr at irq_handler_table+0x48, kept the routine and argument in tmu2_done_fn / tmu2_done_arg, wrote TCR2 0x20 and IPRA 0xf0 and wrote TSTR back as read (1); tmu2_underflow_isr then called that routine with that argument (the no-routine path, which waits for the timer, was not run)
  * matched: source/sdk/sy/sytmr.c (tools/match/match.py)
  */
 void tmu2_handler_set(timer_done_handler fn, int arg)
@@ -182,8 +182,8 @@ void tmu2_handler_set(timer_done_handler fn, int arg)
 }
 
 /* 0x0c135cc0  size 0x24  file by match with source
- * confidence: inferred
- * evidence: clears TMU2's interrupt enable (TCR2 bit 5) with the timer stopped, then restores TSTR; nothing in the image calls it (uncalled code, made a function 2026-11-09); between tmu2_handler_set and tmu2_rate_set, so by link order part of sdk/sy/sytmr.c
+ * confidence: exercised
+ * evidence: clears TMU2's interrupt enable (TCR2 bit 5) with the timer stopped, then restores TSTR; nothing in the image calls it (uncalled code, made a function 2026-11-09); between tmu2_handler_set and tmu2_rate_set, so by link order part of sdk/sy/sytmr.c; exercised 2026-11-12: called by the harness with TCR2 at 0x22 (left by tmu2_handler_set and tmu2_rate_set) it wrote TCR2 0x02 (bit 5 cleared) and TSTR back as read (1)
  * matched: source/sdk/sy/sytmr.c (tools/match/match.py)
  */
 void tmu2_irq_off(void)
@@ -198,8 +198,8 @@ void tmu2_irq_off(void)
 }
 
 /* 0x0c135d00  size 0x30  file by match with source
- * confidence: inferred
- * evidence: (rate 0-4, anything above becomes 2): sets TCR2's clock select with the timer stopped, then restores TSTR; nothing in the image calls it (uncalled code, made a function 2026-11-09); between tmu2_irq_off and tmu2_count_set, so by link order part of sdk/sy/sytmr.c
+ * confidence: exercised
+ * evidence: (rate 0-4, anything above becomes 2): sets TCR2's clock select with the timer stopped, then restores TSTR; nothing in the image calls it (uncalled code, made a function 2026-11-09); between tmu2_irq_off and tmu2_count_set, so by link order part of sdk/sy/sytmr.c; exercised 2026-11-12: called by the harness after tmu2_handler_set had left TCR2 0x20, rate 3 wrote TCR2 0x23 and then rate 9 wrote 0x22 (above 4 becomes 2); TSTR was written back as read
  * matched: source/sdk/sy/sytmr.c (tools/match/match.py)
  */
 void tmu2_rate_set(ushort rate)
@@ -215,8 +215,8 @@ void tmu2_rate_set(ushort rate)
 }
 
 /* 0x0c135d40  size 0x26  file by match with source
- * confidence: inferred
- * evidence: (ticks): with the timer stopped loads 0xffffffff into TMU2's constant and -ticks into its count, then restores TSTR; nothing in the image calls it (uncalled code, made a function 2026-11-09); between tmu2_rate_set and tmu2_count_inverted, so by link order part of sdk/sy/sytmr.c
+ * confidence: exercised
+ * evidence: (ticks): with the timer stopped loads 0xffffffff into TMU2's constant and -ticks into its count, then restores TSTR; nothing in the image calls it (uncalled code, made a function 2026-11-09); between tmu2_rate_set and tmu2_count_inverted, so by link order part of sdk/sy/sytmr.c; exercised 2026-11-12: called by the harness with 1000 it wrote 0xffffffff to TCOR2 and 0xfffffc18 (-1000) to TCNT2, with 5 0xffffffff and 0xfffffffb, and TSTR back as read (1)
  * matched: source/sdk/sy/sytmr.c (tools/match/match.py)
  */
 void tmu2_count_set(int ticks)
@@ -232,8 +232,8 @@ void tmu2_count_set(int ticks)
 }
 
 /* 0x0c135d80  size 0x10  file by match with source
- * confidence: inferred
- * evidence: returns the TMU2 count inverted; nothing in the image calls it (uncalled code, made a function 2026-11-09); between tmu2_count_set and ticks_to_usec_at_rate, so by link order part of sdk/sy/sytmr.c
+ * confidence: exercised
+ * evidence: returns the TMU2 count inverted; nothing in the image calls it (uncalled code, made a function 2026-11-09); between tmu2_count_set and ticks_to_usec_at_rate, so by link order part of sdk/sy/sytmr.c; exercised 2026-11-12: called by the harness after tmu2_count_set(1000) had written 0xfffffc18 to TCNT2 with TMU2 stopped, it returned 999, and after tmu2_count_set(5) it returned 4
  * matched: source/sdk/sy/sytmr.c (tools/match/match.py)
  */
 uint tmu2_count_inverted(void)
@@ -242,9 +242,9 @@ uint tmu2_count_inverted(void)
 }
 
 /* 0x0c135da0  size 0x44  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xce
- * evidence: (ticks, rate 0-4): ticks x k / 100 without overflow, k = 8, 0x20, 0x80, 0x200 or 0x800 by rate (0x80 for any other); the inverse of usec_to_ticks_at_rate; nothing in the image calls it (uncalled code, made a function 2026-11-09); between tmu2_count_inverted and usec_to_ticks_at_rate, so by link order part of sdk/sy/sytmr.c
+ * evidence: (ticks, rate 0-4): ticks x k / 100 without overflow, k = 8, 0x20, 0x80, 0x200 or 0x800 by rate (0x80 for any other); the inverse of usec_to_ticks_at_rate; nothing in the image calls it (uncalled code, made a function 2026-11-09); between tmu2_count_inverted and usec_to_ticks_at_rate, so by link order part of sdk/sy/sytmr.c; exercised 2026-11-12: called by the harness with 1000 ticks it returned 80, 320, 1280, 5120 and 20480 for rates 0-4 and 1280 for rate 9; 12345 ticks at rate 4 gave 252825 (123 x 2048 + 45 x 2048 / 100)
  * matched: source/sdk/sy/sytmr.c (tools/match/match.py)
  */
 int ticks_to_usec_at_rate(uint ticks, ushort rate)
@@ -271,9 +271,9 @@ int ticks_to_usec_at_rate(uint ticks, ushort rate)
 }
 
 /* 0x0c135e80  size 0x6c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xfa
- * evidence: usec * 100 / d for the prescaler selector in the second argument: d = 8, 32, 512, 2048 for selectors 0, 1, 3, 4 and 128 otherwise, the ticks per 100 us of Pclk/4, /16, /256, /1024 and /64; nothing in the game calls it; part of syTmr; checked against reference material (not in this repo)
+ * evidence: usec * 100 / d for the prescaler selector in the second argument: d = 8, 32, 512, 2048 for selectors 0, 1, 3, 4 and 128 otherwise, the ticks per 100 us of Pclk/4, /16, /256, /1024 and /64; nothing in the game calls it; part of syTmr; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with 1000 us it returned 12500, 3125, 781, 195 and 48 for selectors 0-4 and 781 for selector 9
  * matched: source/sdk/sy/sytmr.c (tools/match/match.py)
  */
 int usec_to_ticks_at_rate(int usec, uint rate)
@@ -300,14 +300,12 @@ int usec_to_ticks_at_rate(int usec, uint rate)
 }
 
 /* 0x0c135fa0  size 0x12  file by match with source
- * confidence: inferred
- * evidence: only calls ticks_between (the TMU2 count difference); nothing in the game calls it; part of syTmr; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: only calls ticks_between (the TMU2 count difference); nothing in the game calls it; part of syTmr; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with (100, 30) it called ticks_between(100, 30) and left its 0xffffffba in r0, and with (5, 25) ticks_between(5, 25), 20
  * matched: source/sdk/sy/sytmr.c (tools/match/match.py)
  */
-void tmu2_ticks_between(int first, int second)
+uint tmu2_ticks_between(int first, int second)
 {
-  ticks_between(first,second);
-
-  return;
+  return ticks_between(first,second);
 }
 

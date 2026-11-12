@@ -38,8 +38,8 @@ void sq_windows_map(void)
 }
 
 /* 0x0c0629e0  size 0x64  file by match with source
- * confidence: inferred
- * evidence: removes the 25 UTLB entries sq_windows_map kept (utlb_uninstall); called by sys_wind_down; part of sySq; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: removes the 25 UTLB entries sq_windows_map kept (utlb_uninstall); called by sys_wind_down; part of sySq; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with sq_ram_entries poked 40 to 55, sq_ta_entries 20 to 27 and sq_ta_yuv_entries 63, it made 25 calls of utlb_uninstall with 40 to 55, 20 to 27 and 63, in that order
  * same code as main.bin 0c138f60 (ghidra/TransferFromMain.java)
  * matched: source/sdk/sy/sysq.c (tools/match/match.py)
  */

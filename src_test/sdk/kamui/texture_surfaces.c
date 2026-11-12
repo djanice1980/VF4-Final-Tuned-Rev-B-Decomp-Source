@@ -148,8 +148,8 @@ int surface_data_to_vram(surface_rec *surface, void *data, int flag_a, int flag_
 }
 
 /* 0x0c06c4a0  size 0x4a  file by match with source
- * confidence: inferred
- * evidence: (surface record, data, chunk index, chunk size in 32-byte units): sends one chunk of the data to the chunk's place in the surface (skipping 4 bytes in the mipmapped twiddled 16-bit format, format flags & 0x2d == 5, neither VQ nor palettized), cut at the surface's end; 0xc when the chunk lies past it, 4 for kind 3; nothing calls it; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (surface record, data, chunk index, chunk size in 32-byte units): sends one chunk of the data to the chunk's place in the surface (skipping 4 bytes in the mipmapped twiddled 16-bit format, format flags & 0x2d == 5, neither VQ nor palettized), cut at the surface's end; 0xc when the chunk lies past it, 4 for kind 3; nothing calls it; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on a 64 x 64 type 0x901 surface (0x2000 bytes at 0xe10800): chunk 2 of 4 units wrote 0x80 bytes at 0xe10900 (vram64_write), chunk 1 of 0xa0 units 0xc00 bytes at 0xe11c00 (cut at the end), chunk 0x40 of 4 returned 0xc; on a mipmapped twiddled 16-bit surface at 0x611800 chunk 1 of 4 went to 0x611884; a kind 3 surface returned 4
  * same code as main.bin 0c142460 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/texture_surfaces.c (tools/match/match.py)
  */
@@ -172,8 +172,8 @@ int surface_indexed_piece_to_vram(surface_rec *surface, void *data, int piece, i
 }
 
 /* 0x0c06c500  size 0x50  file by match with source
- * confidence: inferred
- * evidence: (surface record, data, offset, size): sends size bytes (both rounded down to words) to the offset in the surface, cut at its end; 7 when the offset lies past it, 4 for kind 3; nothing calls it; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (surface record, data, offset, size): sends size bytes (both rounded down to words) to the offset in the surface (4 bytes further on in the mipmapped twiddled 16-bit format, format flags & 0x2d == 5), cut at its end; nothing and 0 when the size rounds down to 0; 7 when the offset lies past it, 4 for kind 3; nothing calls it; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on a 64 x 64 type 0x901 surface (0x2000 bytes at 0xe10800): offset 0x103 size 0x47 wrote 0x44 bytes at 0xe10900 (vram64_write), 0x1f00 / 0x400 wrote 0x100 at 0xe12700, offset 0x2000 returned 7, size 3 returned 0 and wrote nothing; a kind 3 surface returned 4
  * same code as main.bin 0c1424c0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/texture_surfaces.c (tools/match/match.py)
  */
@@ -196,8 +196,8 @@ int surface_bytes_at_offset_to_vram(surface_rec *surface, void *data, uint offse
 }
 
 /* 0x0c06c560  size 0x96  file by match with source
- * confidence: inferred
- * evidence: (surface record, data, width, rows, x, y, source x, source y, source width): for a plain (not twiddled, mipmapped or VQ) 16-bit surface sends a rectangle row by row to (x, y) at the surface's line pitch, from the source's (source x, source y) at its own pitch when a source width is given; 4 for other formats; nothing calls it; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (surface record, data, width, rows, x, y, source x, source y, source width): for a plain (not twiddled, mipmapped or VQ) 16-bit surface sends a rectangle row by row to (x, y) at the surface's line pitch, from the source's (source x, source y) at its own pitch when a source width is given; 4 for other formats; nothing calls it; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on a 64 x 64 type 0x901 surface at 0xe10800 (pitch 0x80): 8 x 3 at (4, 2) with no source width wrote 16 bytes each at 0xe10908, 0xe10988, 0xe10a08 from source +0, +0x10, +0x20; 8 x 2 at (0, 0) from source (2, 1) of width 32 read source +0x44 and +0x84; a twiddled surface returned 4
  * same code as main.bin 0c142520 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/texture_surfaces.c (tools/match/match.py)
  */
@@ -344,9 +344,9 @@ int vram_pool_free_and_largest(int *free_bytes, int *largest)
 }
 
 /* 0x0c06c920  size 0x56  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x58
- * evidence: (surface record, data, level count): re-sends the mipmap levels of a mipmapped surface by its format: 4-bit palette (mip_level_to_vram_pal4), 8-bit palette (mip_level_to_vram_pal8), VQ or kind 3 (mip_level_to_vram_vq), twiddled (mip_level_to_vram_16bit); 4 otherwise; nothing calls it; part of KamuiTL; checked against reference material (not in this repo)
+ * evidence: (surface record, data, side): re-sends one mipmap level, the one of that side, of a mipmapped surface by its format: 4-bit palette (mip_level_to_vram_pal4), 8-bit palette (mip_level_to_vram_pal8), VQ or kind 3 (mip_level_to_vram_vq), twiddled (mip_level_to_vram_16bit); 4 otherwise; nothing calls it; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with 8 as the third argument: a mipmapped 4-bit palette surface went to mip_level_to_vram_pal4, 8-bit to mip_level_to_vram_pal8, a VQ and a kind 3 surface to mip_level_to_vram_vq, a mipmapped twiddled 16-bit surface to mip_level_to_vram_16bit, each with the same arguments, returning 0; a plain 0x901 surface returned 4
  * same code as main.bin 0c1428e0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/texture_surfaces.c (tools/match/match.py)
  */
@@ -810,8 +810,8 @@ void mip16_chain_to_vram(int dst, uint src, int side)
 }
 
 /* 0x0c06d500  size 0x32  file by match with source
- * confidence: inferred
- * evidence: (destination, texture memory offset, side): the reverse of mip16_chain_to_vram, reading the chain back from texture memory through vram64_read; called by surface_read_back; part of KamuiTL
+ * confidence: exercised
+ * evidence: (destination, texture memory offset, side): the reverse of mip16_chain_to_vram, reading the chain back from texture memory at the offset + 4 through vram64_read: mip16_chain_tail_bytes[log2] bytes, 4 fewer than mip16_chain_to_vram writes; called by surface_read_back; part of KamuiTL; exercised 2026-11-12: called by the harness after texture memory at offset 0x700000 was filled with 0x5a (vq_image_to_vram) and its words +0 and +4 poked 0x01010101 and 0x02020202: with side 16 it wrote 0x02020202 and then 0x5a bytes into a buffer of 0xee (reading from the offset + 4) and stopped after 0x2AC bytes (mip16_chain_tail_bytes[4])
  * same code as main.bin 0c1434c0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/texture_surfaces.c (tools/match/match.py)
  */
@@ -1154,8 +1154,8 @@ int mip_level_to_vram_vq(surface_rec *surface, uchar *src, int side)
 }
 
 /* 0x0c06dce0  size 0x34  file by match with source
- * confidence: inferred
- * evidence: rounds an 8-bit channel to a 3-bit level 0-7 ((c + 0x10) >> 5 below 0x70, (c - 0xf) >> 5 above 0x8f, 3 or 4 between); used by quant_error_3bit and quant_error_2bit, which nothing calls; part of KamuiTL
+ * confidence: exercised
+ * evidence: rounds an 8-bit channel to a 3-bit level 0-7 ((c + 0x10) >> 5 below 0x70, (c - 0xf) >> 5 above 0x8f, 3 from 0x70 to 0x7f and 4 from 0x80 to 0x8f); used by quant_error_3bit and quant_error_2bit, which nothing calls; part of KamuiTL; exercised 2026-11-12: called by the harness with 0, 0x2F and 0x6F it returned 0, 1 and 3; with 0x70 3; with 0x80 and 0x8F 4; with 0x90, 0xC0 and 0xFF 4, 5 and 7
  * same code as main.bin 0c143ca0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/texture_surfaces.c (tools/match/match.py)
  */
@@ -1174,8 +1174,8 @@ uint quantize_byte_to_3bit(uint value)
 }
 
 /* 0x0c06dd20  size 0x16  file by match with source
- * confidence: inferred
- * evidence: the error of keeping the top 6 bits of an 8-bit channel (c - (c & 0xfc | 2)); used by dither_argb8888_in_place for the green of RGB 565; part of KamuiTL
+ * confidence: exercised
+ * evidence: the error of keeping the top 6 bits of an 8-bit channel (c - (c & 0xfc | 2)); used by dither_argb8888_in_place for the green of RGB 565; part of KamuiTL; exercised 2026-11-12: called by the harness with 0x81 it returned -1, with 0x83 1 and with 0 -2
  * same code as main.bin 0c143ce0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/texture_surfaces.c (tools/match/match.py)
  */
@@ -1185,8 +1185,8 @@ int quant_error_6bit(uint c)
 }
 
 /* 0x0c06dd40  size 0x16  file by match with source
- * confidence: inferred
- * evidence: the error of keeping the top 5 bits of an 8-bit channel (c - (c & 0xf8 | 4)); used by dither_argb8888_in_place for 1555 and 565; part of KamuiTL
+ * confidence: exercised
+ * evidence: the error of keeping the top 5 bits of an 8-bit channel (c - (c & 0xf8 | 4)); used by dither_argb8888_in_place for 1555 and 565; part of KamuiTL; exercised 2026-11-12: called by the harness with 7 it returned 3, with 0x10 -4 and with 0xFF 3
  * same code as main.bin 0c143d00 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/texture_surfaces.c (tools/match/match.py)
  */
@@ -1196,8 +1196,8 @@ int quant_error_5bit(uint c)
 }
 
 /* 0x0c06dd60  size 0x22  file by match with source
- * confidence: inferred
- * evidence: the error of keeping the top 4 bits of an 8-bit channel, rounded by its own bit 7 (c - (c & 0xf0 | c >> 4 & 8 | 4)); used by dither_argb8888_in_place for ARGB 4444; part of KamuiTL
+ * confidence: exercised
+ * evidence: the error of keeping the top 4 bits of an 8-bit channel, rounded by its own bit 7 (c - (c & 0xf0 | c >> 4 & 8 | 4)); used by dither_argb8888_in_place for ARGB 4444; part of KamuiTL; exercised 2026-11-12: called by the harness with 5 it returned 1, with 0x85 -7 (kept as 0x8C: bit 7 adds 8), with 0xFF 3 and with 0x40 -4
  * same code as main.bin 0c143d20 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/texture_surfaces.c (tools/match/match.py)
  */
@@ -1207,8 +1207,8 @@ int quant_error_4bit(uint c)
 }
 
 /* 0x0c06dda0  size 0x34  file by match with source
- * confidence: inferred
- * evidence: the error of an 8-bit channel against its 3-bit level from quantize_byte_to_3bit; nothing in the image calls it; part of KamuiTL
+ * confidence: exercised
+ * evidence: the error of an 8-bit channel against its 3-bit level from quantize_byte_to_3bit taken back to 8 bits (c - (level << 5) for levels 0 to 3, c - (level << 5 | 0x1f) for levels 4 to 7); nothing in the image calls it; part of KamuiTL; exercised 2026-11-12: called by the harness with 0x50 it returned -16 (level 3, 0x60) and with 0x2F 15 (level 1, 0x20); from level 4 up the level stands for level << 5 | 0x1F: 0x90 gave -15 and 0xFF 0
  * same code as main.bin 0c143d60 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/texture_surfaces.c (tools/match/match.py)
  */
@@ -1222,8 +1222,8 @@ int quant_error_3bit(uint c)
 }
 
 /* 0x0c06dde0  size 0x38  file by match with source
- * confidence: inferred
- * evidence: the error of an 8-bit channel against its 2-bit level (quantize_byte_to_3bit halved); nothing in the image calls it; part of KamuiTL
+ * confidence: exercised
+ * evidence: the error of an 8-bit channel against its 2-bit level (quantize_byte_to_3bit halved) taken back to 8 bits (c - (level << 6) for levels 0 and 1, c - (level << 6 | 0x3f) for levels 2 and 3); nothing in the image calls it; part of KamuiTL; exercised 2026-11-12: called by the harness with 0x50 it returned 16 (level 1, 0x40) and with 0x2F 47 (level 0); for levels 2 and 3 the level stands for level << 6 | 0x3F: 0xC0 gave 1 and 0xFF 0
  * same code as main.bin 0c143da0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/texture_surfaces.c (tools/match/match.py)
  */

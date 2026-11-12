@@ -250,8 +250,8 @@ void naomi2_lib_start(uint mode, uint flags, uint count)
 }
 
 /* 0x0c100fc0  size 0x34  file by match with source
- * confidence: inferred
- * evidence: keeps its six arguments (tile split kind, paired flag and rectangle) in the block at tile_split_args and, once the lists are started (elan_lists_started, 0c3dc178), applies them at once through tile_split_select; elan_lists_start applies the kept words when it starts; nothing in the image calls it; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: keeps its six arguments (tile split kind, paired flag and rectangle) in the block at tile_split_args and, once the lists are started (elan_lists_started, 0c3dc178), applies them at once through tile_split_select; elan_lists_start applies the kept words when it starts; nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness in one sandbox: with elan_lists_started poked 0, (2, 0, 10, 20, 300, 400) went into tile_split_args and tile_split_select was not called; with it poked 1, (1, 1, 0, 0, 640, 480) went into tile_split_args and to tile_split_select(1, 1, 0, 0, 640, 480)
  * matched: source/sdk/naomi2_library/naomi2_library.c (tools/match/match.py)
  */
 void tile_split_args_keep(uint kind, int paired, uint x0, uint y0, uint x1, uint y1)
@@ -699,8 +699,8 @@ void elan_list_enable_mask_put(uint mask)
 }
 
 /* 0x0c1018a0  size 0x18  file by match with source
- * confidence: inferred
- * evidence: clears modvol_two_volume and sets the shadow scale up with the argument (modvol_shadow_set_up: FPU_SHAD_SCALE, inside-volume instruction, sign 1); nothing in the image calls it; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: clears modvol_two_volume and sets the shadow scale up with the argument (modvol_shadow_set_up: FPU_SHAD_SCALE, inside-volume instruction, sign 1); nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness with modvol_two_volume poked 1, modvol_instruction 0x40000000 and modvol_sign -1: (0x40) passed 0x40 to modvol_shadow_set_up and on to pvr_shadow_scale_write and left modvol_two_volume 0, modvol_instruction 0x20000000 and modvol_sign 1; (0x7F) passed 0x7F
  * matched: source/sdk/naomi2_library/naomi2_library.c (tools/match/match.py)
  */
 void modvol_mode_cheap_shadow(uint shadow_scale)

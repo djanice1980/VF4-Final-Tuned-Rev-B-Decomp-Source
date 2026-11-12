@@ -7,9 +7,9 @@
 #include "vf4ft.h"
 
 /* 0x0c1514c0  size 0x18  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x26
- * evidence: when its argument is 0 writes magenta (0xff00ff) to the border color register of both rendering chips (0xa85f8040) and spins forever; the copy the ELAN set-up object (0c1514c0 to the end of the library) uses, the first of its three routines; part of KamuiTL
+ * evidence: when its argument is 0 writes magenta (0xff00ff) to the border color register of both rendering chips (0xa85f8040) and spins forever; the copy the ELAN set-up object (0c1514c0 to the end of the library) uses, the first of its three routines; part of KamuiTL; exercised 2026-11-12: called by the harness: with 1 it returned at once; with 0 it wrote 0xff00ff to 0xa85f8040 and did not return within its budget
  * matched: source/sdk/kamui/elan_setup.c (tools/match/match.py)
  */
 void elanhw_check_or_halt(int ok)
@@ -21,8 +21,8 @@ void elanhw_check_or_halt(int ok)
 }
 
 /* 0x0c151500  size 0x86  file by match with source
- * confidence: inferred
- * evidence: with interrupts masked, saves the store queue address registers (QACR0/1 at 0xff000038/3c) and the save-stack pointer sq_save_top into a 3-word record, flushes both store queues (64 bytes) into the next 64-byte slot of the save stack (the 1 KB zero buffer at sq_save_stack in .text) and moves the pointer on, so an interrupt can use the store queues without losing what the interrupted code had put in them; this object's copy, uncalled; part of KamuiTL
+ * confidence: exercised
+ * evidence: with interrupts masked, saves the store queue address registers (QACR0/1 at 0xff000038/3c) and the save-stack pointer sq_save_top into a 3-word record, flushes both store queues (64 bytes) into the next 64-byte slot of the save stack (the 1 KB zero buffer at sq_save_stack in .text) and moves the pointer on, so an interrupt can use the store queues without losing what the interrupted code had put in them; this object's copy, uncalled; part of KamuiTL; exercised 2026-11-12: called by the harness inside one driver call (a stub in buf:7) after sq_copy_blocks had left 16 marker words in the store queues: the record held 0xc, 0xc (QACR as sq_copy_blocks set it) and 0x0C151A80, the slot 0x0C151A80 held the 16 words and sq_save_top moved to 0x0C151AC0; elanhw_sq_restore then took it back (see there)
  * matched: source/sdk/kamui/elan_setup.c (tools/match/match.py)
  */
 void elanhw_sq_save(uint *save)
@@ -63,8 +63,8 @@ void elanhw_sq_save(uint *save)
 }
 
 /* 0x0c1515c0  size 0xa6  file by match with source
- * confidence: inferred
- * evidence: the inverse: with interrupts masked, steps sq_save_top back 64 bytes (halting unless it equals the record's pointer), reloads QACR0/1 from the record and copies the 64 saved bytes back into the store queues from the uncached slot; this object's copy, uncalled; part of KamuiTL
+ * confidence: exercised
+ * evidence: the inverse: with interrupts masked, steps sq_save_top back 64 bytes (halting unless it equals the record's pointer), reloads QACR0/1 from the record and copies the 64 saved bytes back into the store queues from the uncached slot; this object's copy, uncalled; part of KamuiTL; exercised 2026-11-12: called by the harness inside one driver call after elanhw_sq_save and a second sq_copy_blocks with other words: sq_save_top went back to 0x0C151A80 and a pref of the queues then wrote the first 16 words (the saved slot) to the destination, where without the restore the second words arrived; with the record pointer poked to 0x0C151B00 it called elanhw_check_or_halt(0) and did not return
  * matched: source/sdk/kamui/elan_setup.c (tools/match/match.py)
  */
 void elanhw_sq_restore(uint *save)

@@ -117,8 +117,8 @@ void task_start(task_rec *task)
 }
 
 /* 0x0c033240  size 0x30  file by match with source
- * confidence: inferred
- * evidence: (record, init routine): task_start with the given init routine in place of the node's; nothing in the image calls it; part of vf4lib/libbase/src/task.c (the task tree; file name ours, see notes)
+ * confidence: exercised
+ * evidence: (record, init routine): task_start with the given init routine in place of the node's; nothing in the image calls it; part of vf4lib/libbase/src/task.c (the task tree; file name ours, see notes); exercised 2026-11-12: called by the harness with a planted record (flags 2, statistics 1.0 to 4.0, node with exec +0x14 = 0x0C0FFEE0): with init 0 and net_messages_flag_set as the node's init it left flags 3, exec 0x0C0FFEE0, +0x14 to +0x20 zero and net_messages_flag 0 (the node's init not called); with net_messages_flag_set as the argument and node init 0 it did the same and the flag went from 0 to 1
  * matched: source/vf4lib/libbase/src/task.c (tools/match/match.py)
  */
 void task_start_with_init(task_rec *task, void (*init)(void))
@@ -133,8 +133,8 @@ void task_start_with_init(task_rec *task, void (*init)(void))
 }
 
 /* 0x0c033280  size 0xe  file by match with source
- * confidence: inferred
- * evidence: (record, routine): stores the routine as the task record's exec (+4); nothing in the image calls it (uncalled code, made a function 2026-11-09); between task_start_with_init and task_stop, so by link order part of vf4lib/libbase/src/task.c
+ * confidence: exercised
+ * evidence: (record, routine): stores the routine as the task record's exec (+4); nothing in the image calls it (uncalled code, made a function 2026-11-09); between task_start_with_init and task_stop, so by link order part of vf4lib/libbase/src/task.c; exercised 2026-11-12: called by the harness on a buffer with +0 = 0x11 and +8 = 0x22, it stored 0x0C0FFEE0 and then 0x12345678 at +4 and left +0 and +8 as they were
  * matched: source/vf4lib/libbase/src/task.c (tools/match/match.py)
  */
 void task_exec_set(task_rec *task, void (*exec)(void))

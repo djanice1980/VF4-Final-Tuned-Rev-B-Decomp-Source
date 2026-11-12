@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c122380  size 0x34  file by match with source
- * confidence: inferred
- * evidence: (socket, backlog, slot record): writes a 0x20-byte request {operation, socket, backlog, 0...} by PIO; caller sock_listen; part of NLASOCK
+ * confidence: exercised
+ * evidence: (socket, backlog, slot record): writes a 0x20-byte request {operation, socket, backlog, 0...} by PIO; caller sock_listen; part of NLASOCK; exercised 2026-11-12: called by the harness on slot 3 (op poked 8) with (3, 5): dimm_pio_write of the 0x20 bytes {8, 3, 5, 0, 0, 0, 0, 0} to 0x0f803000; on slot 1 of a table prepared at 0x12000000 with op poked 0x5a, (1, 7) gave {0x5a, 1, 7, 0...} to 0x12801000
  * matched: source/sdk/nlasock/listen.c (tools/match/match.py)
  */
 void listen_request_write(uint sock, uint backlog, sock_slot_rec *slot)
@@ -28,9 +28,9 @@ void listen_request_write(uint sock, uint backlog, sock_slot_rec *slot)
 }
 
 /* 0x0c1223c0  size 0xb4  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xc2
- * evidence: (socket, backlog): socket operation 8 (listen for connections), blocking: -2 above 63, -4 when busy; listen_request_write, DIMM command 0x11, waits and returns the result; nothing in the image calls it; part of NLASOCK
+ * evidence: (socket, backlog): socket operation 8 (listen for connections), blocking: -2 above 63, -4 when busy; listen_request_write, DIMM command 0x11, waits and returns the result; nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): socket 64 gave -2, dimm_busy_word 1 gave -4; (3, 5) wrote {8, 3, 5, 0...} to 0x0f803000, posted dimm_cmd_post(0x11, 3), waited and returned the board model's 0, leaving slot 3 done with op 8
  * matched: source/sdk/nlasock/listen.c (tools/match/match.py)
  */
 int sock_listen(uint sock, uint backlog)

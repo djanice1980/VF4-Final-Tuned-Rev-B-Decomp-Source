@@ -1617,8 +1617,8 @@ void sand_umi_draw_tail(void)
 }
 
 /* 0x0c0c8660  size 0x32  file by match with source
- * confidence: inferred
- * evidence: Sets sand_colors to grain color (0xD2, 0xC8, 0xC8) and cloud color (0xD2, 0xB4, 0xA4), applies the first to sand_grain_models (sand_grain_models_color_apply) and the second to the cloud models (sand_model_color_set); nothing in the image calls it (a debug or tuning hook, role unclear); part of vf4lib/libeffect/src/effect_sand.c
+ * confidence: exercised
+ * evidence: Sets sand_colors to grain color (0xD2, 0xC8, 0xC8) and cloud color (0xD2, 0xB4, 0xA4), applies the first to sand_grain_models (sand_grain_models_color_apply) and the second to the cloud models (sand_model_color_set); nothing in the image calls it (a debug or tuning hook, role unclear); part of vf4lib/libeffect/src/effect_sand.c; exercised 2026-11-12: called by the harness with sand_grain_models[3] poked to a buffer: it left sand_colors 0xD2, 0xC8, 0xC8, 0xD2, 0xB4, 0xA4 and the buffer's +0x6C 0xFFD2C8C8 (the grain color, through sand_grain_models_color_apply), then called sand_model_color_set
  * matched: source/vf4lib/libeffect/src/effect_sand.c (tools/match/match.py)
  */
 void sand_colors_default_set(void)
@@ -1635,8 +1635,8 @@ void sand_colors_default_set(void)
 }
 
 /* 0x0c0c86c0  size 0x3a  file by match with source
- * confidence: inferred
- * evidence: Sets word +0x6C of every baked sand_grain_models entry to 0xFF000000 | the grain color of sand_colors; called by sand_colors_default_set; part of vf4lib/libeffect/src/effect_sand.c
+ * confidence: exercised
+ * evidence: Sets word +0x6C of every baked sand_grain_models entry to 0xFF000000 | the grain color of sand_colors; called by sand_colors_default_set; part of vf4lib/libeffect/src/effect_sand.c; exercised 2026-11-12: called by the harness with sand_grain_models[0] and [7] poked to buffers: grain color (0x12, 0x34, 0x56) (cloud 0x99) put 0xFF123456 at +0x6C of both, and (0xFF, 0, 0x80) put 0xFFFF0080; +0x68 stayed 0
  * matched: source/vf4lib/libeffect/src/effect_sand.c (tools/match/match.py)
  */
 void sand_grain_models_color_apply(void)

@@ -52,8 +52,8 @@ void ta_lists_point_at_buffer(int across, int down, int buf)
 }
 
 /* 0x0c14c4e0  size 0x76  file by match with source
- * confidence: inferred
- * evidence: (address, list base): writes at 0xA5000000 | address a one-entry object list (a triangle array pointer relative to the list base, then the end link 0xF0000000) followed by its triangle: instruction words 0x00800000 (depth compare never), 0x24900000, three translucent red, green and blue vertices (0,0) (0,1280) (2560,0); returns address; tile_regions_write uses it for the translucent list of the auto-sorted layout; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (address, list base): writes at 0xA5000000 | address a one-entry object list (a triangle array pointer relative to the list base, then the end link 0xF0000000) followed by its triangle: instruction words 0x00800000 (depth compare never), 0x24900000, three translucent red, green and blue vertices (0,0) (0,1280) (2560,0); returns address; tile_regions_write uses it for the translucent list of the auto-sorted layout; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with (0x00300100, 0x00300000) it wrote from 0xA5300100 0x80200042, 0xF0000000, 0x00800000, 0x24900000, 0, then (0, 0, 1e-10) 0x80FF0000, (0, 1280, 1e-10) 0x8000FF00, (2560, 0, 1e-10) 0x800000FF and returned 0x00300100; with (0x00200000, 0x00200000) the first word was 0x80200002
  * matched: source/sdk/kamui/ta_regions.c (tools/match/match.py)
  */
 uint objlist_put_never_drawn_triangle(uint addr, int list_base)

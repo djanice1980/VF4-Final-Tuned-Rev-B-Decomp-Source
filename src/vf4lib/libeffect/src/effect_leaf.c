@@ -793,9 +793,9 @@ void leaf_sources_apply(void)
 }
 
 /* 0x0c0ca0c0  size 0x26e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x2c4
- * evidence: (source, cell): for up to 10 leaves of the cell near the floor within the source radius, adds a swirl velocity (tangential by leaf_swirl_tangential, inward by leaf_swirl_inward, upward by leaf_swirl_upward, falling off by the curve leaf_swirl_falloff), sets the spin (+0x24) and starts resting leaves flying (leaf_ground_vertices_hide, active list), clamping the speed to leaf_swirl_speed_max; only caller leaf_sources_apply (type 2, which nothing arms); part of vf4lib/libeffect/src/effect_leaf.c
+ * evidence: (source, cell): for up to 10 leaves of the cell near the floor within the source radius, adds a swirl velocity (tangential by leaf_swirl_tangential, inward by leaf_swirl_inward, upward by leaf_swirl_upward, falling off by the curve leaf_swirl_falloff), sets the spin (+0x24) and starts resting leaves flying (leaf_ground_vertices_hide, active list), clamping the speed to leaf_swirl_speed_max; only caller leaf_sources_apply (type 2, which nothing arms); part of vf4lib/libeffect/src/effect_leaf.c; exercised 2026-11-12: called by the harness on the snapshot's leaves of cell 2 with source 2 poked at (-6.7, 4, -7.7), strength 1: radius 0.17 moved only leaf 856 (0.138 away): mode 0 to 2, spin 921, onto the active list (count 153 to 154), velocity with inward / tangential 0.8 and up / tangential 0.417 (0.8 and 0.005 / 0.012); radius 0.25 also moved 444 and 847; radius 0.01 none; leaf 1176, 2 above the floor, never
  * matched: source/vf4lib/libeffect/src/effect_leaf.c (tools/match/match.py)
  */
 void leaf_swirl_apply(int source, int cell)
@@ -1511,8 +1511,8 @@ void leaf_draw_end_stub(void)
 }
 
 /* 0x0c0cb700  size 0x110  file by match with source
- * confidence: inferred
- * evidence: (cell, color): draws the outline of one grid cell (a 0.5 square) at floor height with four line3d_quads_opaque segments of width 2.0; nothing in the image calls it (a debug view of the leaf grid); part of vf4lib/libeffect/src/effect_leaf.c
+ * confidence: exercised
+ * evidence: (cell, color): draws the outline of one grid cell (a 0.5 square from x = (cell % grid_cells) * 0.5 - grid_half_width, z = (cell / grid_cells) * 0.5 - grid_half_width toward +x and +z) at floor height (leaf_cfg floor_y); nothing for a negative cell with four line3d_quads_opaque segments of width 2.0; nothing in the image calls it (a debug view of the leaf grid); part of vf4lib/libeffect/src/effect_leaf.c; exercised 2026-11-12: called by the harness on the snapshot's leaf_cfg (31 cells a row, half width 7.95, floor 4.01) with color 0xFF00FF00: cell 0 stored width 2.0 and drew four line3d_quads_opaque segments round the square (-7.95, -7.95) to (-7.45, -7.45) at y 4.01 in that color; cell 1 the square 0.5 further in x, cell 33 the one from (-6.95, -7.45); cell -1 drew nothing
  * matched: source/vf4lib/libeffect/src/effect_leaf.c (tools/match/match.py)
  */
 void leaf_grid_cell_draw(int cell, uint color)

@@ -85,8 +85,8 @@ void model_volumes_draw_cull_cw(compiled_model_rec *model)
 }
 
 /* 0x0c037e60  size 0x34  file by match with source
- * confidence: inferred
- * evidence: (model): links only the model's +0x40 display list into ELAN list 0 (opaque), matrices first (model_list_link_queue); nothing in the image calls it; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: (model): links only the model's +0x40 display list into ELAN list 0 (opaque), matrices first (model_list_link_queue); nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness on a record built in buf:4 with {offset, size} {0x100, 0x20} at +0x40, {0x200, 0x40} at +0x48 and {0x300, 0x60} at +0x50: it called model_list_link_queue({0x0F008140, 0x20}, 0, 1) only; with the +0x40 slot zero (buf:5) and with null nothing
  * same code as main.bin 0c0fe940 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/model_draw.c (tools/match/match.py)
  */
@@ -103,8 +103,8 @@ void model_draw_opaque_part(compiled_model_rec *model)
 }
 
 /* 0x0c037ea0  size 0x34  file by match with source
- * confidence: inferred
- * evidence: (model): links only the model's +0x48 display list into ELAN list 2 (translucent), matrices first (model_list_link_queue); nothing in the image calls it; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: (model): links only the model's +0x48 display list into ELAN list 2 (translucent), matrices first (model_list_link_queue); nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness on a record built in buf:4 with {offset, size} {0x100, 0x20} at +0x40, {0x200, 0x40} at +0x48 and {0x300, 0x60} at +0x50: it called model_list_link_queue({0x0F008248, 0x40}, 2, 1) only; with the +0x40 slot zero (buf:5) the same for buf:5 ({0x0F00A248, 0x40}, 2, 1); null did nothing
  * same code as main.bin 0c0fe980 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/model_draw.c (tools/match/match.py)
  */
@@ -121,8 +121,8 @@ void model_draw_translucent_part(compiled_model_rec *model)
 }
 
 /* 0x0c037ee0  size 0x60  file by match with source
- * confidence: inferred
- * evidence: (model): links both the +0x40 and the +0x48 display lists into ELAN list 0 (opaque), matrices first (model_list_link_queue); nothing in the image calls it; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: (model): links both the +0x40 and the +0x48 display lists into ELAN list 0 (opaque), matrices first (model_list_link_queue); nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness on a record built in buf:4 with {offset, size} {0x100, 0x20} at +0x40, {0x200, 0x40} at +0x48 and {0x300, 0x60} at +0x50: it called model_list_link_queue({0x0F008140, 0x20}, 0, 1) and ({0x0F008248, 0x40}, 0, 2); with the +0x40 slot zero (buf:5) only ({0x0F00A248, 0x40}, 0, 1); null did nothing
  * same code as main.bin 0c0fe9c0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/model_draw.c (tools/match/match.py)
  */
@@ -290,8 +290,8 @@ void model_volumes_draw_trans_mod_cull_cw(compiled_model_rec *model)
 }
 
 /* 0x0c038200  size 0x162  file by match with source
- * confidence: inferred
- * evidence: (model, mode for the +0x40 list, mode for the +0x48 list, each 0 or 1, else that list is skipped): draws each list in two or three passes, each with the second polygon header OR word (poly_header_or_words +4) set from the saved word, the top six bits (blend factors) of the list's first polygon word +0x48 and the 3-word entry of the block at blend_pass_bits for the mode: pass 1 (m ^ 0x20000000 | a) into list 0 (mode 0) or 2 (mode 1), pass 2 (m ^ 0x24000000 | b) into list 2, and for mode 1 pass 3 (c) into list 2; matrices first on every pass (model_list_link_queue); restores the word; nothing in the image calls it; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: (model, mode for the +0x40 list, mode for the +0x48 list, each 0 or 1, else that list is skipped): draws each list in two or three passes, each with the second polygon header OR word (poly_header_or_words +4) set from the saved word, the top six bits (blend factors) of the list's first polygon word +0x48 and the 3-word entry of the block at blend_pass_bits for the mode: pass 1 (m ^ 0x20000000 | a) into list 0 (mode 0) or 2 (mode 1), pass 2 (m ^ 0x24000000 | b) into list 2, and for mode 1 pass 3 (c) into list 2; matrices first on every pass (model_list_link_queue); restores the word; nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness on the buf:4 record with first polygon words +0x48 poked 0x94000123 (+0x40 list) and 0x30000456 (+0x48 list), poly_header_or_words+4 0, blend_pass_bits {0x6000, 0x4000, 0x02000000}, {0x01006000, 0x01004000, 0x02000000}: (m, 0, 1) linked the +0x40 list into lists 0, 2 with OR words 0xB4006000, 0xB0004000 and the +0x48 list three times into 2 with 0x11006000, 0x15004000, 0x02000000 (n 1-5); (m, 2, 0) only the +0x48 list (0x10006000 list 0, 0x14004000 list 2); the word was 0 after
  * same code as main.bin 0c0fece0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/model_draw.c (tools/match/match.py)
  */
@@ -413,8 +413,8 @@ void matrix_cmds_queue_vertex_from_pushed(uint list_mask)
 }
 
 /* 0x0c0384a0  size 0x76  file by match with source
- * confidence: inferred
- * evidence: (model): links the +0x40, +0x48 and +0x50 display lists into ELAN lists 0, 2 and 4 like model_draw but without matrix commands (model_list_link_queue(..., 0)); nothing in the image calls it; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: (model): links the +0x40, +0x48 and +0x50 display lists into ELAN lists 0, 2 and 4 like model_draw but without matrix commands (model_list_link_queue(..., 0)); nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness on a record built in buf:4 with {offset, size} {0x100, 0x20} at +0x40, {0x200, 0x40} at +0x48 and {0x300, 0x60} at +0x50: it called model_list_link_queue({0x0F008140, 0x20}, 0, 0), ({0x0F008248, 0x40}, 2, 0) and ({0x0F008350, 0x60}, 4, 0); with the +0x40 slot zero (buf:5) only the lists 2 and 4 calls; null did nothing
  * same code as main.bin 0c0fef80 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/model_draw.c (tools/match/match.py)
  */
@@ -513,8 +513,8 @@ void dummy_tri_link_on_lists(uint clip_bits)
 }
 
 /* 0x0c0386a0  size 0x7c  file by match with source
- * confidence: inferred
- * evidence: builds in the ELAN command buffer (write pointer elan_cmd_write_ptr, through the store queues: QACR0/1 = pointer >> 24, address 0xe0000000 | low 26 bits) the current matrix commands from XMTRX (elan_matrix_cmds_write with the parameter record elan_matrix_params: a 0x08000400 block, the 0x08000200 normal block and the 0x08000100 vertex block) and a block of four 0x08000000 no-ops; leaves {start, size} in the block at matrix_cmds_block and advances the write pointer; caller matrix_cmds_queue_on_lists; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: builds in the ELAN command buffer (write pointer elan_cmd_write_ptr, through the store queues: QACR0/1 = pointer >> 24, address 0xe0000000 | low 26 bits) the current matrix commands from XMTRX (elan_matrix_cmds_write with the parameter record elan_matrix_params: a 0x08000400 block, the 0x08000200 normal block and the 0x08000100 vertex block) and a block of four 0x08000000 no-ops; leaves {start, size} in the block at matrix_cmds_block and advances the write pointer; caller matrix_cmds_queue_on_lists; part of the NAOMI2 library; exercised 2026-11-12: called by the harness in one sandbox with elan_cmd_write_ptr poked 0xAA100000 it called elan_matrix_cmds_write(0xE2100000, elan_matrix_params) (0x08000400, 0x08000200, 0x08000100 blocks), put 0x08000000 no-ops at +0xA0, left matrix_cmds_block {0xAA100000, 0xC0} and the pointer at 0xAA1000C0; with the pointer poked 0xAA200040 the block was {0xAA200040, 0xC0} and the pointer 0xAA200100
  * same code as main.bin 0c0ff180 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/model_draw.c (tools/match/match.py)
  */
@@ -546,8 +546,8 @@ void matrix_cmds_build(void)
 }
 
 /* 0x0c038760  size 0x1c0  file by match with source
- * confidence: inferred
- * evidence: like matrix_cmds_build but in C: a 0x08000400 block (0xf, 0x7f), the 0x08000200 normal block from the last pushed matrix (mtx_peek_pushed): env-map U offset (elan_matrix_params +0x1c), the transposed 3x3 (m0 m4 m8, m1 m5 m9, m2 m6 m10), V offset (+0x20) and the scale (-x, y, -z) of the block at normal_block_scale; then the 0x08000100 vertex block from the current matrix (mtx_store_wordwise): +0x10, the rows m0-m2, m4-m6, m8-m10, m12-m14 with x and z negated, 1e8 and -(+0x18); then no-ops; record in the block at matrix_cmds_block; caller matrix_cmds_queue_normal_from_pushed; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: like matrix_cmds_build but in C: a 0x08000400 block (0xf, 0x7f), the 0x08000200 normal block from the last pushed matrix (mtx_peek_pushed): env-map U offset (elan_matrix_params +0x1c), the transposed 3x3 (m0 m4 m8, m1 m5 m9, m2 m6 m10), V offset (+0x20) and the scale (-x, y, -z) of the block at normal_block_scale; then the 0x08000100 vertex block from the current matrix (mtx_store_wordwise): +0x10, the rows m0-m2, m4-m6, m8-m10, m12-m14 with x and z negated, 1e8 and -(+0x18); then no-ops; record in the block at matrix_cmds_block; caller matrix_cmds_queue_normal_from_pushed; part of the NAOMI2 library; exercised 2026-11-12: called by the harness in one sandbox at 0xAA100000 with the last pushed slot (0x0C371BA0) poked 1-16, elan_matrix_params +0x1C/+0x20 0.25/0.75, normal_block_scale (2, 3, 4): it wrote 0x08000400 0xF 0x7F, then 0x08000200 0.25, 1 5 9, 2 6 10, 3 7 11, 0.75, -2 3 -4, then 0x08000100 0.1, the snapshot's current matrix (read with mtx_store_wordwise) rows with x and z negated, 1e8, 10, then no-ops; block {0xAA100000, 0xC0}
  * same code as main.bin 0c0ff240 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/model_draw.c (tools/match/match.py)
  */
@@ -637,8 +637,8 @@ void matrix_cmds_build_normal_from_pushed(void)
 }
 
 /* 0x0c038980  size 0x1c0  file by match with source
- * confidence: inferred
- * evidence: the same blocks as matrix_cmds_build_normal_from_pushed with the matrices swapped: the 0x08000200 normal block from the current matrix (mtx_store_wordwise) and the 0x08000100 vertex block from the last pushed one (mtx_peek_pushed); record in the block at matrix_cmds_block; caller matrix_cmds_queue_vertex_from_pushed; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: the same blocks as matrix_cmds_build_normal_from_pushed with the matrices swapped: the 0x08000200 normal block from the current matrix (mtx_store_wordwise) and the 0x08000100 vertex block from the last pushed one (mtx_peek_pushed); record in the block at matrix_cmds_block; caller matrix_cmds_queue_vertex_from_pushed; part of the NAOMI2 library; exercised 2026-11-12: called by the harness after a harness driver pushed the matrix 1..16 (mtx_peek_pushed then read it back) and env_uv_offset_set(0.25, 0.75), normal_block_scale_set(2, 3, 4): after the 0x08000400 block it wrote 0x08000200, 0.25, the snapshot's current matrix transposed (m0 m4 m8 m1 m5 m9 m2 m6 m10), 0.75, -2, 3, -4, then 0x08000100, 0.1, -1, 2, -3, -5, 6, -7, -9, 10, -11, -13, 14, -15, 1e8, 10 and an end block; matrix_cmds_block became {0xAA100000, 0xC0}
  * same code as main.bin 0c0ff460 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/model_draw.c (tools/match/match.py)
  */
@@ -869,8 +869,8 @@ void model_volume_link_queue(list_block_ref *dlist, int list, int with_matrix, u
 }
 
 /* 0x0c038ea0  size 0x16  file by match with source
- * confidence: inferred
- * evidence: (u, v): stores the two offsets model_list_compile adds to environment-mapped texture coordinates (elan_matrix_params +0x1c, +0x20); nothing in the image calls it (uncalled code, made a function 2026-11-09); between model_volume_link_queue and env_uv_offset_get, so by link order part of sdk/naomi2_library/model_draw.c
+ * confidence: exercised
+ * evidence: (u, v): stores the two offsets model_list_compile adds to environment-mapped texture coordinates (elan_matrix_params +0x1c, +0x20); nothing in the image calls it (uncalled code, made a function 2026-11-09); between model_volume_link_queue and env_uv_offset_get, so by link order part of sdk/naomi2_library/model_draw.c; exercised 2026-11-12: called by the harness in one sandbox: after env_uv_offset_set(1.5, -2.25) elan_matrix_params +0x1c and +0x20 (0 in the snapshot) read 1.5 and -2.25 and env_uv_offset_get copied out 1.5 and -2.25; after (0.125, 3.0) it copied out 0.125 and 3.0
  * same code as main.bin 0c0ff980 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/model_draw.c (tools/match/match.py)
  */
@@ -882,8 +882,8 @@ void env_uv_offset_set(float u, float v)
 }
 
 /* 0x0c038ec0  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: (u out, v out): reads back the two offsets env_uv_offset_set stores; nothing in the image calls it (uncalled code, made a function 2026-11-09); between env_uv_offset_set and normal_block_scale_set_inverse, so by link order part of sdk/naomi2_library/model_draw.c
+ * confidence: exercised
+ * evidence: (u out, v out): reads back the two offsets env_uv_offset_set stores; nothing in the image calls it (uncalled code, made a function 2026-11-09); between env_uv_offset_set and normal_block_scale_set_inverse, so by link order part of sdk/naomi2_library/model_draw.c; exercised 2026-11-12: called by the harness in one sandbox: after env_uv_offset_set(1.5, -2.25) it wrote 1.5 and -2.25 through its two pointers, and after env_uv_offset_set(0.125, 3.0) it wrote 0.125 and 3.0
  * same code as main.bin 0c0ff9a0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/model_draw.c (tools/match/match.py)
  */
@@ -895,8 +895,8 @@ void env_uv_offset_get(float *u, float *v)
 }
 
 /* 0x0c038ee0  size 0x24  file by match with source
- * confidence: inferred
- * evidence: (x, y, z): stores 1/x, 1/y, 1/z in normal_block_scale; nothing in the image calls it (uncalled code, made a function 2026-11-09); between env_uv_offset_get and normal_block_scale_set, so by link order part of sdk/naomi2_library/model_draw.c
+ * confidence: exercised
+ * evidence: (x, y, z): stores 1/x, 1/y, 1/z in normal_block_scale; nothing in the image calls it (uncalled code, made a function 2026-11-09); between env_uv_offset_get and normal_block_scale_set, so by link order part of sdk/naomi2_library/model_draw.c; exercised 2026-11-12: called by the harness with (2, 4, -0.5): normal_block_scale went from 1, 1, 1 to 0.5, 0.25, -2
  * same code as main.bin 0c0ff9c0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/model_draw.c (tools/match/match.py)
  */

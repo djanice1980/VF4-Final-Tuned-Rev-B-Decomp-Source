@@ -1112,8 +1112,8 @@ void mothead_table_set(uchar **table)
 }
 
 /* 0x0c0936c0  size 0x16  file by match with source
- * confidence: inferred
- * evidence: (slot): returns the slot's 0x14-byte record in the motion slot table mot_slots; Ghidra has no function here (the code follows mothead_table_set's pool); nothing in the image calls it; part of vf4lib/libmotion/src/mot_tools.c
+ * confidence: exercised
+ * evidence: (slot): returns the slot's 0x14-byte record in the motion slot table mot_slots; Ghidra has no function here (the code follows mothead_table_set's pool); nothing in the image calls it; part of vf4lib/libmotion/src/mot_tools.c; exercised 2026-11-12: called by the harness, slot 0 returned 0x0C2A0494 (mot_slots), 2 returned 0x0C2A04BC and 3 returned 0x0C2A04D0, 0x14 bytes a record
  * matched: source/vf4lib/libmotion/src/mot_tools.c (tools/match/match.py)
  */
 int mot_slot_get(int slot)
@@ -1122,8 +1122,8 @@ int mot_slot_get(int slot)
 }
 
 /* 0x0c0936e0  size 0x34  file by match with source
- * confidence: inferred
- * evidence: (id): returns the first of the four slot records of mot_slots whose id range (+0x0C <= id < +0x0E) holds the motion id, or 0; Ghidra has no function here; nothing in the image calls it (mot_bank_base does the same search itself); part of vf4lib/libmotion/src/mot_tools.c
+ * confidence: exercised
+ * evidence: (id): returns the first of the four slot records of mot_slots whose id range (+0x0C <= id < +0x0E) holds the motion id, or 0; Ghidra has no function here; nothing in the image calls it (mot_bank_base does the same search itself); part of vf4lib/libmotion/src/mot_tools.c; exercised 2026-11-12: called by the harness with the ranges the snapshot has (slot 0 1 to 0x406, slots 1 and 2 0x1318 to 0x145B, slot 3 0x164C to 0x167D): 1, 1029 and 0x10001 (as a short 1) returned slot 0 (0x0C2A0494); 0, 1030, 3000, 5757 and -1 returned 0; 5000 returned slot 1 (0x0C2A04A8, the first of the two equal ranges); 5708 returned slot 3 (0x0C2A04D0)
  * matched: source/vf4lib/libmotion/src/mot_tools.c (tools/match/match.py)
  */
 mot_slot_rec * mot_slot_find(int motion)
@@ -2939,8 +2939,8 @@ void rob_base_mtx_update(rob_rec *rob, float time)
 }
 
 /* 0x0c096ae0  size 0x18  file by match with source
- * confidence: inferred
- * evidence: (rob, time, out): rob_base_mtx_eval in mode 1 (the translation into out); callers throw_offset_compute and move_tcmd_22_approach; part of vf4lib/libmotion/src/mot_tools.c
+ * confidence: exercised
+ * evidence: (rob, time, out): rob_base_mtx_eval in mode 1 (the translation into out); callers throw_offset_compute and move_tcmd_22_approach; part of vf4lib/libmotion/src/mot_tools.c; exercised 2026-11-12: called by the harness with fighter 1's record (robs), time 10 and out buf:1: it called rob_base_mtx_eval(robs, buf:1, 1, 10) and out held (0, 0.929688, 0.049988), the three floats a direct rob_base_mtx_eval(robs, buf:2, 1, 10) stored; time 1 gave (0, 0.923748, 0.063451)
  * matched: source/vf4lib/libmotion/src/mot_tools.c (tools/match/match.py)
  */
 void rob_base_pos_get(rob_rec *rob, float time, float *out)

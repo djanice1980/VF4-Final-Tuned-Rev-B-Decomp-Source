@@ -153,8 +153,8 @@ int sprite_record_make_by_pos(int list, int pal_numbers, int n)
 }
 
 /* 0x0c10df20  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (texture list, palette array, n): sprite_record_make for entry n with the index read from the entry's word +0xc; nothing in the image calls it; part of libspr
+ * confidence: exercised
+ * evidence: (texture list, palette array, n): sprite_record_make for entry n with the index read from the entry's word +0xc; nothing in the image calls it; part of libspr; exercised 2026-11-12: called by the harness with a list in a buffer whose entry 1 has the index word -839 (texidx_base 840, so index 1: in use once, slot 32) and no palette array: texidx_map[1]'s use count went from 1 to 2 while index 841 (entry 1 by position) stayed unused; sprite_record_drop_by_hdr_index on the same list and entry put it back to 1
  * matched: source/sdk/libspr/sprite.c (tools/match/match.py)
  */
 void sprite_record_make_by_hdr_index(int list, int pal_numbers, int n)
@@ -181,8 +181,8 @@ uint sprite_records_make_list(int list, int pal_numbers)
 }
 
 /* 0x0c10dfa0  size 0x50  file by match with source
- * confidence: inferred
- * evidence: as sprite_records_make_list with each entry's own index word +0xc; nothing in the image calls it; part of libspr
+ * confidence: exercised
+ * evidence: as sprite_records_make_list with each entry's own index word +0xc; nothing in the image calls it; part of libspr; exercised 2026-11-12: called by the harness with a list in a buffer whose entries 0, 1 have the index words -838, -837 and entry 2 the end marker (texidx_base 840): it returned 0 and the use counts of indexes 2 and 3 went from 1 to 2, while indexes 840 and 841 (the positions) stayed unused
  * matched: source/sdk/libspr/sprite.c (tools/match/match.py)
  */
 uint sprite_records_make_list_by_hdr_index(uchar *list, int pal_numbers)
@@ -198,8 +198,8 @@ uint sprite_records_make_list_by_hdr_index(uchar *list, int pal_numbers)
 }
 
 /* 0x0c10e000  size 0x8c  file by match with source
- * confidence: inferred
- * evidence: (texture list, n, 1 to use the index word +0xc of the header passed, not of entry n): adds texidx_base; when the index is in use rewrites the size and texture words of its sprite record's polygon header from its slot (tex_slot_bits_into_poly_hdr), keeping the record's palette bits (texture word 0x07e00000); returns -1 for an index not in use, else 0; callers sprite_record_tex_bits_refresh_by_pos, sprite_record_tex_bits_refresh_by_hdr_index and the two list loops; part of libspr
+ * confidence: exercised
+ * evidence: (texture list, n, 1 to use the index word +0xc of the header passed, not of entry n): adds texidx_base; when the index is in use rewrites the size and texture words of its sprite record's polygon header from its slot (tex_slot_bits_into_poly_hdr), keeping the record's palette bits (texture word 0x07e00000); returns -1 for an index not in use, else 0; callers sprite_record_tex_bits_refresh_by_pos, sprite_record_tex_bits_refresh_by_hdr_index and the two list loops; part of libspr; exercised 2026-11-12: called by the harness with record 0 (index 0, slot 31: size word 0, texture word 0x08125810) poked to 0x12345678 / 0x0AA00123: (0, -840, 0) returned 0 and left 0x12345640 / 0x0AB25810 (palette bits 0x02A00000 kept); (0, 0, 0) returned -1 (index 840 unused); with a header whose word +0xC is -840, (header, 5, 1) returned 0 and rewrote record 0 the same way, and with +0xC = 0 it returned -1
  * matched: source/sdk/libspr/sprite.c (tools/match/match.py)
  */
 uint sprite_record_tex_bits_refresh(int list, int n, int by_hdr_index)
@@ -239,8 +239,8 @@ uint sprite_record_tex_bits_refresh(int list, int n, int by_hdr_index)
 }
 
 /* 0x0c10e0c0  size 0x48  file by match with source
- * confidence: inferred
- * evidence: (texture list): sprite_record_tex_bits_refresh for every entry up to the end marker (-1 at +4), position indices; returns the ORed results; nothing in the image calls it; part of libspr
+ * confidence: exercised
+ * evidence: (texture list): sprite_record_tex_bits_refresh for every entry up to the end marker (-1 at +4), position indices; returns the ORed results; nothing in the image calls it; part of libspr; exercised 2026-11-12: called by the harness with a three-entry list in a buffer (end marker at entry 3): it returned -1 (positions 0-2 plus texidx_base 840 are unused indexes); with texidx_base poked to 0 it returned 0 and rewrote the size words of records 0, 1, 2 (each poked to 0x12345678: now 0x12345640, 0x1234566B, 0x12345664) and left record 3's
  * matched: source/sdk/libspr/sprite.c (tools/match/match.py)
  */
 uint sprite_records_tex_bits_refresh_list(int list)
@@ -257,8 +257,8 @@ uint sprite_records_tex_bits_refresh_list(int list)
 }
 
 /* 0x0c10e120  size 0x48  file by match with source
- * confidence: inferred
- * evidence: as sprite_records_tex_bits_refresh_list in the own-index mode; it passes the list start each time, so the index read is always the first entry's word +0xc; nothing in the image calls it; part of libspr
+ * confidence: exercised
+ * evidence: as sprite_records_tex_bits_refresh_list in the own-index mode; it passes the list start each time, so the index read is always the first entry's word +0xc; nothing in the image calls it; part of libspr; exercised 2026-11-12: called by the harness with a three-entry list in a buffer whose index words are -840, 0, 0 (texidx_base 840): it returned 0 and rewrote record 0 (0x12345640 / 0x0AB25810 from 0x12345678 / 0x0AA00123), so every pass read the first entry's -840; reading each entry's own word would have met unused index 840 and returned -1
  * matched: source/sdk/libspr/sprite.c (tools/match/match.py)
  */
 uint sprite_records_tex_bits_refresh_list_by_hdr_index(int list)
@@ -277,8 +277,8 @@ uint sprite_records_tex_bits_refresh_list_by_hdr_index(int list)
 }
 
 /* 0x0c10e180  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (texture list, n): sprite_record_tex_bits_refresh with the position index; nothing in the image calls it; part of libspr
+ * confidence: exercised
+ * evidence: (texture list, n): sprite_record_tex_bits_refresh with the position index; nothing in the image calls it; part of libspr; exercised 2026-11-12: called by the harness with record 1 (index 1, slot 32: size word 0x2B, texture word 0x0012B100) poked to 0x12345678 / 0x0AA00123: (list, 0) left it (index 840 unused) and (list, -839) made it 0x1234566B / 0x02B2B100
  * matched: source/sdk/libspr/sprite.c (tools/match/match.py)
  */
 void sprite_record_tex_bits_refresh_by_pos(int list, int n)
@@ -288,8 +288,8 @@ void sprite_record_tex_bits_refresh_by_pos(int list, int n)
 }
 
 /* 0x0c10e1a0  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (texture header, n): sprite_record_tex_bits_refresh with the index read from the header's word +0xc; nothing in the image calls it; part of libspr
+ * confidence: exercised
+ * evidence: (texture header, n): sprite_record_tex_bits_refresh with the index read from the header's word +0xc; nothing in the image calls it; part of libspr; exercised 2026-11-12: called by the harness with record 1 (index 1, slot 32) poked to 0x12345678 / 0x0AA00123: with a header whose word +0xC is 0, (header, -839) left it, and with +0xC = -839, (header, 0) rewrote it to 0x1234566B / 0x02B2B100
  * matched: source/sdk/libspr/sprite.c (tools/match/match.py)
  */
 void sprite_record_tex_bits_refresh_by_hdr_index(int list, int n)
@@ -372,8 +372,8 @@ int sprite_record_drop_by_pos(int list, int pal_numbers, int n)
 }
 
 /* 0x0c10e340  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (texture list, palette array, n): sprite_record_drop with the entry's own index word +0xc; nothing in the image calls it; part of libspr
+ * confidence: exercised
+ * evidence: (texture list, palette array, n): sprite_record_drop with the entry's own index word +0xc; nothing in the image calls it; part of libspr; exercised 2026-11-12: called by the harness after sprite_record_make_by_hdr_index had raised index 1's use count to 2 (list entry 1 with the index word -839, texidx_base 840): (list, 0, 1) put texidx_map[1]'s count back to 1 and index 841 stayed unused
  * matched: source/sdk/libspr/sprite.c (tools/match/match.py)
  */
 void sprite_record_drop_by_hdr_index(int list, int pal_numbers, int n)
@@ -401,8 +401,8 @@ uint sprite_records_drop_list(int list, int pal_numbers)
 }
 
 /* 0x0c10e3c0  size 0x50  file by match with source
- * confidence: inferred
- * evidence: as sprite_records_drop_list with each entry's own index word +0xc; nothing in the image calls it; part of libspr
+ * confidence: exercised
+ * evidence: as sprite_records_drop_list with each entry's own index word +0xc; nothing in the image calls it; part of libspr; exercised 2026-11-12: called by the harness after sprite_records_make_list_by_hdr_index had raised indexes 2 and 3 to 2 uses (list entries with the index words -838, -837, end marker at entry 2): it returned 0 and put both back to 1
  * matched: source/sdk/libspr/sprite.c (tools/match/match.py)
  */
 uint sprite_records_drop_list_by_hdr_index(int list, int pal_numbers)
@@ -431,8 +431,8 @@ void sprite_coord_extent_store(float width, float height)
 }
 
 /* 0x0c10e460  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (width out, height out): copies sprite_coord_extent out; the read-back partner of sprite_coord_extent_store; nothing in the image calls it (uncalled code, made a function 2026-11-09); between sprite_coord_extent_store and sprite_quad_to_list, so by link order part of sdk/libspr/sprite.c
+ * confidence: exercised
+ * evidence: (width out, height out): copies sprite_coord_extent out; the read-back partner of sprite_coord_extent_store; nothing in the image calls it (uncalled code, made a function 2026-11-09); between sprite_coord_extent_store and sprite_quad_to_list, so by link order part of sdk/libspr/sprite.c; exercised 2026-11-12: called by the harness in one sandbox it copied out the snapshot's 640.0, 480.0, and after sprite_coord_extent was poked to 320.0, 240.0 it wrote 320.0 and 240.0 through the two pointers
  * matched: source/sdk/libspr/sprite.c (tools/match/match.py)
  */
 void sprite_coord_extent_get(float *width, float *height)
@@ -628,9 +628,9 @@ uint sprite_quad_to_list(sprite_quad_args *args)
 }
 
 /* 0x0c10e940  size 0x136  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x148
- * evidence: r0 holds the old value at every exit (batch 547); no matched file calls it; header pass 4: with this prototype every matched file still matches (trial 5951/5951)
+ * evidence: r0 holds the old value at every exit (batch 547); no matched file calls it; header pass 4: with this prototype every matched file still matches (trial 5951/5951); exercised 2026-11-12: called by the harness with pal_raw_mode poked to 1 and record 0's texture word poked to 0x29601234 (kind 5, palette 0x0B): (-840, 0x22) returned 0x0B and left 0x2C401234, then (-840, 7) returned 0x22 and left 0x28E01234; the group path was not tried (obj_palette_table is 0 in the snapshot)
  * matched: source/sdk/libspr/sprite.c (tools/match/match.py)
  */
 int sprite_record_pal_group_replace(int index, int pal_no)
@@ -749,8 +749,8 @@ void sprite_corners_from_anchor(sprite_quad_args *args, float *xs, float *ys, fl
 }
 
 /* 0x0c10eb80  size 0x80  file by match with source
- * confidence: inferred
- * evidence: (a, r, g, b in 0..1): packs four floats into an ARGB8888 word, each times 255 converted to an integer (__fixunssfsi) and clamped to 255; only caller sprite_quad_to_list (the fade color and white); part of libspr
+ * confidence: exercised
+ * evidence: (a, r, g, b in 0..1): packs four floats into an ARGB8888 word, each times 255 converted to an integer (__fixunssfsi) and clamped to 255; only caller sprite_quad_to_list (the fade color and white); part of libspr; exercised 2026-11-12: called by the harness with (0.5, 1.0, 0.25, 2.0) it returned 0x7FFF3FFF and with (1.0, 0.0, 0.5, 0.1) 0xFF007F19: alpha in the top byte, each value times 255 truncated, 2.0 clamped to 255
  * matched: source/sdk/libspr/sprite.c (tools/match/match.py)
  */
 uint argb_pack_unit_floats(float alpha, float red, float green, float blue)

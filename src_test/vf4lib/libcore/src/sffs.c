@@ -198,8 +198,8 @@ void dimm_dma_wait_ack(void)
 }
 
 /* 0x0c02a1a0  size 0xa0  file by match with source
- * confidence: inferred
- * evidence: with interrupts masked: when dimm_dma_active is set, stops the G1 DMA (0xA05F7414 = 0), waits up to 99 times for it to stop (trapa #0x50 if it never does), acknowledges, steps the current queue entry back by its last chunk and clears dimm_dma_active and dimm_dma_started; nothing in the image calls it; part of vf4lib/libcore/src/sffs.c
+ * confidence: exercised
+ * evidence: with interrupts masked: when dimm_dma_active is set, stops the G1 DMA (0xA05F7414 = 0), waits up to 99 times for it to stop (trapa #0x50 if it never does), acknowledges, steps the current queue entry back by its last chunk and clears dimm_dma_active and dimm_dma_started; nothing in the image calls it; part of vf4lib/libcore/src/sffs.c; exercised 2026-11-12: called by the harness: with dimm_dma_active 0 it changed nothing and wrote no register; with dimm_dma_active 1 it wrote 0 to 0xA05F7414 and 0x4000 to 0xA05F700C, stepped queue entry 0 (dst 0x2000, offset 0x1000, remaining 0x300, chunk 0x100) to 0x1f00, 0xf00, 0x400 and cleared dimm_dma_active and dimm_dma_started; with dimm_dma_cur 3 entry 3 (0x8000, 0x9000, 0x40, chunk 0x20) became 0x7fe0, 0x8fe0, 0x60
  * same code as main.bin 0c0f2960 (ghidra/TransferFromMain.java)
  * matched: source/vf4lib/libcore/src/sffs.c (tools/match/match.py)
  */
@@ -858,8 +858,8 @@ int dimm_fread_dma(void *dst, uint size, uint n, dimm_file *fp)
 }
 
 /* 0x0c02b140  size 0x30  file by match with source
- * confidence: inferred
- * evidence: (fp): the position from the file's start (pos - start); -1 for a closed handle or a position outside start..end; nothing in the image calls it (uncalled code, made a function 2026-11-09); between dimm_fseek and dimm_fcheck, so by link order part of vf4lib/libcore/src/sffs.c
+ * confidence: exercised
+ * evidence: (fp): the position from the file's start (pos - start); -1 for a closed handle or a position outside start..end; nothing in the image calls it (uncalled code, made a function 2026-11-09); between dimm_fseek and dimm_fcheck, so by link order part of vf4lib/libcore/src/sffs.c; exercised 2026-11-12: called by the harness on the first file handle: closed it returned -1; after dimm_fopen("spr_logo.bin", "rb") 0; after dimm_fseek to 0x123 0x123, to end - 4 0x6fffc, 0x10 past that (outside the file) -1, to the end 0x70000; after dimm_fclose -1
  * same code as main.bin 0c0f3900 (ghidra/TransferFromMain.java)
  * matched: source/vf4lib/libcore/src/sffs.c (tools/match/match.py)
  */

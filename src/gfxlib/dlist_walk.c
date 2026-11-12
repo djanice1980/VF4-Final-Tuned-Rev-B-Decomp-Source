@@ -133,9 +133,9 @@ void dlist_xform_in_place(uint *list)
 }
 
 /* 0x0c12c3a0  size 0xca  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x14c
- * evidence: ({address, length}, mask): walks a display list as dlist_xform_in_place does; for each vertex block ANDs its words 2 and 4 with the mask, zeroes words 3 and 5 and skips its vertices by the format (4 words for bits 1, 2, 8, 9, 2 for bits 3, 4, 6, 7, but 1 for bit 5, where verts_xform_in_place skips 2); caller model_parts_hdr_and_mask; part of the unidentified game-built graphics library (display list walker object, 0x0C12C0C0-0x0C12C4FF, not linked into the test program)
+ * evidence: ({address, length}, mask): walks a display list as dlist_xform_in_place does; for each vertex block ANDs its words 2 and 4 with the mask, zeroes words 3 and 5 and skips its vertices by the format (4 words for bits 1, 2, 8, 9, 2 for bits 3, 4, 6, 7, but 1 for bit 5, where verts_xform_in_place skips 2); caller model_parts_hdr_and_mask; part of the unidentified game-built graphics library (display list walker object, 0x0C12C0C0-0x0C12C4FF, not linked into the test program); exercised 2026-11-12: called by the harness with mask 0x00ff00ff on a list in scratch memory (type 0, type 5, a vertex block of format 0xa with 2 vertices, type 1, a block of format 0x20 with 3, a block of format 2 with 1, type 8, then a block): words 2/4 of the three blocks were ANDed and 3/5 zeroed, the commands' words and the block after type 8 untouched; with length 184 only the first block changed
  * matched: source/gfxlib/dlist_walk.c (tools/match/match.py)
  */
 void dlist_hdr_and_mask(uint *list, uint mask)

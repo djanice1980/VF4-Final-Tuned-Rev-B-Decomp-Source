@@ -172,8 +172,8 @@ int hblank_irq(int regs)
 }
 
 /* 0x0c072de0  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: (chip register base): acknowledges the YUV conversion end status bit (0x40) and raises pending callback bit 6 (state +0x2A8); returns 0; reached only from pvr_irq_service's jump-table cases; part of KamuiTL
+ * confidence: exercised
+ * evidence: (chip register base): acknowledges the YUV conversion end status bit (0x40) and raises pending callback bit 6 (state +0x2A8); returns 0; reached only from pvr_irq_service's jump-table cases; part of KamuiTL; exercised 2026-11-12: called by the harness with a zeroed buffer as the register base and the pending callbacks (gfx_state +0x2A8) 5: it wrote 0x40 at +0x900 (nothing else), left the word 0x45 and returned 0
  * same code as main.bin 0c148da0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/pvr_irq.c (tools/match/match.py)
  */
@@ -628,8 +628,8 @@ int ta_area_split_shift(int grow_objlist)
 }
 
 /* 0x0c073c60  size 0x48  file by match with source
- * confidence: inferred
- * evidence: (chip register base): acknowledges error status bit 2 (0x...6908 = 4, ISP/TSP parameter overflow), counts it, marks the current slot -3 and, with automatic resizing on (state +0x4E8), grows the parameter area (ta_area_split_shift(0)); returns 0; caller pvr_irq_service; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (chip register base): acknowledges error status bit 2 (0x...6908 = 4, ISP/TSP parameter overflow), counts it, marks the current slot -3 and, with automatic resizing on (state +0x4E8), grows the parameter area (ta_area_split_shift(0)); returns 0; caller pvr_irq_service; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with a zeroed buffer as the register base: it wrote 4 at +0x908, counted render_stats.param_overflows from 0 to 1, set slot_states[2] (ta_slot 2) to -3 and, with +0x4E8 1 as the snapshot has it, called ta_area_split_shift(0); with +0x4E8 poked to 0 it did the rest but not that call
  * same code as main.bin 0c149c20 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/pvr_irq.c (tools/match/match.py)
  */
@@ -646,8 +646,8 @@ int param_overflow_irq(int regs)
 }
 
 /* 0x0c073cc0  size 0x34  file by match with source
- * confidence: inferred
- * evidence: (chip register base): acknowledges error status bit 3 (0x...6908 = 8, object list pointer overflow), counts it and, with automatic resizing on, grows the object list area (ta_area_split_shift(1)); returns 0; caller pvr_irq_service; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (chip register base): acknowledges error status bit 3 (0x...6908 = 8, object list pointer overflow), counts it and, with automatic resizing on, grows the object list area (ta_area_split_shift(1)); returns 0; caller pvr_irq_service; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with a scratch buffer 0x0F002000 as the register base it stored 8 at 0x0F002908 (base + 0x908, the error status word), raised render_stats+0x1c (the overflow count) from 0 to 1 and, with the resizing flag gfx_state+0x4e8 at 1 as the snapshot has it, called ta_area_split_shift(1); returned 0
  * same code as main.bin 0c149c80 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/pvr_irq.c (tools/match/match.py)
  */
@@ -663,8 +663,8 @@ int objlist_overflow_irq(int regs)
 }
 
 /* 0x0c073d20  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: (chip register base): acknowledges error status bit 4 (0x...6908 = 0x10, illegal TA input) and calls elan_pvr_reset_drop_frame; returns 0; caller pvr_irq_service; part of KamuiTL
+ * confidence: exercised
+ * evidence: (chip register base): acknowledges error status bit 4 (0x...6908 = 0x10, illegal TA input) and calls elan_pvr_reset_drop_frame; returns 0; caller pvr_irq_service; part of KamuiTL; exercised 2026-11-12: called by the harness with a scratch buffer 0x0F002000 as the register base it stored 0x10 at 0x0F002908 (base + 0x908), called elan_pvr_reset_drop_frame() and returned 0
  * same code as main.bin 0c149ce0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/pvr_irq.c (tools/match/match.py)
  */
@@ -676,8 +676,8 @@ int ta_bad_input_irq(int regs)
 }
 
 /* 0x0c073d60  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (chip register base): acknowledges error status bit 0 (0x...6908 = 1, ISP out of cache) and returns 0, nothing else; reached only from pvr_irq_service's jump-table cases; part of KamuiTL
+ * confidence: exercised
+ * evidence: (chip register base): acknowledges error status bit 0 (0x...6908 = 1, ISP out of cache) and returns 0, nothing else; reached only from pvr_irq_service's jump-table cases; part of KamuiTL; exercised 2026-11-12: called by the harness with scratch buffers as the register base it stored 1 at base + 0x908 (0x0F002908 for base 0x0F002000, 0x0F004A08 for 0x0F004100), made no other store, called nothing and returned 0
  * same code as main.bin 0c149d20 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/pvr_irq.c (tools/match/match.py)
  */
@@ -688,8 +688,8 @@ int isp_cache_irq_ack(int regs)
 }
 
 /* 0x0c073d80  size 0x2c  file by match with source
- * confidence: inferred
- * evidence: (chip register base): acknowledges error status bit 1 (0x...6908 = 2, strip buffer hazard); unless a render has just been started (render_just_started) raises pending callback bit 4; clears render_just_started; returns 0; reached only from pvr_irq_service's jump-table cases; part of KamuiTL
+ * confidence: exercised
+ * evidence: (chip register base): acknowledges error status bit 1 (0x...6908 = 2, strip buffer hazard); unless a render has just been started (render_just_started) raises pending callback bit 4; clears render_just_started; returns 0; reached only from pvr_irq_service's jump-table cases; part of KamuiTL; exercised 2026-11-12: called by the harness with a scratch buffer 0x0F002000 as the register base: with render_just_started 1 (snapshot) it stored 2 at 0x0F002908, cleared render_just_started and left gfx_state.pending_events alone; with render_just_started poked 0 it stored 2 there and set bit 4 of pending_events (gfx_state+0x2a8, 0 to 0x10); returned 0 both times
  * same code as main.bin 0c149d40 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/pvr_irq.c (tools/match/match.py)
  */

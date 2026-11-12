@@ -65,8 +65,8 @@ uint model_part0_call_write_at(uint addr, compiled_model_rec *model)
 }
 
 /* 0x0c129980  size 0x66  file by match with source
- * confidence: inferred
- * evidence: (list mask, 8 words): copies the eight words into the ELAN command buffer, leaves 32 more bytes, and queues the 64-byte block on list 0 when bit 0 is set and on list 2 when bit 2 is set (elan_list_block_queue); moves elan_cmd_write_ptr on; nothing in the image calls it; part of the unidentified game-built graphics library (screen primitive object, 0x0C1298C0-0x0C12A11F)
+ * confidence: exercised
+ * evidence: (list mask, 8 words): copies the eight words into the ELAN command buffer, leaves 32 more bytes, and queues the 64-byte block on list 0 when bit 0 is set and on list 2 when bit 2 is set (elan_list_block_queue); moves elan_cmd_write_ptr on; nothing in the image calls it; part of the unidentified game-built graphics library (screen primitive object, 0x0C1298C0-0x0C12A11F); exercised 2026-11-12: called by the harness in one sandbox with eight words 0x1001-0x1008 and masks 1, 4, 5, 2: each call copied the words to the next 64-byte block (0xaa100000, +0x40, +0x80, +0xc0; pointer ending 0xaa100100); mask 1 queued on list 0, 4 on list 2, 5 on lists 0 and 2, 2 on none
  * matched: source/gfxlib/screen_prims.c (tools/match/match.py)
  */
 void raw_block_queue_lists_0_2(uint list_mask, uint *words)
@@ -87,8 +87,8 @@ void raw_block_queue_lists_0_2(uint list_mask, uint *words)
 }
 
 /* 0x0c129a00  size 0xae  file by match with source
- * confidence: inferred
- * evidence: (list, x, y, width, height, color, two header words, z): writes a screen-space rectangle as a tile accelerator strip into the command buffer (header 0x80000002 with the two words, four vertices 0xe0000002 / 0xf0000002 at the corners with depth z and the color) and queues it on the list (elan_list_block_queue); nothing in the image calls it; part of the unidentified game-built graphics library (screen primitive object, 0x0C1298C0-0x0C12A11F)
+ * confidence: exercised
+ * evidence: (list, x, y, width, height, color, two header words, z): writes a screen-space rectangle as a tile accelerator strip into the command buffer (header 0x80000002 with the two words, four vertices 0xe0000002 / 0xf0000002 at the corners with depth z and the color) and queues it on the list (elan_list_block_queue); nothing in the image calls it; part of the unidentified game-built graphics library (screen primitive object, 0x0C1298C0-0x0C12A11F); exercised 2026-11-12: called by the harness with (2, 100, 50, 200, 80, 0xff102030, 0x11111111, 0x22222222, 0.5): header 80000002 11111111 22222222, vertices e0000002 at (100,50), (300,50), (100,130) and f0000002 at (300,130), z 0.5 and the color in each, queued on list 2; (0, -10, 20, 30, 40, ..., 8.0) gave corners (-10,20) (20,20) (-10,60) (20,60), z 8, on list 0
  * matched: source/gfxlib/screen_prims.c (tools/match/match.py)
  */
 void screen_rect_flat_queue(int list, int x, int y, int width, int height, uint color, uint hdr_word1, uint hdr_word2, float z)
@@ -143,8 +143,8 @@ void screen_rect_flat_queue(int list, int x, int y, int width, int height, uint 
 }
 
 /* 0x0c129ae0  size 0x96  file by match with source
- * confidence: inferred
- * evidence: (list, x, y, width, height, color, two header words, z): writes a screen-space sprite (header 0xa0000000 with the two words and the color, one 0xf0000000 vertex block with three corners and the x, y of the fourth) into the command buffer and queues it on the list (elan_list_block_queue); nothing in the image calls it; part of the unidentified game-built graphics library (screen primitive object, 0x0C1298C0-0x0C12A11F)
+ * confidence: exercised
+ * evidence: (list, x, y, width, height, color, two header words, z): writes a screen-space sprite (header 0xa0000000 with the two words and the color, one 0xf0000000 vertex block with three corners and the x, y of the fourth) into the command buffer and queues it on the list (elan_list_block_queue); nothing in the image calls it; part of the unidentified game-built graphics library (screen primitive object, 0x0C1298C0-0x0C12A11F); exercised 2026-11-12: called by the harness with (4, 100, 50, 200, 80, 0xff102030, 0x11111111, 0x22222222, 0.5): header a0000000 11111111 22222222 0 ff102030, then f0000000 with (100,50,0.5) (300,50,0.5) (300,130,0.5) and x, y 100, 130, queued on list 4 (pointer +0x80); (1, -10, 20, 30, 40, ..., 8.0) gave corners (-10,20) (20,20) (20,60) (-10,60) on list 1
  * matched: source/gfxlib/screen_prims.c (tools/match/match.py)
  */
 void screen_sprite_flat_queue(int list, int x, int y, int width, int height, uint color, uint hdr_word1, uint hdr_word2, float z)
@@ -183,8 +183,8 @@ void screen_sprite_flat_queue(int list, int x, int y, int width, int height, uin
 }
 
 /* 0x0c129ba0  size 0x120  file by match with source
- * confidence: inferred
- * evidence: (list, texture index, x, y, width, height, two colors, header word, texture bits, z): as screen_sprite_flat_queue with header 0xa0000009, the texture slot's words (+0x30 ORed into the texture bits, +0x34, texidx_slot_get) and packed 16-bit u, v for the corners (0, 0), (1, 0), (1, 1); nothing in the image calls it; part of the unidentified game-built graphics library (screen primitive object, 0x0C1298C0-0x0C12A11F)
+ * confidence: exercised
+ * evidence: (list, texture index, x, y, width, height, two colors, header word, texture bits, z): as screen_sprite_flat_queue with header 0xa0000009, the texture slot's words (+0x30 ORed into the texture bits, +0x34, texidx_slot_get) and packed 16-bit u, v for the corners (0, 0), (1, 0), (1, 1); nothing in the image calls it; part of the unidentified game-built graphics library (screen primitive object, 0x0C1298C0-0x0C12A11F); exercised 2026-11-12: called by the harness with (2, index 0, 100, 50, 200, 80, 0xff102030, 0xff010203, 0x11111111, 0x00a00000, 0.5): header a0000009 11111111 00a00000 08125810 (slot 0x1f: size bits 0, word +0x34 0x08125810) ff102030 ff010203, the sprite corners and u, v words 0, 0x3f800000, 0x3f803f80, on list 2; with index 1 and bits 0x40 the third word was 0x6b (0x40 | 0x2b) and the fourth 0x0012b100, on list 0
  * matched: source/gfxlib/screen_prims.c (tools/match/match.py)
  */
 void screen_sprite_textured_queue(int list, int tex_index, int x, int y, int width, int height, uint color, uint offset_color, uint hdr_word, uint tex_bits, float z)
@@ -314,8 +314,8 @@ void screen_map_cmds_queue(float scale_x, float scale_y, float center_x, float c
 }
 
 /* 0x0c129f00  size 0x1c4  file by match with source
- * confidence: inferred
- * evidence: (list, texture index, x, y, width, height, z, color, offset color, header bits, header word): queues an identity matrix on the list (mtx_push, mtx_load_identity, matrix_cmds_queue_on_lists, mtx_pop), then writes into the command buffer a 0x08000500 block, a 0x88000708 textured header with the slot's words (texidx_slot_get) and four vertices whose x and y are the screen corners taken back through scr_half_width / scr_half_height and the x and y factors times z, with u, v 0 or 1, followed by a 0x08000800 command that calls that block, and queues the command (elan_list_block_queue); stores the block's length in a local that is never read; nothing in the image calls it; part of the unidentified game-built graphics library (screen primitive object, 0x0C1298C0-0x0C12A11F)
+ * confidence: exercised
+ * evidence: (list, texture index, x, y, width, height, z, color, offset color, header bits, header word): queues an identity matrix on the list (mtx_push, mtx_load_identity, matrix_cmds_queue_on_lists, mtx_pop), then writes into the command buffer a 0x08000500 block, a 0x88000708 textured header with the slot's words (texidx_slot_get) and four vertices whose x and y are the screen corners taken back through scr_half_width / scr_half_height and the x and y factors times z, with u, v 0 or 1, followed by a 0x08000800 command that calls that block (0x18000000 | the header bits, then the header word), and queues the command (elan_list_block_queue); stores the block's length in a local that is never read; nothing in the image calls it; part of the unidentified game-built graphics library (screen primitive object, 0x0C1298C0-0x0C12A11F); exercised 2026-11-12: called by the harness after screen_unproject_consts_set(640, 480) with (2, 0, 384, 300, 128, 60, 2.0, 0xff102030, 0xff010203, 0x300, 0x55555555): mtx_push, mtx_load_identity, matrix_cmds_queue_on_lists(4), mtx_pop; at 0xaa1000c0 08000500, 88000708 with texture word 0x08125810, four vertices x -0.2209/-0.6627, y 0.2071/0.4142 (64/192 and 60/120 pixels from the center times 2 x the factors), z 2, u, v 0 or 1; then 08000800 18000300 55555555 0 801000c0 1 c0 0 queued on list 2
  * matched: source/gfxlib/screen_prims.c (tools/match/match.py)
  */
 void screen_quad_tex_elan_queue(uint list_in, int tex_in, int x_in, int y_in, int width, int height, float z_in, uint color_in, uint offset_color, uint hdr_bits, uint hdr_word)

@@ -36,8 +36,8 @@ void lights_elan_state_init(void)
 }
 
 /* 0x0c039fe0  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (light, value): stores word +0 of the light's lights_elan_modes record, which elan_light_pack_directional puts into bits 5-7 of its word 6; nothing in the image calls it (uncalled code, made a function 2026-11-09); between lights_elan_state_init and light_elan_mode_b_set, so by link order part of sdk/naomi2_library/elan_lights.c
+ * confidence: exercised
+ * evidence: (light, value): stores word +0 of the light's lights_elan_modes record, which elan_light_pack_directional puts into bits 5-7 of its word 6; nothing in the image calls it (uncalled code, made a function 2026-11-09); between lights_elan_state_init and light_elan_mode_b_set, so by link order part of sdk/naomi2_library/elan_lights.c; exercised 2026-11-12: called by the harness: (3, 0x55) set lights_elan_modes +0x30 to 0x55 (light 3's +4 and +8 untouched); after (0, 3) lights_elan_block_queue passed mode 3 to elan_light_pack_directional and the packed light's word 6 had 3 in bits 5-7
  * same code as main.bin 0c101d80 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/elan_lights.c (tools/match/match.py)
  */
@@ -48,8 +48,8 @@ void light_elan_mode_a_set(int light, uint value)
 }
 
 /* 0x0c03a000  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (light, value): stores word +4 of the light's lights_elan_modes record (bits 28-29 of the packed light's word 5); nothing in the image calls it (uncalled code, made a function 2026-11-09); between light_elan_mode_a_set and light_elan_mode_c_set, so by link order part of sdk/naomi2_library/elan_lights.c
+ * confidence: exercised
+ * evidence: (light, value): stores word +4 of the light's lights_elan_modes record (bits 28-29 of the packed light's word 5); nothing in the image calls it (uncalled code, made a function 2026-11-09); between light_elan_mode_a_set and light_elan_mode_c_set, so by link order part of sdk/naomi2_library/elan_lights.c; exercised 2026-11-12: called by the harness: (3, 2) set lights_elan_modes +0x34 to 2; after (0, 1) the directional light lights_elan_block_queue packed had 1 in bits 28-29 of its word 5
  * same code as main.bin 0c101da0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/elan_lights.c (tools/match/match.py)
  */
@@ -60,8 +60,8 @@ void light_elan_mode_b_set(int light, uint value)
 }
 
 /* 0x0c03a020  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (light, value): stores word +8 of the light's lights_elan_modes record (bits 24-27 of the packed light's word 5); nothing in the image calls it (uncalled code, made a function 2026-11-09); between light_elan_mode_b_set and light_elan_flags_set, so by link order part of sdk/naomi2_library/elan_lights.c
+ * confidence: exercised
+ * evidence: (light, value): stores word +8 of the light's lights_elan_modes record (bits 24-27 of the packed light's word 5); nothing in the image calls it (uncalled code, made a function 2026-11-09); between light_elan_mode_b_set and light_elan_flags_set, so by link order part of sdk/naomi2_library/elan_lights.c; exercised 2026-11-12: called by the harness: (5, 9) set lights_elan_modes +0x58 to 9 (default 1); after (0, 2) the directional light lights_elan_block_queue packed had 2 in bits 24-27 of its word 5
  * same code as main.bin 0c101dc0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/elan_lights.c (tools/match/match.py)
  */
@@ -72,8 +72,8 @@ void light_elan_mode_c_set(int light, uint value)
 }
 
 /* 0x0c03a100  size 0x16  file by match with source
- * confidence: inferred
- * evidence: (value): lights_elan_last_flag = value != 0, the bit 20 lights_elan_block_queue ORs into each light command's last word; nothing in the image calls it (uncalled code, made a function 2026-11-09); between light_elan_flags_set and lights_elan_alt_color_on_set, so by link order part of sdk/naomi2_library/elan_lights.c
+ * confidence: exercised
+ * evidence: (value): lights_elan_last_flag = value != 0, the bit 20 lights_elan_block_queue ORs into each light command's last word; nothing in the image calls it (uncalled code, made a function 2026-11-09); between light_elan_flags_set and lights_elan_alt_color_on_set, so by link order part of sdk/naomi2_library/elan_lights.c; exercised 2026-11-12: called by the harness: (5) set the byte lights_elan_last_flag to 1, (0) to 0, (-3) to 1; with the flag at 1 lights_elan_block_queue packed its directional light with bit 20 set (0x08100436), at 0 without (0x08000436)
  * same code as main.bin 0c101ea0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/elan_lights.c (tools/match/match.py)
  */
@@ -89,8 +89,8 @@ void lights_elan_last_flag_set(int value)
 }
 
 /* 0x0c03a140  size 0x32  file by match with source
- * confidence: inferred
- * evidence: (r, g, b floats): packs them x 255 into the RGB bytes of lights_elan_alt_color; nothing in the image calls it (uncalled code, made a function 2026-11-09); between lights_elan_alt_color_on_set and spot_falloff_from_cosines, so by link order part of sdk/naomi2_library/elan_lights.c
+ * confidence: exercised
+ * evidence: (r, g, b floats): packs them x 255 into the RGB bytes of lights_elan_alt_color; nothing in the image calls it (uncalled code, made a function 2026-11-09); between lights_elan_alt_color_on_set and spot_falloff_from_cosines, so by link order part of sdk/naomi2_library/elan_lights.c; exercised 2026-11-12: called by the harness: (1.0, 0.5, 0.25) set lights_elan_alt_color to 0x00FF7F3F and (0.2, 0.0, 1.0) to 0x003300FF
  * same code as main.bin 0c101ee0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/elan_lights.c (tools/match/match.py)
  */
@@ -101,8 +101,8 @@ void lights_elan_alt_color_set(float r, float g, float b)
 }
 
 /* 0x0c03a180  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: (cos a, cos b floats): k = 1 / (cos a - cos b) and -cos b x k, returned as the upper 16 bits of each float packed in one word (k high); spot_falloff_from_angles turns two angles into cosines and does the same; nothing in the image calls it (uncalled code, made a function 2026-11-09); between lights_elan_alt_color_set and spot_falloff_from_angles, so by link order part of sdk/naomi2_library/elan_lights.c
+ * confidence: exercised
+ * evidence: (cos a, cos b floats): k = 1 / (cos a - cos b) and -cos b x k, returned as the upper 16 bits of each float packed in one word (k high); spot_falloff_from_angles turns two angles into cosines and does the same; nothing in the image calls it (uncalled code, made a function 2026-11-09); between lights_elan_alt_color_set and spot_falloff_from_angles, so by link order part of sdk/naomi2_library/elan_lights.c; exercised 2026-11-12: called by the harness: (0.9, 0.5) returned 0x4020BFA0 (2.5 and -1.25 as upper halves) and (0.75, 0.25) returned 0x4000BF00 (2.0 and -0.5)
  * same code as main.bin 0c101f20 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/elan_lights.c (tools/match/match.py)
  */
@@ -119,8 +119,8 @@ uint spot_falloff_from_cosines(float cos_inner, float cos_outer)
 }
 
 /* 0x0c03a1c0  size 0x52  file by match with source
- * confidence: inferred
- * evidence: as the uncalled routine spot_falloff_from_cosines with two 16-bit angles (0x10000 a turn) turned into cosines by fsca_cos16 first: the cone fall-off pair 1 / (cos a - cos b) and -cos b / (cos a - cos b) as two truncated 16-bit floats in one word; nothing in the image calls it; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: as the uncalled routine spot_falloff_from_cosines with two 16-bit angles (0x10000 a turn) turned into cosines by fsca_cos16 first: the cone fall-off pair 1 / (cos a - cos b) and -cos b / (cos a - cos b) as two truncated 16-bit floats in one word; nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness: (0x1555, 0x2000), 30 and 45 degrees, returned 0x40C9C08E (6.29 and -4.45 as upper halves), and (0, 0x2AAA) returned 0x4000BF80 (2.0 and -1.0); fsca_cos16 was called with each angle
  * same code as main.bin 0c101f60 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/elan_lights.c (tools/match/match.py)
  */
@@ -140,8 +140,8 @@ uint spot_falloff_from_angles(int inner_angle, int outer_angle)
 }
 
 /* 0x0c03a220  size 0xa8  file by match with source
- * confidence: inferred
- * evidence: writes through the store queue at elan_cmd_write_ptr a 32-byte ELAN 0x08000800 command (0x18000000, 0, 0, (pair[0] & 0x1fffff8) | 0x80000000, 1, pair[1], 0) and an end block (four 0x08000000 words), steps list_end_block_count, advances elan_cmd_write_ptr and queues the block for the list (elan_list_block_queue); nothing in the image calls it; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: writes through the store queue at elan_cmd_write_ptr a 32-byte ELAN 0x08000800 command (0x18000000, 0, 0, (pair[0] & 0x1fffff8) | 0x80000000, 1, pair[1], 0) and an end block (four 0x08000000 words), steps list_end_block_count, advances elan_cmd_write_ptr and queues the block for the list (elan_list_block_queue); nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness with list 3 and the pair {0x0C654321, 0x80}, elan_cmd_write_ptr 0xAA100000 and list_end_block_count 2 (snapshot): it wrote 0x08000800, 0x18000000, 0, 0, 0x80654320, 1, 0x80, 0 and an end block of 0x08000000 words, left elan_cmd_write_ptr 0xAA100040 and the count 0, and called elan_list_block_queue(3, block)
  * same code as main.bin 0c101fc0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/elan_lights.c (tools/match/match.py)
  */
@@ -352,8 +352,8 @@ void lights_elan_block_queue(int list, uint select)
 }
 
 /* 0x0c03a840  size 0x44  file by match with source
- * confidence: inferred
- * evidence: lights_elan_block_queue with every light selected (0xffff) for lists 0, 2 and 4 when their bits are set in elan_list_enable_mask; nothing in the image calls it; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: lights_elan_block_queue with every light selected (0xffff) for lists 0, 2 and 4 when their bits are set in elan_list_enable_mask; nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness: with elan_list_enable_mask 0x1F (snapshot) it called lights_elan_block_queue(0, 0xFFFF), (2, 0xFFFF), (4, 0xFFFF); with it poked to 5 only lists 0 and 2
  * same code as main.bin 0c1025e0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/elan_lights.c (tools/match/match.py)
  */
@@ -372,8 +372,8 @@ void lights_elan_send_all(void)
 }
 
 /* 0x0c03a8a0  size 0x4a  file by match with source
- * confidence: inferred
- * evidence: lights_elan_block_queue with the given light selection for lists 0, 2 and 4 when enabled in elan_list_enable_mask; nothing in the image calls it; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: lights_elan_block_queue with the given light selection for lists 0, 2 and 4 when enabled in elan_list_enable_mask; nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness: with elan_list_enable_mask poked 0x14, (0xF3) called lights_elan_block_queue(2, 0xF3) and (4, 0xF3), which packed lights 0 and 1 but not 2; with it 0x11, (2) called (0, 2) and (4, 2), packing light 1 only
  * same code as main.bin 0c102640 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/elan_lights.c (tools/match/match.py)
  */
@@ -477,8 +477,8 @@ void light_single_elan_block_queue(int list)
 }
 
 /* 0x0c03aba0  size 0x3e  file by match with source
- * confidence: inferred
- * evidence: light_single_elan_block_queue for lists 0, 2 and 4 when enabled in elan_list_enable_mask; nothing in the image calls it; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: light_single_elan_block_queue for lists 0, 2 and 4 when enabled in elan_list_enable_mask; nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness: with elan_list_enable_mask poked 0x14 it called light_single_elan_block_queue(2) and (4); with it 1, only (0)
  * same code as main.bin 0c102940 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/elan_lights.c (tools/match/match.py)
  */

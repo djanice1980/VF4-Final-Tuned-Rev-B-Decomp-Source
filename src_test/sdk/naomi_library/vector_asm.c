@@ -55,8 +55,8 @@ float vec3_distance(float *param_1,float *param_2);
 void vec3_cross(float *param_1,float *param_2,float *param_3);
 
 /* 0x0c059110  size 0x32  file by match with source
- * confidence: inferred
- * evidence: hand-written: (a, b): the length of the cross product a x b, in fr0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between vec3_cross and vec3_set_length, so by link order part of sdk/naomi_library/vector_asm.c
+ * confidence: exercised
+ * evidence: hand-written: (a, b): the length of the cross product a x b, in fr0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between vec3_cross and vec3_set_length, so by link order part of sdk/naomi_library/vector_asm.c; exercised 2026-11-12: called by the harness with (1,0,0) and (0,2,0) it returned 2, with (1,2,3) and (4,5,6) 7.348469 (the length of (-3, 6, -3), the root of 54), and with (1,2,3) and (2,4,6) 0
  * same code as main.bin 0c12d950 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c12d950.s (hand-written assembly, tools/match/match.py)
  */
@@ -87,8 +87,8 @@ void vec3_scale(float *out, float *in, float s);
 float vec3_length(float *param_1);
 
 /* 0x0c0591b0  size 0xe  file by match with source
- * confidence: inferred
- * evidence: hand-written: (vector): x x + y y + z z, in fr0; vec3_length before it takes the root; nothing in the image calls it (uncalled code, made a function 2026-11-09); between vec3_length and vec3_sub_from, so by link order part of sdk/naomi_library/vector_asm.c
+ * confidence: exercised
+ * evidence: hand-written: (vector): x x + y y + z z, in fr0; vec3_length before it takes the root; nothing in the image calls it (uncalled code, made a function 2026-11-09); between vec3_length and vec3_sub_from, so by link order part of sdk/naomi_library/vector_asm.c; exercised 2026-11-12: called by the harness with (1, 2, 3) it returned 14 and with (3, -4, 12) 169
  * same code as main.bin 0c12d9f0 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c12d9f0.s (hand-written assembly, tools/match/match.py)
  */

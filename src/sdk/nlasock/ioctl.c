@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c122140  size 0x34  file by match with source
- * confidence: inferred
- * evidence: (socket, command, argument word, slot record): writes a 0x20-byte request {operation, socket, command, DIMM address of the argument, 0...} by PIO; caller sock_ioctl; part of NLASOCK
+ * confidence: exercised
+ * evidence: (socket, command, argument word, slot record): writes a 0x20-byte request {operation, socket, command, DIMM address of the argument, 0...} by PIO; caller sock_ioctl; part of NLASOCK; exercised 2026-11-12: called by the harness on slot 9 (op poked 7) with (9, 0x8004667e, 0x0f809200): dimm_pio_write of the 0x20 bytes {7, 9, 0x8004667e, 0x0f809200, 0, 0, 0, 0} to 0x0f809000; inside sock_ioctl(9, 0x4004667f, NULL) the fourth word was 0
  * matched: source/sdk/nlasock/ioctl.c (tools/match/match.py)
  */
 void ioctl_request_write(uint sock, uint command, uint arg_board, sock_slot_rec *slot)
@@ -27,8 +27,8 @@ void ioctl_request_write(uint sock, uint command, uint arg_board, sock_slot_rec 
 }
 
 /* 0x0c122180  size 0x26  file by match with source
- * confidence: inferred
- * evidence: (DIMM address, argument pointer): writes the caller's argument word into the slot's data area by PIO (same bytes as accept_len_write); caller sock_ioctl; part of NLASOCK
+ * confidence: exercised
+ * evidence: (DIMM address, argument pointer): writes the caller's argument word into the slot's data area by PIO (same bytes as accept_len_write); caller sock_ioctl; part of NLASOCK; exercised 2026-11-12: called by the harness with (0x0f809200, pointer to 0xcafef00d) it called dimm_pio_write of the 4 bytes of 0xcafef00d to 0x0f809200; inside sock_ioctl with an argument word of 16 it wrote 16 there
  * matched: source/sdk/nlasock/ioctl.c (tools/match/match.py)
  */
 void ioctl_arg_write(uint board_addr, uint *arg)
@@ -41,8 +41,8 @@ void ioctl_arg_write(uint board_addr, uint *arg)
 }
 
 /* 0x0c1221c0  size 0x52  file by match with source
- * confidence: inferred
- * evidence: (socket, argument word address, argument pointer): when a pointer was given, reads the slot's 0x200-byte data area into xfer_recv_bounce and copies the argument word back to it; caller sock_ioctl; part of NLASOCK
+ * confidence: exercised
+ * evidence: (socket, argument word address, argument pointer): when a pointer was given, reads the slot's 0x200-byte data area into xfer_recv_bounce and copies the argument word back to it; caller sock_ioctl; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on) with the words 0x11111111 0x22222222 0x33333333 written by dimm_pio_write to slot 9's data area (0x0f809200): (9, 0x0f809208, pointer) read 0x200 bytes from 0x0f809200 into xfer_recv_bounce and stored 0x33333333 (next word untouched); with a null pointer it read nothing
  * matched: source/sdk/nlasock/ioctl.c (tools/match/match.py)
  */
 void ioctl_arg_copy_back(uint sock, int arg_board, uint *arg)
@@ -58,9 +58,9 @@ void ioctl_arg_copy_back(uint sock, int arg_board, uint *arg)
 }
 
 /* 0x0c122240  size 0xf4  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x110
- * evidence: (socket, command, argument pointer): socket operation 7 (a socket control command with an in/out argument word), blocking: -2 above 63, -4 when busy; writes the argument (ioctl_arg_write) and the request, posts DIMM command 0x11, waits, takes the result and reads the argument back (ioctl_arg_copy_back); nothing in the image calls it; part of NLASOCK
+ * evidence: (socket, command, argument pointer): socket operation 7 (a socket control command with an in/out argument word), blocking: -2 above 63, -4 when busy; writes the argument (ioctl_arg_write) and the request, posts DIMM command 0x11, waits, takes the result and reads the argument back (ioctl_arg_copy_back); nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): socket 64 gave -2, dimm_busy_word 1 gave -4; (9, 0x8004667e, pointer to 16) wrote 16 to 0x0f809200 and {7, 9, 0x8004667e, 0x0f809200} to 0x0f809000, posted dimm_cmd_post(0x11, 9), returned the board model's 0 and read the word back; (9, 0x4004667f, NULL) wrote no argument and put 0 as the request's fourth word
  * matched: source/sdk/nlasock/ioctl.c (tools/match/match.py)
  */
 int sock_ioctl(uint sock, uint command, uint *arg)

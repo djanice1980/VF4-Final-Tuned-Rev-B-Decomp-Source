@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c121fc0  size 0x5a  file by match with source
- * confidence: inferred
- * evidence: (host name, slot record): writes a 0x60-byte request {operation, request address + 0x20, name length} with the name (up to 64 bytes) at +0x20, by PIO; caller host_lookup; part of NLASOCK
+ * confidence: exercised
+ * evidence: (host name, slot record): writes a 0x60-byte request {operation, request address + 0x20, name length} with the name (up to 64 bytes) at +0x20, by PIO; caller host_lookup; part of NLASOCK; exercised 2026-11-12: called by the harness on slot 0 (op poked 6): "naominet.jp" gave dimm_pio_write of 0x60 bytes {6, 0x0f800020, 11, 0...} with the name at +0x20 to 0x0f800000; a 70-character name put length 70 and only its first 64 bytes (strncpy 64)
  * matched: source/sdk/nlasock/lookup.c (tools/match/match.py)
  */
 void lookup_request_write(char *name, sock_slot_rec *slot)
@@ -24,9 +24,9 @@ void lookup_request_write(char *name, sock_slot_rec *slot)
 }
 
 /* 0x0c122040  size 0xb0  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xc0
- * evidence: (host name): socket operation 6 on slot 0, blocking: has the board look the name up with its own settings (no servers passed, unlike host_resolve) and returns the result; -2 for no name, -4 when busy; DIMM command 0x11; nothing in the image calls it; part of NLASOCK
+ * evidence: (host name): socket operation 6 on slot 0, blocking: has the board look the name up with its own settings (no servers passed, unlike host_resolve) and returns the result; -2 for no name, -4 when busy; DIMM command 0x11; nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): a null name gave -2, dimm_busy_word 1 gave -4; "naominet.jp" wrote {6, 0x0f800020, 11} and the name to slot 0 (0x0f800000), posted dimm_cmd_post(0x11, 0), waited and returned the board model's answer 0x0a0200c0
  * matched: source/sdk/nlasock/lookup.c (tools/match/match.py)
  */
 int host_lookup(char *name)

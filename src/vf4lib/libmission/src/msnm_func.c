@@ -1247,8 +1247,8 @@ void msnm_try_38_frame_timed_hit(rob_rec *rob, rob_rec *opp, int try_rec, int pr
 }
 
 /* 0x0c0a6100  size 0x32  file by match with source
- * confidence: inferred
- * evidence: round judge of try type 39: counts (msnm_try_count_up) a round the player won with game_flags 0x80 (perfect); reached only through msnm_try_types; part of vf4lib/libmission/src/msnm_func.c
+ * confidence: exercised
+ * evidence: round judge of try type 39: counts (msnm_try_count_up) a round the player won with game_flags 0x80 (perfect); reached only through msnm_try_types; part of vf4lib/libmission/src/msnm_func.c; exercised 2026-11-12: called by the harness with robs (side 0), a try record whose +4 target is 10 and a progress count of 3: round_winner 0 with game_flags 0x110085 counted to 4 through msnm_try_count_up; game_flags 0x110005 (no 0x80) left 3; round_winner 1 with 0x80 left 3
  * matched: source/vf4lib/libmission/src/msnm_func.c (tools/match/match.py)
  */
 void msnm_try_39_round_perfect_win(rob_rec *rob, rob_rec *opp, int try_rec, int progress)
@@ -1260,9 +1260,9 @@ void msnm_try_39_round_perfect_win(rob_rec *rob, rob_rec *opp, int try_rec, int 
 }
 
 /* 0x0c0a6140  size 0x62  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x82
- * evidence: frame judge of try type 40: on each msnm_rob_hit_record_check(rob) adds 20, 50 or 100 to the score (progress +0xc) by the rob's damage +0x2a0 (below 11, below 26, more) and counts (msnm_try_count_up); reached only through msnm_try_types; part of vf4lib/libmission/src/msnm_func.c
+ * evidence: frame judge of try type 40: on each msnm_rob_hit_record_check(rob) adds 20, 50 or 100 to the score (progress +0xc) by the rob's damage +0x2a0 (below 11, below 26, more) and counts (msnm_try_count_up); reached only through msnm_try_types; part of vf4lib/libmission/src/msnm_func.c; exercised 2026-11-12: called by the harness with a scratch rob (side 0, +0x3c record with +0x20 1 and +0x94 1, +0x287 0) and progress count 3 and score (+0xc) 1000: damage +0x2a0 10 gave score 1020 and count 4, 25 gave 1070 and 5, 26 gave 1170 and 6; with +0x94 0 (no hit) nothing changed
  * matched: source/vf4lib/libmission/src/msnm_func.c (tools/match/match.py)
  */
 void msnm_try_40_frame_hit_score(rob_rec *rob, rob_rec *opp, int try_rec, int *progress)
@@ -1607,9 +1607,9 @@ int msnm_cmd_row_step(rob_rec *rob, rob_rec *opp, char *work, char *row, int idx
 }
 
 /* 0x0c0a69a0  size 0xdc  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x106
- * evidence: (as msnm_cmd_row_step): the first entry needs the rob's +0x20 bit 0x100000 and a matching move, the second a matching move while the opponent's +0x20 lacks bit 0x200000 (else the row resets), the rest as msnm_cmd_row_step; only caller msnm_try_cmd_rows_frame; part of vf4lib/libmission/src/msnm_func.c
+ * evidence: (as msnm_cmd_row_step): the first entry needs the rob's +0x20 bit 0x100000 and a matching move, the second a matching move while the opponent's +0x20 lacks bit 0x200000 (a move that does not match resets the row; while the opponent has the bit the step waits), the rest as msnm_cmd_row_step; only caller msnm_try_cmd_rows_frame; part of vf4lib/libmission/src/msnm_func.c; exercised 2026-11-12: called by the harness with scratch robs and a row {0, 0x100}, {0, 0x200}, end: step 0 with the rob's +0x20 0x100000 and move 0x100 went to 1 (returned 0), without the bit stayed 0; step 1 with move 0x200 went to 2 and returned 1 (the row's end); step 1 with move 0x300 reset to 0; step 1 with the opponent's 0x200000 stayed 1 (notes row); index 1 used work +0x42c
  * matched: source/vf4lib/libmission/src/msnm_func.c (tools/match/match.py)
  */
 int msnm_cmd_row_step_kind1(rob_rec *rob, rob_rec *opp, char *work, char *row, int idx)
@@ -1915,9 +1915,9 @@ void msnm_try_61_kind0_step(char *work, char *entry, rob_rec *rob, rob_rec *opp,
 }
 
 /* 0x0c0a7180  size 0xda  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x106
- * evidence: (as kind 0): phase 0 waits for the pattern's first move; phase 1 follows the four moves in order (index in progress +0x20) and counts (msnm_try_count_up) on msnm_rob_hit_record_check(rob) with the opponent's energy 0; only caller msnm_try_61_frame; part of vf4lib/libmission/src/msnm_func.c
+ * evidence: (as kind 0): phase 0 waits for the pattern's first move; phase 1 follows the four moves in order (index in progress +0x20) and counts (msnm_try_count_up) on msnm_rob_hit_record_check(rob) with the opponent's energy 0; only caller msnm_try_61_frame; part of vf4lib/libmission/src/msnm_func.c; exercised 2026-11-12: called by the harness with pattern moves 0x100, 0x200, 0x300, 0x400 and scratch robs: phase 0 with move 0x100 went to phase 1, index (+0x20) 0, with 0x555 stayed 0; phase 1 index 0 with move 0x200 went to index 1; with a hit (the +0x3c record planted) and the opponent's energy 0 msnm_try_count_up counted 1 and phase went to 2; with move 0x999 at index 1 the index went to 2 and phase 2 without a count
  * matched: source/vf4lib/libmission/src/msnm_func.c (tools/match/match.py)
  */
 void msnm_try_61_kind1_step(char *work, char *entry, rob_rec *rob, rob_rec *opp, int try_rec, int progress)
@@ -1961,9 +1961,9 @@ void msnm_try_61_kind1_step(char *work, char *entry, rob_rec *rob, rob_rec *opp,
 }
 
 /* 0x0c0a72a0  size 0xd6  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xe8
- * evidence: (as kind 0): outside game_flags 8 waits for the pattern's first move, then a hit (msnm_rob_hit_record_check) and the rob's +0x20 bit 0x100000, then counts (msnm_try_count_up) when the move is the pattern's second (+6) and the opponent's energy is 0 or the round is over (game_flags 8); phase 4 is the end; only caller msnm_try_61_frame; part of vf4lib/libmission/src/msnm_func.c
+ * evidence: (as kind 0): outside game_flags 8 waits for the pattern's first move, then a hit (msnm_rob_hit_record_check) and the rob's +0x20 bit 0x100000, then counts (msnm_try_count_up) when the move is the pattern's second (+6) and the opponent's energy is 0 or the round is over (game_flags 8); phase 4 is the end; only caller msnm_try_61_frame; part of vf4lib/libmission/src/msnm_func.c; exercised 2026-11-12: called by the harness with pattern moves 0x100 / 0x200 and scratch robs: phase 0 with move 0x100, a hit and the rob's +0x20 0x100000 went to phase 3 with game_flags 0x110005, and stayed 0 with 0x11000D (bit 8); phase 3 with move 0x200, the bit and the opponent's energy 0 counted 1 (msnm_try_count_up) and went to 4; with move 0x300 it stayed 3; without the bit it went to 4 with no count
  * matched: source/vf4lib/libmission/src/msnm_func.c (tools/match/match.py)
  */
 void msnm_try_61_kind2_step(char *work, char *entry, rob_rec *rob, rob_rec *opp, int try_rec, int progress)
@@ -2406,8 +2406,8 @@ void msnm_input_stats_add(msnm_input_stats_rec *track)
 }
 
 /* 0x0c0a7ae0  size 0x28  file by match with source
- * confidence: inferred
- * evidence: (rob): 1 when the rob's +0x20 has a bit of 0x1000200 and bit 0 and +0x12 is nonzero; role unclear; callers msnm_try_11_frame and msnm_try_56_frame; part of vf4lib/libmission/src/msnm_func.c
+ * confidence: exercised
+ * evidence: (rob): 1 when the rob's +0x20 has a bit of 0x1000200 and bit 0 and +0x12 is nonzero; role unclear; callers msnm_try_11_frame and msnm_try_56_frame; part of vf4lib/libmission/src/msnm_func.c; exercised 2026-11-12: called by the harness on a scratch rob: +0x20 0x201 with +0x12 5 returned 1, with +0x12 0 returned 0; 0x200 (no bit 0) returned 0; 0x1000001 returned 1; 0x1 returned 0
  * matched: source/vf4lib/libmission/src/msnm_func.c (tools/match/match.py)
  */
 int msnm_rob_flags_1000201_check(rob_rec *rob)

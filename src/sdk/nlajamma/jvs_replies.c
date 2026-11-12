@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c11c500  size 0x18  file by match with source
- * confidence: inferred
- * evidence: command 0xF0 (bus reset): two command bytes, no reply data; the entry for 0xF0 in jvs_reply_handlers; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: command 0xF0 (bus reset): two command bytes, no reply data; the entry for 0xF0 in jvs_reply_handlers; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with a cursor (10 reply bytes left, 10 command bytes left) on the command F0 D9 it returned 1 with the command pointer 2 on, 8 command bytes left and the reply pointer and count unchanged
  * matched: source/sdk/nlajamma/jvs_replies.c (tools/match/match.py)
  */
 int jvs_reply_reset(jvs_reply_cursor *c)
@@ -21,8 +21,8 @@ int jvs_reply_reset(jvs_reply_cursor *c)
 }
 
 /* 0x0c11c520  size 0x3c  file by match with source
- * confidence: inferred
- * evidence: command 0x15 (main board ID): the command carries a NUL-terminated string, the reply only a report byte; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: command 0x15 (main board ID): the command carries a NUL-terminated string, which it skips up to its NUL and leaves the cursor on it; the reply only a report byte, which it returns; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with a cursor on the command 15 'A' 'B' 'C' 00 and the reply byte 1 it returned 1, moved the reply pointer 1 on and the command pointer 4 on (to the NUL); with 15 'Z' 00 and the reply byte 3 it returned 3 and moved the command pointer 2 on
  * matched: source/sdk/nlajamma/jvs_replies.c (tools/match/match.py)
  */
 int jvs_reply_main_board_id(jvs_reply_cursor *c)
@@ -40,8 +40,8 @@ int jvs_reply_main_board_id(jvs_reply_cursor *c)
 }
 
 /* 0x0c11c560  size 0x18  file by match with source
- * confidence: inferred
- * evidence: command 0xF2: one command byte and nothing in the reply; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: command 0xF2: one command byte and nothing in the reply; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with a cursor (10 reply and 10 command bytes left) on the command F2 01 it returned 1 with the command pointer 1 on, 9 left, and the reply pointer and count unchanged
  * matched: source/sdk/nlajamma/jvs_replies.c (tools/match/match.py)
  */
 int jvs_reply_none(jvs_reply_cursor *c)
@@ -52,8 +52,8 @@ int jvs_reply_none(jvs_reply_cursor *c)
 }
 
 /* 0x0c11c580  size 0x24  file by match with source
- * confidence: inferred
- * evidence: command 0xF1 (set address): one command byte, a report byte back; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: command 0xF1 (set address): one command byte, a report byte back; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with a cursor on the command F1 01 it returned the report byte (1 for the reply 01, 2 for the reply 02), and moved both the reply and the command pointer 1 on (9 left of each)
  * matched: source/sdk/nlajamma/jvs_replies.c (tools/match/match.py)
  */
 int jvs_reply_set_address(jvs_reply_cursor *c)
@@ -69,8 +69,8 @@ int jvs_reply_set_address(jvs_reply_cursor *c)
 }
 
 /* 0x0c11c5c0  size 0x44  file by match with source
- * confidence: inferred
- * evidence: commands 0x32 / 0x34 (general and character output): a length-prefixed command, a report byte back; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: commands 0x32 / 0x34 (general and character output): a length-prefixed command, a report byte back; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with a cursor on the command 32 03 0A 0B 0C and the reply byte 1 it returned 1, moved the reply pointer 1 on and the command pointer 5 on (5 left of 10); with 34 00 and the reply byte 2 it returned 2 and moved the command pointer 2 on
  * matched: source/sdk/nlajamma/jvs_replies.c (tools/match/match.py)
  */
 int jvs_reply_output(jvs_reply_cursor *c)
@@ -92,8 +92,8 @@ int jvs_reply_output(jvs_reply_cursor *c)
 }
 
 /* 0x0c11c620  size 0x38  file by match with source
- * confidence: inferred
- * evidence: commands 0x11-0x13 (versions) and 0x24 (keycode): a report byte and, unless it is 2 (parameter error), one data byte; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: commands 0x11-0x13 (versions) and 0x24 (keycode): a report byte and, unless it is 2 (parameter error), one data byte; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on a cursor (16-byte record: reply_left, cmd_left, cmd, reply) over the command 0x11 and the reply bytes 1, 0x30: it returned 1 with the reply cursor 2 bytes on (left 10 to 8) and the command cursor 1 on; with the report byte 2 it returned 2 and the reply cursor moved 1 byte, the command cursor 1
  * matched: source/sdk/nlajamma/jvs_replies.c (tools/match/match.py)
  */
 int jvs_reply_byte(jvs_reply_cursor *c)
@@ -114,8 +114,8 @@ int jvs_reply_byte(jvs_reply_cursor *c)
 }
 
 /* 0x0c11c660  size 0x42  file by match with source
- * confidence: inferred
- * evidence: commands 0x10 (ID) and 0x14 (feature check): a report byte and a NUL-terminated run of data; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: commands 0x10 (ID) and 0x14 (feature check): a report byte and, unless it is 2, the data up to its NUL; the reply cursor is left on the NUL, not past it (reply_left counts the report byte and the characters only); checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on a cursor over the command 0x10 and the reply bytes 1, 'A', 'B', 'C', 0: it returned 1 with the command cursor 1 on and the reply cursor 4 on, on the NUL (left 10 to 6); with the report byte 2 it returned 2 and the reply cursor moved 1 byte
  * matched: source/sdk/nlajamma/jvs_replies.c (tools/match/match.py)
  */
 int jvs_reply_string(jvs_reply_cursor *c)
@@ -144,8 +144,8 @@ int jvs_reply_string(jvs_reply_cursor *c)
 }
 
 /* 0x0c11c6c0  size 0x54  file by match with source
- * confidence: inferred
- * evidence: a length-prefixed command answered by a report byte and one data byte; no table entry points at it in this build, so it was never disassembled until named here; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: a length-prefixed command answered by a report byte and one data byte; no table entry points at it in this build, so it was never disassembled until named here; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on a cursor over the command 0x40, 3, 7, 8, 9 and the reply 1, 0x55: it returned 1 with the command cursor 5 bytes on (left 10 to 5) and the reply cursor 2 on; with the command 0x40, 1, 7 and the report byte 2 it returned 2, the command cursor 3 on and the reply cursor 1 on
  * matched: source/sdk/nlajamma/jvs_replies.c (tools/match/match.py)
  */
 int jvs_reply_var_byte(jvs_reply_cursor *c)
@@ -232,8 +232,8 @@ int jvs_reply_channels(jvs_reply_cursor *c)
 }
 
 /* 0x0c11c800  size 0x40  file by match with source
- * confidence: inferred
- * evidence: command 0x25 (screen position): four data bytes; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: command 0x25 (screen position): four data bytes; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on a cursor over the command 0x25, 1 and the reply 1, 1, 2, 3, 4: it returned 1 with the command cursor 2 bytes on and the reply cursor 5 on (left 10 to 5); with the report byte 2 it returned 2, the command cursor 2 on and the reply cursor 1 on
  * matched: source/sdk/nlajamma/jvs_replies.c (tools/match/match.py)
  */
 int jvs_reply_screen_pos(jvs_reply_cursor *c)
@@ -258,8 +258,8 @@ int jvs_reply_screen_pos(jvs_reply_cursor *c)
 }
 
 /* 0x0c11c840  size 0x40  file by match with source
- * confidence: inferred
- * evidence: command 0x2E (payout remaining): four data bytes; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: command 0x2E (payout remaining): four data bytes; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on a cursor over the command 0x2E, 1 and the reply 1, 1, 2, 3, 4: it returned 1 with the command cursor 2 bytes on and the reply cursor 5 on; with the report byte 2 it returned 2, the command cursor 2 on and the reply cursor 1 on
  * matched: source/sdk/nlajamma/jvs_replies.c (tools/match/match.py)
  */
 int jvs_reply_hopper(jvs_reply_cursor *c)
@@ -286,8 +286,8 @@ int jvs_reply_hopper(jvs_reply_cursor *c)
 }
 
 /* 0x0c11c880  size 0x24  file by match with source
- * confidence: inferred
- * evidence: commands 0x30 / 0x31 / 0x35 / 0x36 (coin and payout counter changes): a three-byte argument, a report byte back; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: commands 0x30 / 0x31 / 0x35 / 0x36 (coin and payout counter changes): a three-byte argument, a report byte back; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on a cursor over the command 0x30, 1, 0, 5 and the reply byte 1 it returned 1 with the command cursor 4 bytes on (left 10 to 6) and the reply cursor 1 on; over 0x35, 1, 0, 5 with the report byte 3 it returned 3, the cursors moving the same
  * matched: source/sdk/nlajamma/jvs_replies.c (tools/match/match.py)
  */
 int jvs_reply_counter(jvs_reply_cursor *c)
@@ -305,8 +305,8 @@ int jvs_reply_counter(jvs_reply_cursor *c)
 }
 
 /* 0x0c11c8c0  size 0x32  file by match with source
- * confidence: inferred
- * evidence: command 0x33 (analog output): two bytes per channel in the command; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: command 0x33 (analog output): skips the reply's report byte without reading it and returns 1; on the command side steps from the code to the channel count and then 2 bytes per channel, which leaves the cursor on the last data byte, one short of the command's end; checked against reference material (not in this repo); as the game has it: jvs_reply_dac leaves the command cursor on the last data byte of command 0x33 and returns 1 whatever the report; exercised 2026-11-12: called by the harness on a cursor over the command 0x33, 2, 1, 2, 3, 4 and the reply byte 1 it returned 1 with the reply cursor 1 on and the command cursor 5 on (1 + 2 x 2), on the last data byte; over 0x33, 1, 1, 2 with the report byte 3 it still returned 1, the command cursor 3 on and the reply cursor 1 on
  * matched: source/sdk/nlajamma/jvs_replies.c (tools/match/match.py)
  */
 int jvs_reply_dac(jvs_reply_cursor *c)

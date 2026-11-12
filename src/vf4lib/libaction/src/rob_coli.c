@@ -1562,8 +1562,8 @@ void est_data_window_draw(void)
 }
 
 /* 0x0c06e260  size 0x104  file by match with source
- * confidence: inferred
- * evidence: (no arguments): times one call each of coli_segment_hit, coli_sweep_hit, coli_segment_hit_nearest and coli_sphere_hit_nearest on the test segment at coli_test_end / coli_test_start with stopwatch_usec (results coli_test_nearest_points / coli_test_hit_points, times coli_test_nearest_usec / coli_test_hit_usec), then counts the grid cells the segment crosses (coli_grid_cells_on_segment, coli_grid_cells_along); nothing in the image calls it; part of vf4lib/libaction/src/rob_coli.c
+ * confidence: exercised
+ * evidence: (no arguments): times one call each of coli_segment_hit, coli_sweep_hit, coli_segment_hit_nearest and coli_sphere_hit_nearest on the test segment at coli_test_end / coli_test_start with stopwatch_usec (results coli_test_nearest_points / coli_test_hit_points, times coli_test_nearest_usec / coli_test_hit_usec), then counts the grid cells the segment crosses (coli_grid_cells_on_segment, coli_grid_cells_along); nothing in the image calls it; part of vf4lib/libaction/src/rob_coli.c; exercised 2026-11-12: called by the harness with coli_test_end poked (1, 0.5, 2), coli_test_start (3, 0.5, -1), coli_test_radius 0.3: the four hit routines each got coli_test_end, coli_test_start and mask 13 (sweep and sphere also 0.3) and their result areas; coli_grid_cells_on_segment got x/z 1, 2, 3, -1 and its 3 went to coli_test_cell_count; each time slot held the difference of its two stopwatch_usec results (6, 2, 10, 9)
  * matched: source/vf4lib/libaction/src/rob_coli.c (tools/match/match.py)
  */
 void coli_timing_test(void)

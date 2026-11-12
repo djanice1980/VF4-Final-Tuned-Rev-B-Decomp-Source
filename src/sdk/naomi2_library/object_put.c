@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c1029a0  size 0x14  file by match with source
- * confidence: inferred
- * evidence: zeroes texidx_base and obj_palette_table; nothing in the image calls it (uncalled code, made a function 2026-11-09); between light_single_elan_send and busy_delay_5000, so by link order part of sdk/naomi2_library/object_put.c
+ * confidence: exercised
+ * evidence: zeroes texidx_base and obj_palette_table; nothing in the image calls it (uncalled code, made a function 2026-11-09); between light_single_elan_send and busy_delay_5000, so by link order part of sdk/naomi2_library/object_put.c; exercised 2026-11-12: called by the harness with texidx_base and obj_palette_table poked to 0x123 and 0x0C400000: both read 0 afterwards
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_tex_bases_clear(void)
@@ -19,8 +19,8 @@ void obj_tex_bases_clear(void)
 }
 
 /* 0x0c1029c0  size 0x20  file by match with source
- * confidence: inferred
- * evidence: counts a stack word from 0 to 5000 and returns (a busy delay); nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_tex_bases_clear and obj_textures_load_step, so by link order part of sdk/naomi2_library/object_put.c
+ * confidence: exercised
+ * evidence: counts a stack word from 0 to 5000 and returns (a busy delay); nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_tex_bases_clear and obj_textures_load_step, so by link order part of sdk/naomi2_library/object_put.c; exercised 2026-11-12: called by the harness it returned after 30,016 instructions (six for each of 5,001 tests of the counter) with r1 left at 5001, the counter's last value, and wrote nothing outside its own stack frame
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void busy_delay_5000(void)
@@ -33,9 +33,9 @@ void busy_delay_5000(void)
 }
 
 /* 0x0c102a00  size 0x22c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x268
- * evidence: walks an object's polygon records (0x50 bytes plus the extra size in word +0x4c, from obj + 0x18 or from, ending at a zero word; nothing when obj word 0 is negative): for a texture index (word +0x20; with mapped, looked up through texlist entry +0xc) plus texidx_base takes a texidx_map entry (texidx_bit_take on first use) and counts a use; a texture slot not yet loaded is created (tex_slot_create_and_load, tex_slot_words_or_fallback), its result ORed into the return value; puts the slot or built-in bits into the header (tex_slot_bits_into_poly_hdr / tex_builtin_bits_into_poly_hdr), the list bits 0x8c0000 and poly_header_bits16 into word +0; for palette formats (5, 6) either takes palette blocks from obj_palette_table (pal_find_free_blocks, pal_mark_blocks_used, palette_shadow_write) or, when pal_raw_mode is set, uses word +0x3c as the palette; calls obj_poly_texture_hook per polygon; after a polygon that created a texture stops and returns the next record in *next (0 when done); callers obj_textures_load_from, obj_textures_load, obj_textures_load_from_mapped, obj_textures_load_mapped; part of NLOBJPUT
+ * evidence: walks an object's polygon records (0x50 bytes plus the extra size in word +0x4c, from obj + 0x18 or from, ending at a zero word; nothing when obj word 0 is negative): for a texture index (word +0x20; with mapped, looked up through texlist entry +0xc) plus texidx_base takes a texidx_map entry (texidx_bit_take on first use) and counts a use; a texture slot not yet loaded is created (tex_slot_create_and_load, tex_slot_words_or_fallback), its result ORed into the return value; puts the slot or built-in bits into the header (tex_slot_bits_into_poly_hdr / tex_builtin_bits_into_poly_hdr), the list bits 0x8c0000 and poly_header_bits16 into word +0; for palette formats (5, 6) either takes palette blocks from obj_palette_table (pal_find_free_blocks, pal_mark_blocks_used, palette_shadow_write) or, when pal_raw_mode is set, uses word +0x3c as the palette; for a negative index sets bit 0 of word +0 and bit 22 of word +4; calls obj_poly_texture_hook per polygon; after a polygon that created a texture stops and returns the next record in *next (0 when done); callers obj_textures_load_from, obj_textures_load, obj_textures_load_from_mapped, obj_textures_load_mapped; part of NLOBJPUT; exercised 2026-11-12: called by the harness on a buffer object (records at +0x18, +0x68, +0xC8) on the snapshot's texture tables, texidx_base 0x4850, after model_tex_unload_step had freed entry 0x17: with refs 0x17, 0x18, -1, (obj, list 0x0D38A5F0, 0, next, 0) took a slot (166) for map entry 0x4867, loaded list entry 0x17 into it (tex_slot_create_and_load, tex_slot_words_or_fallback), set word 0 to 0x808C0000, called obj_poly_texture_hook and stopped with *next = the second record; returned 0
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 uint obj_textures_load_step(int *obj, int texlist, uint *from, uint **next_out, int mapped)
@@ -155,8 +155,8 @@ uint obj_textures_load_step(int *obj, int texlist, uint *from, uint **next_out, 
 }
 
 /* 0x0c102cc0  size 0x18  file by match with source
- * confidence: inferred
- * evidence: obj_textures_load_step without mapping (mapped 0); called by model_tex_load_step; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: obj_textures_load_step without mapping (mapped 0); called by model_tex_load_step; part of NLOBJPUT; exercised 2026-11-12: called by the harness on a buffer object (records at +0x18, +0x68, +0xC8) on the snapshot's texture tables, texidx_base 0x4850, after obj_textures_load_step had stopped at the second record: from it, ref 0x18 (map entry 0x4868, slot 167) went to use count 3 and in_use 3 with no load, slot 167's bits went into its header, the -1 record got built-in bits (word 0 0x808C0001, word 1 0x400000), and *next was 0
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_textures_load_from(int *obj, int texlist, uint *from, uint **next_out)
@@ -166,8 +166,8 @@ void obj_textures_load_from(int *obj, int texlist, uint *from, uint **next_out)
 }
 
 /* 0x0c102ce0  size 0x4e  file by match with source
- * confidence: inferred
- * evidence: runs obj_textures_load_step (mapped 0) until the walk ends, ORing the results; called by model_tex_load; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: runs obj_textures_load_step (mapped 0) until the walk ends, ORing the results; called by model_tex_load; part of NLOBJPUT; exercised 2026-11-12: called by the harness on a buffer object (records at +0x18, +0x68, +0xC8) on the snapshot's texture tables, texidx_base 0x4850, with refs 0x17 (freed first by model_tex_unload_step), 0x18, -1 and the list 0x0D38A5F0: two obj_textures_load_step calls (from 0, then from the second record), one texture loaded into slot 166, map entries 0x4867 / 0x4868 at use counts 1 / 3; returned 0
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 uint obj_textures_load(int *obj, int texlist)
@@ -186,8 +186,8 @@ uint obj_textures_load(int *obj, int texlist)
 }
 
 /* 0x0c102d40  size 0x18  file by match with source
- * confidence: inferred
- * evidence: obj_textures_load_step with the texture list mapping (mapped 1); called by model_tex_load_step_by_entry_ids; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: obj_textures_load_step with the texture list mapping (mapped 1); called by model_tex_load_step_by_entry_ids; part of NLOBJPUT; exercised 2026-11-12: called by the harness on a buffer object (records at +0x18, +0x68, +0xC8) on the snapshot's texture tables, texidx_base 0x4850, refs 0x17 (freed first), 0x18, -1, and a list copy mapping 0x17 to id 0x18 and 0x18 to 0x17, from 0: one step with mapping; the first record used slot 167 (entry 0x4868 to use 3, no load), the second loaded the copy's entry 0x18 into a new slot for entry 0x4867, and *next was the third record
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_textures_load_from_mapped(int *obj, int texlist, uint *from, uint **next_out)
@@ -197,8 +197,8 @@ void obj_textures_load_from_mapped(int *obj, int texlist, uint *from, uint **nex
 }
 
 /* 0x0c102d60  size 0x4e  file by match with source
- * confidence: inferred
- * evidence: runs obj_textures_load_step with mapping until the walk ends, ORing the results; called by model_tex_load_by_entry_ids; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: runs obj_textures_load_step with mapping until the walk ends, ORing the results; called by model_tex_load_by_entry_ids; part of NLOBJPUT; exercised 2026-11-12: called by the harness on a buffer object (records at +0x18, +0x68, +0xC8) on the snapshot's texture tables, texidx_base 0x4850, refs 0x17 (freed first), 0x18, -1, and a list copy mapping 0x17 to id 0x18 and 0x18 to 0x17: two steps with mapped 1; entry 0x4868 went to use 3 with no load and entry 0x4867 was loaded from the copy's entry 0x18 (data 0x0C790020); returned 0
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 uint obj_textures_load_mapped(int *obj, int texlist)
@@ -217,9 +217,9 @@ uint obj_textures_load_mapped(int *obj, int texlist)
 }
 
 /* 0x0c102dc0  size 0xbe  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xf0
- * evidence: walks the object's polygon records like obj_textures_load_step and puts each texture's current slot bits (or the built-in texture's for a free index) back into the header, keeping the palette bits (0x7e00000) of word +0xc; returns 1 when some texture index is not in use; callers obj_texture_bits_refresh_plain, obj_texture_bits_refresh_mapped; part of NLOBJPUT
+ * evidence: walks the object's polygon records like obj_textures_load_step and puts each texture's current slot bits (or the built-in texture's for a free index) back into the header, keeping the palette bits (0x7e00000) of word +0xc; returns 1 when some texture index is not in use; callers obj_texture_bits_refresh_plain, obj_texture_bits_refresh_mapped; part of NLOBJPUT; exercised 2026-11-12: called by the harness on a buffer object (records at +0x18, +0x68, +0xC8) on the snapshot's texture tables, texidx_base 0x4850, refs 0x17, 0x37 (unused), -1: (obj, 0, 0) returned 1 and called tex_slot_bits_into_poly_hdr(first, 166) and the built-in routine for the other two, keeping palette bits 0x00A00000 of the first record's +0xc; with a list copy mapping 0x17 to 0x19 and 0x37 to 0x18 and mapped 1 it returned 0 and put slots 168 and 167
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 int obj_texture_bits_refresh(int *obj, int texlist, int mapped)
@@ -265,8 +265,8 @@ int obj_texture_bits_refresh(int *obj, int texlist, int mapped)
 }
 
 /* 0x0c102ee0  size 0x16  file by match with source
- * confidence: inferred
- * evidence: obj_texture_bits_refresh(obj, 0, 0); nothing in the image calls it; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: obj_texture_bits_refresh(obj, 0, 0); nothing in the image calls it; part of NLOBJPUT; exercised 2026-11-12: called by the harness on a buffer object (records at +0x18, +0x68, +0xC8) on the snapshot's texture tables, texidx_base 0x4850, refs 0x17, 0x37 (unused), -1: it called obj_texture_bits_refresh(obj, 0, 0), which put slot 166 in the first record and built-in bits in the others
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_texture_bits_refresh_plain(int *obj)
@@ -276,8 +276,8 @@ void obj_texture_bits_refresh_plain(int *obj)
 }
 
 /* 0x0c102f00  size 0x14  file by match with source
- * confidence: inferred
- * evidence: obj_texture_bits_refresh(obj, texlist, 1); nothing in the image calls it; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: obj_texture_bits_refresh(obj, texlist, 1); nothing in the image calls it; part of NLOBJPUT; exercised 2026-11-12: called by the harness on a buffer object (records at +0x18, +0x68, +0xC8) on the snapshot's texture tables, texidx_base 0x4850, refs 0x17, 0x37, -1, with a list copy mapping 0x17 to id 0x19 and 0x37 to 0x18: it called obj_texture_bits_refresh(obj, list, 1), which put slots 168 and 167 and built-in bits in the third
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_texture_bits_refresh_mapped(int *obj, int texlist)
@@ -287,9 +287,9 @@ void obj_texture_bits_refresh_mapped(int *obj, int texlist)
 }
 
 /* 0x0c102f20  size 0x13a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x146
- * evidence: the inverse of obj_textures_load_step: per polygon record drops a use of the texture index's texidx_map entry and at the last one returns the slot's memory (surface_memory_return_by_kind, result 1 when that fails), clears the slot's words +0x2c/+0x38, frees its bit (texidx_bit_clear) and the entry; drops palette groups taken from obj_palette_table (pal_group_unref); stops after a freed texture with the next record in *next; callers obj_textures_release_from, obj_textures_release_from_mapped, obj_textures_release, obj_textures_release_mapped; part of NLOBJPUT
+ * evidence: the inverse of obj_textures_load_step: per polygon record drops a use of the texture index's texidx_map entry and at the last one returns the slot's memory (surface_memory_return_by_kind, result 1 when that fails), clears the slot's words +0x2c/+0x38, frees its bit (texidx_bit_clear) and the entry; drops palette groups taken from obj_palette_table (pal_group_unref); stops after a freed texture with the next record in *next; callers obj_textures_release_from, obj_textures_release_from_mapped, obj_textures_release, obj_textures_release_mapped; part of NLOBJPUT; exercised 2026-11-12: called by the harness on a buffer object (records at +0x18, +0x68, +0xC8) on the snapshot's texture tables, texidx_base 0x4850, refs 0x17, 0x37 (unused), -1, from 0 without mapping: the first call dropped map entry 0x4867 from 2 to 1 and gave *next 0; the second dropped it to 0, returned slot 166 (surface_memory_return_by_kind, texidx_bit_clear), left it in_use 0, id -1, the entry slot -1, and stopped with *next = the second record; returned 0
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 uint obj_textures_release_step(int *obj, int texlist, int *from, int **next_out, int mapped)
@@ -347,8 +347,8 @@ out:
 }
 
 /* 0x0c1030a0  size 0x20  file by match with source
- * confidence: inferred
- * evidence: obj_textures_release_step(obj, 0, from, next, 0); nothing in the image calls it; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: obj_textures_release_step(obj, 0, from, next, 0); nothing in the image calls it; part of NLOBJPUT; exercised 2026-11-12: called by the harness on a buffer object (records at +0x18, +0x68, +0xC8) on the snapshot's texture tables, texidx_base 0x4850, with from = the second record (refs 0x37 unused, -1): it called obj_textures_release_step(obj, 0, record, next, 0), which freed nothing and set *next to 0
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_textures_release_from(int *obj, int *from, int **next_out)
@@ -358,8 +358,8 @@ void obj_textures_release_from(int *obj, int *from, int **next_out)
 }
 
 /* 0x0c1030e0  size 0x18  file by match with source
- * confidence: inferred
- * evidence: obj_textures_release_step with mapping; nothing in the image calls it; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: obj_textures_release_step with mapping; nothing in the image calls it; part of NLOBJPUT; exercised 2026-11-12: called by the harness on a buffer object (records at +0x18, +0x68, +0xC8) on the snapshot's texture tables, texidx_base 0x4850, refs 0x17, 0x37, -1, with a list copy mapping both to id 0x19, from 0: one step with mapping dropped map entry 0x4869 from 2 to 0 over the two records, freed slot 168 and stopped with *next = the third record
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_textures_release_from_mapped(int *obj, int texlist, int *from, int **next_out)
@@ -369,8 +369,8 @@ void obj_textures_release_from_mapped(int *obj, int texlist, int *from, int **ne
 }
 
 /* 0x0c103100  size 0x48  file by match with source
- * confidence: inferred
- * evidence: runs obj_textures_release_step (no mapping) to the end, ORing the results; nothing in the image calls it; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: runs obj_textures_release_step (no mapping) to the end, ORing the results; nothing in the image calls it; part of NLOBJPUT; exercised 2026-11-12: called by the harness on a buffer object (records at +0x18, +0x68, +0xC8) on the snapshot's texture tables, texidx_base 0x4850, with refs 0x17, 0x17, -1: two obj_textures_release_step calls (from 0, then from the third record); map entry 0x4867 went from 2 to 0 and slot 166 was returned; returned 0
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 uint obj_textures_release(int *obj)
@@ -389,8 +389,8 @@ uint obj_textures_release(int *obj)
 }
 
 /* 0x0c103160  size 0x4e  file by match with source
- * confidence: inferred
- * evidence: runs obj_textures_release_step with mapping to the end; nothing in the image calls it; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: runs obj_textures_release_step with mapping to the end; nothing in the image calls it; part of NLOBJPUT; exercised 2026-11-12: called by the harness on a buffer object (records at +0x18, +0x68, +0xC8) on the snapshot's texture tables, texidx_base 0x4850, refs 0x17, 0x37, -1, with a list copy mapping both to id 0x19: two steps with mapping; map entry 0x4869 went from 2 to 0 (slot 168 returned) and 0x4867 kept use count 2; returned 0
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 uint obj_textures_release_mapped(int *obj, int texlist)
@@ -420,8 +420,8 @@ void obj_palette_table_put(uint table)
 }
 
 /* 0x0c1031e0  size 0x5a  file by match with source
- * confidence: inferred
- * evidence: (object, offset): in the raw palette mode (pal_raw_mode 1) and for an object that is not empty, sets the palette bits (bits 21-26 of word +0xc) of every palette-format (5, 6) polygon record to its word +0x3c plus offset; nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_palette_table_put and modvol_shadow_set_up, so by link order part of sdk/naomi2_library/object_put.c
+ * confidence: exercised
+ * evidence: (object, offset): in the raw palette mode (pal_raw_mode 1) and for an object that is not empty, sets the palette bits (bits 21-26 of word +0xc) of every palette-format (5, 6) polygon record to its word +0x3c plus offset; nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_palette_table_put and modvol_shadow_set_up, so by link order part of sdk/naomi2_library/object_put.c; exercised 2026-11-12: called by the harness on a buffer object with records of format 5 (+0x3c 4), 1 (+0x3c 9) and 6 (+0x3c 10), offset 3: with pal_raw_mode 0 (snapshot) nothing changed; with it poked 1 the +0xc words went 0x28A00000 to 0x28E00000 and 0x37E00000 to 0x31A00000, the format 1 record untouched; with object word 0 poked -1, offset 5 changed nothing
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_palette_offset_apply(int *obj, int offset)
@@ -487,8 +487,8 @@ void modvol_instruction_put(int mode)
 }
 
 /* 0x0c1032e0  size 0x12  file by match with source
- * confidence: inferred
- * evidence: returns modvol_instruction >> 29, the value modvol_instruction_put shifts in; nothing in the image calls it (uncalled code, made a function 2026-11-09); between modvol_instruction_put and modvol_sign_put, so by link order part of sdk/naomi2_library/object_put.c
+ * confidence: exercised
+ * evidence: returns modvol_instruction >> 29, the value modvol_instruction_put shifts in; nothing in the image calls it (uncalled code, made a function 2026-11-09); between modvol_instruction_put and modvol_sign_put, so by link order part of sdk/naomi2_library/object_put.c; exercised 2026-11-12: called by the harness in one sandbox: after modvol_instruction_put(2) it returned 2, after modvol_instruction_put(0) 1, and with modvol_instruction poked 0x60000000 it returned 3
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 int modvol_instruction_get(void)
@@ -509,8 +509,8 @@ void modvol_sign_put(int v)
 }
 
 /* 0x0c103320  size 0xe  file by match with source
- * confidence: inferred
- * evidence: returns modvol_sign; nothing in the image calls it (uncalled code, made a function 2026-11-09); between modvol_sign_put and obj_modvol_put, so by link order part of sdk/naomi2_library/object_put.c
+ * confidence: exercised
+ * evidence: returns modvol_sign; nothing in the image calls it (uncalled code, made a function 2026-11-09); between modvol_sign_put and obj_modvol_put, so by link order part of sdk/naomi2_library/object_put.c; exercised 2026-11-12: called by the harness with modvol_sign poked 7 it returned 7 and with it poked -1 it returned -1 (1 in the snapshot)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 int modvol_sign_get(void)
@@ -519,8 +519,8 @@ int modvol_sign_get(void)
 }
 
 /* 0x0c103340  size 0x20  file by match with source
- * confidence: inferred
- * evidence: pushes the projection onto the current matrix (obj_mtx_push_proj) and sends the object as a modifier volume (obj_modvol_send, mode 0); nothing in the image calls it; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: pushes the projection onto the current matrix (obj_mtx_push_proj) and sends the object as a modifier volume (obj_modvol_send, mode 0); nothing in the image calls it; part of NLOBJPUT; exercised 2026-11-12: called by the harness with a buffer object (word 0 = -1): it called obj_mtx_push_proj and then obj_modvol_send(object, 0)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_modvol_put(uint *obj)
@@ -531,8 +531,8 @@ void obj_modvol_put(uint *obj)
 }
 
 /* 0x0c103380  size 0x20  file by match with source
- * confidence: inferred
- * evidence: as obj_modvol_put with mode -1; nothing in the image calls it; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: as obj_modvol_put with mode -1; nothing in the image calls it; part of NLOBJPUT; exercised 2026-11-12: called by the harness with a buffer object (word 0 = -1): it called obj_mtx_push_proj and then obj_modvol_send(object, -1)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_modvol_put_alt(uint *obj)
@@ -543,8 +543,8 @@ void obj_modvol_put_alt(uint *obj)
 }
 
 /* 0x0c1033c0  size 0x20  file by match with source
- * confidence: inferred
- * evidence: as obj_modvol_put with the view taken from the view stack (obj_mtx_push_proj_view); nothing in the image calls it; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: as obj_modvol_put with the view taken from the view stack (obj_mtx_push_proj_view); nothing in the image calls it; part of NLOBJPUT; exercised 2026-11-12: called by the harness with a buffer object (word 0 = -1): it called obj_mtx_push_proj_view and then obj_modvol_send(object, 0)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_modvol_put_world(uint *obj)
@@ -555,8 +555,8 @@ void obj_modvol_put_world(uint *obj)
 }
 
 /* 0x0c103400  size 0x20  file by match with source
- * confidence: inferred
- * evidence: obj_mtx_push_proj_view then obj_modvol_send with mode -1; nothing in the image calls it; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: obj_mtx_push_proj_view then obj_modvol_send with mode -1; nothing in the image calls it; part of NLOBJPUT; exercised 2026-11-12: called by the harness with a buffer object (word 0 = -1): it called obj_mtx_push_proj_view and then obj_modvol_send(object, -1)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_modvol_put_world_alt(uint *obj)
@@ -567,8 +567,8 @@ void obj_modvol_put_world_alt(uint *obj)
 }
 
 /* 0x0c103440  size 0x60  file by match with source
- * confidence: inferred
- * evidence: when obj word 0 is not negative and word +0x18 is set: points QACR0/1 at the opaque list's write pointer (the list_write_ptrs record +4), fills the header block obj_send_header with a modifier volume parameter control word 0x818c0000 | user clip bits of poly_header_or_words or word +0x18, 0, modvol_instruction, and runs the volume renderer modvol_strips_send(obj, header, mode, modvol_sign); then pops the matrix stack (mtx_pop 1); callers obj_modvol_put, obj_modvol_put_alt, obj_modvol_put_world, obj_modvol_put_world_alt; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: when obj word 0 is not negative and word +0x18 is set: points QACR0/1 at the opaque list's write pointer (the list_write_ptrs record +4), fills the header block obj_send_header with a modifier volume parameter control word 0x818c0000 | user clip bits of poly_header_or_words or word +0x18, 0, modvol_instruction, and runs the volume renderer modvol_strips_send(obj, header, mode, modvol_sign); then pops the matrix stack (mtx_pop 1); callers obj_modvol_put, obj_modvol_put_alt, obj_modvol_put_world, obj_modvol_put_world_alt; part of NLOBJPUT; exercised 2026-11-12: called by the harness with an object of word 0 = 0 and word +0x18 = 0x81FD0000, poly_header_or_words 0x20000, modvol_instruction 0x12345678, modvol_sign -1 and mode 7, it wrote QACR0/1 = 0xAB (list_cursors[1] 0xABEBC020 >> 24) and header words 0x818F0000, 0, 0x12345678 and called modvol_strips_send(obj, obj_send_header, 7, -1) and mtx_pop(1); with +0x18 = 0x00FC0000 and no OR bits word 0 was 0x818C0000; with word 0 = -1, or +0x18 = 0, it only called mtx_pop(1) and left the header alone
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_modvol_send(uint *obj, int cull_mode)
@@ -649,8 +649,8 @@ void object_put_init(void)
 }
 
 /* 0x0c1035e0  size 0x32  file by match with source
- * confidence: inferred
- * evidence: stores the current matrix in obj_saved_mtx, multiplies rect_x_proj_matrix onto it from the left (mtx_premul_by_pairs), keeps the product in rect_x_proj_work and reloads the saved matrix; nothing in the image calls it; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: stores the current matrix in obj_saved_mtx, multiplies rect_x_proj_matrix onto it from the left (mtx_premul_by_pairs), keeps the product in rect_x_proj_work and reloads the saved matrix; nothing in the image calls it; part of NLOBJPUT; exercised 2026-11-12: called by the harness through a harness driver with the current matrix M (columns (2, 0.5, 0, 0), (-1, 3, 0.25, 0), (0.5, 0, 1.5, 0), (10, 20, 30, 1)): obj_saved_mtx held M, rect_x_proj_work held rect_x_proj_matrix x M (last column (-30, -3805.89, -18788.2, 30), which M x rect_x_proj_matrix would not give) and the current matrix at the return was M again
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_proj_view_capture(void)
@@ -663,8 +663,8 @@ void obj_proj_view_capture(void)
 }
 
 /* 0x0c103640  size 0x36  file by match with source
- * confidence: inferred
- * evidence: unless bit 1 of obj word +4 is set, brings the light vectors into the object's space (obj_light_vecs_to_model); pushes the matrix stack, multiplies rect_x_proj_work on from the left and sends the object to the renderer chosen by its word 0 (obj_typed_send); callers stage_far_objs_draw, objbank_draw_all; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: unless bit 1 of obj word +4 is set, brings the light vectors into the object's space (obj_light_vecs_to_model); pushes the matrix stack, multiplies rect_x_proj_work on from the left and sends the object to the renderer chosen by its word 0 (obj_typed_send); callers stage_far_objs_draw, objbank_draw_all; part of NLOBJPUT; exercised 2026-11-12: called by the harness with an object of word 0 = 2 (a type typed_send_by_slot draws nothing for): with word +4 = 0 it called obj_light_vecs_to_model, mtx_push(0), mtx_premul_by_pairs(rect_x_proj_work) and obj_typed_send(obj); with word +4 = 2 the same calls without obj_light_vecs_to_model
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_put_typed(int *obj)
@@ -680,8 +680,8 @@ void obj_put_typed(int *obj)
 }
 
 /* 0x0c1036a0  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: as obj_put_typed with the view from the view stack (obj_light_vecs_to_model_view, obj_mtx_push_proj_view); nothing in the image calls it; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: as obj_put_typed with the view from the view stack (obj_light_vecs_to_model_view, obj_mtx_push_proj_view); nothing in the image calls it; part of NLOBJPUT; exercised 2026-11-12: called by the harness with an object of word 0 = 2: with word +4 = 0 it called obj_light_vecs_to_model_view, obj_mtx_push_proj_view and obj_typed_send(obj); with word +4 = 2 only the last two
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_put_typed_world(int *obj)
@@ -697,8 +697,8 @@ void obj_put_typed_world(int *obj)
 }
 
 /* 0x0c1036e0  size 0x3e  file by match with source
- * confidence: inferred
- * evidence: as obj_put_typed passing a float on (obj_typed_send_f); nothing in the image calls it; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: as obj_put_typed passing a float on (obj_typed_send_f); nothing in the image calls it; part of NLOBJPUT; exercised 2026-11-12: called by the harness with an object of word 0 = 2 and 1.25: with word +4 = 0 it called obj_light_vecs_to_model, mtx_push(0), mtx_premul_by_pairs(rect_x_proj_work) and obj_typed_send_f(obj, 1.25); with word +4 = 2 the same without obj_light_vecs_to_model
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_put_typed_f(int *obj, float alpha)
@@ -714,8 +714,8 @@ void obj_put_typed_f(int *obj, float alpha)
 }
 
 /* 0x0c103740  size 0x36  file by match with source
- * confidence: inferred
- * evidence: as obj_put_typed_world passing a float on (obj_typed_send_f); nothing in the image calls it; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: as obj_put_typed_world passing a float on (obj_typed_send_f); nothing in the image calls it; part of NLOBJPUT; exercised 2026-11-12: called by the harness with an object of word 0 = 2 and 0.5: with word +4 = 0 it called obj_light_vecs_to_model_view, obj_mtx_push_proj_view and obj_typed_send_f(obj, 0.5); with word +4 = 2 only the last two
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_put_typed_world_f(int *obj, float alpha)
@@ -731,8 +731,8 @@ void obj_put_typed_world_f(int *obj, float alpha)
 }
 
 /* 0x0c1037a0  size 0x12  file by match with source
- * confidence: inferred
- * evidence: (float): stores it in obj_light_scalar and in the header block's light_scalar word; nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_put_typed_world_f and obj_view_dir_put, so by link order part of sdk/naomi2_library/object_put.c
+ * confidence: exercised
+ * evidence: (float): stores it in obj_light_scalar and in the header block's light_scalar word; nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_put_typed_world_f and obj_view_dir_put, so by link order part of sdk/naomi2_library/object_put.c; exercised 2026-11-12: called by the harness in one sandbox, obj_light_scalar_set(2.5) left 2.5 in both obj_light_scalar and obj_send_header+0x1c (0.3 in both before) and obj_light_scalar_set(0.75) then left 0.75 in both
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_light_scalar_set(float value)
@@ -743,8 +743,8 @@ void obj_light_scalar_set(float value)
 }
 
 /* 0x0c1037c0  size 0x38  file by match with source
- * confidence: inferred
- * evidence: stores the view vector the block at obj_view_dir and the half vector the block at obj_half_vector = the block at obj_light_dir + it; caller obj_view_dir_put_v; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: stores the view vector the block at obj_view_dir and the half vector the block at obj_half_vector = the block at obj_light_dir + it; caller obj_view_dir_put_v; part of NLOBJPUT; exercised 2026-11-12: called by the harness with (0.25, -0.5, 2.0) and obj_light_dir (1, 0, 0) as the snapshot has it, it left obj_view_dir (0.25, -0.5, 2) and obj_half_vector (1.25, -0.5, 2); called through obj_view_dir_put_v with obj_light_dir planted (1, 2, 3) and (3, 4, -1) it left (3, 4, -1) and (4, 6, 2)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_view_dir_put(float x, float y, float z)
@@ -759,8 +759,8 @@ void obj_view_dir_put(float x, float y, float z)
 }
 
 /* 0x0c103820  size 0x20  file by match with source
- * confidence: inferred
- * evidence: obj_view_dir_put from a float[3]; nothing in the image calls it; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: obj_view_dir_put from a float[3]; nothing in the image calls it; part of NLOBJPUT; exercised 2026-11-12: called by the harness with a buffer holding (3, 4, -1) and obj_light_dir planted (1, 2, 3), it called obj_view_dir_put(3, 4, -1) and left obj_view_dir (3, 4, -1) and obj_half_vector (4, 6, 2)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_view_dir_put_v(float *dir)
@@ -801,8 +801,8 @@ void obj_light_dir_put(float x, float y, float z)
 }
 
 /* 0x0c103900  size 0x26  file by match with source
- * confidence: inferred
- * evidence: (r, g, b): stores them in obj_light_color and copies them to obj_light_colour2; nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_light_dir_put and obj_light_colour_put, so by link order part of sdk/naomi2_library/object_put.c
+ * confidence: exercised
+ * evidence: (r, g, b): stores them in obj_light_color and copies them to obj_light_colour2; nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_light_dir_put and obj_light_colour_put, so by link order part of sdk/naomi2_library/object_put.c; exercised 2026-11-12: called by the harness with (0.1, 0.2, 0.3) it left obj_light_color and obj_light_colour2 both (0.1, 0.2, 0.3) (both 1, 1, 1 before); obj_light_colour2_set(0.7, 0.8, 0.9) after it in the same sandbox changed obj_light_colour2 only
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_light_color_set(float r, float g, float b)
@@ -828,8 +828,8 @@ void obj_light_colour_put(float red, float green, float blue)
 }
 
 /* 0x0c103960  size 0x18  file by match with source
- * confidence: inferred
- * evidence: (r, g, b): stores obj_light_colour2 only; nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_light_colour_put and blend_pair_bits_put_inverted, so by link order part of sdk/naomi2_library/object_put.c
+ * confidence: exercised
+ * evidence: (r, g, b): stores obj_light_colour2 only; nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_light_colour_put and blend_pair_bits_put_inverted, so by link order part of sdk/naomi2_library/object_put.c; exercised 2026-11-12: called by the harness after obj_light_color_set(0.1, 0.2, 0.3) in one sandbox, (0.7, 0.8, 0.9) left obj_light_colour2 (0.7, 0.8, 0.9) and obj_light_color still (0.1, 0.2, 0.3)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_light_colour2_set(float r, float g, float b)
@@ -841,8 +841,8 @@ void obj_light_colour2_set(float r, float g, float b)
 }
 
 /* 0x0c103980  size 0x26  file by match with source
- * confidence: inferred
- * evidence: blend_pair_bits = ((~a & 7) << 5) + ((~b & 7) << 2); only caller the game's aet_blend_pair_put; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: blend_pair_bits = ((~a & 7) << 5) + ((~b & 7) << 2); only caller the game's aet_blend_pair_put; part of NLOBJPUT; exercised 2026-11-12: called by the harness, (4, 5) left blend_pair_bits 0x68, (1, 6) 0xC4 and (0, 7) 0xE0, as ((~a & 7) << 5) + ((~b & 7) << 2) gives
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void blend_pair_bits_put_inverted(uint src_factor, uint dst_factor)
@@ -871,8 +871,8 @@ void obj_vertex_hook_select(int kind)
 }
 
 /* 0x0c103a20  size 0x20  file by match with source
- * confidence: inferred
- * evidence: copies the first four list write pointers into gfx_counters_saved; nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_vertex_hook_select and list_write_ptrs_since_mark, so by link order part of sdk/naomi2_library/object_put.c
+ * confidence: exercised
+ * evidence: copies the first four list write pointers into gfx_counters_saved; nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_vertex_hook_select and list_write_ptrs_since_mark, so by link order part of sdk/naomi2_library/object_put.c; exercised 2026-11-12: called by the harness on the snapshot's cursor record (list_cursors, what list_write_ptrs points at) it copied 0xABCBC020, 0xABEBC020, 0xABEFC020, 0xABF7C020 into gfx_counters_saved; with the five cursors planted 0x11000000 to 0x15000000 it copied the first four and the fifth saved word stayed 0xABC7C020
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void list_write_ptrs_mark(void)
@@ -885,8 +885,8 @@ void list_write_ptrs_mark(void)
 }
 
 /* 0x0c103a60  size 0x36  file by match with source
- * confidence: inferred
- * evidence: (four int out pointers): each of the four list write pointers minus the word list_write_ptrs_mark saved in gfx_counters_saved; nothing in the image calls it (uncalled code, made a function 2026-11-09); between list_write_ptrs_mark and obj_sphere_visible, so by link order part of sdk/naomi2_library/object_put.c
+ * confidence: exercised
+ * evidence: (four int out pointers): each of the four list write pointers minus the word list_write_ptrs_mark saved in gfx_counters_saved; nothing in the image calls it (uncalled code, made a function 2026-11-09); between list_write_ptrs_mark and obj_sphere_visible, so by link order part of sdk/naomi2_library/object_put.c; exercised 2026-11-12: called by the harness after list_write_ptrs_mark with the cursors (list_cursors) planted 0x11000000, 0x12000000, 0x13000000, 0x14000000 and then moved to 0x11000040, 0x12000080, 0x13000100, 0x13FFFFF0, it wrote 0x40, 0x80, 0x100 and -16 through the four pointers
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void list_write_ptrs_since_mark(int *list0, int *list1, int *list2, int *list3)
@@ -927,8 +927,8 @@ bool obj_sphere_visible(compiled_model_rec *model)
 }
 
 /* 0x0c103ba0  size 0xb4  file by match with source
- * confidence: inferred
- * evidence: as obj_sphere_visible, also false beyond the far value (obj_send_header+0x28) and without the rectangle's left/top offsets; nothing in the image calls it; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: as obj_sphere_visible, also false beyond the far value (obj_send_header+0x28) and without the rectangle's left/top offsets; nothing in the image calls it; part of NLOBJPUT; exercised 2026-11-12: called by the harness through a harness driver with an identity current matrix (near 0.1, far 1000 as the snapshot has them): centers (0, 0, -10) and (0, 0, -999) radius 1 gave 1, (0, 0, -1002) 0, (0, 0, -0.05) radius 0.01 gave 0 and radius 0.1 gave 1, (-6, 0, -10) 1 and (-7, 0, -10) 0; with proj_rect_px_left poked 1000, (0, 0, -10) still gave 1 where obj_sphere_visible gave 0, and obj_sphere_visible gave 1 for (0, 0, -1002)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 bool obj_sphere_visible_near_far(compiled_model_rec *model)
@@ -954,9 +954,9 @@ bool obj_sphere_visible_near_far(compiled_model_rec *model)
 }
 
 /* 0x0c103ca0  size 0x32  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x3a
- * evidence: (object): walks the polygon records from object +0x18 (0x50 bytes plus word +0x4c each) to the zero word that ends them and returns the word after it; 0 for an empty object (word 0 negative or +0x18 zero); nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_sphere_visible_near_far and obj_light_vecs_to_model, so by link order part of sdk/naomi2_library/object_put.c
+ * evidence: (object): walks the polygon records from object +0x18 (0x50 bytes plus word +0x4c each) to the zero word that ends them and returns the word after it; 0 for an empty object (word 0 negative or +0x18 zero); nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_sphere_visible_near_far and obj_light_vecs_to_model, so by link order part of sdk/naomi2_library/object_put.c; exercised 2026-11-12: called by the harness with a record at object +0x18 whose word +0x4c is 0x10, a second at +0x78 with 8 and a zero word at +0xD0, it returned the word after it, 0x12345678; with the first size 0 and a zero at +0x68 it returned the word at +0x6C (0xCAFE); with word 0 = -1, or +0x18 = 0, it returned 0
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 int obj_trailer_word_get(int *obj)
@@ -975,8 +975,8 @@ int obj_trailer_word_get(int *obj)
 }
 
 /* 0x0c103ce0  size 0x40  file by match with source
- * confidence: inferred
- * evidence: with the current matrix transposed (mtx_transpose), puts the block at obj_light_dir into header block +0x10 and the block at obj_half_vector into +0 (mtx_xform_dir), scales the latter to length 436.5 (vec3_set_length) and transposes back; callers obj_put_typed, obj_put_typed_f, obj_put_lit, obj_put_lit_f, obj_put_second_path and obj_put_second_path_float; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: with the current matrix transposed (mtx_transpose), puts the block at obj_light_dir into header block +0x10 and the block at obj_half_vector into +0 (mtx_xform_dir), scales the latter to length 436.5 (vec3_set_length) and transposes back; callers obj_put_typed, obj_put_typed_f, obj_put_lit, obj_put_lit_f, obj_put_second_path and obj_put_second_path_float; part of NLOBJPUT; exercised 2026-11-12: called by the harness through a harness driver with the current matrix M (columns (2, 0.5, 0, 0), (-1, 3, 0.25, 0), (0.5, 0, 1.5, 0), (10, 20, 30, 1)), obj_light_dir planted (0.6, 0, 0.8) and obj_half_vector (1, 2, 3): header +0x10 got (1.2, -0.4, 1.5) = M transposed times the light, header +0 got (159.9, 306.5, 266.5) = 436.5 x the unit vector along M transposed times (1, 2, 3) = (3, 5.75, 5), and the current matrix at the return was M
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 int obj_light_vecs_to_model(void)
@@ -990,8 +990,8 @@ int obj_light_vecs_to_model(void)
 }
 
 /* 0x0c103d40  size 0x84  file by match with source
- * confidence: inferred
- * evidence: the same with the view kept apart: puts the block at obj_view_dir through the view stack's matrix (mtx_stack_select 2), then on the model stack (1) puts the block at obj_light_dir into header +0x10, adds the block at obj_light_dir to the turned view vector, turns the sum, scales it to 436.5 and stores it at header +0; callers obj_put_typed_world, obj_put_typed_world_f, obj_put_lit_world, obj_put_lit_world_f; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: the same with the view kept apart: puts the block at obj_view_dir through the view stack's matrix transposed (mtx_stack_select 2, mtx_transpose before and after), then on the model stack (1) puts the block at obj_light_dir into header +0x10, adds the block at obj_light_dir to the turned view vector, turns the sum, scales it to 436.5 and stores it at header +0; callers obj_put_typed_world, obj_put_typed_world_f, obj_put_lit_world, obj_put_lit_world_f; part of NLOBJPUT; exercised 2026-11-12: called by the harness through a harness driver with M as for obj_light_vecs_to_model, the view stack's top slot planted with V (columns (0, 1, 0, 0), (-1, 0, 0, 0), (0, 0, 1, 0), (3, 4, 5, 1)), obj_view_dir (0, 1, 0) and obj_light_dir (0.6, 0, 0.8): header +0x10 got (1.2, -0.4, 1.5) and header +0 got (347.0, -151.8, 216.9), 436.5 along M^T x (V^T x view + light) = (3.2, -1.4, 2); the current matrix at the return was M
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 int obj_light_vecs_to_model_view(void)
@@ -1017,8 +1017,8 @@ int obj_light_vecs_to_model_view(void)
 }
 
 /* 0x0c103e00  size 0x12  file by match with source
- * confidence: inferred
- * evidence: runs the assembly renderer typed_send_by_slot (by the object's word 0; it pops the matrix stack); callers obj_put_typed, obj_put_typed_world; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: runs the assembly renderer typed_send_by_slot (by the object's word 0; it pops the matrix stack); callers obj_put_typed, obj_put_typed_world; part of NLOBJPUT; exercised 2026-11-12: called by the harness with an object of word 0 = 2 it called typed_send_by_slot(obj), which called mtx_pop(1) and no renderer; with word 0 = 0 and with 1 (no groups) typed_send_by_slot ran intensity_send(obj, obj_send_header) and then mtx_pop(1)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_typed_send(int *obj)
@@ -1027,8 +1027,8 @@ void obj_typed_send(int *obj)
 }
 
 /* 0x0c103e20  size 0x12  file by match with source
- * confidence: inferred
- * evidence: runs typed_send_by_slot_alpha, the float-taking twin of obj_typed_send; callers obj_put_typed_f, obj_put_typed_world_f; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: runs typed_send_by_slot_alpha, the float-taking twin of obj_typed_send; callers obj_put_typed_f, obj_put_typed_world_f; part of NLOBJPUT; exercised 2026-11-12: called by the harness with 0.75 and an object of word 0 = 0 it called typed_send_by_slot_alpha(obj, 0.75), which ran intensity_send_alpha(obj, obj_send_header, 0.75) and mtx_pop(1); with word 0 = 2 typed_send_by_slot_alpha(obj, 0.75) only called mtx_pop(1)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_typed_send_f(int *obj, float alpha)
@@ -1038,8 +1038,8 @@ void obj_typed_send_f(int *obj, float alpha)
 }
 
 /* 0x0c103e40  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: mtx_push(0) then multiplies rect_x_proj_work on from the left (mtx_premul_by_pairs); callers obj_modvol_put, obj_modvol_put_alt, obj_put_lit, obj_put_lit_f; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: mtx_push(0) then multiplies rect_x_proj_work on from the left (mtx_premul_by_pairs); callers obj_modvol_put, obj_modvol_put_alt, obj_put_lit, obj_put_lit_f; part of NLOBJPUT; exercised 2026-11-12: called by the harness through a harness driver with the current matrix M (columns (2, 0.5, 0, 0), (-1, 3, 0.25, 0), (0.5, 0, 1.5, 0), (10, 20, 30, 1)): the stack depth went from 0 to 1 with M in the slot pushed, and the current matrix at the return was rect_x_proj_work x M (last column (-30, -3805.89, -18788.2, 30))
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 uint obj_mtx_push_proj(void)
@@ -1049,8 +1049,8 @@ uint obj_mtx_push_proj(void)
 }
 
 /* 0x0c103e80  size 0x24  file by match with source
- * confidence: inferred
- * evidence: pushes the current matrix and loads rect_x_proj_work (mtx_push), multiplies by the view stack's top matrix (the pointer at mtx_stack_records+0x20, record 2 of the stack records) and by the pushed matrix (mtx_times_last_pushed); callers obj_modvol_put_world, obj_modvol_put_world_alt, obj_put_typed_world, obj_put_typed_world_f, obj_put_lit_world, obj_put_lit_world_f; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: pushes the current matrix and loads rect_x_proj_work (mtx_push), multiplies by the view stack's top matrix (the pointer at mtx_stack_records+0x20, record 2 of the stack records) and by the pushed matrix (mtx_times_last_pushed); callers obj_modvol_put_world, obj_modvol_put_world_alt, obj_put_typed_world, obj_put_typed_world_f, obj_put_lit_world, obj_put_lit_world_f; part of NLOBJPUT; exercised 2026-11-12: called by the harness through a harness driver with the current matrix M (columns (2, 0.5, 0, 0), (-1, 3, 0.25, 0), (0.5, 0, 1.5, 0), (10, 20, 30, 1)) and the view stack's top slot (the pointer at mtx_stack_records+0x20, 0x0C41C8A0) planted with V (columns (0, 1, 0, 0), (-1, 0, 0, 0), (0, 0, 1, 0), (3, 4, 5, 1)): the current matrix at the return was rect_x_proj_work x V x M, last column (-35, -21050, -16511.8, 35), where W x M x V would end (-38.5, -3918.5, -28650.3, 38.5)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 int obj_mtx_push_proj_view(void)
@@ -1062,8 +1062,8 @@ int obj_mtx_push_proj_view(void)
 }
 
 /* 0x0c103ec0  size 0x34  file by match with source
- * confidence: inferred
- * evidence: when bit 4 of obj word +4 is set brings the light vectors into the object's space (obj_light_vecs_to_model); turns the lights into model space (lights_by_inverse_matrix), pushes the projection (obj_mtx_push_proj) and draws (obj_lit_send); nothing in the image calls it; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: when bit 4 of obj word +4 is set brings the light vectors into the object's space (obj_light_vecs_to_model); turns the lights into model space (lights_by_inverse_matrix), pushes the projection (obj_mtx_push_proj) and draws (obj_lit_send); nothing in the image calls it; part of NLOBJPUT; exercised 2026-11-12: called by the harness with an object of word 0 = -1: with word +4 = 0x10 it called obj_light_vecs_to_model, lights_by_inverse_matrix, obj_mtx_push_proj and obj_lit_send(obj) (which only popped); with word +4 = 2 (bit 4 clear) the same without obj_light_vecs_to_model
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_put_lit(int *obj)
@@ -1078,8 +1078,8 @@ void obj_put_lit(int *obj)
 }
 
 /* 0x0c103f20  size 0x34  file by match with source
- * confidence: inferred
- * evidence: as obj_put_lit with obj_light_vecs_to_model_view and obj_mtx_push_proj_view; nothing in the image calls it; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: as obj_put_lit with obj_light_vecs_to_model_view and obj_mtx_push_proj_view; nothing in the image calls it; part of NLOBJPUT; exercised 2026-11-12: called by the harness with an object of word 0 = -1: with word +4 = 0x10 it called obj_light_vecs_to_model_view, lights_by_inverse_matrix, obj_mtx_push_proj_view and obj_lit_send(obj); with word +4 = 2 the same without obj_light_vecs_to_model_view
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_put_lit_world(int *obj)
@@ -1094,8 +1094,8 @@ void obj_put_lit_world(int *obj)
 }
 
 /* 0x0c103f80  size 0x3c  file by match with source
- * confidence: inferred
- * evidence: as obj_put_lit ending in obj_lit_send_f; nothing in the image calls it; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: as obj_put_lit ending in obj_lit_send_f; nothing in the image calls it; part of NLOBJPUT; exercised 2026-11-12: called by the harness with an object of word 0 = -1 and 1.5: with word +4 = 0x10 it called obj_light_vecs_to_model, lights_by_inverse_matrix, obj_mtx_push_proj and obj_lit_send_f(obj, 1.5); with word +4 = 2 the same without obj_light_vecs_to_model
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_put_lit_f(int *obj, float alpha)
@@ -1110,8 +1110,8 @@ void obj_put_lit_f(int *obj, float alpha)
 }
 
 /* 0x0c103fe0  size 0x3c  file by match with source
- * confidence: inferred
- * evidence: as obj_put_lit_world ending in obj_lit_send_f; nothing in the image calls it; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: as obj_put_lit_world ending in obj_lit_send_f; nothing in the image calls it; part of NLOBJPUT; exercised 2026-11-12: called by the harness with an object of word 0 = -1 and 0.25: with word +4 = 0x10 it called obj_light_vecs_to_model_view, lights_by_inverse_matrix, obj_mtx_push_proj_view and obj_lit_send_f(obj, 0.25); with word +4 = 2 the same without obj_light_vecs_to_model_view
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_put_lit_world_f(int *obj, float alpha)
@@ -1147,8 +1147,8 @@ void obj_alt_lighting_off(void)
 }
 
 /* 0x0c104080  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: unless obj word 0 is negative runs the assembly renderer lit_groups_send, or lit_offset_groups_send when obj_alt_lighting is set, with the header block obj_send_header; then mtx_pop(1); callers obj_put_lit, obj_put_lit_world; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: unless obj word 0 is negative runs the assembly renderer lit_groups_send, or lit_offset_groups_send when obj_alt_lighting is set, with the header block obj_send_header; then mtx_pop(1); callers obj_put_lit, obj_put_lit_world; part of NLOBJPUT; exercised 2026-11-12: called by the harness with an object of word 0 = -1 it only called mtx_pop(1); with word 0 = 0 (no groups) and obj_alt_lighting 0 it called lit_groups_send(obj, obj_send_header) and then mtx_pop(1), and with obj_alt_lighting 1 lit_offset_groups_send(obj, obj_send_header) and then mtx_pop(1)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_lit_send(int *obj)
@@ -1166,8 +1166,8 @@ void obj_lit_send(int *obj)
 }
 
 /* 0x0c1040e0  size 0x36  file by match with source
- * confidence: inferred
- * evidence: sets QACR0/1 to 0xc, then as obj_lit_send through the float-taking entries lit_groups_send_alpha / lit_offset_groups_send_alpha; callers obj_put_lit_f, obj_put_lit_world_f; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: sets QACR0/1 to 0xc, then as obj_lit_send through the float-taking entries lit_groups_send_alpha / lit_offset_groups_send_alpha; callers obj_put_lit_f, obj_put_lit_world_f; part of NLOBJPUT; exercised 2026-11-12: called by the harness with 0.6, each call wrote 0xC to QACR0/1 (0xff000038, 0xff00003c); with object word 0 = 0 it then called lit_groups_send_alpha(obj, obj_send_header, 0.6) under obj_alt_lighting 0 and lit_offset_groups_send_alpha(obj, obj_send_header, 0.6) under 1, with word 0 = -1 neither; mtx_pop(1) every time
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_lit_send_f(int *obj, float alpha)
@@ -1188,8 +1188,8 @@ void obj_lit_send_f(int *obj, float alpha)
 }
 
 /* 0x0c104140  size 0x44  file by match with source
- * confidence: inferred
- * evidence: unless obj word 0 is negative: light vectors into the object's space unless bit 1 of word +4 (obj_light_vecs_to_model), pushes and multiplies rect_x_proj_work on, runs the assembly renderer float_colour_send with the header block obj_send_header and pops; nothing in the image calls it; obj_put_second_path_float at 0c1041a0 follows it; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: unless obj word 0 is negative: light vectors into the object's space unless bit 1 of word +4 (obj_light_vecs_to_model), pushes and multiplies rect_x_proj_work on, runs the assembly renderer float_colour_send with the header block obj_send_header and pops; nothing in the image calls it; obj_put_second_path_float at 0c1041a0 follows it; part of NLOBJPUT; exercised 2026-11-12: called by the harness with an object of word 0 = -1 it called nothing; with word 0 = 0 and word +4 = 0 it called obj_light_vecs_to_model, mtx_push(0), mtx_premul_by_pairs(rect_x_proj_work), float_colour_send(obj, obj_send_header) and mtx_pop(1); with word +4 = 2 the same without obj_light_vecs_to_model
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_put_second_path(int *obj)
@@ -1206,8 +1206,8 @@ void obj_put_second_path(int *obj)
 }
 
 /* 0x0c1041a0  size 0x4c  file by match with source
- * confidence: inferred
- * evidence: (obj, float): obj_put_second_path with one float argument: unless obj word 0 is negative, light vectors into the object's space unless bit 1 of word +4 (obj_light_vecs_to_model), pushes and multiplies rect_x_proj_work on, runs the assembly renderer at its second entry float_colour_send_alpha (two bytes into float_colour_send) with the header block obj_send_header and the float, and pops; nothing in the image calls it; part of NLOBJPUT
+ * confidence: exercised
+ * evidence: (obj, float): obj_put_second_path with one float argument: unless obj word 0 is negative, light vectors into the object's space unless bit 1 of word +4 (obj_light_vecs_to_model), pushes and multiplies rect_x_proj_work on, runs the assembly renderer at its second entry float_colour_send_alpha (two bytes into float_colour_send) with the header block obj_send_header and the float, and pops; nothing in the image calls it; part of NLOBJPUT; exercised 2026-11-12: called by the harness with 0.4 and an object of word 0 = -1 it called nothing; with word 0 = 0 and word +4 = 0 it called obj_light_vecs_to_model, mtx_push(0), mtx_premul_by_pairs(rect_x_proj_work), float_colour_send_alpha(obj, obj_send_header, 0.4) and mtx_pop(1); with word +4 = 2 the same without obj_light_vecs_to_model
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void obj_put_second_path_float(int *obj, float alpha)
@@ -1225,8 +1225,8 @@ void obj_put_second_path_float(int *obj, float alpha)
 }
 
 /* 0x0c104220  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: (r, g, b floats): stores them at +4, +8 and +0xc of single_light_color; nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_put_second_path_float and second_light_color_set, so by link order part of sdk/naomi2_library/object_put.c
+ * confidence: exercised
+ * evidence: (r, g, b floats): stores them at +4, +8 and +0xc of single_light_color; nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_put_second_path_float and second_light_color_set, so by link order part of sdk/naomi2_library/object_put.c; exercised 2026-11-12: called by the harness with (0.5, 1.5, 2.5) it left single_light_color +4, +8, +0xC = 0.5, 1.5, 2.5 and +0 at 1.0 as before; second_light_color_set(3.5, 4.5, 5.5) after it in the same sandbox left them so
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void single_light_color_set(float r, float g, float b)
@@ -1238,8 +1238,8 @@ void single_light_color_set(float r, float g, float b)
 }
 
 /* 0x0c104240  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: (r, g, b floats): stores them at +4, +8 and +0xc of second_light_color (0x0C325900), the block after single_light_color; nothing in the image calls it (uncalled code, made a function 2026-11-09); between single_light_color_set and argb_strips_send, so by link order part of sdk/naomi2_library/object_put.c
+ * confidence: exercised
+ * evidence: (r, g, b floats): stores them at +4, +8 and +0xc of second_light_color (0x0C325900), the block after single_light_color; nothing in the image calls it (uncalled code, made a function 2026-11-09); between single_light_color_set and argb_strips_send, so by link order part of sdk/naomi2_library/object_put.c; exercised 2026-11-12: called by the harness with (3.5, 4.5, 5.5) after single_light_color_set(0.5, 1.5, 2.5) in one sandbox, it left 3.5, 4.5, 5.5 at 0x0C325904, +8, +0xC (second_light_color; +0 stayed 1.0) and single_light_color still (0.5, 1.5, 2.5)
  * matched: source/sdk/naomi2_library/object_put.c (tools/match/match.py)
  */
 void second_light_color_set(float r, float g, float b)

@@ -837,8 +837,8 @@ void net_hours_flag_set(uint bit)
 }
 
 /* 0x0c07b640  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: (bit): clears that bit of net_hours_flags; caller net_service_hours_check; part of vf4lib/libnetwork/src/network.c
+ * confidence: exercised
+ * evidence: (bit): clears that bit of net_hours_flags; caller net_service_hours_check; part of vf4lib/libnetwork/src/network.c; exercised 2026-11-12: called by the harness with net_hours_flags poked to 0xFF, bit 2 left 0xFB, then bit 0 0xFA and bit 7 0x7A
  * matched: source/vf4lib/libnetwork/src/network.c (tools/match/match.py)
  */
 void net_hours_flag_clear(uint bit)
@@ -1351,9 +1351,9 @@ void net_power_on_reply_parse(char *body)
 }
 
 /* 0x0c07c3e0  size 0x70  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x78
- * evidence: a token list self-test: prints "%s:\n" with "net_test_st" to http_recv_out, splits "25,352,32768" at commas and prints each token; nothing in the image calls it; part of vf4lib/libnetwork/src/network.c
+ * evidence: a token list self-test: prints "%s:\n" with "net_test_st" to http_recv_out, splits "25,352,32768" at commas and prints each token; nothing in the image calls it; part of vf4lib/libnetwork/src/network.c; exercised 2026-11-12: called by the harness it wrote "net_test_st:", "25", "352" and "32768", one per line, into the console buffer http_recv_buf at its write position 0x0C3D674C (console_printf to http_recv_out, read back in the sandbox)
  * matched: source/vf4lib/libnetwork/src/network.c (tools/match/match.py)
  */
 void net_test_st(void)
@@ -1368,8 +1368,8 @@ void net_test_st(void)
 }
 
 /* 0x0c07c4a0  size 0xba  file by match with source
- * confidence: inferred
- * evidence: a form map self-test: prints "net_test_map", parses "id=0123&handle=&name=%2B" and prints "[%s]=[%s]\n" for the keys of net_test_map_keys, then parses the a0=0 .. az=35 text and prints the keys of net_test_map_keys2; nothing in the image calls it; part of vf4lib/libnetwork/src/network.c
+ * confidence: exercised
+ * evidence: a form map self-test: prints "net_test_map", parses "id=0123&handle=&name=%2B" and prints "[%s]=[%s]\n" for the keys of net_test_map_keys, then parses the a0=0 .. az=35 text and prints the keys of net_test_map_keys2; nothing in the image calls it; part of vf4lib/libnetwork/src/network.c; exercised 2026-11-12: called by the harness it wrote "net_test_map:" and then [id]=[0123], [name]=[+], [handle]=[], [name]=[+], [unseen]=[(null)], [a0]=[0], [av]=[31], [aw]=[32], [ax]=[33], one per line, into the console buffer http_recv_buf (read back in the sandbox); the two parses gave maps of 3 and 36 keys
  * matched: source/vf4lib/libnetwork/src/network.c (tools/match/match.py)
  */
 void net_test_map(void)
@@ -2416,8 +2416,8 @@ void alab_step_every_frame_off(void)
 }
 
 /* 0x0c07e580  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (player): sets the player's byte in net_bookmark_flags, which net_game_end_send sends as "bookmark_%s=1&" in the "cmd=end&" request and then clears; callers game_replay_disp and replay_end_next; part of vf4lib/libnetwork/src/network.c
+ * confidence: exercised
+ * evidence: (player): sets the player's byte in net_bookmark_flags, which net_game_end_send sends as "bookmark_%s=1&" in the "cmd=end&" request and then clears; callers game_replay_disp and replay_end_next; part of vf4lib/libnetwork/src/network.c; exercised 2026-11-12: called by the harness with 1 it set net_bookmark_flags to 00 01 00 00, and then with 0 to 01 01 00 00
  * matched: source/vf4lib/libnetwork/src/network.c (tools/match/match.py)
  */
 void net_bookmark_set(int side)
@@ -2439,8 +2439,8 @@ int net_rare_value_get(int index)
 }
 
 /* 0x0c07e5c0  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (index, value): stores the index-th number of the rare / syuchu block (net_game_config +0x40); the setter beside net_rare_value_get; nothing in the image calls it (uncalled code, made a function 2026-11-09); between net_rare_value_get and net_ready_and_idle, so by link order part of vf4lib/libnetwork/src/network.c
+ * confidence: exercised
+ * evidence: (index, value): stores the index-th number of the rare / syuchu block (net_game_config +0x40); the setter beside net_rare_value_get; nothing in the image calls it (uncalled code, made a function 2026-11-09); between net_rare_value_get and net_ready_and_idle, so by link order part of vf4lib/libnetwork/src/network.c; exercised 2026-11-12: called by the harness with (14, 1234) it stored 1234 at net_game_config +0x78 (net_syuchu_value2_get then returned 1234), with (13, 99) 99 at +0x74 (net_rare_value_get(13) returned 99, +0x78 unchanged) and with (14, -7) -7
  * matched: source/vf4lib/libnetwork/src/network.c (tools/match/match.py)
  */
 void net_rare_value_set(int index, int value)
@@ -2556,8 +2556,8 @@ int net_syuchu_value1_get(void)
 }
 
 /* 0x0c07e7c0  size 0x10  file by match with source
- * confidence: inferred
- * evidence: returns the third "syuchu" number (net reply block +0x78), after net_syuchu_value0_get and net_syuchu_value1_get; role unclear; nothing in the image calls it (uncalled code, made a function 2026-11-09); between net_syuchu_value1_get and net_kumite_card_listed, so by link order part of vf4lib/libnetwork/src/network.c
+ * confidence: exercised
+ * evidence: returns the third "syuchu" number (net reply block +0x78), after net_syuchu_value0_get and net_syuchu_value1_get; role unclear; nothing in the image calls it (uncalled code, made a function 2026-11-09); between net_syuchu_value1_get and net_kumite_card_listed, so by link order part of vf4lib/libnetwork/src/network.c; exercised 2026-11-12: called by the harness after net_rare_value_set(14, 1234) (net_game_config +0x78) it returned 1234, still 1234 after net_rare_value_set(13, 99) wrote +0x74, and -7 after net_rare_value_set(14, -7)
  * matched: source/vf4lib/libnetwork/src/network.c (tools/match/match.py)
  */
 int net_syuchu_value2_get(void)
@@ -3219,8 +3219,8 @@ char * net_log_slot_current(void)
 }
 
 /* 0x0c07f620  size 0x10  file by match with source
- * confidence: inferred
- * evidence: returns net_log_slot_count; nothing in the image calls it (uncalled code, made a function 2026-11-09); between net_log_slot_current and net_is_on, so by link order part of vf4lib/libnetwork/src/network.c
+ * confidence: exercised
+ * evidence: returns net_log_slot_count; nothing in the image calls it (uncalled code, made a function 2026-11-09); between net_log_slot_current and net_is_on, so by link order part of vf4lib/libnetwork/src/network.c; exercised 2026-11-12: called by the harness on the snapshot it returned 100 (net_log_slot_count peeked as 0x64), and with net_log_slot_count poked to 7 it returned 7
  * matched: source/vf4lib/libnetwork/src/network.c (tools/match/match.py)
  */
 int net_log_slot_count_get(void)
@@ -3240,7 +3240,7 @@ uchar net_is_on(void)
 
 /* 0x0c07f660  size 0x1e  file by match with source
  * confidence: inferred
- * evidence: (URL): 1 when it starts with "http://211.132.254.10/sys/servlet/PowerOn" (0x2A bytes compared); nothing in the image calls it; part of vf4lib/libnetwork/src/network.c
+ * evidence: (URL): 1 when it is exactly "http://211.132.254.10/sys/servlet/PowerOn" (0x2A bytes compared: the 41 characters and the terminating NUL, so a longer URL with that start gives 0); nothing in the image calls it; part of vf4lib/libnetwork/src/network.c; corrected 2026-11-12 from harness calls: called by the harness: "http://211.132.254.10/sys/servlet/PowerOn" returned 1, but the same URL with "?x=1" appended returned 0 (and ".../PowerOf" 0): the 0x2A bytes memcmp compares are the 41 characters and the text's terminating NUL, so it is an exact match, not a prefix test
  * matched: source/vf4lib/libnetwork/src/network.c (tools/match/match.py)
  */
 bool url_is_power_on(char *url)
@@ -3252,8 +3252,8 @@ bool url_is_power_on(char *url)
 }
 
 /* 0x0c07f6a0  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: (URL): 1 when it starts with "http://211.132.254.10"; nothing in the image calls it; part of vf4lib/libnetwork/src/network.c
+ * confidence: exercised
+ * evidence: (URL): 1 when it starts with "http://211.132.254.10"; nothing in the image calls it; part of vf4lib/libnetwork/src/network.c; exercised 2026-11-12: called by the harness "http://211.132.254.10/abc" returned 1, "http://211.132.254.10" 1 and "http://211.132.254.1/" 0 (memcmp of 21 bytes, traced)
  * matched: source/vf4lib/libnetwork/src/network.c (tools/match/match.py)
  */
 bool url_is_net_server(char *url)
@@ -3460,8 +3460,8 @@ void net_log_record_fill(net_check_log_rec *log, char *ip_text, char *serial_tex
 }
 
 /* 0x0c07fba0  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: (record): stamps the clock (get_now_tm) at +0x210; nothing in the image calls it; part of vf4lib/libnetwork/src/network.c
+ * confidence: exercised
+ * evidence: (record): stamps the clock (get_now_tm) at +0x210; nothing in the image calls it; part of vf4lib/libnetwork/src/network.c; exercised 2026-11-12: called by the harness with buf:5 (0x0F00A000, filled with 0xCC) it called get_now_tm(0x0F00A210) and the clock's tm landed at +0x210 with the bytes below left 0xCC; with buf:6+0x100 it called get_now_tm(0x0F00C310)
  * matched: source/vf4lib/libnetwork/src/network.c (tools/match/match.py)
  */
 void net_log_record_time_stamp(net_check_log_rec *log)

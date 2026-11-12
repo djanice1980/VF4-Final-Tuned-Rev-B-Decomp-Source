@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c071180  size 0x12  file by match with source
- * confidence: inferred
- * evidence: (base, size): stores the vertex buffer base and size in the library state (gfx_state +0x44C/+0x450), the words the VertexBuffer BufferBase / BufferSize settings fill at start-up; called by ta_param_base_put on chips before revision 8; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (base, size): stores the vertex buffer base and size in the library state (gfx_state +0x44C/+0x450), the words the VertexBuffer BufferBase / BufferSize settings fill at start-up; called by ta_param_base_put on chips before revision 8; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with (0x123400, 0x5600) it left gfx_state +0x44C / +0x450 at 0x123400 / 0x5600, then with (0x200000, 0x40000) at those; it returned 0
  * same code as main.bin 0c147140 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/runtime_settings.c (tools/match/match.py)
  */

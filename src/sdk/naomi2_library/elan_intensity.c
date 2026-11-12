@@ -7,113 +7,113 @@
 #include "vf4ft.h"
 
 /* 0x0c10a550  size 0x2  file by match with source
- * confidence: inferred
- * evidence: (obj r4, header block r5): sets the alpha fr4 to 1.0 and falls into intensity_send_alpha at 0x0C10A552 (so it changes whatever that routine does: r0-r7 and fr0-fr11); the renderer in both the slot words at typed_send_slots in the image (and the one intensity_spill_put puts back); sends the object as 32-byte textured intensity vertices (X, Y, 1/w, u, v, base intensity, offset intensity); zero fill before it; part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: (obj r4, header block r5): sets the alpha fr4 to 1.0 and falls into intensity_send_alpha at 0x0C10A552 (so it changes whatever that routine does: r0-r7 and fr0-fr11); the renderer in both the slot words at typed_send_slots in the image (and the one intensity_spill_put puts back); sends the object as 32-byte textured intensity vertices (X, Y, 1/w, u, v, base intensity, offset intensity); zero fill before it; part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with fr4 = 0.5 and the three-group object of the intensity_send_alpha test it sent exactly what intensity_send_alpha sends with alpha 1: list 0, not list 2, and face base alpha 0.8, not 0.4
  * matched: source/asm/0c10a550.s (hand-written assembly, tools/match/match.py)
  */
 void intensity_send(int *obj, obj_send_header_rec *header);
 
 /* 0x0c10a552  size 0x380  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x396
- * evidence: (obj, header block, alpha fr4): float_colour_send_alpha's group loop and frame (scale at graphics_work+0x28 reset to 1.0, translucent list and blend_pair_bits when alpha is below 1, QACR0/1 from the *list_write_ptrs list record, near-sphere and screen-rectangle culling, material byte: above 0 specular row of obj_spec_power_table, 0 diffuse, -2 bump_group_send, -3 vertex_colour_group_send, other odd negative bytes unlit: the senders decide by r8 alone, 0 = diffuse, odd = unlit, else specular, so an even negative byte other than -2 would run the specular bodies with the byte itself as the row pointer; whether the data has such bytes is not established) sending 32-byte textured intensity vertices (X, Y, 1/w, u, v, base intensity, offset intensity): the face colors go into the polygon headers instead (intensity mode 1, base x (alpha, light color obj_light_color) and offset x obj_light_colour2, 64 bytes the first time, then 32-byte mode-2 headers; a rejected mode-1 group still sends its header so later groups keep the right color), base intensity = group float x header +0x1c + max(0, N.L) and offset intensity from the specular row; per run calls intensity_strip_send or intensity_tri_send (by run bit 3), or for a group crossing the near plane intensity_strip_near_clip (run bit 4 set) or intensity_tri_near_clip (bit 4 clear, whatever bit 3 says: the tst #8 in the delay slot at 0x0C10A8D4 is overwritten before anything reads it), and stores the list write pointer back at the end of the object; r7 = header +0x20 for the near cuts, reloaded from its frame (sp +60) before every call that needs it, since the specular sender bodies use r7; the half vector is read as three floats from header +0, +4, +8 and the light direction from +0x10, +0x14, +0x18; translucent groups get TSP blend factor fields (bits 26-31) that are the complement of blend_pair_bits bits 2-7; the group word at +0x20 is not read here; entered by pointer from both the slot words at typed_send_slots_alpha and by falling from intensity_send; part of the ELAN renderers (hand-written assembly)
+ * evidence: (obj, header block, alpha fr4): float_colour_send_alpha's group loop and frame (scale at graphics_work+0x28 reset to 1.0, translucent list and blend_pair_bits when alpha is below 1, QACR0/1 from the *list_write_ptrs list record, near-sphere and screen-rectangle culling, material byte: above 0 specular row of obj_spec_power_table, 0 diffuse, -2 bump_group_send, -3 vertex_colour_group_send, other odd negative bytes unlit: the senders decide by r8 alone, 0 = diffuse, odd = unlit, else specular, so an even negative byte other than -2 would run the specular bodies with the byte itself as the row pointer; whether the data has such bytes is not established) sending 32-byte textured intensity vertices (X, Y, 1/w, u, v, base intensity, offset intensity): the face colors go into the polygon headers instead (intensity mode 1, base x (alpha, light color obj_light_color) and offset x obj_light_colour2, 64 bytes the first time, then 32-byte mode-2 headers; a rejected mode-1 group still sends its header so later groups keep the right color), base intensity = group float x header +0x1c + max(0, N.L) and offset intensity from the specular row; per run calls intensity_strip_send or intensity_tri_send (by run bit 3), or for a group crossing the near plane intensity_strip_near_clip (run bit 4 set) or intensity_tri_near_clip (bit 4 clear, whatever bit 3 says: the tst #8 in the delay slot at 0x0C10A8D4 is overwritten before anything reads it), and stores the list write pointer back at the end of the object; r7 = header +0x20 for the near cuts, reloaded from its frame (sp +60) before every call that needs it, since the specular sender bodies use r7; the half vector is read as three floats from header +0, +4, +8 and the light direction from +0x10, +0x14, +0x18; translucent groups get TSP blend factor fields (bits 26-31) that are the complement of blend_pair_bits bits 2-7; the group word at +0x20 is not read here; entered by pointer from both the slot words at typed_send_slots_alpha and by falling from intensity_send; part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with a matrix giving depth z + 10, x 2x, y 3y, near -4, lists pointed at scratch, scale 2, light (0,0,1), light colors set: drawn mode-1 group: 64-byte header, base (.8,.25,.25,2), offset (.3,2,.25,1), vertex bases .65 .75 .25; off-screen mode-1 group: colors only; mode-2 group: 32-byte header; alpha .5: list 2, TSP top byte 0x94, base alpha .4; material 1: offsets from obj_spec_power_table row 1
  * matched: source/asm/0c10a550.s (hand-written assembly, tools/match/match.py)
  */
 void intensity_send_alpha(int *obj, obj_send_header_rec *header, float alpha);
 
 /* 0x0c10a930  size 0x15a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x286
- * evidence: unclipped strip sender of intensity_send_alpha: r3 = vertex count from @r4+; per vertex record (inline or reference) transforms, takes 1/depth and writes a 32-byte textured intensity vertex at r6 (control word r6, r6 >> 1 on the last, ending the strip), r5 + 32; three paths: unlit (odd r8: intensities 1.0 and 0 written once into both store-queue halves, then 24 bytes per vertex), diffuse (r8 = 0) and specular (offset intensity from the row when the N.H index is above 309); a positive next word with bit 7 set starts another strip; the unlit and diffuse bodies keep r7, the specular body does not: it uses r7 for the vertex control word (0x0C10ABD6, 0x0C10AC6C); called by intensity_send_alpha (bsr); takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * evidence: unclipped strip sender of intensity_send_alpha: r3 = vertex count from @r4+; per vertex record (inline or reference) transforms, takes 1/depth and writes a 32-byte textured intensity vertex at r6 (control word r6, r6 >> 1 on the last, ending the strip), r5 + 32; three paths: unlit (odd r8: intensities 1.0 and 0 written once into both store-queue halves, then 24 bytes per vertex), diffuse (r8 = 0) and specular (offset intensity from the row when the N.H index is above 309); a positive next word with bit 7 set starts another strip; the unlit and diffuse bodies keep r7, the specular body does not: it uses r7 for the vertex control word (0x0C10ABD6, 0x0C10AC6C); called by intensity_send_alpha (bsr); takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with a matrix giving depth z + 10, x 2x, y 3y, near -4, light (0,0,1), base fr15 .1: a diffuse strip of 3 records gave three 32-byte vertices X, Y, 1/w, u, v, base .9, 1.1, .1 (.1 + max(0, N.L)), offset 0, the last ending the strip, r4 on the next word; with r8 a row whose entries 320 and 330 were .55 and .3, a strip of 2 then a bit-7 strip of 2 gave offsets .55, 0, .3, 0 and two strip ends
  * matched: source/asm/0c10a550.s (hand-written assembly, tools/match/match.py)
  */
 void intensity_strip_send(void);
 
 /* 0x0c10ac90  size 0x266  file by match with source
- * confidence: inferred
- * evidence: near-plane clipping strip walk of intensity_send_alpha, the algorithm of float_colour_strip_near_clip_spec: near tests of intensity_vtx_load rotated into a 3-bit history in r9, ring index r11, braf at 0x0C10AE1E with its eight 4-byte entries from 0x0C10AE22 (000 and 111 are nop pairs never reached) choosing among intensity_vtx_emit, intensity_vtx_keep, intensity_kept_vtx_emit and intensity_near_cut_emit, intensity_flat_copy when r12 bit 0 (flat) is set; continues over bit-7 runs and returns with r12 bit 0 set; called by intensity_send_alpha (bsr) for a group crossing the near plane whose run word has bit 4; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: near-plane clipping strip walk of intensity_send_alpha, the algorithm of float_colour_strip_near_clip_spec: near tests of intensity_vtx_load rotated into a 3-bit history in r9, ring index r11, braf at 0x0C10AE1E with its eight 4-byte entries from 0x0C10AE22 (000 and 111 are nop pairs never reached) choosing among intensity_vtx_emit, intensity_vtx_keep, intensity_kept_vtx_emit and intensity_near_cut_emit, intensity_flat_copy when r12 bit 0 (flat) is set; continues over bit-7 runs and returns with r12 bit 0 set; called by intensity_send_alpha (bsr) for a group crossing the near plane whose run word has bit 4; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with a matrix giving depth z + 10, x 2x, y 3y, near -4: a strip front, front, nearer than the plane came out as v0, v1, cut(0,2), v1, cut(1,2) with the cuts on the plane (1/w = r7 .25, interpolated u, v and intensities), and a strip nearer, front, front, front as cut(0,1), v1, cut(0,2), v1, v2, v3: the visible part as one strip; r12 bit 0 set, r4 on the next word
  * convention: __keeps_r7_fr8_fr9_fr10 (AssignCallEffects)
  * matched: source/asm/0c10a550.s (hand-written assembly, tools/match/match.py)
  */
 void intensity_strip_near_clip(void);
 
 /* 0x0c10af00  size 0x92  file by match with source
- * confidence: inferred
- * evidence: fetches the vertex record at r4 (inline or reference) and advances r4, transforms it (fr7 = 1/depth) and lights it by r8 into the base (fr2) and offset (fr3) intensities (unlit, diffuse or specular as intensity_strip_send); returns r2 pointing at u, v and T = the vertex lies behind the near plane (r12 against the depth's bits); bsr from intensity_strip_near_clip and intensity_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: fetches the vertex record at r4 (inline or reference) and advances r4, transforms it (fr7 = 1/depth) and lights it by r8 into the base (fr2) and offset (fr3) intensities (unlit, diffuse or specular as intensity_strip_send); returns r2 pointing at u, v and T = the vertex lies behind the near plane (r12 against the depth's bits); bsr from intensity_strip_near_clip and intensity_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with a matrix giving depth z + 10, x 2x, y 3y, near -4, light (0,0,1), fr15 .1: an inline record (1,2,5), normal (0,.6,.8) gave fr4 -15, fr5 2, fr6 6, fr7 1/15, base .9, offset 0, r2 on u, r4 + 32, T 0; r8 odd gave base 1; r8 a row with half (0,0,400) offset row[320] = .55 at N.H 320, 0 at N.H 304; z -8 gave T 1; normal z -.8 base .1; a reference record the same with r4 + 8
  * convention: __keeps_r3_r5_r6_r7_fr8_fr9_fr10 (AssignCallEffects)
  * matched: source/asm/0c10a550.s (hand-written assembly, tools/match/match.py)
  */
 void intensity_vtx_load(void);
 
 /* 0x0c10afa0  size 0x32  file by match with source
- * confidence: inferred
- * evidence: writes the vertex intensity_vtx_load left as a 32-byte intensity vertex at r6 (control word r6, or r6 >> 1 with T when dt r3 reaches 0), prefetches it, r5 + 32; bsr from intensity_strip_near_clip and intensity_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: writes the vertex intensity_vtx_load left as a 32-byte intensity vertex at r6 (control word r6, or (r6 + 16) >> 1 with T when dt r3 reaches 0), prefetches it, r5 + 32; bsr from intensity_strip_near_clip and intensity_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with fr4-fr7 = (-3, 6, 9, .25), fr2, fr3 = .7, .1, u, v .25, .75 at r2 and r3 = 2 it wrote X 1.5, Y 2.25, 1/w .25, u, v, .7, .1 at r6 with control word r6, r3 1, T 0, r5 and r6 + 32; with r3 = 1 the control word was (r6 + 16) >> 1, r3 0, T 1
  * convention: __keeps_r1_r4_r7_fr2_fr3_fr4_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c10a550.s (hand-written assembly, tools/match/match.py)
  */
 void intensity_vtx_emit(void);
 
 /* 0x0c10afe0  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: stores the vertex just loaded (unprojected position, u, v, both intensities) in slot r11 & 3 of intensity_clip_ring (32-byte slots); bsr from intensity_strip_near_clip and intensity_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: stores the vertex just loaded (unprojected position, u, v, both intensities) in slot r11 & 3 of intensity_clip_ring (32-byte slots); bsr from intensity_strip_near_clip and intensity_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with fr4-fr7 = (-3, 6, 9, .25), fr2, fr3 = .7, .1, u, v .25, .75 at r2 and r11 = 5 it stored (-3, 6, 9, .25, .25, .75, .7, .1) in slot 1 of intensity_clip_ring and left the other three slots as planted
  * convention: __keeps_r1_r2_r3_r4_r5_r6_r7_fr2_fr3_fr4_fr5_fr6_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c10a550.s (hand-written assembly, tools/match/match.py)
  */
 void intensity_vtx_keep(void);
 
 /* 0x0c10b000  size 0x32  file by match with source
- * confidence: inferred
- * evidence: copies the intensity pair of ring slot r11 & 3 into the two slots before it, so that a flat triangle cut at the near plane keeps one color; bsr from intensity_strip_near_clip and intensity_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: copies the intensity pair of ring slot r11 & 3 into the two slots before it, so that a flat triangle cut at the near plane keeps one color; bsr from intensity_strip_near_clip and intensity_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with intensity_clip_ring planted 10 s + w (slot s, word w): r11 = 1 copied slot 1's pair (16, 17) into words 6-7 of slots 0 and 3, r11 = 6 slot 2's (26, 27) into slots 1 and 0; nothing else changed
  * convention: __keeps_r3_r4_r5_r6_r7_fr1_fr4_fr5_fr6_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c10a550.s (hand-written assembly, tools/match/match.py)
  */
 void intensity_flat_copy(void);
 
 /* 0x0c10b040  size 0x36  file by match with source
- * confidence: inferred
- * evidence: sends slot r0 & 3 of intensity_clip_ring as a 32-byte vertex (x, y times the stored 1/depth), end-of-strip control word when T is set on entry; bsr from intensity_strip_near_clip and intensity_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: sends slot r0 & 3 of intensity_clip_ring as a 32-byte vertex (x, y times the stored 1/depth), end-of-strip control word when T is set on entry; bsr from intensity_strip_near_clip and intensity_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with intensity_clip_ring planted 10 s + w: r0 = 2, T 0 wrote 483, 506, 23, 24, 25, 26, 27 (x, y times 1/depth, the rest copied) at r6 with an ordinary control word; r0 = 7, T 1 wrote slot 3's 1023, 1056, 33-37 with the end-of-strip word; r5 and r6 + 32
  * convention: __keeps_r1_r3_r4_r7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c10a550.s (hand-written assembly, tools/match/match.py)
  */
 void intensity_kept_vtx_emit(void);
 
 /* 0x0c10b080  size 0x8c  file by match with source
- * confidence: inferred
- * evidence: sends the point where the edge from ring slot r0 & 3 to slot r11 & 3 crosses the near plane: t = (near - a) / (b - a) with near from r12, interpolating position, u, v and both intensities; 1/w = r7 (header +0x20) and x, y times r7; control word 0xf0000000 when T is set on entry, else r6; its pool (0x0C10B10C) holds intensity_clip_ring and the ring +0x20; bsr from intensity_strip_near_clip and intensity_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: sends the point where the edge from ring slot r0 & 3 to slot r11 & 3 crosses the near plane: t = (near - a) / (b - a) with near from r12, interpolating position, u, v and both intensities; 1/w = r7 (header +0x20) and x, y times r7; control word 0xf0000000 when T is set on entry, else r6 + 4; its pool (0x0C10B10C) holds intensity_clip_ring and the ring +0x20; bsr from intensity_strip_near_clip and intensity_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with slot 0 (minus depth -2, x 10, y 20, u 0, v 1, .2, .4), slot 1 (-6, 30, 60, 1, 0, .6, 0), r0 0, r11 1, near -4, r7 .25, T 1 it wrote control 0xf0000000, X 5, Y 10, 1/w .25, u, v .5, .5, .4, .2 (t = .5); from slot 3 to slot 2 with near -2 and T 0 the t = .25 point
  * convention: __keeps_r1_r3_r4_r7_fr6_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c10a550.s (hand-written assembly, tools/match/match.py)
  */
 void intensity_near_cut_emit(void);
 
 /* 0x0c10b120  size 0xb4  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xcc
- * evidence: near-plane clipping for independent triangles, the shape of float_colour_tri_near_clip_spec: r3 = triangle count, intensity_tri_classify gives the 3-bit code, 0 sends the three vertices (intensity_vtx_load / intensity_vtx_emit), 7 skips them, otherwise they are kept in slots 0-2 (flat copy when flat) and a braf (0x0C10B15E; 000 and 111 are handled before it) sends kept vertices and near cuts; returns with r12 bit 0 set; called by intensity_send_alpha (bsr) for a group crossing the near plane whose run word has bit 4 clear, whatever its bit 3 says; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * evidence: near-plane clipping for independent triangles, the shape of float_colour_tri_near_clip_spec: r3 = triangle count, intensity_tri_classify gives the 3-bit code, 0 sends the three vertices (intensity_vtx_load / intensity_vtx_emit), 7 skips them, otherwise they are kept in slots 0-2 (flat copy when flat) and a braf (0x0C10B15E; 000 and 111 are handled before it) sends kept vertices and near cuts; returns with r12 bit 0 set; called by intensity_send_alpha (bsr) for a group crossing the near plane whose run word has bit 4 clear, whatever its bit 3 says; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with a matrix giving depth z + 10, x 2x, y 3y, near -4: four triangles coded 001, 110, 111, 000 gave v0, v1, cut(0,2), cut(1,2) | cut(0,2), cut(1,2), v2 | nothing | the three vertices, each strip ended, cuts on the plane with 1/w = r7 and interpolated u, v and intensity; r12 bit 0 set, r4 past the count word and the 12 records
  * convention: __keeps_r7_fr8_fr9_fr10 (AssignCallEffects)
  * matched: source/asm/0c10a550.s (hand-written assembly, tools/match/match.py)
  */
 void intensity_tri_near_clip(void);
 
 /* 0x0c10b280  size 0x8a  file by match with source
- * confidence: inferred
- * evidence: transforms the three vertex records at r4 (r4 kept) and rotates their near tests into r9 (0 all in front, 7 all behind); as float_colour_tri_classify_spec with the depth read from the w output; bsr from intensity_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: transforms the three vertex records at r4 (r4 kept) and rotates their near tests into r9 (0 all in front, 7 all behind); as float_colour_tri_classify_spec with the depth read from the w output; bsr from intensity_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with a matrix giving depth z + 10, x 2x, y 3y, near -4: three records behind, in front of and behind the near plane gave r9 = 5 with r4 kept; front, behind, front with r9 = 1 on entry gave r9 = 0xa (the old code shifted up three places)
  * convention: __keeps_r2_r3_r5_r6_r7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c10a550.s (hand-written assembly, tools/match/match.py)
  */
 void intensity_tri_classify(void);
 
 /* 0x0c10b310  size 0x14c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x25a
- * evidence: as intensity_strip_send for independent triangles: r9 = triangle count, three vertices each with the end-of-strip control word on every third, the same three lighting paths; the unlit and diffuse bodies keep r7, the specular body does not: it uses r7 for the vertex control word (intensity_tri_send_spec+0x22, intensity_tri_send_spec+0xb6); called by intensity_send_alpha (bsr) when run bit 3 is set; it runs to 0x0C10B639: 0x0C10B56A-0x0C10B639 is its third, specular body (intensity_tri_send_spec), entered by the bra at 0x0C10B31C; zero fill 0x0C10B63A-0x0C10B63F follows; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * evidence: as intensity_strip_send for independent triangles: r9 = triangle count, three vertices each with the end-of-strip control word on every third, the same three lighting paths; the unlit and diffuse bodies keep r7, the specular body does not: it uses r7 for the vertex control word (intensity_tri_send_spec+0x22, intensity_tri_send_spec+0xb6); called by intensity_send_alpha (bsr) when run bit 3 is set; it runs to 0x0C10B639: 0x0C10B56A-0x0C10B639 is its third, specular body (intensity_tri_send_spec), entered by the bra at 0x0C10B31C; zero fill 0x0C10B63A-0x0C10B63F follows; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with a matrix giving depth z + 10, x 2x, y 3y, near -4, light (0,0,1), fr15 .1: two diffuse triangles gave six 32-byte vertices with bases .9 1.1 .1 .925 .1 1.1, offset 0, the 3rd and 6th ending strips, r4 on the next word
  * matched: source/asm/0c10a550.s (hand-written assembly, tools/match/match.py)
  */
 void intensity_tri_send(void);
 
 /* 0x0c10b56a  size 0xc6  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xd0
- * evidence: hand-written: the specular body of intensity_tri_send, entered by its bra at 0x0C10B31C when r8 is non-zero and even (the specular power table row): builds the threshold 309, takes N.L and N.H with fipr and reads the row entry with fmov @(r0,r8),fr3; intensity_tri_send runs on to 0x0C10B639 through it; takes no C-style arguments (it works on its caller's registers, listed in its .s file); called code: part of intensity_tri_send, whose assembly source ends before it; made a function 2026-11-09; between intensity_tri_send and intensity_spill_send, so by link order part of sdk/naomi2_library/elan_intensity.c
+ * evidence: hand-written: the specular body of intensity_tri_send, entered by its bra at 0x0C10B31C when r8 is non-zero and even (the specular power table row): builds the threshold 309, takes N.L and N.H with fipr and reads the row entry with fmov @(r0,r8),fr3; intensity_tri_send runs on to 0x0C10B639 through it; takes no C-style arguments (it works on its caller's registers, listed in its .s file); called code: part of intensity_tri_send, whose assembly source ends before it; made a function 2026-11-09; between intensity_tri_send and intensity_spill_send, so by link order part of sdk/naomi2_library/elan_intensity.c; exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with a matrix giving depth z + 10, x 2x, y 3y, near -4: called through intensity_tri_send with r8 even (a row whose entries 320 and 330 were .55 and .3) and half (0,0,400): one triangle with N.H 330, 320, 400 got offsets .3, .55 and the row's entry 400 (0), bases as diffuse, the 3rd vertex ending the strip
  * convention: __keeps_fr8_fr9_fr10 (AssignCallEffects)
  * matched: source/asm/0c10b56a.s (hand-written assembly, tools/match/match.py)
  */

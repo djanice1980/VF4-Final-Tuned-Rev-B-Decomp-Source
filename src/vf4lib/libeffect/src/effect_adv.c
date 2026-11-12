@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c0c19a0  size 0x66  file by match with source
- * confidence: inferred
- * evidence: Gives each of the six animations of adv_fx_anims a random start frame (lcg_next15 % 80) and clears adv_fx_frame; the init of the "ADV" entry of the stage effect table at 0x0C2AA1F0 (records of {1, name, init, update, draw, free}, lists ended by -1, one list per stage record at 0x0C306xxx) (0x0C2AA634) used by the "ADV STAGE" record; update adv_fx_update and free adv_fx_free of the same entry are not functions in Ghidra (see notes); part of vf4lib/libeffect/src/effect_adv.c
+ * confidence: exercised
+ * evidence: Gives each of the six animations of adv_fx_anims a random start count (lcg_next15 % 80, in its float counter; the short frame is left to adv_fx_update) and clears adv_fx_frame; the init of the "ADV" entry of the stage effect table at 0x0C2AA1F0 (records of {1, name, init, update, draw, free}, lists ended by -1, one list per stage record at 0x0C306xxx) (0x0C2AA634) used by the "ADV STAGE" record; update adv_fx_update and free adv_fx_free of the same entry are not functions in Ghidra (see notes); part of vf4lib/libeffect/src/effect_adv.c; exercised 2026-11-12: called by the harness with adv_fx_frame poked 7 and the counters -1.0: the six float counters became 14, 48, 22, 28, 7, 52, the values of its six lcg_next15 calls (31134, 26128, 19942, 6348, 9447, 19172) % 80, and adv_fx_frame 0; the short frames kept their poked 0x55
  * matched: source/vf4lib/libeffect/src/effect_adv.c (tools/match/match.py)
  */
 void adv_fx_init(void)
@@ -23,8 +23,8 @@ void adv_fx_init(void)
 }
 
 /* 0x0c0c1a20  size 0x5a  file by match with source
- * confidence: inferred
- * evidence: update of the "ADV" stage effect entry (0x0C2AA638): only when demo_stage_select is 0, adds the speed adv_fx_anim_step (1.0) to each of the six adv_fx_anims counters, storing the truncated frame and wrapping past 79, and steps adv_fx_frame wrapping past 29; Ghidra did not make this a function; part of vf4lib/libeffect/src/effect_adv.c
+ * confidence: exercised
+ * evidence: update of the "ADV" stage effect entry (0x0C2AA638): only when demo_stage_select is 0, adds the speed adv_fx_anim_step (1.0) to each of the six adv_fx_anims counters, storing the truncated frame and wrapping past 79, and steps adv_fx_frame wrapping past 29; Ghidra did not make this a function; part of vf4lib/libeffect/src/effect_adv.c; exercised 2026-11-12: called by the harness with the six counters poked 5.0, 78.5, 79.0, 0.25, 40.0, -0.5 and adv_fx_frame 29: with demo_stage_select 0 the counters became 6.0, 79.5, 0 (past 79), 1.25, 41.0, 0.5 with frames 6, 79, 0, 1, 41, 0 and adv_fx_frame 0, then 1 at a second call; with demo_stage_select 1 nothing changed
  * matched: source/vf4lib/libeffect/src/effect_adv.c (tools/match/match.py)
  */
 void adv_fx_update(void)
@@ -46,8 +46,8 @@ void adv_fx_update(void)
 }
 
 /* 0x0c0c1aa0  size 0x9c  file by match with source
- * confidence: inferred
- * evidence: Unless the main mode is MODE_MAIN_ADVERTISE with demo_flags bit 0x800, and only when demo_stage_select is 0: draws the six models 0x170000 + adv_fx_anims[i] frame at adv_fx_positions[i] and the model 0x170053 + adv_fx_frame at the origin (obj_draw); the draw of the "ADV" entry of the stage effect table (0x0C2AA63C); part of vf4lib/libeffect/src/effect_adv.c
+ * confidence: exercised
+ * evidence: Unless the main mode is MODE_MAIN_ADVERTISE with demo_flags bit 0x800, and only when demo_stage_select is 0: draws the six models 0x170000 + adv_fx_anims[i] frame at adv_fx_positions[i] and the model 0x170053 + adv_fx_frame at the origin (obj_draw); the draw of the "ADV" entry of the stage effect table (0x0C2AA63C); part of vf4lib/libeffect/src/effect_adv.c; exercised 2026-11-12: called by the harness with the six frames poked 3, 10, 20, 30, 40, 79 and adv_fx_frame 7 in the fight (mode 3): with demo_stage_select 0 it drew 0x170003, 0x17000A, 0x170014, 0x17001E, 0x170028, 0x17004F each after translating by adv_fx_positions[i] (0x0C2B0208 + 12 i), then 0x17005A without a translation; with demo_stage_select 1 it drew nothing
  * matched: source/vf4lib/libeffect/src/effect_adv.c (tools/match/match.py)
  */
 void adv_fx_draw(void)

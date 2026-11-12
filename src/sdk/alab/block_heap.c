@@ -65,9 +65,9 @@ void empty_fn_0c0fbc00(void)
 }
 
 /* 0x0c0fbc20  size 0x70  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x86
- * evidence: (heap, out total, out largest): walks the circular free list with interrupts masked and returns the free bytes in total and in the largest block (units - 1, times 64); nothing in the image calls it; part of sdk/alab/block_heap.c
+ * evidence: (heap, out total, out largest): walks the circular free list with interrupts masked and returns the free bytes in total and in the largest block (units - 1, times 64); nothing in the image calls it; part of sdk/alab/block_heap.c; exercised 2026-11-12: called by the harness on a heap made by block_heap_init(buf:1, 0x2000) it returned 8000 and 8000 (one block of 0x7E units); after two block_heap_alloc of 546 bytes (10 units each) and block_heap_free of the upper one it returned total 7296 (105 + 9 units) and largest 6720 (105 units); after freeing the other it returned 8000 and 8000 again
  * matched: source/sdk/alab/block_heap.c (tools/match/match.py)
  */
 void block_heap_free_stats(block_heap_rec *heap, int *free_bytes, int *largest_bytes)

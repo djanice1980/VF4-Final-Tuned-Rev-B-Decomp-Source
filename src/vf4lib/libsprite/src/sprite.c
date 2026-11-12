@@ -207,8 +207,8 @@ void sprite_set_file_load(int set_no)
 }
 
 /* 0x0c0ddca0  size 0x86  file by match with source
- * confidence: inferred
- * evidence: (set): the record half of sprite_set_load for a file already in memory: unless loaded, makes the records, books the texture memory and marks the set loaded; nothing in the image calls it; part of vf4lib/libsprite/src/sprite.c
+ * confidence: exercised
+ * evidence: (set): the record half of sprite_set_load for a file already in memory: unless loaded, makes the records, books the texture memory and marks the set loaded; nothing in the image calls it; part of vf4lib/libsprite/src/sprite.c; exercised 2026-11-12: called by the harness for set 0: with sprite_set_loaded[0] 1 as the snapshot has it, no call; with it poked to 0: tex_vram_free_total (0x3E8A60), perf_color_mark(0xFFFF), texidx_base_put(0, the set's tex_base), sprite_list_records_make(0x0C307340, the set's sprites, 0, 0, 0), tex_vram_free_total (0x3E8A60), then sprite_set_vram_used[0] = the difference 0 (was 0x2C080) and the flag 1
  * matched: source/vf4lib/libsprite/src/sprite.c (tools/match/match.py)
  */
 void sprite_set_records_make(int set_no)
@@ -674,8 +674,8 @@ void sprite_put_xy_scaled(uint sprite_no, float x, float y, float scale_x, float
 }
 
 /* 0x0c0de800  size 0x38  file by match with source
- * confidence: inferred
- * evidence: (sprite, flags, x, y): a form of sprite_put with the other arguments at their defaults (z 0.04, scale 1, the whole sprite, rotation angle 0, flags 5, colors 0x00FFFFFF / 0xFF000000, alpha 1); nothing in the image calls it; part of vf4lib/libsprite/src/sprite.c
+ * confidence: exercised
+ * evidence: (sprite, flags, x, y): a form of sprite_put with the other arguments at their defaults (z 0.04, scale 1, the whole sprite, rotation angle 0, flags 5, colors 0x00FFFFFF / 0xFF000000, alpha 1); nothing in the image calls it; part of vf4lib/libsprite/src/sprite.c; exercised 2026-11-12: called by the harness, (1, flags 0x21, 12.5, 34.25) called sprite_put(1, x 12.5, y 34.25, z 0.04, scale 1 and 1, u0 0, v0 0, u1 1, angle 0, flags 0x21, color 0x00FFFFFF, v1 1, alpha 1, offset color 0xFF000000)
  * matched: source/vf4lib/libsprite/src/sprite.c (tools/match/match.py)
  */
 void sprite_put_flags_xy(uint sprite_no, uint flags, float x, float y)
@@ -684,8 +684,8 @@ void sprite_put_flags_xy(uint sprite_no, uint flags, float x, float y)
 }
 
 /* 0x0c0de860  size 0x3a  file by match with source
- * confidence: inferred
- * evidence: (sprite, x, y, alpha): a form of sprite_put with the other arguments at their defaults (z 0.04, scale 1, the whole sprite, rotation angle 0, flags 5, colors 0x00FFFFFF / 0xFF000000, alpha 1); only caller demo_layout_draw; part of vf4lib/libsprite/src/sprite.c
+ * confidence: exercised
+ * evidence: (sprite, x, y, alpha): a form of sprite_put with the other arguments at their defaults (z 0.04, scale 1, the whole sprite, rotation angle 0, flags 5, colors 0x00FFFFFF / 0xFF000000, alpha 1); only caller demo_layout_draw; part of vf4lib/libsprite/src/sprite.c; exercised 2026-11-12: called by the harness, (1, 12.5, 34.25, alpha 0.375) called sprite_put(1, x 12.5, y 34.25, z 0.04, scale 1 and 1, u0 0, v0 0, u1 1, angle 0, flags 5, color 0x00FFFFFF, v1 1, alpha 0.375, offset color 0xFF000000)
  * matched: source/vf4lib/libsprite/src/sprite.c (tools/match/match.py)
  */
 void sprite_put_xy_alpha(uint sprite_no, float x, float y, float alpha)
@@ -695,8 +695,8 @@ void sprite_put_xy_alpha(uint sprite_no, float x, float y, float alpha)
 }
 
 /* 0x0c0de8c0  size 0x36  file by match with source
- * confidence: inferred
- * evidence: (sprite, color, second color, x, y): a form of sprite_put with the other arguments at their defaults (z 0.04, scale 1, the whole sprite, rotation angle 0, flags 5, colors 0x00FFFFFF / 0xFF000000, alpha 1); nothing in the image calls it; part of vf4lib/libsprite/src/sprite.c
+ * confidence: exercised
+ * evidence: (sprite, color, second color, x, y): a form of sprite_put with the other arguments at their defaults (z 0.04, scale 1, the whole sprite, rotation angle 0, flags 5, colors 0x00FFFFFF / 0xFF000000, alpha 1); nothing in the image calls it; part of vf4lib/libsprite/src/sprite.c; exercised 2026-11-12: called by the harness, (1, 0x80112233, 0x40445566, 12.5, 34.25) called sprite_put(1, x 12.5, y 34.25, z 0.04, scale 1 and 1, u0 0, v0 0, u1 1, angle 0, flags 5, color 0x80112233, v1 1, alpha 1, offset color 0x40445566)
  * matched: source/vf4lib/libsprite/src/sprite.c (tools/match/match.py)
  */
 void sprite_put_colors_xy(uint sprite_no, uint col, uint offset_col, float x, float y)
@@ -705,8 +705,8 @@ void sprite_put_colors_xy(uint sprite_no, uint col, uint offset_col, float x, fl
 }
 
 /* 0x0c0de900  size 0x3a  file by match with source
- * confidence: inferred
- * evidence: (sprite, x, y, u0, v0, u1, v1): a form of sprite_put with the other arguments at their defaults (z 0.04, scale 1, the whole sprite, rotation angle 0, flags 5, colors 0x00FFFFFF / 0xFF000000, alpha 1), drawing the part u0-u1 / v0-v1 of the sprite; nothing in the image calls it; part of vf4lib/libsprite/src/sprite.c
+ * confidence: exercised
+ * evidence: (sprite, x, y, u0, v0, u1, v1): a form of sprite_put with the other arguments at their defaults (z 0.04, scale 1, the whole sprite, rotation angle 0, flags 5, colors 0x00FFFFFF / 0xFF000000, alpha 1), drawing the part u0-u1 / v0-v1 of the sprite; nothing in the image calls it; part of vf4lib/libsprite/src/sprite.c; exercised 2026-11-12: called by the harness, (1, 12.5, 34.25, 0.125, 0.25, 0.625, 0.875) called sprite_put(1, x 12.5, y 34.25, z 0.04, scale 1 and 1, u0 0.125, v0 0.25, u1 0.625, angle 0, flags 5, color 0x00FFFFFF, v1 0.875, alpha 1, offset color 0xFF000000)
  * matched: source/vf4lib/libsprite/src/sprite.c (tools/match/match.py)
  */
 void sprite_put_xy_uv(uint sprite_no, float x, float y, float u0, float v0, float u1, float v1)
@@ -827,8 +827,8 @@ void sprite_put_xyz_scaled_alpha_angle_flags(uint sprite_no, float x, float y, f
 }
 
 /* 0x0c0dec00  size 0x3a  file by match with source
- * confidence: inferred
- * evidence: (sprite, x, y, alpha, flags): a form of sprite_put with the other arguments at their defaults (z 0.04, scale 1, the whole sprite, rotation angle 0, flags 5, colors 0x00FFFFFF / 0xFF000000, alpha 1); callers demo_layout_draw, demo_layout_fade_out, demo_scene_21_draw, demo_scene_26_draw; part of vf4lib/libsprite/src/sprite.c
+ * confidence: exercised
+ * evidence: (sprite, x, y, alpha, flags): a form of sprite_put with the other arguments at their defaults (z 0.04, scale 1, the whole sprite, rotation angle 0, flags 5, colors 0x00FFFFFF / 0xFF000000, alpha 1); callers demo_layout_draw, demo_layout_fade_out, demo_scene_21_draw, demo_scene_26_draw; part of vf4lib/libsprite/src/sprite.c; exercised 2026-11-12: called by the harness, (1, 12.5, 34.25, alpha 0.375, flags 0x21) called sprite_put(1, x 12.5, y 34.25, z 0.04, scale 1 and 1, u0 0, v0 0, u1 1, angle 0, flags 0x21, color 0x00FFFFFF, v1 1, alpha 0.375, offset color 0xFF000000)
  * matched: source/vf4lib/libsprite/src/sprite.c (tools/match/match.py)
  */
 void sprite_put_xy_alpha_flags(uint sprite_no, float x, float y, float alpha, uint flags)
@@ -837,8 +837,8 @@ void sprite_put_xy_alpha_flags(uint sprite_no, float x, float y, float alpha, ui
 }
 
 /* 0x0c0dec60  size 0x3c  file by match with source
- * confidence: inferred
- * evidence: (sprite, x, y, scale x, scale y, alpha): a form of sprite_put with the other arguments at their defaults (z 0.04, scale 1, the whole sprite, rotation angle 0, flags 5, colors 0x00FFFFFF / 0xFF000000, alpha 1); only caller demo_band_draw; part of vf4lib/libsprite/src/sprite.c
+ * confidence: exercised
+ * evidence: (sprite, x, y, scale x, scale y, alpha): a form of sprite_put with the other arguments at their defaults (z 0.04, scale 1, the whole sprite, rotation angle 0, flags 5, colors 0x00FFFFFF / 0xFF000000, alpha 1); only caller demo_band_draw; part of vf4lib/libsprite/src/sprite.c; exercised 2026-11-12: called by the harness, (1, 12.5, 34.25, 1.5, 2.5, alpha 0.375) called sprite_put(1, x 12.5, y 34.25, z 0.04, scale 1.5 and 2.5, u0 0, v0 0, u1 1, angle 0, flags 5, color 0x00FFFFFF, v1 1, alpha 0.375, offset color 0xFF000000)
  * matched: source/vf4lib/libsprite/src/sprite.c (tools/match/match.py)
  */
 void sprite_put_xy_scaled_alpha(uint sprite_no, float x, float y, float scale_x, float scale_y, float alpha )
@@ -849,8 +849,8 @@ void sprite_put_xy_scaled_alpha(uint sprite_no, float x, float y, float scale_x,
 }
 
 /* 0x0c0decc0  size 0x3c  file by match with source
- * confidence: inferred
- * evidence: (sprite, x, y, scale x, scale y, flags, alpha): a form of sprite_put with the other arguments at their defaults (z 0.04, scale 1, the whole sprite, rotation angle 0, flags 5, colors 0x00FFFFFF / 0xFF000000, alpha 1); only caller demo_band_draw; part of vf4lib/libsprite/src/sprite.c
+ * confidence: exercised
+ * evidence: (sprite, x, y, scale x, scale y, flags, alpha): a form of sprite_put with the other arguments at their defaults (z 0.04, scale 1, the whole sprite, rotation angle 0, flags 5, colors 0x00FFFFFF / 0xFF000000, alpha 1); only caller demo_band_draw; part of vf4lib/libsprite/src/sprite.c; exercised 2026-11-12: called by the harness, (1, 12.5, 34.25, 1.5, 2.5, flags 0x21, alpha 0.375) called sprite_put(1, x 12.5, y 34.25, z 0.04, scale 1.5 and 2.5, u0 0, v0 0, u1 1, angle 0, flags 0x21, color 0x00FFFFFF, v1 1, alpha 0.375, offset color 0xFF000000)
  * matched: source/vf4lib/libsprite/src/sprite.c (tools/match/match.py)
  */
 void sprite_put_xy_scaled_flags_alpha(uint sprite_no, float x, float y, float scale_x, float scale_y, uint flags, float alpha)
@@ -861,8 +861,8 @@ void sprite_put_xy_scaled_flags_alpha(uint sprite_no, float x, float y, float sc
 }
 
 /* 0x0c0ded20  size 0x3a  file by match with source
- * confidence: inferred
- * evidence: (sprite, rotation angle, flags, x, y, scale x, scale y, alpha): a form of sprite_put with the other arguments at their defaults (z 0.04, scale 1, the whole sprite, rotation angle 0, flags 5, colors 0x00FFFFFF / 0xFF000000, alpha 1); nothing in the image calls it; part of vf4lib/libsprite/src/sprite.c
+ * confidence: exercised
+ * evidence: (sprite, rotation angle, flags, x, y, scale x, scale y, alpha): a form of sprite_put with the other arguments at their defaults (z 0.04, the whole sprite, colors 0x00FFFFFF / 0xFF000000); the angle goes in cut to a short (-200 queued 0xFF38); nothing in the image calls it; part of vf4lib/libsprite/src/sprite.c; exercised 2026-11-12: called by the harness in one sandbox (draw state as the fight snapshot has it: offset 0, 0, 0.05, scale 1, alpha 1) for sprite 0 (a whole 0-1 cell) with angle -200, flags 2, x 10, y 20, scales 2, 3 and alpha 0.5: it queued one entry with x 10, y 20, z 0.09 (0.04 + 0.05), zoom 2 and 3, angle 0xFF38, alpha 0.5, flags 0x20002 and colors 0xFFFFFF / 0xFF000000
  * matched: source/vf4lib/libsprite/src/sprite.c (tools/match/match.py)
  */
 void sprite_put_angle_flags_xy_scaled_alpha(uint sprite_no, int angle, uint flags, float x, float y, float scale_x, float scale_y, float alpha)
@@ -874,8 +874,8 @@ void sprite_put_angle_flags_xy_scaled_alpha(uint sprite_no, int angle, uint flag
 }
 
 /* 0x0c0ded80  size 0x36  file by match with source
- * confidence: inferred
- * evidence: (sprite, rotation angle, flags, x, y): a form of sprite_put with the other arguments at their defaults (z 0.04, scale 1, the whole sprite, rotation angle 0, flags 5, colors 0x00FFFFFF / 0xFF000000, alpha 1); nothing in the image calls it; part of vf4lib/libsprite/src/sprite.c
+ * confidence: exercised
+ * evidence: (sprite, rotation angle, flags, x, y): a form of sprite_put with the other arguments at their defaults (z 0.04, scale 1, the whole sprite, colors 0x00FFFFFF / 0xFF000000, alpha 1); nothing in the image calls it; part of vf4lib/libsprite/src/sprite.c; exercised 2026-11-12: called by the harness in one sandbox (snapshot draw state: offset 0, 0, 0.05, scale 1, alpha 1) for sprite 0 with angle 300, flags 1, x 100, y 50: it queued an entry with x 100, y 50, z 0.09 (0.04 + 0.05), zoom 1 and 1, angle 300, alpha 1, flags 0x20001 and colors 0xFFFFFF / 0xFF000000; with angle 7, flags 4, x 1, y 2 the next entry had x 1, y 2, flags 0x20004
  * matched: source/vf4lib/libsprite/src/sprite.c (tools/match/match.py)
  */
 void sprite_put_angle_flags_xy(uint sprite_no, short angle, uint flags, float x, float y)
@@ -1002,8 +1002,8 @@ void sprite_flags_override_reset(void)
 }
 
 /* 0x0c0def80  size 0x10  file by match with source
- * confidence: inferred
- * evidence: (value): stores sprite_put_state's angle_base, the short sprite_angle_base_reset clears: the base sprite_put adds to each queued sprite's rotation angle (its argument named pri), so an angle base and no priority; nothing in the image calls it (uncalled code, made a function 2026-11-09); between sprite_flags_override_reset and sprite_angle_base_reset, so by link order part of vf4lib/libsprite/src/sprite.c
+ * confidence: exercised
+ * evidence: (value): stores sprite_put_state's angle_base, the short sprite_angle_base_reset clears: the base sprite_put adds to each queued sprite's rotation angle (its argument named pri), so an angle base and no priority; nothing in the image calls it (uncalled code, made a function 2026-11-09); between sprite_flags_override_reset and sprite_angle_base_reset, so by link order part of vf4lib/libsprite/src/sprite.c; exercised 2026-11-12: called by the harness in one sandbox: after sprite_angle_base_set(1000), sprite_put_angle_flags_xy with angle 7 queued a sprite with angle 1007, and after sprite_angle_base_set(2000) the same call queued angle 2007 (with the snapshot base 0, angle 300 had gone in as 300)
  * matched: source/vf4lib/libsprite/src/sprite.c (tools/match/match.py)
  */
 void sprite_angle_base_set(short angle_base)
@@ -1064,8 +1064,8 @@ void text_lines_measure(char *text, int *width_out, int *lines_out)
 }
 
 /* 0x0c0df040  size 0x98  file by match with source
- * confidence: inferred
- * evidence: (font, x, y, z, flags, format, ...): formats into a 256-byte buffer (vsnprintf, the vsnprintf form) and draws it with sprite_text_put; nothing in the image calls it; part of vf4lib/libsprite/src/sprite.c
+ * confidence: exercised
+ * evidence: (font, x, y, z, flags, format, ...): formats into a 256-byte buffer (vsnprintf, the vsnprintf form) and draws it with sprite_text_put; nothing in the image calls it; part of vf4lib/libsprite/src/sprite.c; exercised 2026-11-12: called by the harness with euc_text_font, x 100, y 50, z 0.5, flags 0, the format "P%d-%s|%x" and 42, "ab", 255: vsnprintf (size 256) wrote "P42-ab|ff" (9 characters) into a stack buffer, and sprite_text_put was called with the same font, 100, 50, 0.5, 0 and that buffer and queued 9 sprites
  * matched: source/vf4lib/libsprite/src/sprite.c (tools/match/match.py)
  */
 void sprite_text_printf(sprite_euc_font *font, float x, float y, float z, uint flags, char *format, ...)
@@ -1522,8 +1522,8 @@ void sprite_next_blend_normal(void)
 }
 
 /* 0x0c0dfea0  size 0x52  file by match with source
- * confidence: inferred
- * evidence: sums the texture memory booked by the 81 sprite sets (sprite_set_vram_used) into sprite_vram_used_total and adds the stage object figures (stage_obj_vram_used, stage_ef_obj_vram_used) and five more counters into vram_used_total; callers ending_rep_wait_load and a pointer at 0x0C024234; part of vf4lib/libsprite/src/sprite.c
+ * confidence: exercised
+ * evidence: sums the texture memory booked by the 81 sprite sets (sprite_set_vram_used) into sprite_vram_used_total and adds the stage object figures (stage_obj_vram_used, stage_ef_obj_vram_used) and five more counters into vram_used_total; callers ending_rep_wait_load and a pointer at 0x0C024234; part of vf4lib/libsprite/src/sprite.c; exercised 2026-11-12: called by the harness on the fight snapshot (sprite_set_vram_used summing to 0x265880; stage_obj 0x9F4A0, stage_ef_obj 0x29C00, common_obj 0x94, rob_body 0x128800 + 0x117400, rob_items 0 + 0) with both totals poked to 0: sprite_vram_used_total became 0x265880 and vram_used_total 0x56E5B4; after poking set 3 to 0x11000, stage_obj to 0x2000 and rob_items side 1 to 0x300 they became 0x276880 and 0x4E2414, the new sums
  * matched: source/vf4lib/libsprite/src/sprite.c (tools/match/match.py)
  */
 void vram_used_total_update(void)
@@ -1658,7 +1658,7 @@ int sprite_list_record_make(int pages, uint value, int pos, int mode, int set_no
 /* 0x0c0e0260  size 0x66  file by match with source
  * confidence: inferred
  * extent: 0x74
- * evidence: (entry, texture list, color mode): recolors the entry's texture as sprite_list_records_make does and reloads it into its slot (texidx_slot_overwrite); nothing in the image calls it; part of vf4lib/libsprite/src/sprite.c
+ * evidence: (entry n, texture list, color mode): recolors entry n's texture as sprite_list_records_make does, then reloads into index n's slot the data of the list's first entry (texidx_slot_overwrite(n, word +8 of the list)), not entry n's own data, so the two agree only for n = 0; nothing in the image calls it; part of vf4lib/libsprite/src/sprite.c; record as the game has it: for any entry but 0 the slot gets entry 0's data; nothing in the image calls the routine; corrected 2026-11-12 from harness calls: called by the harness with a two-entry list in a buffer (entry 0 data at 0x0F002100, entry 1 data at 0x0F002200, all pixels 0x7C00) as sprite_list_texture_reload(1, list, 1): entry 1's pixels became the gray 0x2529 (tex_pixels_yuv_adjust of entry 1 with 1, 0, 0) and entry 0's stayed, but texidx_slot_overwrite was called with index 1 and data 0x0F002100, entry 0's data, not entry 1's; with pos 0, mode 0 nothing was recolored and the call was (0, 0x0F002100)
  * matched: source/vf4lib/libsprite/src/sprite.c (tools/match/match.py)
  */
 void sprite_list_texture_reload(int pos, int pages, int mode)
@@ -1676,9 +1676,9 @@ void sprite_list_texture_reload(int pos, int pages, int mode)
 }
 
 /* 0x0c0e0300  size 0x490  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x612
- * evidence: (texture header {w, h, format, data}, luma scale, chroma scale, brightness add): converts every pixel of a 1555, 565 or 4444 texture (size from the format bits 0xF00: palette 0x800 bytes, w x h, or a mip chain) to YUV, scales Y and UV, adds the brightness, converts back clamped; returns 0, -1 for an unknown size kind, -2 for an unknown pixel format; callers sprite_list_records_make, sprite_list_record_make, sprite_list_texture_reload (mode 1: 1, 0, 0, gray); part of vf4lib/libsprite/src/sprite.c
+ * evidence: (texture header {w, h, format, data}, luma scale, chroma scale, brightness add): converts every pixel of a 1555, 565 or 4444 texture (size from the format bits 0xF00: palette 0x800 bytes, w x h, or a mip chain) to YUV, scales Y and UV, adds the brightness, converts back clamped (565 and 4444 run the whole step twice, first with the weights 0.3, 0.59, 0.11 and then the standard ones, so the scales and the brightness apply twice: white 565 with luma 0.5 came out 0x39E7, not 0x7BEF; 1555 runs once); returns 0, -1 for an unknown size kind, -2 for an unknown pixel format; callers sprite_list_records_make, sprite_list_record_make, sprite_list_texture_reload (mode 1: 1, 0, 0, gray); part of vf4lib/libsprite/src/sprite.c; exercised 2026-11-12: called by the harness on a 2 x 2 1555 texture (format 0x100) with pixels 0x7C00, 0x83E0, 0x001F, 0x0000 and a fifth word 0x7C00 after them: luma 1, chroma 0, add 0 returned 0 and made them the grays 0x2529, 0xCA52, 0x0C63, 0x0000 (Y weights 0.299, 0.587, 0.114, alpha bit kept), the fifth untouched; luma 0, add 0.5 gave 0x3DEF / 0xBDEF and add 2.0 clamped to 0x7FFF / 0xFFFF; format 0x500 returned -1 and 0x103 returned -2
  * matched: source/vf4lib/libsprite/src/sprite.c (tools/match/match.py)
  */
 int tex_pixels_yuv_adjust(short *tex, float luma_scale, float chroma_scale, float offset)
@@ -1813,9 +1813,9 @@ int tex_pixels_yuv_adjust(short *tex, float luma_scale, float chroma_scale, floa
 }
 
 /* 0x0c0e0980  size 0x42c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x5b4
- * evidence: (texture header, luma scale, chroma scale, red, green, blue scale): as tex_pixels_yuv_adjust but scales the three converted channels instead of adding a brightness; callers sprite_list_records_make, sprite_list_record_make, sprite_list_texture_reload (color modes above 1: 1, 0.1, 1.0, 0.8, 0.5, a warm tint); part of vf4lib/libsprite/src/sprite.c
+ * evidence: (texture header, luma scale, chroma scale, red, green, blue scale): as tex_pixels_yuv_adjust but in a single pass for every format (white 565 with luma 0.5 gave 0x7BEF) and scaling the three converted channels instead of adding a brightness; callers sprite_list_records_make, sprite_list_record_make, sprite_list_texture_reload (color modes above 1: 1, 0.1, 1.0, 0.8, 0.5, a warm tint); part of vf4lib/libsprite/src/sprite.c; exercised 2026-11-12: called by the harness on the same 2 x 2 1555 texture (0x7C00, 0x83E0, 0x001F, 0x0000, fifth word 0x7C00) with luma 1, chroma 0 and channel scales 1, 0.5, 0.25: it returned 0 and wrote 0x2482, 0xC924, 0x0C20, 0x0000 (gray Y times each channel's scale, alpha bit kept), the fifth untouched; format 0x500 returned -1 and 0x103 returned -2
  * matched: source/vf4lib/libsprite/src/sprite.c (tools/match/match.py)
  */
 int tex_pixels_yuv_tint(short *tex, float luma_scale, float chroma_scale, float r_scale, float g_scale, float b_scale)
@@ -2114,9 +2114,9 @@ void sprite_anim_play(int *anim, float frame)
 }
 
 /* 0x0c0e14e0  size 0x12c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x17a
- * evidence: (argument, layer table, frame): sprite_anim_play with one more argument passed first to every layer's draw routine (routine(argument, x, y, z)); same 36-byte layers, same key kinds 0-2 and the same draw-state calls (sprite_alpha_set, sprite_scale_set, sprite_scale_reset, sprite_alpha_reset); nothing in the image calls it; part of vf4lib/libsprite/src/sprite.c (by position: after that file's assert at 0x0C0DDA40, before aetset.c; see notes)
+ * evidence: (argument, layer table, frame): sprite_anim_play with one more argument passed first to every layer's draw routine (routine(argument, x, y, z)); same 36-byte layers, same key kinds 0-2 and the same draw-state calls (sprite_alpha_set, sprite_scale_set, sprite_scale_reset, sprite_alpha_reset); nothing in the image calls it; part of vf4lib/libsprite/src/sprite.c (by position: after that file's assert at 0x0C0DDA40, before aetset.c; see notes); exercised 2026-11-12: called by the harness with argument 7 and a one-layer table in a buffer (draw routine sprite_put_xyz; start values time 0, x 10, y 20, z 0, scale 1, 2, alpha 1; position keys 0: 100, 200, 0.5 / 10: 200, 400, 0.5; scale keys 0: 1, 1 / 10: 3, 5; alpha keys 0: 1 / 10: 0) at frame 5: it set alpha 0.5 and scale 2, 6, called sprite_put_xyz(7, 160, 320, 0.5) and reset the draw state to 1; at frame 20 with argument 9: alpha 0, scale 3, 10 and sprite_put_xyz(9, 210, 420, 0.5)
  * matched: source/vf4lib/libsprite/src/sprite.c (tools/match/match.py)
  */
 void sprite_anim_play_with_arg(int arg, int *anim, float frame)
@@ -2166,8 +2166,8 @@ void sprite_anim_play_with_arg(int arg, int *anim, float frame)
 }
 
 /* 0x0c0e1680  size 0x8a  file by match with source
- * confidence: inferred
- * evidence: (a, r, g, b in 0..1, fr4-fr7): packs four floats into one 32-bit color word, the first in the top byte: each times 255, converted to an integer (__fixunssfsi) and clamped to 255; the game's own copy of libspr's argb_pack_unit_floats (0x0C10EB80); only caller sprite_quad_send_unrotated (the fade color of attribute bit 0x2000, alpha first); part of vf4lib/libsprite/src/sprite.c (by position: after that file's assert at 0x0C0DDA40, before aetset.c; see notes)
+ * confidence: exercised
+ * evidence: (a, r, g, b in 0..1, fr4-fr7): packs four floats into one 32-bit color word, the first in the top byte: each times 255, converted to an integer (__fixunssfsi) and clamped to 255; the game's own copy of libspr's argb_pack_unit_floats (0x0C10EB80); only caller sprite_quad_send_unrotated (the fade color of attribute bit 0x2000, alpha first); part of vf4lib/libsprite/src/sprite.c (by position: after that file's assert at 0x0C0DDA40, before aetset.c; see notes); exercised 2026-11-12: called by the harness with (0.5, 1.0, 0.25, 2.0) it returned 0x7FFF3FFF and with (1.0, 0.0, 0.5, 0.1) 0xFF007F19: the first value in the top byte, each value times 255 truncated, 2.0 clamped to 255
  * matched: source/vf4lib/libsprite/src/sprite.c (tools/match/match.py)
  */
 uint sprite_color_pack(float alpha, float red, float green, float blue)

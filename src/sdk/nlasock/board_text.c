@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c1224c0  size 0x62  file by match with source
- * confidence: inferred
- * evidence: (text, value, slot record): writes a 0x60-byte request {operation, request address + 0x20, text length, value} with the text (up to 64 bytes) at +0x20, by PIO; callers board_text_call and sock_op15_string_async; part of NLASOCK
+ * confidence: exercised
+ * evidence: (text, value, slot record): writes a 0x60-byte request {operation, request address + 0x20, text length, value} with the text (up to 64 bytes) at +0x20, by PIO; callers board_text_call and sock_op15_string_async; part of NLASOCK; exercised 2026-11-12: called by the harness on slot 0 (op poked 0x15) with ("hello", 0x77): dimm_pio_write of 0x60 bytes {0x15, 0x0f800020, 5, 0x77, 0 x4} with "hello" at +0x20 to 0x0f800000; inside board_text_call("hello", 7) the fourth word was 7
  * matched: source/sdk/nlasock/board_text.c (tools/match/match.py)
  */
 void board_text_request_write(char *text, uint value, sock_slot_rec *slot)
@@ -26,9 +26,9 @@ void board_text_request_write(char *text, uint value, sock_slot_rec *slot)
 }
 
 /* 0x0c122540  size 0xc2  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xc4
- * evidence: (text, value): socket operation 0x15 on slot 0, blocking: -3 unless bit 27 (0x08000000) of the board record's first word is set, -2 for no text, -4 when busy; board_text_request_write, DIMM command 0x12, waits and returns the result; nothing in the image calls it (its non-waiting twin is sock_op15_string_async); part of NLASOCK
+ * evidence: (text, value): socket operation 0x15 on slot 0, blocking: -3 unless bit 27 (0x08000000) of the board record's first word is set, -2 for no text, -4 when busy; board_text_request_write, DIMM command 0x12, waits and returns the result; nothing in the image calls it (its non-waiting twin is sock_op15_string_async); part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): with the board word 0x600200f0 (bit 27 clear) it returned -3; with 0x680200f0 poked, a null text gave -2, dimm_busy_word 1 gave -4, and ("hello", 7) wrote {0x15, 0x0f800020, 5, 7} and the text to slot 0, posted dimm_cmd_post(0x12, 0), waited and returned the board model's 0
  * matched: source/sdk/nlasock/board_text.c (tools/match/match.py)
  */
 int board_text_call(char *text, uint value)
@@ -69,9 +69,9 @@ int board_text_call(char *text, uint value)
 }
 
 /* 0x0c122640  size 0xac  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xae
- * evidence: (name string, value): the posting form of board_text_call: needs bit 0x08000000 of the board information word (dimm_board_info_fetch, -3 without it), -2 for a null string, -4 when the board lock (dimm_busy_word) or the slot 0 lock is taken; marks slot 0 (sock_slot_at) busy with op code 0x15, writes the string (up to 64 bytes), its length and the value to the slot's board area with board_text_request_write, posts board command 0x12 for slot 0 (dimm_cmd_post_bare) and returns 0 at once without waiting for the reply; the op's meaning is not known (no caller, no string); nothing in the image calls it; part of NLASOCK
+ * evidence: (name string, value): the posting form of board_text_call: needs bit 0x08000000 of the board information word (dimm_board_info_fetch, -3 without it), -2 for a null string, -4 when the board lock (dimm_busy_word) or the slot 0 lock is taken; marks slot 0 (sock_slot_at) busy with op code 0x15, writes the string (up to 64 bytes), its length and the value to the slot's board area with board_text_request_write, posts board command 0x12 for slot 0 (dimm_cmd_post_bare) and returns 0 at once without waiting for the reply; the op's meaning is not known (no caller, no string); nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): with the board word 0x600200f0 (bit 27 clear) it returned -3; with 0x680200f0 poked, a null text gave -2, dimm_busy_word 1 gave -4, and ("hello", 9) wrote {0x15, 0x0f800020, 5, 9} and the text to slot 0, posted dimm_cmd_post(0x12, 0) and returned 0 at once, leaving slot 0 at done 0, op 0x15 with its lock 1 and dimm_busy_word 0
  * matched: source/sdk/nlasock/board_text.c (tools/match/match.py)
  */
 int sock_op15_string_async(char *text, uint value)

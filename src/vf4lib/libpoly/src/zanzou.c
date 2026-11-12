@@ -47,8 +47,8 @@ void screen_line_draw(float x0, float y0, float x1, float y1, float depth, uint 
 }
 
 /* 0x0c0e9d60  size 0x76  file by match with source
- * confidence: inferred
- * evidence: (color, x0, x1, y, depth): a horizontal bar from the smaller x to the larger x + 1, screen_line_width high (the x values are swapped into order); nothing in the image calls it; part of vf4lib/libpoly/src/zanzou.c
+ * confidence: exercised
+ * evidence: (color, x0, x1, y, depth): a horizontal bar from the smaller x to the larger x + 1, screen_line_width high (the x values are swapped into order), each vertex at z = 1 / depth; nothing in the image calls it; part of vf4lib/libpoly/src/zanzou.c; exercised 2026-11-12: called by the harness with (0xFF112233, x0 100, x1 50, y 10, depth 2) and screen_line_width 1 as the snapshot has it: polystrip_plain_opaque(4, v) with v = (50, 10), (50, 11), (101, 10), (101, 11), each with z 0.5 and color 0xFF112233
  * matched: source/vf4lib/libpoly/src/zanzou.c (tools/match/match.py)
  */
 void screen_hline_draw(uint color, float x0, float x1, float y, float depth)
@@ -86,8 +86,8 @@ void screen_hline_draw(uint color, float x0, float x1, float y, float depth)
 }
 
 /* 0x0c0e9de0  size 0x70  file by match with source
- * confidence: inferred
- * evidence: (color, x, y0, y1, depth): a vertical bar screen_line_width wide from y0 to y1 + 1; when y1 < y0 it only copies y1 into y0 instead of swapping (see notes); nothing in the image calls it; part of vf4lib/libpoly/src/zanzou.c
+ * confidence: exercised
+ * evidence: (color, x, y0, y1, depth): a vertical bar screen_line_width wide from y0 to y1 + 1, each vertex at z = 1 / depth; when y1 < y0 it only copies y1 into y0 instead of swapping (see notes); nothing in the image calls it; part of vf4lib/libpoly/src/zanzou.c; exercised 2026-11-12: called by the harness with (0xFF445566, x 20, y0 10, y1 50, depth 4) and screen_line_width 1: polystrip_plain_opaque(4, v) with v = (20, 10), (20, 51), (21, 10), (21, 51), z 0.25; with y0 50 and y1 10: (20, 10), (20, 11), (21, 10), (21, 11), y0 taking y1 with no swap
  * matched: source/vf4lib/libpoly/src/zanzou.c (tools/match/match.py)
  */
 void screen_vline_draw(uint color, float x, float y0, float y1, float depth)
@@ -174,8 +174,8 @@ void zanzou_heaps_reset(void)
 }
 
 /* 0x0c0e9f80  size 0x38  file by match with source
- * confidence: inferred
- * evidence: (size): heap_malloc from zanzou_ram_heap, trapping when it fails, and refreshes its statistics (heap_stats_get); 0 for size 0; only caller zanzou_trail_init (the trail history when none is given); part of vf4lib/libpoly/src/zanzou.c
+ * confidence: exercised
+ * evidence: (size): heap_malloc from zanzou_ram_heap, trapping when it fails, and refreshes its statistics (heap_stats_get); 0 for size 0; only caller zanzou_trail_init (the trail history when none is given); part of vf4lib/libpoly/src/zanzou.c; exercised 2026-11-12: called by the harness, size 0 returned 0 without a call; 0x100 called heap_malloc(zanzou_ram_heap, 0x100), returned 0x0DBFBD00 (the heap starts at 0x0DBFBCE0) and heap_stats_get(zanzou_ram_heap, zanzou_ram_heap_stats) left 0x20000 usable, used 0x140, free 0x1FEC0; a further 0x40 returned 0x0DBFBE40 with used 0x1C0
  * matched: source/vf4lib/libpoly/src/zanzou.c (tools/match/match.py)
  */
 void * zanzou_ram_alloc(int size)
@@ -191,8 +191,8 @@ void * zanzou_ram_alloc(int size)
 }
 
 /* 0x0c0e9fe0  size 0x38  file by match with source
- * confidence: inferred
- * evidence: (size): the same on zanzou_elan_heap; only caller zanzou_trail_init (the two model copies when no buffer is given); part of vf4lib/libpoly/src/zanzou.c
+ * confidence: exercised
+ * evidence: (size): the same on zanzou_elan_heap; only caller zanzou_trail_init (the two model copies when no buffer is given); part of vf4lib/libpoly/src/zanzou.c; exercised 2026-11-12: called by the harness, size 0 returned 0 without a call; 0x100 called heap_malloc(zanzou_elan_heap, 0x100), returned 0xAB13C100 (the heap starts at 0xAB13C0E0) and heap_stats_get(zanzou_elan_heap, zanzou_elan_heap_stats) left 0x20000 usable, used 0x140, free 0x1FEC0; a further 0x40 returned 0xAB13C240 with used 0x1C0
  * matched: source/vf4lib/libpoly/src/zanzou.c (tools/match/match.py)
  */
 void * zanzou_elan_alloc(int size)
@@ -266,8 +266,8 @@ void zanzou_trail_init(zanzou_trail_rec *trail, uint obj_id, compiled_model_rec 
 }
 
 /* 0x0c0ea1c0  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: (trail): elan_heap_free of the first model copy and free of the history, clearing +0x20, +0x24 and +0x28; the blocks come from the caller or from the trail heaps (zanzou_elan_alloc / zanzou_ram_alloc), never from malloc, so at least the free of the history looks wrong (see notes); nothing in the image calls it; part of vf4lib/libpoly/src/zanzou.c
+ * confidence: exercised
+ * evidence: (trail): elan_heap_free of the first model copy and free of the history, clearing +0x20, +0x24 and +0x28; the blocks come from the caller or from the trail heaps (zanzou_elan_alloc / zanzou_ram_alloc), never from malloc, so at least the free of the history looks wrong (see notes); nothing in the image calls it; part of vf4lib/libpoly/src/zanzou.c; exercised 2026-11-12: called by the harness with a trail record whose +0x20 was an elan_heap_alloc block (0xAB56D580), +0x24 0x11111111, +0x28 a malloc block (0x0DD352E0) and +0x1C 0x22222222: it called elan_heap_free(0xAB56D580) and free(0x0DD352E0), and +0x20, +0x24 and +0x28 became 0 with +0x1C kept
  * matched: source/vf4lib/libpoly/src/zanzou.c (tools/match/match.py)
  */
 void zanzou_trail_free(zanzou_trail_rec *trail)
@@ -281,8 +281,8 @@ void zanzou_trail_free(zanzou_trail_rec *trail)
 }
 
 /* 0x0c0ea200  size 0x30  file by match with source
- * confidence: inferred
- * evidence: (trail, steps): history cursor +4 = (cursor + steps) modulo the count +6; only caller rob_zanzou_calc; part of vf4lib/libpoly/src/zanzou.c
+ * confidence: exercised
+ * evidence: (trail, steps): history cursor +4 = (cursor + steps) % the count +6, C's remainder (a negative sum leaves a negative cursor: 1 and -3 with count 8 give -2); only caller rob_zanzou_calc; part of vf4lib/libpoly/src/zanzou.c; exercised 2026-11-12: called by the harness with the cursor +4 and count +6 planted: cursor 5, count 8, steps 7 left 4; cursor 3, count 5, steps 2 left 0; cursor 1, count 8, steps -3 left -2 (C's remainder); the count unchanged
  * matched: source/vf4lib/libpoly/src/zanzou.c (tools/match/match.py)
  */
 void zanzou_trail_cur_shift(zanzou_trail_rec *trail, int steps)
@@ -361,8 +361,8 @@ void zanzou_trail_push(zanzou_trail_rec *trail, vec3 *edge_a, vec3 *edge_b)
 }
 
 /* 0x0c0ea3e0  size 0x10  file by match with source
- * confidence: inferred
- * evidence: (trail): clears the trail record's on word; nothing in the image calls it (uncalled code, made a function 2026-11-09); between zanzou_trail_push and zanzou_trail_draw, so by link order part of vf4lib/libpoly/src/zanzou.c
+ * confidence: exercised
+ * evidence: (trail): clears the trail record's on word; nothing in the image calls it (uncalled code, made a function 2026-11-09); between zanzou_trail_push and zanzou_trail_draw, so by link order part of vf4lib/libpoly/src/zanzou.c; exercised 2026-11-12: called by the harness with the on word +0 at 1 it became 0, and at 0x12345678 it became 0, the next words untouched
  * matched: source/vf4lib/libpoly/src/zanzou.c (tools/match/match.py)
  */
 void zanzou_trail_off(zanzou_trail_rec *trail)

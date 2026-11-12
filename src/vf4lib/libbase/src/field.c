@@ -144,8 +144,8 @@ void coli_list_relocate(int *list, int delta)
 }
 
 /* 0x0c0473e0  size 0xbe  file by match with source
- * confidence: inferred
- * evidence: (table, count, delta): relocates count null-ended lists of group records (pointers +0x10..+0x24) and the polygon pairs of their two lists (+0x18 / +0x1C) through coli_polys_relocate; only caller field_coli_relocate; part of vf4lib/libbase/src/field.c
+ * confidence: exercised
+ * evidence: (table, count, delta): relocates count null-ended lists of group records (pointers +0x10..+0x24) and the polygon pairs of their two lists (+0x18 / +0x1C) through coli_polys_relocate; only caller field_coli_relocate; part of vf4lib/libbase/src/field.c; exercised 2026-11-12: called by the harness with a table of offsets (0x100, 0x180, 0x200), count 2 and delta 0x0F004000 over records planted at those offsets: the entries became 0x0F004100 and 0x0F004180 and the third stayed 0x200; the list at 0x100 got its group 0x0F004300, whose six words +0x10 to +0x24 moved by the delta (+0 untouched); its lists +0x18 / +0x1C got 0x0F004600 / 0x0F004700, and in those polygons the nonzero +0x10 / +0x14 and the five vertex pointers moved while the zero ones stayed 0
  * matched: source/vf4lib/libbase/src/field.c (tools/match/match.py)
  */
 void coli_groups_relocate(int *groups, int count, int delta)
@@ -200,8 +200,8 @@ void coli_ptrs_relocate(int *ptrs, int count, int delta)
 }
 
 /* 0x0c0474e0  size 0x88  file by match with source
- * confidence: inferred
- * evidence: (polygon, point): 1 when the point lies inside the polygon's edges (edge count byte +10, edge vertex pointers +0x28 / +0x2C, cross products tested against the normal at +0x18), else 0; callers coli_segment_hit_nearest, coli_sphere_hit_nearest, coli_segment_hit_any; part of vf4lib/libbase/src/field.c
+ * confidence: exercised
+ * evidence: (polygon, point): 1 when the point lies inside or on the polygon's edges (normal . (edge x (point - edge start)) not below 0 for every edge; coli_poly_contains_point counts an edge point as outside) (edge count byte +10, edge vertex pointers +0x28 / +0x2C, cross products tested against the normal at +0x18), else 0; callers coli_segment_hit_nearest, coli_sphere_hit_nearest, coli_segment_hit_any; part of vf4lib/libbase/src/field.c; exercised 2026-11-12: called by the harness with a planted square (vertices (0,0,0), (0,0,1), (1,0,1), (1,0,0), closed, edge count 4, normal (0,1,0)): (0.5, 0, 0.5) and (0.5, 5, 0.5) gave 1, (1.5, 0, 0.5) gave 0 and the edge point (0, 0, 0.5) gave 1; with the vertices in the opposite order (0.5, 0, 0.5) gave 0
  * matched: source/vf4lib/libbase/src/field.c (tools/match/match.py)
  */
 int coli_poly_point_inside(coli_poly_rec *poly, float *point)
@@ -233,7 +233,7 @@ int coli_poly_point_inside(coli_poly_rec *poly, float *point)
 
 /* 0x0c047580  size 0x4e  file by match with source
  * confidence: inferred
- * evidence: (point, grid {x0, z0, scale, width, count}): the grid cell index of the point's x / z, -1 outside; only caller coli_grid_cells_along; part of vf4lib/libbase/src/field.c
+ * evidence: (point, grid {x0, z0, scale, width, count}): the grid cell index (int)((x - x0) x scale) + (int)((z - z0) x scale) x width of the point, -1 when that index is below 0 or not below the count (a point beyond the left or right side of the grid is not caught: it gives a cell of the neighboring row, as the game has it); only caller coli_grid_cells_along; part of vf4lib/libbase/src/field.c; corrected 2026-11-12 from harness calls: called by the harness with a planted grid (x0 -10, z0 -20, scale 0.5, width 8, count 200): (3, 0, 1) gave 86, (-9, 7, -19) gave 0 and (3, 0, 400) gave -1, but (-12, 0, 1), left of the grid, gave 79 and (8, 0, 1), right of it, gave 89; the code tests only the index x + z x width against 0 and the count, so a column outside the grid wraps into the neighboring row instead of giving -1
  * matched: source/vf4lib/libbase/src/field.c (tools/match/match.py)
  */
 int coli_grid_cell_at(float *pos, coli_grid_rec *grid)
@@ -252,9 +252,9 @@ int coli_grid_cell_at(float *pos, coli_grid_rec *grid)
 }
 
 /* 0x0c0475e0  size 0xf0  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x104
- * evidence: (out cell list, end, start): steps from the start towards the end in x / z steps of at most 1 unit and writes each new grid cell (grid of field_coli +0x10, coli_grid_cell_at) to the list, ended by 0xffff; returns the count; callers coli_segment_hit_nearest, coli_sphere_hit_nearest, coli_timing_test; part of vf4lib/libbase/src/field.c
+ * evidence: (out cell list, end, start): steps from the start towards the end in n = (int)(longest x / z distance + 1) equal x / z steps of at most 1 unit (the start alone when the segment is 1 unit or shorter) and writes each new grid cell (grid of field_coli +0x10, coli_grid_cell_at) to the list, stopping at the first point whose cell is -1 (coli_grid_cell_at); the end itself is never sampled, so its cell can be left out, ended by 0xffff; returns the count; callers coli_segment_hit_nearest, coli_sphere_hit_nearest, coli_timing_test; part of vf4lib/libbase/src/field.c; as the game has it: the end point's cell can be missed by coli_grid_cells_along; exercised 2026-11-12: called by the harness with field_coli +0x10 poked to a planted unit grid (origin 0, scale 1, width 10, count 100), from (0.5, 0, 0.5): to (0.5, 0, 0.9) it wrote 0, 0xFFFF and returned 1; to (2.5, 0, 2.5) 0, 11 (2); to (0.5, 0, 4.5) 0, 10, 20, 30 (4); to (3.5, 0, 0.5) 0, 1, 2 (3); a start at x -5 wrote only 0xFFFF and returned 0; the end's own cell was not written in any of them
  * matched: source/vf4lib/libbase/src/field.c (tools/match/match.py)
  */
 int coli_grid_cells_along(ushort *cells, float *end, float *start)
@@ -304,9 +304,9 @@ int coli_grid_cells_along(ushort *cells, float *end, float *start)
 }
 
 /* 0x0c047700  size 0x194  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x1a0
- * evidence: (out point, end, start, flags): over the grid cells along the segment (coli_cells), the polygon crossed from its front to its back going from the start to the end, nearest the start, filtered by its kind bits (+4: 0x80000400 needs flag 0x40, 0x200 and 0x100 kinds by flags 4 / 0x10 / 0x20 / 0x48 and the short at +0xC) and flag 2 for non-zero first words; writes the hit point and returns the polygon or null; only caller coli_timing_test; part of vf4lib/libbase/src/field.c
+ * evidence: (out point, end, start, flags): over the grid cells along the segment (coli_cells), the polygon crossed from its front to its back going from the start to the end, nearest the start, filtered by its kind bits (+4: 0x80000400 needs flag 0x40, 0x200 and 0x100 kinds by flags 4 / 0x10 / 0x20 / 0x48 and the short at +0xC) and flag 2 for non-zero first words; writes the hit point and returns the polygon or null; only caller coli_timing_test; part of vf4lib/libbase/src/field.c; exercised 2026-11-12: called by the harness on the snapshot's stage collision data (version 0x3F2; floor 0x0CDA03E0 at y 4, kind 0x100, short +0xC 0; floor 0x0CDA0728 at y 3.1, kind 0x400): from (1, 6, 1) to (1, 2, 1) flags 8 returned 0x0CDA03E0 with the point (1, 4, 1), flags 0 null, flags 0x40 0x0CDA03E0 (the nearer of the two); from (1, 3.5, 1) flags 0x40 returned 0x0CDA0728 at (1, 3.1, 1); upward from (1, 2, 1) to (1, 6, 1) with flags 0x48, null
  * matched: source/vf4lib/libbase/src/field.c (tools/match/match.py)
  */
 coli_poly_rec * coli_segment_hit_nearest(float *out, float *end, float *start, uint mask)
@@ -371,9 +371,9 @@ coli_poly_rec * coli_segment_hit_nearest(float *out, float *end, float *start, u
 }
 
 /* 0x0c0478e0  size 0x200  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x222
- * evidence: (out point, end, start, flags, radius): coli_segment_hit_nearest for a sphere of the given radius: planes moved out by the radius, the hit point returned at the sphere center; only caller coli_timing_test; part of vf4lib/libbase/src/field.c
+ * evidence: (out point, end, start, flags, radius): coli_segment_hit_nearest for a sphere of the given radius: planes moved out by the radius, the hit point returned at the sphere center; only caller coli_timing_test; part of vf4lib/libbase/src/field.c; exercised 2026-11-12: called by the harness on the snapshot's stage collision data from (1, 6, 1) to (1, 4.5, 1) with flags 8: radius 1 returned the floor 0x0CDA03E0 (y 4, kind 0x100) with the center point (1, 5, 1); radius 0.25 (never reaching the floor) returned null; radius 1 with flags 0 (kind 0x100 not allowed) returned null
  * matched: source/vf4lib/libbase/src/field.c (tools/match/match.py)
  */
 coli_poly_rec * coli_sphere_hit_nearest(float *out, float *end, float *start, uint mask, float radius)
@@ -457,9 +457,9 @@ coli_poly_rec * coli_sphere_hit_nearest(float *out, float *end, float *start, ui
 }
 
 /* 0x0c047b40  size 0x18c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x1a4
- * evidence: (end, start, flags): 1 when the segment crosses any polygon of the first cell list of field_coli (either way, or front to back going from the start with flag 1) that its kind bits and the flags allow; fatal_at field.c line 0x28c "Collision data version error!!" when the data's version word (+4) is not 0x3f2; 0 when both points are below -1000; only caller item_anim_follow; part of vf4lib/libbase/src/field.c
+ * evidence: (end, start, flags): 1 when the segment crosses any polygon of the first cell list of field_coli (either way, or front to back going from the start with flag 1) that its kind bits and the flags allow; fatal_at field.c line 0x28c "Collision data version error!!" when the data's version word (+4) is not 0x3f2; 0 when both points are below -1000; only caller item_anim_follow; part of vf4lib/libbase/src/field.c; exercised 2026-11-12: called by the harness on the snapshot's stage collision data (version 0x3F2), whose first cell list holds two walls, the ceiling and the floor 0x0CDA0728 at y 3.1: (1, 5, 1) to (1, 2, 1) with flags 0 returned 1; (1, 2, 1) to (1, 5, 1) returned 1 with flags 0 and 0 with flags 1; (1, 5, 1) to (1, 3.5, 1) with flags 8, crossing only the floor at y 4 that is not in the first list, returned 0
  * assert field.c:652: fatal "Collision data version error!!"
  * matched: source/vf4lib/libbase/src/field.c (tools/match/match.py)
  */
@@ -531,8 +531,8 @@ uint coli_flag_list_set(coli_wall_rec *wall)
 }
 
 /* 0x0c047d40  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: (record): sets to 1 every word pointed at by the null-ended pointer list at record +4, as coli_flag_list_set does, returning nothing; nothing in the image calls it (uncalled code, made a function 2026-11-09); between coli_flag_list_set and coli_flag_list_clear, so by link order part of vf4lib/libbase/src/field.c
+ * confidence: exercised
+ * evidence: (record): sets to 1 every word pointed at by the null-ended pointer list at record +4, as coli_flag_list_set does, returning nothing; nothing in the image calls it (uncalled code, made a function 2026-11-09); between coli_flag_list_set and coli_flag_list_clear, so by link order part of vf4lib/libbase/src/field.c; exercised 2026-11-12: called by the harness with a planted record whose +4 points at the list {a, b, 0}, with 0x55 at a, at b and at a third word c: a and b became 1 and c stayed 0x55
  * matched: source/vf4lib/libbase/src/field.c (tools/match/match.py)
  */
 void coli_flag_list_mark(coli_wall_rec *wall)
@@ -548,8 +548,8 @@ void coli_flag_list_mark(coli_wall_rec *wall)
 }
 
 /* 0x0c047d60  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: (record): sets to 0 every word pointed at by the null-ended pointer list at record +4; the opposite of coli_flag_list_set; nothing in the image calls it (uncalled code, made a function 2026-11-09); between coli_flag_list_mark and field_floor_height, so by link order part of vf4lib/libbase/src/field.c
+ * confidence: exercised
+ * evidence: (record): sets to 0 every word pointed at by the null-ended pointer list at record +4; the opposite of coli_flag_list_set; nothing in the image calls it (uncalled code, made a function 2026-11-09); between coli_flag_list_mark and field_floor_height, so by link order part of vf4lib/libbase/src/field.c; exercised 2026-11-12: called by the harness with a planted record whose +4 points at the list {a, b, 0}, with 0x55 at a, at b and at a third word c: a and b became 0 and c stayed 0x55
  * matched: source/vf4lib/libbase/src/field.c (tools/match/match.py)
  */
 void coli_flag_list_clear(coli_wall_rec *wall)

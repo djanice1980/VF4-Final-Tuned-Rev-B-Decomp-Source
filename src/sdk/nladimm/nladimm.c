@@ -8,7 +8,7 @@
 
 /* 0x0c1253a0  size 0xe  file by match with source
  * confidence: inferred
- * evidence: returns the module's build text "NLADIMM Ver.0.06 Build: Oct 19 2004 19:52:03"; nothing in the image calls it (uncalled code, made a function 2026-11-09); between dcache_range_purge and dimm_spin_wait, so by link order part of sdk/nladimm/nladimm.c
+ * evidence: returns the module's build text "\nNLADIMM Ver.0.06 Build: Oct 19 2004 19:52:03\n" (a line end on each side); nothing in the image calls it (uncalled code, made a function 2026-11-09); between dcache_range_purge and dimm_spin_wait, so by link order part of sdk/nladimm/nladimm.c
  * matched: source/sdk/nladimm/nladimm.c (tools/match/match.py)
  */
 char * nladimm_version_get(void)
@@ -171,8 +171,8 @@ int dimm_firmware_version_get(uint *major, uint *minor)
 }
 
 /* 0x0c125740  size 0x14  file by match with source
- * confidence: inferred
- * evidence: sets dimm_last_status to 0 and returns dimm_page_fd00, the 0x100-byte shared page dimm_page_fd00_blank fills with spaces; nothing in the image calls it (uncalled code, made a function 2026-11-09); between dimm_firmware_version_get and dimm_page_fd00_blank, so by link order part of sdk/nladimm/nladimm.c
+ * confidence: exercised
+ * evidence: sets dimm_last_status to 0 and returns dimm_page_fd00, the 0x100-byte shared page dimm_page_fd00_blank fills with spaces; nothing in the image calls it (uncalled code, made a function 2026-11-09); between dimm_firmware_version_get and dimm_page_fd00_blank, so by link order part of sdk/nladimm/nladimm.c; exercised 2026-11-12: called by the harness with dimm_last_status poked 7: it returned 0x0c01fd00 (dimm_page_fd00) and dimm_last_status was 0
  * matched: source/sdk/nladimm/nladimm.c (tools/match/match.py)
  */
 uint dimm_page_fd00_get(void)
@@ -182,8 +182,8 @@ uint dimm_page_fd00_get(void)
 }
 
 /* 0x0c125760  size 0x22  file by match with source
- * confidence: inferred
- * evidence: (no arguments): fills the 0x100 bytes at dimm_page_fd00 (the shared page the never-made routine dimm_page_fd00_get returns) with spaces (0x20) and sets dimm_last_status to 0; nothing in the image calls it; part of NLADIMM
+ * confidence: exercised
+ * evidence: (no arguments): fills the 0x100 bytes at dimm_page_fd00 (the shared page the never-made routine dimm_page_fd00_get returns) with spaces (0x20) and sets dimm_last_status to 0; nothing in the image calls it; part of NLADIMM; exercised 2026-11-12: called by the harness with 0xab over 0x0c01fcfc-0x0c01fe03 and dimm_last_status 9: the 0x100 bytes at 0x0c01fd00 became 0x20, the words at 0x0c01fcfc and 0x0c01fe00 stayed 0xabababab and dimm_last_status became 0
  * matched: source/sdk/nladimm/nladimm.c (tools/match/match.py)
  */
 void dimm_page_fd00_blank(void)
@@ -318,8 +318,8 @@ uint dimm_command_poll(uint *reply_out)
 }
 
 /* 0x0c125a80  size 0x30  file by match with source
- * confidence: inferred
- * evidence: cancels the posted board command: clears the pending mask and the whole of dimm_request, its argument copy included; nothing in the image calls it (uncalled code, made a function 2026-11-09); between dimm_command_poll and dimm_status_mode_set, so by link order part of sdk/nladimm/nladimm.c
+ * confidence: exercised
+ * evidence: cancels the posted board command: clears the pending mask and the whole of dimm_request, its argument copy included; nothing in the image calls it (uncalled code, made a function 2026-11-09); between dimm_command_poll and dimm_status_mode_set, so by link order part of sdk/nladimm/nladimm.c; exercised 2026-11-12: called by the harness with dimm_pending_command poked 0x55 and the 0x34 bytes from dimm_request filled with 0xa5: dimm_pending_command became 0, the 0x30 bytes of dimm_request (its argument copy included) 0, and the word at dimm_request +0x30 stayed 0xa5a5a5a5
  * matched: source/sdk/nladimm/nladimm.c (tools/match/match.py)
  */
 void dimm_command_cancel(void)
@@ -333,8 +333,8 @@ void dimm_command_cancel(void)
 }
 
 /* 0x0c125ac0  size 0x64  file by match with source
- * confidence: inferred
- * evidence: (flag): with the board word's bit 29 set, waits up to 0x22ca4 reads for bit 0 of the DIMM status register 0xa05f704c; then rewrites that register with bits 12-13 set to 0x1000 (flag non-zero) or 0x2000, clearing bit 8 when bit 29 is set; nothing in the image calls it (uncalled code, made a function 2026-11-09); between dimm_command_cancel and dimm_pio_read, so by link order part of sdk/nladimm/nladimm.c
+ * confidence: exercised
+ * evidence: (flag): with the board word's bit 29 set, waits up to 0x22ca4 reads for bit 0 of the DIMM status register 0xa05f704c; then rewrites that register with bits 12-13 set to 0x1000 (flag non-zero) or 0x2000, clearing bit 8 when bit 29 is set; nothing in the image calls it (uncalled code, made a function 2026-11-09); between dimm_command_cancel and dimm_pio_read, so by link order part of sdk/nladimm/nladimm.c; exercised 2026-11-12: called by the harness with the board model on (board word 0x600200f0, bit 29 set): flag 1, the status register reading 0x0001 (the model's), wrote 0x1001 to 0xa05f704c; flag 0, reading 0x1001, wrote 0x2001 (bits 12-13 replaced, not added); bit 8 never read set, so its clearing was not seen
  * matched: source/sdk/nladimm/nladimm.c (tools/match/match.py)
  */
 void dimm_status_mode_set(int mode_one)
@@ -385,8 +385,8 @@ void dimm_pio_read(uint addr, ushort *dst, uint size)
 }
 
 /* 0x0c125ba0  size 0x8e  file by match with source
- * confidence: inferred
- * evidence: (DIMM address, buffer, bytes, no wait): rounds the DIMM address down to 32 bytes, does nothing for 0 bytes, waits for the G1 DMA status register 0xa05f7418 to read 0, then with interrupts masked sets the cartridge DMA registers (0xa05f7004/7000 to 0, 0xa05f7014 = bytes / 32, 0xa05f7010 low half and 0xa05f700c high half | 0x8000 of the DIMM address) and the G1 DMA (0xa05f7404 buffer, 0xa05f7408 length, 0xa05f740c direction 1 = into memory, enable 0xa05f7414 and start 0xa05f7418); unless no wait is set waits for the end and writes 0xc000 to 0xa05f700c; the caller purges the buffer first (dcache_range_purge); callers dimm_mem_read_chunk, peer_area_read_chunk; part of NLADIMM
+ * confidence: exercised
+ * evidence: (DIMM address, buffer, bytes, no wait): rounds the DIMM address down to 32 bytes, does nothing for 0 bytes, waits for the G1 DMA status register 0xa05f7418 to read 0, then with interrupts masked sets the cartridge DMA registers (0xa05f7004/7000 to 0, 0xa05f7014 = bytes / 32, 0xa05f7010 low half and 0xa05f700c high half | 0x8000 of the DIMM address) and the G1 DMA (0xa05f7404 buffer, 0xa05f7408 length, 0xa05f740c direction 1 = into memory, enable 0xa05f7414 and start 0xa05f7418); unless no wait is set waits for the end and writes 0xc000 to 0xa05f700c; the caller purges the buffer first (dcache_range_purge); callers dimm_mem_read_chunk, peer_area_read_chunk; part of NLADIMM; exercised 2026-11-12: called by the harness: (0x0fd00123, buffer, 0x40, no wait 1) wrote 0xa05f7004 0, 7000 0, 7014 2, 7010 0x120, 700c 0x8fd0, 7404 the buffer, 7408 0x40, 740c 1, 7414 1, 7418 1; with 0 bytes it wrote nothing; (0x0fe54321, buffer, 0x400, 0) wrote 7014 0x20 and 7010 0x4320 and ended with 700c 0xc000
  * matched: source/sdk/nladimm/nladimm.c (tools/match/match.py)
  */
 void dimm_dma_read(uint addr, uint buf, uint size, int no_wait)
@@ -449,8 +449,8 @@ void dimm_pio_write(ushort *src, uint addr, uint size)
 }
 
 /* 0x0c125cc0  size 0x94  file by match with source
- * confidence: inferred
- * evidence: (buffer, DIMM address, bytes, no wait): as dimm_dma_read with the G1 DMA direction 0 (memory to the board); callers dimm_mem_write_chunk and peer_area_write_chunk, which purge the buffer first (dcache_range_purge); part of NLADIMM
+ * confidence: exercised
+ * evidence: (buffer, DIMM address, bytes, no wait): as dimm_dma_read with the G1 DMA direction 0 (memory to the board); callers dimm_mem_write_chunk and peer_area_write_chunk, which purge the buffer first (dcache_range_purge); part of NLADIMM; exercised 2026-11-12: called by the harness with buffer 0x0f002000, DIMM address 0x01234567, 0x40 bytes, no wait 1 it wrote 0xa05f7014=2, 7010=0x4560 (rounded down to 32), 700c=0x8123, 7404=0x0f002000, 7408=0x40, direction 740c=0, 7414=1, 7418=1 and no 0xc000; with 0x00abcdef, 0x60 bytes, no wait 0 (interrupts on) 7014=3, 7010=0xcde0 and 700c ended 0xc000 after the wait; with 0 bytes it touched no register.
  * matched: source/sdk/nladimm/nladimm.c (tools/match/match.py)
  */
 void dimm_dma_write(uint buf, uint addr, uint size, int no_wait)

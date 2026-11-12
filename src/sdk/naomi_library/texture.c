@@ -59,8 +59,8 @@ void texidx_tables_place(int work, int slot_count, int index_count)
 }
 
 /* 0x0c12eca0  size 0x64  file by match with source
- * confidence: inferred
- * evidence: frees every texture slot (tex_slot_table_wipe) and, when an index map exists, clears it and the allocation bitmap; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: frees every texture slot (tex_slot_table_wipe) and, when an index map exists, clears it and the allocation bitmap; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on the snapshot's tables (texidx_count 12000, 376 bitmap words, 138 map entries in use; budget raised to 200 frames, it took 14.9 million instructions): every map entry from -1 to 11999 became use count 0, slot -1, all 376 bitmap words 0, and through tex_slot_table_wipe slot 386 got status -1 and in_use 0
  * matched: source/sdk/naomi_library/texture.c (tools/match/match.py)
  */
 void texidx_tables_wipe(void)
@@ -109,8 +109,8 @@ bool texidx_slot_overwrite(int index, int data)
 }
 
 /* 0x0c12edc0  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: (index, list, entry): texidx_slot_overwrite with the data pointer of 16-byte entry n of a list (its third word); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (index, list, entry): texidx_slot_overwrite with the data pointer of 16-byte entry n of a list (its third word); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness (4442, list, 1) with 16-byte list entries planted in a buffer, it called texidx_slot_overwrite(4442, 0x0F00C000), the third word of entry 1 (not its neighbours 0x11111111, 0x22222222), whose 0x5A bytes then stood in the slot's VRAM; with entry 2 it passed 0x0F00D000
  * matched: source/sdk/naomi_library/texture.c (tools/match/match.py)
  */
 void texidx_slot_overwrite_from_list(int index, int list, int entry)
@@ -120,8 +120,8 @@ void texidx_slot_overwrite_from_list(int index, int list, int entry)
 }
 
 /* 0x0c12ede0  size 0x74  file by match with source
- * confidence: inferred
- * evidence: (texture index, out): for an index in use whose slot is loaded (status 0) copies the texture's words from VRAM (its address through 0xA4000000, width x height / 2 words) to out and returns 1; 0 otherwise; nothing in the image calls it (uncalled code, made a function 2026-11-09); between texidx_slot_overwrite_from_list and tex_vram_free_total, so by link order part of sdk/naomi_library/texture.c
+ * confidence: exercised
+ * evidence: (texture index, out): for an index in use whose slot is loaded (status 0) copies the texture's words from VRAM (its address through 0xA4000000, width x height / 2 words) to out and returns 1; 0 otherwise; nothing in the image calls it (uncalled code, made a function 2026-11-09); between texidx_slot_overwrite_from_list and tex_vram_free_total, so by link order part of sdk/naomi_library/texture.c; exercised 2026-11-12: called by the harness with the snapshot's tables (texidx_base 840): index 4442 (map entry 5282, slot 386, status 0, 64 x 32 at 0x610800) returned 1 and copied 1024 words equal to those at 0xA4610800, the next word untouched; index 1 (map entry 841, use count 0) returned 0 and wrote nothing; with slot 386's status poked 1, index 4442 returned 0
  * matched: source/sdk/naomi_library/texture.c (tools/match/match.py)
  */
 bool texidx_vram_words_read(int index, uint *out)
@@ -216,8 +216,8 @@ void texidx_bit_clear(uint index)
 }
 
 /* 0x0c12efe0  size 0x32  file by match with source
- * confidence: inferred
- * evidence: (header, texture index): copies the index's slot's size word into the low 6 bits of header +8 and its texture control word to header +0xC; it indexes texidx_map directly and does not add texidx_base, unlike its siblings; nothing in the image calls it (uncalled code, made a function 2026-11-09); between texidx_bit_clear and tex_slots_rebuild_after_vram_pass, so by link order part of sdk/naomi_library/texture.c
+ * confidence: exercised
+ * evidence: (header, texture index): copies the index's slot's size word into the low 6 bits of header +8 and its texture control word to header +0xC; it indexes texidx_map directly and does not add texidx_base, unlike its siblings; nothing in the image calls it (uncalled code, made a function 2026-11-09); between texidx_bit_clear and tex_slots_rebuild_after_vram_pass, so by link order part of sdk/naomi_library/texture.c; exercised 2026-11-12: called by the harness with the snapshot's tables (texidx_base 840): (header of 0xFF bytes, 5282) set header +8 to 0xFFFFFFDA (low 6 bits from slot 386's size word 0x1A) and +0xC to 0x100C2100 (its control word), +0 to +7 untouched; (header with +8 = 0x12345678, 5760) gave 0x1234565B and 0x10141400 (slot 69): map entries 5282 and 5760 used as given, without the base
  * matched: source/sdk/naomi_library/texture.c (tools/match/match.py)
  */
 void texidx_header_words_put(uint *header, int index)
@@ -237,8 +237,8 @@ void texidx_header_words_put(uint *header, int index)
 }
 
 /* 0x0c12f020  size 0x48  file by match with source
- * confidence: inferred
- * evidence: runs the 3D library's texture memory pass vram_pool_sort_and_compact (two texture memory manager routines) and then rebuilds the hardware words of every slot whose surface exists (tex_slot_build_hw_words); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: runs the 3D library's texture memory pass vram_pool_sort_and_compact (two texture memory manager routines) and then rebuilds the hardware words of every slot whose surface exists (tex_slot_build_hw_words); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on the fight snapshot (1,537 slots, 389 of them with status 0, two of those with in_use 0), it called vram_pool_sort_and_compact once (vram_lists_sort, vram_compact_halves) and then tex_slot_build_hw_words 389 times, on exactly the status-0 slots in table order, the two with in_use 0 included
  * matched: source/sdk/naomi_library/texture.c (tools/match/match.py)
  */
 void tex_slots_rebuild_after_vram_pass(void)
@@ -256,8 +256,8 @@ void tex_slots_rebuild_after_vram_pass(void)
 }
 
 /* 0x0c12f080  size 0xe  file by match with source
- * confidence: inferred
- * evidence: (routine): stores tex_load_hook; nothing in the image calls it (uncalled code, made a function 2026-11-09); between tex_slots_rebuild_after_vram_pass and tex_size_code, so by link order part of sdk/naomi_library/texture.c
+ * confidence: exercised
+ * evidence: (routine): stores tex_load_hook; nothing in the image calls it (uncalled code, made a function 2026-11-09); between tex_slots_rebuild_after_vram_pass and tex_size_code, so by link order part of sdk/naomi_library/texture.c; exercised 2026-11-12: called by the harness in one sandbox, tex_load_hook_set(0x0C111110) left tex_load_hook at 0x0C111110 and tex_load_hook_set(0x0C222220) left it at 0x0C222220
  * matched: source/sdk/naomi_library/texture.c (tools/match/match.py)
  */
 void tex_load_hook_set(tex_load_hook_fn hook)
@@ -383,8 +383,8 @@ void tex_slot_words_or_fallback(int slot_no)
 }
 
 /* 0x0c12f320  size 0x78  file by match with source
- * confidence: inferred
- * evidence: frees, through the 3D library (surface_memory_return_by_kind), every slot that holds texture memory (+0x2c set and +0x28 == 0), marks every slot empty and zeroes texidx_base and tex_load_count; used by texidx_tables_wipe; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: frees, through the 3D library (surface_memory_return_by_kind), every slot that holds texture memory (+0x2c set and +0x28 == 0), marks every slot empty and zeroes texidx_base and tex_load_count; used by texidx_tables_wipe; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on the fight snapshot (389 slots with status 0, 387 of them with in_use set), it called surface_memory_return_by_kind 387 times, on exactly those slots in order (not the two status-0 slots with in_use 0), and left all 1,537 slots at status -1, in_use 0, slot_id -1 with no other word changed, and texidx_base (840) and tex_load_count (675) at 0
  * matched: source/sdk/naomi_library/texture.c (tools/match/match.py)
  */
 void tex_slot_table_wipe(void)

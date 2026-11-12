@@ -32,8 +32,8 @@ void input_log_clear(void)
 }
 
 /* 0x0c0622a0  size 0x4a  file by match with source
- * confidence: inferred
- * evidence: (player): when flag bit 1 of the player's input_log record is set and the rob's move request (rob +0x64) has kind 0x02000000 (mask 0xFF080000), rewrites it to 0x01000000; nothing in the image calls it and nothing sets bit 1, role unclear; part of vf4lib/libaction/src/input_log.c
+ * confidence: exercised
+ * evidence: (player): when flag bit 1 of the player's input_log record is set and the rob's move request (rob +0x64) has kind 0x02000000 (mask 0xFF080000), rewrites it to 0x01000000; nothing in the image calls it and nothing sets bit 1, role unclear; part of vf4lib/libaction/src/input_log.c; exercised 2026-11-12: called by the harness with input_log flags and rob +0x64 poked: side 0, flags 3, 0x02000000 became 0x01000000, flags 2 with 0x02010000 too; 0x02080000, 0x03000000 and flags 1 stayed; side 1 (flags 2) 0x02000000 became 0x01000000, with flags 0 stayed; side 2 changed nothing
  * matched: source/vf4lib/libaction/src/input_log.c (tools/match/match.py)
  */
 void move_request_kind2_demote(uint side)
@@ -103,8 +103,8 @@ ushort input_log_dir_get(uint side, int back)
 }
 
 /* 0x0c062400  size 0x46  file by match with source
- * confidence: inferred
- * evidence: (player, back): entry back frames ago (-15..0) of the second ring (+0x26, the buttons); 0 outside the range; as input_log_dir_get without the left / right swap; nothing in the image calls it (uncalled code, made a function 2026-11-09); between input_log_dir_get and input_log_press_get, so by link order part of vf4lib/libaction/src/input_log.c
+ * confidence: exercised
+ * evidence: (player, back): entry back frames ago (-15..0) of the second ring (+0x26, the buttons); 0 outside the range; as input_log_dir_get without the left / right swap; nothing in the image calls it (uncalled code, made a function 2026-11-09); between input_log_dir_get and input_log_press_get, so by link order part of vf4lib/libaction/src/input_log.c; exercised 2026-11-12: called by the harness in one sandbox with side 0's button ring (+0x26) poked 0x100-0x10F, its index 5, and side 1's 0x200-0x20F, index 0: (0, 0) returned 0x105, (0, -1) 0x104, (0, -6) 0x10F, (0, -15) 0x106, (0, -16) and (0, 1) 0; (1, -1) 0x20F, (1, -15) 0x201
  * matched: source/vf4lib/libaction/src/input_log.c (tools/match/match.py)
  */
 ushort input_log_button_get(uint side, int back)
@@ -172,8 +172,8 @@ void input_log_extra_set(int side, short value)
 }
 
 /* 0x0c0625e0  size 0x42  file by match with source
- * confidence: inferred
- * evidence: (player, back): entry back frames ago (-15..0) of the fifth ring (+0x86, the word input_log_extra_set stores); 0 outside the range; nothing in the image calls it (uncalled code, made a function 2026-11-09); between input_log_extra_set and input_log_word_set, so by link order part of vf4lib/libaction/src/input_log.c
+ * confidence: exercised
+ * evidence: (player, back): entry back frames ago (-15..0) of the fifth ring (+0x86, the word input_log_extra_set stores); 0 outside the range; nothing in the image calls it (uncalled code, made a function 2026-11-09); between input_log_extra_set and input_log_word_set, so by link order part of vf4lib/libaction/src/input_log.c; exercised 2026-11-12: called by the harness in one sandbox after input_log_push(0, ...) and input_log_extra_set(0, 100), then 200, then -300 (three pushes): input_log_extra_get(0, 0) returned -300, (0, -1) 200, (0, -2) 100, (0, 1) and (0, -16) 0, and side 1 with back 0 and -15 gave 36 and 29 from its own ring as the snapshot has it
  * matched: source/vf4lib/libaction/src/input_log.c (tools/match/match.py)
  */
 int input_log_extra_get(uint side, int back)
@@ -184,8 +184,8 @@ int input_log_extra_get(uint side, int back)
 }
 
 /* 0x0c062640  size 0x2c  file by match with source
- * confidence: inferred
- * evidence: (player, value): for player 0 or 1 stores value at input_log record +4 and calls input_mute_on, returning 1; 0 for any other player; nothing in the image calls it and nothing reads +4, role unclear; part of vf4lib/libaction/src/input_log.c
+ * confidence: exercised
+ * evidence: (player, value): for player 0 or 1 stores value at input_log record +4 and calls input_mute_on, returning 1; 0 for any other player; nothing in the image calls it and nothing reads +4, role unclear; part of vf4lib/libaction/src/input_log.c; exercised 2026-11-12: called by the harness in one sandbox with input_mute poked 0: input_log_word_set(2, 0x5555) returned 0 and changed neither record nor input_mute; input_log_word_set(1, 0x1234) returned 1, left 0x1234 at side 1's record +4 (side 0's stayed 0) and input_mute at 1 through input_mute_on
  * matched: source/vf4lib/libaction/src/input_log.c (tools/match/match.py)
  */
 bool input_log_word_set(uint side, ushort value)
@@ -199,9 +199,9 @@ bool input_log_word_set(uint side, ushort value)
 }
 
 /* 0x0c062680  size 0x38  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x52
- * evidence: (player, on): sets or clears bit 1 of the input_log record's flags word and returns 1; 0 for a player above 1; nothing in the image calls it (uncalled code, made a function 2026-11-09); between input_log_word_set and input_mute_on, so by link order part of vf4lib/libaction/src/input_log.c
+ * evidence: (player, on): sets or clears bit 1 of the input_log record's flags word and returns 1; 0 for a player above 1; nothing in the image calls it (uncalled code, made a function 2026-11-09); between input_log_word_set and input_mute_on, so by link order part of vf4lib/libaction/src/input_log.c; exercised 2026-11-12: called by the harness in one sandbox with the flags words poked 0x10 (side 0) and 0xFFFFFFFF (side 1): (0, 1) returned 1 and left 0x12, (1, 0) returned 1 and left 0xFFFFFFFD, (2, 1) returned 0
  * matched: source/vf4lib/libaction/src/input_log.c (tools/match/match.py)
  */
 bool input_log_flag_bit1_set(uint side, uchar on)

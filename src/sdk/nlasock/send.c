@@ -28,9 +28,9 @@ void sock_send_pack_args(uint sock, uint addr, int len, uint flags, sock_slot_re
 }
 
 /* 0x0c123840  size 0x174  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x1a6
- * evidence: (socket, buffer, length, flags): blocking send from a host buffer: -2 for a socket above 63, a null buffer or a length that does not fit the 1 MiB send area at board base +0xa00000 (send_area_addr, send_area_span_check); cuts the length to the 8 KiB bounce-buffer rule (transfer mode from xfer_setting_get); takes the board lock and the slot 0 lock for socket 0 (-4); copies the data to the start of the send area with dimm_mem_write_chunk, marks the slot busy with op code 10, packs with sock_send_pack_args, posts board command 0x11, waits for the slot and returns the board's result (bytes sent or an error); nothing in the image calls it; part of NLASOCK
+ * evidence: (socket, buffer, length, flags): blocking send from a host buffer: -2 for a socket above 63, a null buffer or a length that does not fit the 1 MiB send area at board base +0xa00000 (send_area_addr, send_area_span_check); cuts the length to the 8 KiB bounce-buffer rule (transfer mode from xfer_setting_get); takes the board lock and the slot 0 lock for socket 0 (-4); copies the data to the start of the send area with dimm_mem_write_chunk, marks the slot busy with op code 10, packs with sock_send_pack_args, posts board command 0x11, waits for the slot and returns the board's result (bytes sent or an error); nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): socket 64, a null buffer and length 0x100001 gave -2, dimm_busy_word 1 gave -4; (3, bytes 10..2f, 32, 5) called dimm_mem_write_chunk(buffer, 0x0fa00000, 32, 0, 0), wrote {10, 3, 0x0fa00000, 32, 5} to 0x0f803000, posted dimm_cmd_post(0x11, 3) and returned the board model's -1; with buffer+1 and 0x3000 both the copy and the request had length 0x2000
  * matched: source/sdk/nlasock/send.c (tools/match/match.py)
  */
 int sock_send(uint sock, uint src, int len, uint flags)
@@ -133,8 +133,8 @@ int sock_send_from_area_async(uint sock, int offset, int len, uint flags)
 }
 
 /* 0x0c123b20  size 0x3a  file by match with source
- * confidence: inferred
- * evidence: (socket, board address, length, flags, destination-address board address, address length, slot record): writes the 32-byte request block (tag word, the six values, one zero word) to the slot's board parameter area with dimm_pio_write; same code as sock_recvfrom_pack_args; callers sock_sendto, sock_sendto_from_area_async; part of NLASOCK
+ * confidence: exercised
+ * evidence: (socket, board address, length, flags, destination-address board address, address length, slot record): writes the 32-byte request block (tag word, the six values, one zero word) to the slot's board parameter area with dimm_pio_write; same code as sock_recvfrom_pack_args; callers sock_sendto, sock_sendto_from_area_async; part of NLASOCK; exercised 2026-11-12: called by the harness on slot 6 (op poked 0x17) with (6, 0x0fa00000, 300, 1, 0x0f806200, 16): dimm_pio_write of the 0x20 bytes {0x17, 6, 0x0fa00000, 300, 1, 0x0f806200, 16, 0} to 0x0f806000; inside sock_sendto(3, ...) {0x17, 3, 0x0fa00000, 32, 0, 0x0f803200, 16, 0}
  * matched: source/sdk/nlasock/send.c (tools/match/match.py)
  */
 void sock_sendto_pack_args(uint sock, uint addr, int len, uint flags, uint to_board, int to_len, sock_slot_rec *slot)
@@ -152,8 +152,8 @@ void sock_sendto_pack_args(uint sock, uint addr, int len, uint flags, uint to_bo
 }
 
 /* 0x0c123b60  size 0x3a  file by match with source
- * confidence: inferred
- * evidence: (board address, address): copies 16 bytes of the destination socket address into a zeroed local block and writes it to the board with dimm_pio_write; callers sock_sendto, sock_sendto_from_area_async; part of NLASOCK
+ * confidence: exercised
+ * evidence: (board address, address): copies 16 bytes of the destination socket address into a zeroed local block and writes it to the board with dimm_pio_write; callers sock_sendto, sock_sendto_from_area_async; part of NLASOCK; exercised 2026-11-12: called by the harness with (0x0f806200, the bytes 10 11 ... 4f) it copied 16 bytes and called dimm_pio_write of 10..1f (0x10 bytes) to 0x0f806200; inside sock_sendto the address c0 a8 00 01 0b 0a ... went to 0x0f803200
  * matched: source/sdk/nlasock/send.c (tools/match/match.py)
  */
 void sock_sendto_put_addr(uint board_addr, void *to)
@@ -168,9 +168,9 @@ void sock_sendto_put_addr(uint board_addr, void *to)
 }
 
 /* 0x0c123bc0  size 0x1ba  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x1ec
- * evidence: (socket, buffer, length, flags, destination address, address length): blocking datagram send: -3 without bit 0x08000000 of the board information word (dimm_board_info_fetch); -2 for a bad socket, a null buffer, a length outside the send area (send_area_span_check), a null address or an address length above 64; cuts the length to the bounce-buffer rule; takes the board lock and the slot 0 lock for socket 0 (-4); writes the address to slot data +0 (sock_slot_data_addr, sock_sendto_put_addr) and the data to the start of the send area (dimm_mem_write_chunk); op code 0x17, packs with sock_sendto_pack_args, posts board command 0x11, waits and returns the board's result; nothing in the image calls it; part of NLASOCK
+ * evidence: (socket, buffer, length, flags, destination address, address length): blocking datagram send: -3 without bit 0x08000000 of the board information word (dimm_board_info_fetch); -2 for a bad socket, a null buffer, a length outside the send area (send_area_span_check), a null address or an address length above 64; cuts the length to the bounce-buffer rule; takes the board lock and the slot 0 lock for socket 0 (-4); writes the address to slot data +0 (sock_slot_data_addr, sock_sendto_put_addr) and the data to the start of the send area (dimm_mem_write_chunk); op code 0x17, packs with sock_sendto_pack_args, posts board command 0x11, waits and returns the board's result; nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): with the board word 0x600200f0 (bit 27 clear) -3; with 0x680200f0 poked, a null address and address length 0x41 gave -2, dimm_busy_word 1 gave -4; (3, bytes 10..2f, 32, 0, a 16-byte address, 16) wrote the address to 0x0f803200 and the data to 0x0fa00000, {0x17, 3, 0x0fa00000, 32, 0, 0x0f803200, 16} to 0x0f803000, posted dimm_cmd_post(0x11, 3) and returned the board model's 32
  * matched: source/sdk/nlasock/send.c (tools/match/match.py)
  */
 int sock_sendto(uint sock, uint src, int len, uint flags, int to, int to_len)
@@ -224,9 +224,9 @@ int sock_sendto(uint sock, uint src, int len, uint flags, int to, int to_len)
 }
 
 /* 0x0c123e00  size 0x11c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x142
- * evidence: (socket, send-area offset, length, flags, destination address, address length): the posting form of sock_sendto for data already in the send area at the given offset (send_area_addr); same checks (-3, -2, -4), writes the address with sock_sendto_put_addr, op code 0x17, packs with sock_sendto_pack_args, posts board command 0x12 and returns 0; nothing in the image calls it; part of NLASOCK
+ * evidence: (socket, send-area offset, length, flags, destination address, address length): the posting form of sock_sendto for data already in the send area at the given offset (send_area_addr); same checks (-3, -2, -4), writes the address with sock_sendto_put_addr, op code 0x17, packs with sock_sendto_pack_args, posts board command 0x12 and returns 0; nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): with the board word 0x600200f0 (bit 27 clear) -3; with 0x680200f0 poked, address length 0x41 and offset 0xfffff length 2 gave -2, dimm_busy_word 1 gave -4; (6, 0x200, 48, 1, a 16-byte address, 16) wrote the address to 0x0f806200 and {0x17, 6, 0x0fa00200, 48, 1, 0x0f806200, 16} to 0x0f806000, posted dimm_cmd_post(0x12, 6) and returned 0 leaving slot 6 at op 0x17, done 0
  * matched: source/sdk/nlasock/send.c (tools/match/match.py)
  */
 int sock_sendto_from_area_async(uint sock, int offset, int len, uint flags, int to, int to_len)
@@ -263,9 +263,9 @@ int sock_sendto_from_area_async(uint sock, int offset, int len, uint flags, int 
 }
 
 /* 0x0c123f80  size 0xc2  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xcc
- * evidence: (socket, board address, length): blocking send of data the caller has already placed at a board address (no range check, flags 0): -2 for a socket above 63, -4 when the locks are taken; op code 10, packs with sock_send_pack_args, posts board command 0x11, waits and returns the result; nothing in the image calls it; part of NLASOCK
+ * evidence: (socket, board address, length): blocking send of data the caller has already placed at a board address (no range check, flags 0): -2 for a socket above 63, -4 when the locks are taken; op code 10, packs with sock_send_pack_args, posts board command 0x11, waits and returns the result; nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): socket 64 gave -2, dimm_busy_word 1 gave -4; (3, 0x0fa00100, 50) wrote {10, 3, 0x0fa00100, 50, 0} to 0x0f803000, posted dimm_cmd_post(0x11, 3) and returned the board model's -1; (3, 0x01234560, 0x200000) was packed as given (no range check)
  * matched: source/sdk/nlasock/send.c (tools/match/match.py)
  */
 int sock_send_from_board(uint sock, uint board_addr, int len)

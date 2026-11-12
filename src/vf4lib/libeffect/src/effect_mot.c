@@ -93,8 +93,8 @@ void fish_mot_path_bind(void)
 }
 
 /* 0x0c0c89a0  size 0x20  file by match with source
- * confidence: inferred
- * evidence: (uchar slot, frame): mot_path_eval on mot_path_slots[slot], as light_mot_path_eval; callers fish_seeker_update (the "FISH " move fish_exec) and fish_seeker_scare_check; part of vf4lib/libeffect/src/effect_mot.c
+ * confidence: exercised
+ * evidence: (uchar slot, frame): mot_path_eval on mot_path_slots[slot], as light_mot_path_eval; callers fish_seeker_update (the "FISH " move fish_exec) and fish_seeker_scare_check; part of vf4lib/libeffect/src/effect_mot.c; exercised 2026-11-12: called by the harness: (0, 15.0) called mot_path_eval(0x0C397B6C, 15.0) and (2, 15.0) mot_path_eval(0x0C397B7C, 15.0): mot_path_slots[slot], 8 bytes a slot
  * matched: source/vf4lib/libeffect/src/effect_mot.c (tools/match/match.py)
  */
 void fish_mot_path_eval(uchar slot, float frame)

@@ -522,8 +522,8 @@ void rain_init_tail(void)
 }
 
 /* 0x0c0bf9a0  size 0x5a  file by match with source
- * confidence: inferred
- * evidence: clears the 22 rain_fan_records: word +0 to 0, count to 6, the 30 model pointers and the pointer at +0x350 to 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between rain_init_tail and rain_cycle_tables_randomize, so by link order part of vf4lib/libeffect/src/effect_rain.c
+ * confidence: exercised
+ * evidence: clears the 22 rain_fan_records: word +0 to 0, count to 6, the 30 model pointers and the pointer at +0x350 to 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between rain_init_tail and rain_cycle_tables_randomize, so by link order part of vf4lib/libeffect/src/effect_rain.c; exercised 2026-11-12: called by the harness after all 22 rain_fan_records were filled with 0x5A bytes: records 0 and 21 got word +0 0, the count byte +4 6, the 30 model pointers and +0x350 0, while the frame tables (+8 to +0x2D7) kept 0x5A5A5A5A
  * matched: source/vf4lib/libeffect/src/effect_rain.c (tools/match/match.py)
  */
 void rain_fan_records_clear(void)
@@ -547,7 +547,7 @@ void rain_fan_records_clear(void)
 
 /* 0x0c0bfa20  size 0x9c  file by match with source
  * confidence: inferred
- * evidence: nothing in the image calls it: for each of the 22 records of rain_fan_records (0x354 bytes, the ones effect_rain.c's rain_fan_models_build allocates) whose pointer +0x350 is set, fills each of its sub-records' 30-entry index tables (0x78 bytes apart, count at +4) with a rotation of 0-29 starting at a random point (rain_lerp(0, 29, lcg_next_unit)); part of vf4lib/libeffect/src/effect_rain.c
+ * evidence: nothing in the image calls it: for the records of rain_fan_records (0x354 bytes, the ones effect_rain.c's rain_fan_models_build allocates) from the first on while their pointer +0x350 is set (the record pointer steps only past a used record, so the first record without a pointer ends the work, as in rain_fan_models_build), fills each of its sub-records' 30-entry index tables (0x78 bytes apart, count at +4) with a rotation of 0-29 starting at a random point (rain_lerp(0, 29, lcg_next_unit)); part of vf4lib/libeffect/src/effect_rain.c; as the game has it (the same loop shape as rain_fan_models_build); corrected 2026-11-12 from harness calls: a record whose pointer is set is skipped after an empty record: called by the harness with rain_fan_records cleared, record 0 (+0x350 set, count 2) got tables 0 and 1 as rotations of 0-29 (from 27 and from 23) and its table 2 kept 0x77, but record 2 (+0x350 set, count 1) behind the empty record 1 kept 0x77 in its table 0; with records 0 and 1 both set, both were filled: the record pointer steps only past a used record
  * matched: source/vf4lib/libeffect/src/effect_rain.c (tools/match/match.py)
  */
 void rain_cycle_tables_randomize(void)
@@ -584,9 +584,9 @@ void rain_cycle_tables_randomize(void)
 }
 
 /* 0x0c0bfae0  size 0x18e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x1ca
- * evidence: For each of the 22 records of rain_fan_records (0x354 bytes; +4 segment count n, +8 int[n][30] texture frame per segment and model, +0x2D8 30 model pointers, +0x350 a source pointer whose +0xC float is the radius) with a source and n > 0, allocates 30 models of n*0x60+0xC0 bytes with elan_heap_alloc from the template model 0x23002F (fatal_at with "/p71/prj71p/vf4e2/vf4lib/libeffect/src/effect_rain.c" line 0x46D on failure), fills the header (+0x68 = 0x6FF, colors 0xB2AAAAAA) and n four-vertex quads whose corners come from rain_fan_quad_corners and whose UVs come from rain_fan_uvs[frame][corner]; what the fans show in the stage is unclear (role unclear). The record loop only steps to the next record when the current one was used, so the first empty record ends the work (see notes). Nothing in the image calls it; rain_cycle_tables_randomize (just before the range) fills the per-segment frame phases; part of vf4lib/libeffect/src/effect_rain.c
+ * evidence: For each of the 22 records of rain_fan_records (0x354 bytes; +4 segment count n, +8 int[n][30] texture frame per segment and model, +0x2D8 30 model pointers, +0x350 a source pointer whose +0xC float is the radius) with a source and n > 0, allocates 30 models of n*0x60+0xC0 bytes with elan_heap_alloc from the template model 0x23002F (fatal_at with "/p71/prj71p/vf4e2/vf4lib/libeffect/src/effect_rain.c" line 0x46D on failure), fills the header (+0x68 = 0x6FF, colors 0xB2AAAAAA) and n four-vertex quads whose corners come from rain_fan_quad_corners and whose UVs come from rain_fan_uvs[frame][corner]; what the fans show in the stage is unclear (role unclear). The record loop only steps to the next record when the current one was used, so the first empty record ends the work (see notes). Nothing in the image calls it; rain_cycle_tables_randomize (just before the range) fills the per-segment frame phases; part of vf4lib/libeffect/src/effect_rain.c; exercised 2026-11-12: called by the harness with record 0 of rain_fan_records poked (count 2, +0x350 a buffer with radius 4.0, frame tables j and (j + 10) % 30): it made 30 elan_heap_alloc(0x180) models with +0x68 0x6FF and +0x6C, +0x74 0xB2AAAAAA, quads centered at 80 and 100 degrees, radius 3.8-4.4 (rain_fan_quad_corners(2, i, 4.0)), and model 5 took UVs rain_fan_uvs[5] and [15]; with only record 1 set it built nothing (the template 0x23002F is not loaded here)
  * assert effect_rain.c:1133: 0
  * matched: source/vf4lib/libeffect/src/effect_rain.c (tools/match/match.py)
  */
@@ -667,8 +667,8 @@ void rain_fan_models_build(void)
 }
 
 /* 0x0c0bfd00  size 0x158  file by match with source
- * confidence: inferred
- * evidence: (n, i, radius, out[4][3]): rotates the direction rain_fan_dir about z by 90 - (n-1)*10 + i*20 degrees, scales it by radius times a random 0.95-1.1 (lcg_next_unit through rain_lerp), then transforms four corners of a 0.1 square, scaled by a random 0.9-1.3 and turned by i*20 - (n-1)*10 degrees, to out: segment i of an n-segment fan; called by rain_fan_models_build only; part of vf4lib/libeffect/src/effect_rain.c
+ * confidence: exercised
+ * evidence: (n, i, radius, out[4][3]): rotates the direction rain_fan_dir about z by 90 - (n-1)*10 + i*20 degrees, scales it by radius times a random 0.95-1.1 (lcg_next_unit through rain_lerp), then transforms four corners of a 0.1 square, scaled by a random 0.9-1.3 and turned by i*20 - (n-1)*10 degrees, to out: segment i of an n-segment fan; called by rain_fan_models_build only; part of vf4lib/libeffect/src/effect_rain.c; exercised 2026-11-12: called by the harness: (1, 0, 2.0) gave an axis-aligned square 0.122 wide centered at (0, 2.185), 90 degrees; (3, 2, 2.0) a square 0.098 wide centered at 110 degrees, radius 2.08, its sides turned 20 degrees; (3, 0, 4.0) one at 70 degrees, radius 3.97, turned -20 degrees: radius times 0.95-1.1 and square scale 0.9-1.3, as described
  * matched: source/vf4lib/libeffect/src/effect_rain.c (tools/match/match.py)
  */
 void rain_fan_quad_corners(int count, int index, float radius, float *out)

@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c055980  size 0x8c  file by match with source
- * confidence: inferred
- * evidence: (first string, second string, slot record): builds a 0xa0-byte block (tag word, board address of slot area +0x20 and the first string's length, board address of +0x60 and the second string's length, then the two strings, up to 64 bytes each) and writes it to the slot's board parameter area with dimm_pio_write; callers sock_op12_two_strings and sock_op13_pack_strings; part of NLASOCK
+ * confidence: exercised
+ * evidence: (first string, second string, slot record): builds a 0xa0-byte block (tag word, board address of slot area +0x20 and the first string's length, board address of +0x60 and the second string's length, then the two strings, up to 64 bytes each) and writes it to the slot's board parameter area with dimm_pio_write; callers sock_op12_two_strings and sock_op13_pack_strings; part of NLASOCK; exercised 2026-11-12: called by the harness on slot 0 (op poked 0x12) with ("alpha", "beta2"): dimm_pio_write of 0xa0 bytes {0x12, 0x0f800020, 5, 0x0f800060, 5, 0, 0, 0} with "alpha" at +0x20 and "beta2" copied to +0x60 (strncpy 64 each) to 0x0f800000
  * same code as main.bin 0c123180 (ghidra/TransferFromMain.java)
  * matched: source/sdk/nlasock/op12_op13.c (tools/match/match.py)
  */
@@ -29,9 +29,9 @@ void sock_op12_pack_strings(char *first, char *second, sock_slot_rec *slot)
 }
 
 /* 0x0c055a20  size 0xc2  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xc4
- * evidence: (first string, second string): -2 when either is null, -4 when the board lock or slot 0 lock is taken; marks slot 0 busy with op code 0x12, packs the strings with sock_op12_pack_strings, posts board command 0x12, spins until slot 0 is done and returns its result (sock_result_take); the op's meaning is not known; nothing in the image calls it; part of NLASOCK
+ * evidence: (first string, second string): -2 when either is null, -4 when the board lock or slot 0 lock is taken; marks slot 0 busy with op code 0x12, packs the strings with sock_op12_pack_strings, posts board command 0x12, spins until slot 0 is done and returns its result (sock_result_take); the op's meaning is not known; nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): a null first or second text gave -2, dimm_busy_word 1 gave -4; ("alpha", "beta2") wrote the 0xa0-byte block {0x12, 0x0f800020, 5, 0x0f800060, 5, ...} to slot 0, posted dimm_cmd_post(0x12, 0), waited and returned the board model's 0
  * same code as main.bin 0c123220 (ghidra/TransferFromMain.java)
  * matched: source/sdk/nlasock/op12_op13.c (tools/match/match.py)
  */
@@ -84,9 +84,9 @@ void sock_op13_pack_strings(char *first, char *second, sock_slot_rec *slot)
 }
 
 /* 0x0c055b40  size 0xc2  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xc4
- * evidence: (first string, second string): the same as sock_op12_two_strings with op code 0x13 (packs with sock_op13_pack_strings, posts board command 0x12 for slot 0, waits, returns the result); meaning not known; nothing in the image calls it; part of NLASOCK
+ * evidence: (first string, second string): the same as sock_op12_two_strings with op code 0x13 (packs with sock_op13_pack_strings, posts board command 0x12 for slot 0, waits, returns the result); meaning not known; nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): a null first or second text gave -2, dimm_busy_word 1 gave -4; ("gamma", "delta77") went through sock_op13_pack_strings, wrote {0x13, 0x0f800020, 5, 0x0f800060, 7, ...} to slot 0, posted dimm_cmd_post(0x12, 0), waited and returned the board model's 0
  * same code as main.bin 0c123340 (ghidra/TransferFromMain.java)
  * matched: source/sdk/nlasock/op12_op13.c (tools/match/match.py)
  */

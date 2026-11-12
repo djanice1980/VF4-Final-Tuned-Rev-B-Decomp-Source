@@ -61,8 +61,8 @@ int token_list_reset(token_list *list)
 }
 
 /* 0x0c11f4a0  size 0xe  file by match with source
- * confidence: inferred
- * evidence: (list): returns a token list's token count (word +0); nothing in the image calls it (uncalled code, made a function 2026-11-09); between token_list_reset and token_list_has_next, so by link order part of naomi2lib/libnl2http/src/token.c
+ * confidence: exercised
+ * evidence: (list): returns a token list's token count (word +0); nothing in the image calls it (uncalled code, made a function 2026-11-09); between token_list_reset and token_list_has_next, so by link order part of naomi2lib/libnl2http/src/token.c; exercised 2026-11-12: called by the harness after token_list_split(buf:3, "25,352,32768", ',') it returned 3 and after token_list_split(buf:4, "x,y", ',') 2; with word +0 of the first list poked to 77 it returned 77
  * matched: source/naomi2lib/libnl2http/src/token.c (tools/match/match.py)
  */
 int token_list_count(int *list)

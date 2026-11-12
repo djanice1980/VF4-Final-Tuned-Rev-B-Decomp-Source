@@ -7,9 +7,9 @@
 #include "vf4ft.h"
 
 /* 0x0c0cd420  size 0xa2  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xd2
- * evidence: (point, matrices, shape list): for each 28-byte shape ({type, matrix index, parameters}; type 0 ends; the names at osage_coli_type_names: END, BALL, XY, YZ, ZX) loads the shape's matrix and pushes the point out of it: 1 osage_coli_ball_push, 2 osage_coli_xy_push, 3 osage_coli_yz_push, 4 osage_coli_zx_push; returns the number of hits; only caller cloth_node_move (the chain point step that also clamps to the floor and keeps the velocity; shape lists are the OSAGE_COLI_0-7 tables at osage_coli_edit+0x4); part of vf4lib/librobdisp/src/osage_coli.c
+ * evidence: (point, matrices, shape list): for each 28-byte shape ({type, matrix index, parameters}; type 0 ends; the names at osage_coli_type_names: END, BALL, XY, YZ, ZX) loads the shape's matrix and pushes the point out of it: 1 osage_coli_ball_push, 2 osage_coli_xy_push, 3 osage_coli_yz_push, 4 osage_coli_zx_push; returns the number of hits; only caller cloth_node_move (the chain point step that also clamps to the floor and keeps the velocity; shape lists are the OSAGE_COLI_0-7 tables at osage_coli_edit+0x4); part of vf4lib/librobdisp/src/osage_coli.c; exercised 2026-11-12: called by the harness with matrices {identity, translation (10,0,0)} and point (11,0,0): a ball (type 1) on matrix 1, center (0,0,0) radius 2, returned 1 and moved it to (12,0,0); the same ball on matrix 0 returned 0; a list of a ball (radius 1) then an XY shape (radius 3) on matrix 0 took (0.5,0,0) to (3,0,0) and returned 2
  * matched: source/vf4lib/librobdisp/src/osage_coli.c (tools/match/match.py)
  */
 int osage_coli_push_out(float *point, float *mtx, osage_coli_rec *coli)
@@ -40,8 +40,8 @@ int osage_coli_push_out(float *point, float *mtx, osage_coli_rec *coli)
 }
 
 /* 0x0c0cd520  size 0xae  file by match with source
- * confidence: inferred
- * evidence: (point, shape): sphere: the center (+0) through the current matrix and radius +0x0C; a point inside is moved onto the surface (rsqrt_float); returns 1 on a hit; only caller osage_coli_push_out; part of vf4lib/librobdisp/src/osage_coli.c
+ * confidence: exercised
+ * evidence: (point, shape): sphere: the center (+0) through the current matrix and radius +0x0C; a point inside is moved onto the surface (rsqrt_float); returns 1 on a hit; only caller osage_coli_push_out; part of vf4lib/librobdisp/src/osage_coli.c; exercised 2026-11-12: called by the harness through osage_coli_push_out (which loads the shape's matrix, here a translation (10,0,0)) with center (0,0,0) radius 2: (11,0,0) became (12,0,0) and (10,1,0) (10,2,0), each returning 1, and (13,0,0) stayed with 0; center (0,0,1) took (10,0,1.5) to (10,0,3)
  * matched: source/vf4lib/librobdisp/src/osage_coli.c (tools/match/match.py)
  */
 bool osage_coli_ball_push(float *point, osage_coli_shape *shape)
@@ -73,8 +73,8 @@ bool osage_coli_ball_push(float *point, osage_coli_shape *shape)
 }
 
 /* 0x0c0cd5e0  size 0x52  file by match with source
- * confidence: inferred
- * evidence: (point, shape): the point into the shape's space (vec_to_local_into), osage_coli_capsule_push with the axis along z (circle in XY at +0 / +4), back to world space; only caller osage_coli_push_out (type 2, "XY"); part of vf4lib/librobdisp/src/osage_coli.c
+ * confidence: exercised
+ * evidence: (point, shape): the point into the shape's space (vec_to_local_into), osage_coli_capsule_push with the axis along z (circle in XY at +0 / +4), back to world space; only caller osage_coli_push_out (type 2, "XY"); part of vf4lib/librobdisp/src/osage_coli.c; exercised 2026-11-12: called by the harness through osage_coli_push_out with the shape's matrix a translation (10,0,0), shape pos (1,2,99), radius 1, ends -1 / 1: (11.5,2,0) became (12,2,0) and (11,2,1.5) (11,2,2), each returning 1, and (13,2,0) stayed with 0
  * matched: source/vf4lib/librobdisp/src/osage_coli.c (tools/match/match.py)
  */
 int osage_coli_xy_push(float *point, osage_coli_shape *shape)
@@ -87,8 +87,8 @@ int osage_coli_xy_push(float *point, osage_coli_shape *shape)
 }
 
 /* 0x0c0cd640  size 0x74  file by match with source
- * confidence: inferred
- * evidence: (point, shape): the same with the axis along x (circle in YZ at +4 / +8); only caller osage_coli_push_out (type 3, "YZ"); part of vf4lib/librobdisp/src/osage_coli.c
+ * confidence: exercised
+ * evidence: (point, shape): the same with the axis along x (circle in YZ at +4 / +8); only caller osage_coli_push_out (type 3, "YZ"); part of vf4lib/librobdisp/src/osage_coli.c; exercised 2026-11-12: called by the harness through osage_coli_push_out with the shape's matrix a translation (10,0,0), shape pos (99,1,2), radius 1, ends -1 / 1 along x: (10,1.5,2) became (10,2,2) and (11.5,1,2) (12,1,2), each returning 1
  * matched: source/vf4lib/librobdisp/src/osage_coli.c (tools/match/match.py)
  */
 int osage_coli_yz_push(float *point, osage_coli_shape *shape)
@@ -105,8 +105,8 @@ int osage_coli_yz_push(float *point, osage_coli_shape *shape)
 }
 
 /* 0x0c0cd6c0  size 0x70  file by match with source
- * confidence: inferred
- * evidence: (point, shape): the same with the axis along y (circle at +0 / +8); only caller osage_coli_push_out (type 4, "ZX"); part of vf4lib/librobdisp/src/osage_coli.c
+ * confidence: exercised
+ * evidence: (point, shape): the same with the axis along y (circle at +0 / +8); only caller osage_coli_push_out (type 4, "ZX"); part of vf4lib/librobdisp/src/osage_coli.c; exercised 2026-11-12: called by the harness through osage_coli_push_out with the shape's matrix a translation (10,0,0), shape pos (1,99,2), radius 1, ends -1 / 1 along y: (11,0,2.5) became (11,0,3) and (11,-1.5,2) (11,-2,2), each returning 1
  * matched: source/vf4lib/librobdisp/src/osage_coli.c (tools/match/match.py)
  */
 int osage_coli_zx_push(float *point, osage_coli_shape *shape)
@@ -123,9 +123,9 @@ int osage_coli_zx_push(float *point, osage_coli_shape *shape)
 }
 
 /* 0x0c0cd740  size 0xe8  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xee
- * evidence: (u, v, w, center u, center v, shape, out): capsule along w: radius +0x0C, ends +0x10 / +0x14; between the ends pushes (u, v) out to the radius, beyond them pushes out of the sphere at the nearer end; writes the point and returns 1 on a hit; callers osage_coli_xy_push, osage_coli_yz_push, osage_coli_zx_push; part of vf4lib/librobdisp/src/osage_coli.c
+ * evidence: (u, v, w, center u, center v, shape, out): capsule along w: radius +0x0C, ends +0x10 / +0x14; between the ends pushes (u, v) out to the radius, beyond them pushes out of the sphere at the nearer end; writes the point and returns 1 on a hit; callers osage_coli_xy_push, osage_coli_yz_push, osage_coli_zx_push; part of vf4lib/librobdisp/src/osage_coli.c; exercised 2026-11-12: called by the harness with center (1,2), radius 1, ends -1 / 1: (1.5,2,0) gave (2,2,0) and 1; (1,2,1.5) (1,2,2); (1.3,2.4,1.6) (1.3841,2.5122,1.7682) on the end sphere; (1,2.5,-1.5) (1,2.7071,-1.7071); (3,2,0) and (1.3,2.4,1.9) (inside the circle, outside the end sphere) returned 0 with the point written back unchanged
  * matched: source/vf4lib/librobdisp/src/osage_coli.c (tools/match/match.py)
  */
 int osage_coli_capsule_push(float u, float v, float w, float center_u, float center_v, osage_coli_shape *shape, float *out)
@@ -193,8 +193,8 @@ void cloth_draw(cloth_slot_rec *slot)
 }
 
 /* 0x0c0cd8a0  size 0xc8  file by match with source
- * confidence: inferred
- * evidence: (cloth record): draws the point grid (+0x20, 24-byte points; size {columns, rows} at +0x28) as lines between neighbors (line3d_quads_opaque, color 0xFF); called by rob_cloth_draw instead of cloth_draw when cloth_grid_show is set; part of vf4lib/librobdisp/src/osage_coli.c
+ * confidence: exercised
+ * evidence: (cloth record): draws the point grid (+0x20, 24-byte points; +0x28 points at the cloth header, whose first two words are {columns, rows}) as lines between neighbors (line3d_quads_opaque, color 0xFF); called by rob_cloth_draw instead of cloth_draw when cloth_grid_show is set; part of vf4lib/librobdisp/src/osage_coli.c; exercised 2026-11-12: called by the harness on a record of its own (+0x20 six points, +0x28 a header {3 columns, 2 rows}): it made 7 line3d_quads_opaque calls, colour 0xFF, between points 0-1, 1-2, 3-0, 3-4, 4-1, 4-5, 5-2, every horizontal and vertical neighbor pair once (notes row)
  * matched: source/vf4lib/librobdisp/src/osage_coli.c (tools/match/match.py)
  */
 void cloth_grid_lines_draw(cloth_slot_rec *slot)
@@ -219,8 +219,8 @@ void cloth_grid_lines_draw(cloth_slot_rec *slot)
 }
 
 /* 0x0c0cd980  size 0x98  file by match with source
- * confidence: inferred
- * evidence: (rows, columns, points): a short line (x 0.1) along each point's normal (+0x0C); only caller cloth_model_write, when cloth_normals_show is set; part of vf4lib/librobdisp/src/osage_coli.c
+ * confidence: exercised
+ * evidence: (rows, columns, points): a short line (x 0.1) along each point's normal (+0x0C); only caller cloth_model_write, when cloth_normals_show is set; part of vf4lib/librobdisp/src/osage_coli.c; exercised 2026-11-12: called by the harness with (2, 3, six points, point k at (k, 10+k, 20+k) with normal (k+1, -(k+1), 2(k+1))): 6 line3d_quads_opaque calls, colour 0xFFFFFFFF, from each point to point + 0.1 x normal ((0,10,20) to (0.1,9.9,20.2), (5,15,25) to (5.6,14.4,26.2))
  * matched: source/vf4lib/librobdisp/src/osage_coli.c (tools/match/match.py)
  */
 void cloth_normal_lines_draw(int cols, int rows, float *points)
@@ -282,8 +282,8 @@ void cloth_model_write(obj_node *node, cloth_point *points, int map_order)
 }
 
 /* 0x0c0cdb40  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: (model id, points, flip): cloth_model_write on the model looked up with obj_node_get; only caller cloth_draw; part of vf4lib/librobdisp/src/osage_coli.c
+ * confidence: exercised
+ * evidence: (model id, points, flip): cloth_model_write on the model looked up with obj_node_get; only caller cloth_draw; part of vf4lib/librobdisp/src/osage_coli.c; exercised 2026-11-12: called by the harness cloth_model_update(0x46, points, 0) called obj_node_get(0x46), which returned 0x0CD02068, and cloth_model_write(0x0CD02068, points, 0); (0x44, points, 1) passed obj_node_get(0x44)'s 0x0CD01FD8 and 1
  * matched: source/vf4lib/librobdisp/src/osage_coli.c (tools/match/match.py)
  */
 void cloth_model_update(int obj_id, cloth_point *points, int map_order)
@@ -394,8 +394,8 @@ void cloth_normals_build(cloth_header_rec *header, cloth_point *points)
 }
 
 /* 0x0c0cdd80  size 0x50  file by match with source
- * confidence: inferred
- * evidence: (shape): draws model 0x46 at the sphere center scaled by its radius; only caller osage_coli_draw; part of vf4lib/librobdisp/src/osage_coli.c
+ * confidence: exercised
+ * evidence: (shape): draws model 0x46 at the sphere center scaled by its radius; only caller osage_coli_draw; part of vf4lib/librobdisp/src/osage_coli.c; exercised 2026-11-12: called by the harness with pos (1,2,3) radius 0.5 it called mtx_translate(1,2,3), mtx_scale_xyz(0.5,0.5,0.5) and obj_draw_translucent(0x46) between mtx_push and mtx_pop; with (-4,0.25,7) radius 2 mtx_translate(-4,0.25,7) and mtx_scale_xyz(2,2,2)
  * matched: source/vf4lib/librobdisp/src/osage_coli.c (tools/match/match.py)
  */
 void osage_coli_ball_draw(osage_coli_shape *shape)
@@ -410,8 +410,8 @@ void osage_coli_ball_draw(osage_coli_shape *shape)
 }
 
 /* 0x0c0cde00  size 0x66  file by match with source
- * confidence: inferred
- * evidence: (shape): draws model 0x44 from the low end along x, scaled (length, radius, radius); only caller osage_coli_draw (type 3); part of vf4lib/librobdisp/src/osage_coli.c
+ * confidence: exercised
+ * evidence: (shape): draws model 0x44 from the low end along x, scaled (length, radius, radius); only caller osage_coli_draw (type 3); part of vf4lib/librobdisp/src/osage_coli.c; exercised 2026-11-12: called by the harness with pos (1,2,3), radius 0.5, ends -1 / 3 it called mtx_translate(-1,2,3), mtx_scale_xyz(4,0.5,0.5) and obj_draw_translucent(0x44) between mtx_push and mtx_pop
  * matched: source/vf4lib/librobdisp/src/osage_coli.c (tools/match/match.py)
  */
 void osage_coli_yz_draw(osage_coli_shape *shape)
@@ -427,8 +427,8 @@ void osage_coli_yz_draw(osage_coli_shape *shape)
 }
 
 /* 0x0c0cde80  size 0x6a  file by match with source
- * confidence: inferred
- * evidence: (shape): model 0x44 along y (scale radius, length, radius, turned 0x4000 about z); only caller osage_coli_draw (type 4); part of vf4lib/librobdisp/src/osage_coli.c
+ * confidence: exercised
+ * evidence: (shape): model 0x44 along y (scale radius, length, radius, turned 0x4000 about z); only caller osage_coli_draw (type 4); part of vf4lib/librobdisp/src/osage_coli.c; exercised 2026-11-12: called by the harness with pos (1,2,3), radius 0.5, ends -1 / 3 it called mtx_translate(1,-1,3), mtx_scale_xyz(0.5,4,0.5), mtx_rot_z_s16(0x4000) and obj_draw_translucent(0x44) between mtx_push and mtx_pop
  * matched: source/vf4lib/librobdisp/src/osage_coli.c (tools/match/match.py)
  */
 void osage_coli_zx_draw(osage_coli_shape *shape)
@@ -446,8 +446,8 @@ void osage_coli_zx_draw(osage_coli_shape *shape)
 }
 
 /* 0x0c0cdf20  size 0x6a  file by match with source
- * confidence: inferred
- * evidence: (shape): model 0x44 along z (scale radius, radius, length, turned -0x4000 about y); only caller osage_coli_draw (type 2); part of vf4lib/librobdisp/src/osage_coli.c
+ * confidence: exercised
+ * evidence: (shape): model 0x44 along z (scale radius, radius, length, turned -0x4000 about y); only caller osage_coli_draw (type 2); part of vf4lib/librobdisp/src/osage_coli.c; exercised 2026-11-12: called by the harness with pos (1,2,3), radius 0.5, ends -1 / 3 it called mtx_translate(1,2,-1), mtx_scale_xyz(0.5,0.5,4), mtx_rot_y_s16(-0x4000) and obj_draw_translucent(0x44); with pos (5,6,7), radius 1.5, ends 2 / 2.5 mtx_translate(5,6,2) and mtx_scale_xyz(1.5,1.5,0.5)
  * matched: source/vf4lib/librobdisp/src/osage_coli.c (tools/match/match.py)
  */
 void osage_coli_xy_draw(osage_coli_shape *shape)

@@ -291,7 +291,7 @@ public class ApplyTypes extends GhidraScript {
 				for (DataType t : c == null ? new DataType[0] : c.getDataTypes()) {
 					if (anon.matcher(t.getName()).matches()) {
 						stale.add(t.getName());
-						dtm.remove(t, monitor);
+						dtm.remove(t);
 					}
 				}
 			}

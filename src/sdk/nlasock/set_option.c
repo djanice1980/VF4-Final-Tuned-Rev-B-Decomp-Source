@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c124160  size 0x7c  file by match with source
- * confidence: inferred
- * evidence: (socket, level, option, value, value length, slot record): builds a 0x60-byte block (tag word, socket, level, option, the board address of slot area +0x20, the value length, then the value bytes) and writes the header plus the value rounded up to 4 bytes to the slot's board parameter area with dimm_pio_write; only caller sock_set_option; part of NLASOCK
+ * confidence: exercised
+ * evidence: (socket, level, option, value, value length, slot record): builds a 0x60-byte block (tag word, socket, level, option, the board address of slot area +0x20, the value length, then the value bytes) and writes the header plus the value rounded up to 4 bytes to the slot's board parameter area with dimm_pio_write; only caller sock_set_option; part of NLASOCK; exercised 2026-11-12: called by the harness on slot 2 (op poked 0xe) with (2, 0xffff, 4, bytes 10 11 ..., 4): dimm_pio_write of 0x24 bytes {0xe, 2, 0xffff, 4, 0x0f802020, 4, 0, 0, 10 11 12 13} to 0x0f802000; with value length 6 it wrote 0x28 bytes with the 6 value bytes
  * matched: source/sdk/nlasock/set_option.c (tools/match/match.py)
  */
 void sock_setopt_pack_args(uint sock, uint level, uint option, void *value, int value_len, sock_slot_rec *slot)
@@ -29,9 +29,9 @@ void sock_setopt_pack_args(uint sock, uint level, uint option, void *value, int 
 }
 
 /* 0x0c124200  size 0xe4  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xf2
- * evidence: (socket, level, option, value, value length): -2 for a socket above 63, a null value or a length above 64, -4 when the board lock or slot 0 lock is taken; marks the slot busy with op code 0xe, packs with sock_setopt_pack_args (the value travels in the request block), posts board command 0x11, waits and returns the board's result; the argument list is that of the standard socket option call; nothing in the image calls it; part of NLASOCK
+ * evidence: (socket, level, option, value, value length): -2 for a socket above 63, a null value or a length above 64, -4 when the board lock or slot 0 lock is taken; marks the slot busy with op code 0xe, packs with sock_setopt_pack_args (the value travels in the request block), posts board command 0x11, waits and returns the board's result; the argument list is that of the standard socket option call; nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): socket 64, a null value and length 0x41 gave -2, dimm_busy_word 1 gave -4; (2, 0xffff, 4, bytes 10..13, 4) wrote {0xe, 2, 0xffff, 4, 0x0f802020, 4, 0, 0, 10 11 12 13} to 0x0f802000, posted dimm_cmd_post(0x11, 2), waited and returned the board model's 0
  * matched: source/sdk/nlasock/set_option.c (tools/match/match.py)
  */
 int sock_set_option(uint sock, uint level, uint option, void *value, int value_len)

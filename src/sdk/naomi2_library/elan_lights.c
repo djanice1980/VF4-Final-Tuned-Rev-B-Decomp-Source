@@ -35,8 +35,8 @@ void lights_elan_state_init(void)
 }
 
 /* 0x0c101d80  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (light, value): stores word +0 of the light's lights_elan_modes record, which elan_light_pack_directional puts into bits 5-7 of its word 6; nothing in the image calls it (uncalled code, made a function 2026-11-09); between lights_elan_state_init and light_elan_mode_b_set, so by link order part of sdk/naomi2_library/elan_lights.c
+ * confidence: exercised
+ * evidence: (light, value): stores word +0 of the light's lights_elan_modes record, which elan_light_pack_directional puts into bits 5-7 of its word 6; nothing in the image calls it (uncalled code, made a function 2026-11-09); between lights_elan_state_init and light_elan_mode_b_set, so by link order part of sdk/naomi2_library/elan_lights.c; exercised 2026-11-12: called by the harness: (3, 0x55) set lights_elan_modes +0x30 to 0x55 (light 3's +4 and +8 untouched); after (0, 3) lights_elan_block_queue passed mode 3 to elan_light_pack_directional and the packed light's word 6 had 3 in bits 5-7
  * matched: source/sdk/naomi2_library/elan_lights.c (tools/match/match.py)
  */
 void light_elan_mode_a_set(int light, uint value)
@@ -46,8 +46,8 @@ void light_elan_mode_a_set(int light, uint value)
 }
 
 /* 0x0c101da0  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (light, value): stores word +4 of the light's lights_elan_modes record (bits 28-29 of the packed light's word 5); nothing in the image calls it (uncalled code, made a function 2026-11-09); between light_elan_mode_a_set and light_elan_mode_c_set, so by link order part of sdk/naomi2_library/elan_lights.c
+ * confidence: exercised
+ * evidence: (light, value): stores word +4 of the light's lights_elan_modes record (bits 28-29 of the packed light's word 5); nothing in the image calls it (uncalled code, made a function 2026-11-09); between light_elan_mode_a_set and light_elan_mode_c_set, so by link order part of sdk/naomi2_library/elan_lights.c; exercised 2026-11-12: called by the harness: (3, 2) set lights_elan_modes +0x34 to 2; after (0, 1) the directional light lights_elan_block_queue packed had 1 in bits 28-29 of its word 5
  * matched: source/sdk/naomi2_library/elan_lights.c (tools/match/match.py)
  */
 void light_elan_mode_b_set(int light, uint value)
@@ -57,8 +57,8 @@ void light_elan_mode_b_set(int light, uint value)
 }
 
 /* 0x0c101dc0  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (light, value): stores word +8 of the light's lights_elan_modes record (bits 24-27 of the packed light's word 5); nothing in the image calls it (uncalled code, made a function 2026-11-09); between light_elan_mode_b_set and light_elan_flags_set, so by link order part of sdk/naomi2_library/elan_lights.c
+ * confidence: exercised
+ * evidence: (light, value): stores word +8 of the light's lights_elan_modes record (bits 24-27 of the packed light's word 5); nothing in the image calls it (uncalled code, made a function 2026-11-09); between light_elan_mode_b_set and light_elan_flags_set, so by link order part of sdk/naomi2_library/elan_lights.c; exercised 2026-11-12: called by the harness: (5, 9) set lights_elan_modes +0x58 to 9 (default 1); after (0, 2) the directional light lights_elan_block_queue packed had 2 in bits 24-27 of its word 5
  * matched: source/sdk/naomi2_library/elan_lights.c (tools/match/match.py)
  */
 void light_elan_mode_c_set(int light, uint value)
@@ -68,9 +68,9 @@ void light_elan_mode_c_set(int light, uint value)
 }
 
 /* 0x0c101de0  size 0x6c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x98
- * evidence: (light, flags): stores the flags in word +0xc of the light's lights_elan_modes record; bit 0 sets or clears the light's bit (bit_masks) in lights_elan_on_bits, bit 1 in lights_elan_second_bits; nothing in the image calls it (uncalled code, made a function 2026-11-09); between light_elan_mode_c_set and lights_elan_last_flag_set, so by link order part of sdk/naomi2_library/elan_lights.c
+ * evidence: (light, flags): stores the flags in word +0xc of the light's lights_elan_modes record; bit 0 sets or clears the light's bit (bit_masks) in lights_elan_on_bits, bit 1 in lights_elan_second_bits; nothing in the image calls it (uncalled code, made a function 2026-11-09); between light_elan_mode_c_set and lights_elan_last_flag_set, so by link order part of sdk/naomi2_library/elan_lights.c; exercised 2026-11-12: called by the harness in one sandbox with lights_elan_on_bits and lights_elan_second_bits poked 0: (2, 3) stored 3 at lights_elan_modes +0x2c and set bit 4 in both; (2, 1) left on_bits 4, second_bits 0; (2, 2) on_bits 0, second_bits 4; (7, 1) stored 1 at +0x7c and set on_bits bit 0x80
  * matched: source/sdk/naomi2_library/elan_lights.c (tools/match/match.py)
  */
 void light_elan_flags_set(int light, uint flags)
@@ -92,8 +92,8 @@ void light_elan_flags_set(int light, uint flags)
 }
 
 /* 0x0c101ea0  size 0x16  file by match with source
- * confidence: inferred
- * evidence: (value): lights_elan_last_flag = value != 0, the bit 20 lights_elan_block_queue ORs into each light command's last word; nothing in the image calls it (uncalled code, made a function 2026-11-09); between light_elan_flags_set and lights_elan_alt_color_on_set, so by link order part of sdk/naomi2_library/elan_lights.c
+ * confidence: exercised
+ * evidence: (value): lights_elan_last_flag = value != 0, the bit 20 lights_elan_block_queue ORs into each light command's last word; nothing in the image calls it (uncalled code, made a function 2026-11-09); between light_elan_flags_set and lights_elan_alt_color_on_set, so by link order part of sdk/naomi2_library/elan_lights.c; exercised 2026-11-12: called by the harness: (5) set the byte lights_elan_last_flag to 1, (0) to 0, (-3) to 1; with the flag at 1 lights_elan_block_queue packed its directional light with bit 20 set (0x08100436), at 0 without (0x08000436)
  * matched: source/sdk/naomi2_library/elan_lights.c (tools/match/match.py)
  */
 void lights_elan_last_flag_set(int value)
@@ -108,8 +108,8 @@ void lights_elan_last_flag_set(int value)
 }
 
 /* 0x0c101ec0  size 0xe  file by match with source
- * confidence: inferred
- * evidence: (byte): stores lights_elan_alt_color_on, which makes lights_elan_block_queue use lights_elan_alt_color for the header's second color word; nothing in the image calls it (uncalled code, made a function 2026-11-09); between lights_elan_last_flag_set and lights_elan_alt_color_set, so by link order part of sdk/naomi2_library/elan_lights.c
+ * confidence: exercised
+ * evidence: (byte): stores lights_elan_alt_color_on, which makes lights_elan_block_queue use lights_elan_alt_color for the header's second color word; nothing in the image calls it (uncalled code, made a function 2026-11-09); between lights_elan_last_flag_set and lights_elan_alt_color_set, so by link order part of sdk/naomi2_library/elan_lights.c; exercised 2026-11-12: called by the harness: (0x7F) stored the byte 0x7F in lights_elan_alt_color_on and (0) stored 0, the next byte untouched; with it 1 lights_elan_block_queue's header carried lights_elan_alt_color (0xFF123456), with it 0 the ambient word again
  * matched: source/sdk/naomi2_library/elan_lights.c (tools/match/match.py)
  */
 void lights_elan_alt_color_on_set(uchar on)
@@ -119,8 +119,8 @@ void lights_elan_alt_color_on_set(uchar on)
 }
 
 /* 0x0c101ee0  size 0x32  file by match with source
- * confidence: inferred
- * evidence: (r, g, b floats): packs them x 255 into the RGB bytes of lights_elan_alt_color; nothing in the image calls it (uncalled code, made a function 2026-11-09); between lights_elan_alt_color_on_set and spot_falloff_from_cosines, so by link order part of sdk/naomi2_library/elan_lights.c
+ * confidence: exercised
+ * evidence: (r, g, b floats): packs them x 255 into the RGB bytes of lights_elan_alt_color; nothing in the image calls it (uncalled code, made a function 2026-11-09); between lights_elan_alt_color_on_set and spot_falloff_from_cosines, so by link order part of sdk/naomi2_library/elan_lights.c; exercised 2026-11-12: called by the harness: (1.0, 0.5, 0.25) set lights_elan_alt_color to 0x00FF7F3F and (0.2, 0.0, 1.0) to 0x003300FF
  * matched: source/sdk/naomi2_library/elan_lights.c (tools/match/match.py)
  */
 void lights_elan_alt_color_set(float r, float g, float b)
@@ -130,8 +130,8 @@ void lights_elan_alt_color_set(float r, float g, float b)
 }
 
 /* 0x0c101f20  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: (cos a, cos b floats): k = 1 / (cos a - cos b) and -cos b x k, returned as the upper 16 bits of each float packed in one word (k high); spot_falloff_from_angles turns two angles into cosines and does the same; nothing in the image calls it (uncalled code, made a function 2026-11-09); between lights_elan_alt_color_set and spot_falloff_from_angles, so by link order part of sdk/naomi2_library/elan_lights.c
+ * confidence: exercised
+ * evidence: (cos a, cos b floats): k = 1 / (cos a - cos b) and -cos b x k, returned as the upper 16 bits of each float packed in one word (k high); spot_falloff_from_angles turns two angles into cosines and does the same; nothing in the image calls it (uncalled code, made a function 2026-11-09); between lights_elan_alt_color_set and spot_falloff_from_angles, so by link order part of sdk/naomi2_library/elan_lights.c; exercised 2026-11-12: called by the harness: (0.9, 0.5) returned 0x4020BFA0 (2.5 and -1.25 as upper halves) and (0.75, 0.25) returned 0x4000BF00 (2.0 and -0.5)
  * matched: source/sdk/naomi2_library/elan_lights.c (tools/match/match.py)
  */
 uint spot_falloff_from_cosines(float cos_inner, float cos_outer)
@@ -147,8 +147,8 @@ uint spot_falloff_from_cosines(float cos_inner, float cos_outer)
 }
 
 /* 0x0c101f60  size 0x52  file by match with source
- * confidence: inferred
- * evidence: as the uncalled routine spot_falloff_from_cosines with two 16-bit angles (0x10000 a turn) turned into cosines by fsca_cos16 first: the cone fall-off pair 1 / (cos a - cos b) and -cos b / (cos a - cos b) as two truncated 16-bit floats in one word; nothing in the image calls it; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: as the uncalled routine spot_falloff_from_cosines with two 16-bit angles (0x10000 a turn) turned into cosines by fsca_cos16 first: the cone fall-off pair 1 / (cos a - cos b) and -cos b / (cos a - cos b) as two truncated 16-bit floats in one word; nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness: (0x1555, 0x2000), 30 and 45 degrees, returned 0x40C9C08E (6.29 and -4.45 as upper halves), and (0, 0x2AAA) returned 0x4000BF80 (2.0 and -1.0); fsca_cos16 was called with each angle
  * matched: source/sdk/naomi2_library/elan_lights.c (tools/match/match.py)
  */
 uint spot_falloff_from_angles(int inner_angle, int outer_angle)
@@ -167,8 +167,8 @@ uint spot_falloff_from_angles(int inner_angle, int outer_angle)
 }
 
 /* 0x0c101fc0  size 0xa8  file by match with source
- * confidence: inferred
- * evidence: writes through the store queue at elan_cmd_write_ptr a 32-byte ELAN 0x08000800 command (0x18000000, 0, 0, (pair[0] & 0x1fffff8) | 0x80000000, 1, pair[1], 0) and an end block (four 0x08000000 words), steps list_end_block_count, advances elan_cmd_write_ptr and queues the block for the list (elan_list_block_queue); nothing in the image calls it; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: writes through the store queue at elan_cmd_write_ptr a 32-byte ELAN 0x08000800 command (0x18000000, 0, 0, (pair[0] & 0x1fffff8) | 0x80000000, 1, pair[1], 0) and an end block (four 0x08000000 words), steps list_end_block_count, advances elan_cmd_write_ptr and queues the block for the list (elan_list_block_queue); nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness with list 3 and the pair {0x0C654321, 0x80}, elan_cmd_write_ptr 0xAA100000 and list_end_block_count 2 (snapshot): it wrote 0x08000800, 0x18000000, 0, 0, 0x80654320, 1, 0x80, 0 and an end block of 0x08000000 words, left elan_cmd_write_ptr 0xAA100040 and the count 0, and called elan_list_block_queue(3, block)
  * matched: source/sdk/naomi2_library/elan_lights.c (tools/match/match.py)
  */
 void elan_list_ref_block_queue(int list, list_block_ref *dlist)
@@ -213,9 +213,9 @@ void elan_list_ref_block_queue(int list, list_block_ref *dlist)
 }
 
 /* 0x0c1020a0  size 0x408  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x4f2
- * evidence: builds the lights for a list in the ELAN command buffer through the store queue: a 0x08000400 header (bits 0x1f0, alt-lighting bit 0x200 from obj_alt_lighting, fields lights_elan_hdr_bits_12 and lights_elan_hdr_bits_16, the on masks lights_on_mask & lights_elan_on_bits & lights_elan_on_mask_low/lights_elan_on_mask_high, lights_elan_second_bits, the ambient color from light_ambient_color x 255 ORed with the block at lights_elan_color_bits, and the second color or lights_elan_alt_colour), then for each of the 16 light_table entries that is on and selected (select & bit_masks[i]) an 8-word light command from elan_light_pack_directional (type 2), elan_light_pack_point (type 3) or elan_light_pack_spot (others, cone from acos_ang16), with the light number in its seventh word and lights_elan_last_flag as bit 20, then an end block; advances elan_cmd_write_ptr and queues it (elan_list_block_queue); callers lights_elan_send_all, lights_elan_send_masked; part of the NAOMI2 library
+ * evidence: builds the lights for a list in the ELAN command buffer through the store queue: a 0x08000400 header (bits 0x1f0, alt-lighting bit 0x200 from obj_alt_lighting, fields lights_elan_hdr_bits_12 and lights_elan_hdr_bits_16, the on masks lights_on_mask & lights_elan_on_bits & lights_elan_on_mask_low/lights_elan_on_mask_high, lights_elan_second_bits, the ambient color from light_ambient_color x 255 ORed with the block at lights_elan_color_bits, and the second color or lights_elan_alt_color), then for each of the 16 light_table entries that is on and selected (select & bit_masks[i]) an 8-word light command from elan_light_pack_directional (type 2), elan_light_pack_point (type 3) or elan_light_pack_spot (others, cone from acos_ang16), with the light number ORed into its seventh word and, for a directional light, lights_elan_last_flag as bit 20 (point and spot lights get the flag in their parameter record +0x3c; a harness call with it set showed bit 20 in neither), then an end block; advances elan_cmd_write_ptr and queues it (elan_list_block_queue); callers lights_elan_send_all, lights_elan_send_masked; part of the NAOMI2 library; exercised 2026-11-12: called by the harness (2, 7) with lights 0-3 poked on (types 2, 3, 4) and off, obj_alt_lighting 1, header fields 3 and 5, masks 0xF/0xD/0xFFFF/5, second bits 6, ambient (0.2, 0.4, 1.0), alt color on 0x123456: header 0x08000400, 0x533F0, 0x5000D, 0xFF3366FF, 0, 0x60006, 0xFF123456, 0; then directional (0x7F3F1F, 0, -39321, 52428), point, spot (acos_ang16 0x2AAB) with numbers 1, 2 ORed in, end block, pointer +0xA0; (0, 5) packed only lights 0 and 2
  * matched: source/sdk/naomi2_library/elan_lights.c (tools/match/match.py)
  */
 void lights_elan_block_queue(int list, uint select)
@@ -378,8 +378,8 @@ void lights_elan_block_queue(int list, uint select)
 }
 
 /* 0x0c1025e0  size 0x44  file by match with source
- * confidence: inferred
- * evidence: lights_elan_block_queue with every light selected (0xffff) for lists 0, 2 and 4 when their bits are set in elan_list_enable_mask; nothing in the image calls it; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: lights_elan_block_queue with every light selected (0xffff) for lists 0, 2 and 4 when their bits are set in elan_list_enable_mask; nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness: with elan_list_enable_mask 0x1F (snapshot) it called lights_elan_block_queue(0, 0xFFFF), (2, 0xFFFF), (4, 0xFFFF); with it poked to 5 only lists 0 and 2
  * matched: source/sdk/naomi2_library/elan_lights.c (tools/match/match.py)
  */
 void lights_elan_send_all(void)
@@ -397,8 +397,8 @@ void lights_elan_send_all(void)
 }
 
 /* 0x0c102640  size 0x4a  file by match with source
- * confidence: inferred
- * evidence: lights_elan_block_queue with the given light selection for lists 0, 2 and 4 when enabled in elan_list_enable_mask; nothing in the image calls it; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: lights_elan_block_queue with the given light selection for lists 0, 2 and 4 when enabled in elan_list_enable_mask; nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness: with elan_list_enable_mask poked 0x14, (0xF3) called lights_elan_block_queue(2, 0xF3) and (4, 0xF3), which packed lights 0 and 1 but not 2; with it 0x11, (2) called (0, 2) and (4, 2), packing light 1 only
  * matched: source/sdk/naomi2_library/elan_lights.c (tools/match/match.py)
  */
 void lights_elan_send_masked(uint select)
@@ -416,9 +416,9 @@ void lights_elan_send_masked(uint select)
 }
 
 /* 0x0c1026a0  size 0x200  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x210
- * evidence: as lights_elan_block_queue with one light: the header keeps only bit 0 of each mask, and a single directional light (elan_light_pack_directional, bit 20 set) whose direction is the block at obj_light_dir normalized (vec3_normalize_to) and color the block at single_light_color x 127, with the first the block at lights_elan_modes record; caller light_single_elan_send; part of the NAOMI2 library
+ * evidence: as lights_elan_block_queue with one light: the header keeps only bit 0 of each mask, and a single directional light (elan_light_pack_directional, bit 20 set) whose direction is the block at obj_light_dir normalized (vec3_normalize_to) and color the block at single_light_color x 127, with the modes of the first lights_elan_modes record; caller light_single_elan_send; part of the NAOMI2 library; exercised 2026-11-12: called by the harness (1) with obj_light_dir (0, 3, 4), single_light_color (1.0, 0.5, 0.0), obj_alt_lighting 1, lights_elan_on_bits 0xD, mask high 5, second bits 6 and light 0 modes 3, 1, 2: header 0x08000400, 0xF03F0, 0x10001, 0xFF3366FF, 0, 0, 0xFF3366FF, 0; vec3_normalize_to, then elan_light_pack_directional(0x7F3F00, 0, -39321, -52428, 3, 1, 2) with bit 20 set (0x08100439); end block; elan_list_block_queue(1, block)
  * matched: source/sdk/naomi2_library/elan_lights.c (tools/match/match.py)
  */
 void light_single_elan_block_queue(int list)
@@ -501,8 +501,8 @@ void light_single_elan_block_queue(int list)
 }
 
 /* 0x0c102940  size 0x3e  file by match with source
- * confidence: inferred
- * evidence: light_single_elan_block_queue for lists 0, 2 and 4 when enabled in elan_list_enable_mask; nothing in the image calls it; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: light_single_elan_block_queue for lists 0, 2 and 4 when enabled in elan_list_enable_mask; nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness: with elan_list_enable_mask poked 0x14 it called light_single_elan_block_queue(2) and (4); with it 1, only (0)
  * matched: source/sdk/naomi2_library/elan_lights.c (tools/match/match.py)
  */
 void light_single_elan_send(void)

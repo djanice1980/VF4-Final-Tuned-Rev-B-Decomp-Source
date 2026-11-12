@@ -258,8 +258,8 @@ int surface_alloc_fail_hook_put(int fn, int arg)
 }
 
 /* 0x0c06af00  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: (function, argument): installs the hook for slot 4, run from the error interrupt for the strip buffer hazard (error status bit 1, strip_hazard_irq raises pending bit 4); called by the NAOMI library's event_hook_slot4_put; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (function, argument): installs the hook for slot 4 (a function of 0 puts the default handler strip_hazard_hook_noop back and keeps the old argument), run from the error interrupt for the strip buffer hazard (error status bit 1, strip_hazard_irq raises pending bit 4); called by the NAOMI library's event_hook_slot4_put; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness in one sandbox: (0x0c0ffee0, 7) stored the function and argument at gfx_state+0x250/+0x254 (slot 4) through hook_slot_store(gfx_state, 4, ...), then (0x0c123400, 9) replaced them; slots 3, 5 and 6 unchanged; returned 0
  * same code as main.bin 0c140ec0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/hooks.c (tools/match/match.py)
  */
@@ -270,8 +270,8 @@ int strip_hazard_hook_put(int fn, int arg)
 }
 
 /* 0x0c06af40  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: (function, argument): installs the hook for slot 5 of the hook table; nothing in this image raises slot 5's pending bit (0x20); called by the NAOMI library's event_hook_slot5_put; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (function, argument): installs the hook for slot 5 of the hook table (a function of 0 puts the default handler list_input_end_hook_noop back and keeps the old argument); nothing in this image raises slot 5's pending bit (0x20); called by the NAOMI library's event_hook_slot5_put; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness in one sandbox: (0x0c0ffee4, 0x55) stored the function and argument at gfx_state+0x258/+0x25c (slot 5) through hook_slot_store(gfx_state, 5, ...), slots 4 and 6 unchanged; returned 0
  * same code as main.bin 0c140f00 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/hooks.c (tools/match/match.py)
  */
@@ -282,8 +282,8 @@ int slot5_hook_put(int fn, int arg)
 }
 
 /* 0x0c06af80  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: (function, argument): installs the hook for slot 6, run from the end-of-YUV-transfer interrupt (normal status bit 6, yuv_done_irq raises pending bit 6); nothing in the image calls it; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (function, argument): installs the hook for slot 6 (a function of 0 puts the default handler yuv_done_hook_noop back and keeps the old argument), run from the end-of-YUV-transfer interrupt (normal status bit 6, yuv_done_irq raises pending bit 6); nothing in the image calls it; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness in one sandbox: (0x0c0ffee8, 0x66) stored the function and argument at gfx_state+0x260/+0x264 (slot 6) through hook_slot_store(gfx_state, 6, ...), slots 4 and 5 unchanged; returned 0
  * same code as main.bin 0c140f40 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/hooks.c (tools/match/match.py)
  */

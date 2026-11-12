@@ -1146,7 +1146,7 @@ address	bytes	name	kind
 0c060f80	236	script_move_if	function
 0c061080	32	script_op_60_move_if_side	function
 0c0610a0	32	script_op_61_move_if_other_side	function
-0c0610c0	40	script_op_62_move_if_opponent	function
+0c0610c0	40	script_op_62_move_if_chara	function
 0c061100	148	script_op_63_escape	function
 0c0611a0	340	script_op_64_hold	function
 0c061300	100	script_op_66_if_frame_flag	function

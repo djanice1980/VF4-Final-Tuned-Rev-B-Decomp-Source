@@ -610,8 +610,8 @@ uint osage_node_rotate(int rot_type,float *dir,int limit)
 }
 
 /* 0x0c0d97e0  size 0x74  file by match with source
- * confidence: inferred
- * evidence: (point, anchor a, anchor b, length): moves the point along b - a by -(b-a).y times (gravity world_gravity + osage_gravity_add) over the length, then keeps it at the length from b (point_dist_clamp_asm); the 44-byte-node twin of chain_node_sag_apply; nothing in the image calls it; part of vf4lib/librobdisp/src/osage.c
+ * confidence: exercised
+ * evidence: (point, anchor a, anchor b, length): moves the point along b - a by -(b-a).y times (gravity world_gravity + osage_gravity_add) over the length, then keeps it at the length from b (point_dist_clamp_asm); the 44-byte-node twin of chain_node_sag_apply; nothing in the image calls it; part of vf4lib/librobdisp/src/osage.c; exercised 2026-11-12: called by the harness with world_gravity 0.5 and osage_gravity_add 0.25 poked, point (1, 2, 3), anchor a (-3, 4, 0), b (0, 0, 0): with length 10 the point became (1.9, 0.8, 3) (moved by (3, -4, 0) x 4 x 0.75 / 10), with length 2 (5.5, -4, 3) pulled back to 2 from b, (1.4799, -1.0763, 0.8072)
  * matched: source/vf4lib/librobdisp/src/osage.c (tools/match/match.py)
  */
 void osage_node_sag_apply(float *point, float *old, float *neighbour, float length)
@@ -628,9 +628,9 @@ void osage_node_sag_apply(float *point, float *old, float *neighbour, float leng
 }
 
 /* 0x0c0d9880  size 0x60  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xa6
- * evidence: (chain slot): from the second node, osage_node_model_draw for each op 3 node and the last; nothing in the image calls it; part of vf4lib/librobdisp/src/osage.c
+ * evidence: (chain slot): from the second node, osage_node_model_draw for each op 3 node and the last; nothing in the image calls it; part of vf4lib/librobdisp/src/osage.c; exercised 2026-11-12: called by the harness with a planted chain {1 root} {3 J1 model 0x24} {2 -} {3 J2 model -1} {0 J3 model 0x24} {3 J4}: osage_node_model_draw(J1, node 1), (J2, node 2), (J3, node 3) and nothing more, and obj_draw(0x24) only for J1 and J3
  * matched: source/vf4lib/librobdisp/src/osage.c (tools/match/match.py)
  */
 void osage_chain_models_draw(osage_chain_slot *chain)
@@ -653,8 +653,8 @@ void osage_chain_models_draw(osage_chain_slot *chain)
 }
 
 /* 0x0c0d9940  size 0x42  file by match with source
- * confidence: inferred
- * evidence: (node descriptor, node): when the descriptor's +4 object id is positive draws it at the node's matrix (+4); caller osage_chain_models_draw; part of vf4lib/librobdisp/src/osage.c
+ * confidence: exercised
+ * evidence: (node descriptor, node): when the descriptor's +4 object id is positive draws it at the node's matrix (+4); caller osage_chain_models_draw; part of vf4lib/librobdisp/src/osage.c; exercised 2026-11-12: called by the harness with a descriptor whose +4 is 0x24 and a node whose matrix pointer is 0x0F00A040: mtx_mul_by(0x0F00A040) and obj_draw(0x24); with +4 -1 it drew nothing
  * matched: source/vf4lib/librobdisp/src/osage.c (tools/match/match.py)
  */
 void osage_node_model_draw(osage_joint_desc *joint, osage_node *node)
@@ -686,7 +686,7 @@ void osage_chain_relocate(int *cmds, int delta)
 /* 0x0c0d99e0  size 0x122  file by match with source
  * confidence: inferred
  * extent: 0x166
- * evidence: (chain slot, chain command list): like chain_slot_build but from a fixed list: allocates 0x68-byte nodes from bone_chain_nodes_cur, the root by chain_root_node_calc and each further node straight below the previous one by its length with identity rotation; caller bone_chains_setup (four lists per rob); part of vf4lib/librobdisp/src/osage.c
+ * evidence: (chain slot, chain command list): like chain_slot_build but from a fixed list: allocates 0x68-byte nodes from bone_chain_nodes_cur, the root by chain_root_node_calc, the first joint node at the root's position and each further node straight below the one before by that one's joint length (the last joint's length is not used), with identity rotation and zero velocity; caller bone_chains_setup (four lists per rob); part of vf4lib/librobdisp/src/osage.c; corrected 2026-11-12 from harness calls: called by the harness with bone_chain_a_cmds_0 (op 2, root, joints of length 0.25, 0.5 and 1.0 poked): the root came at y -5.0, but node 1 was at the root (-5.0), node 2 at -5.25 and node 3 at -5.75, each with an identity matrix at that point; the description gives -5.25, -5.75, -6.75 (each node below the previous by its own length)
  * matched: source/vf4lib/librobdisp/src/osage.c (tools/match/match.py)
  */
 void chain_slot_build_straight(osage_chain_slot *chain, int *cmds)
@@ -742,9 +742,9 @@ void chain_slot_build_straight(osage_chain_slot *chain, int *cmds)
 }
 
 /* 0x0c0d9b60  size 0x100  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x136
- * evidence: (rob, chain slot, chain command list): fills the slot and allocates 0x68-byte nodes from bone_chain_nodes_cur, each on its bone matrix (descriptor +0x10), the root by chain_root_node_calc and the others by chain_node_init; nothing in the image calls it; part of vf4lib/librobdisp/src/osage.c
+ * evidence: (rob, chain slot, chain command list): fills the slot and allocates 0x68-byte nodes from bone_chain_nodes_cur, each on its bone matrix (descriptor +0x10), the root by chain_root_node_calc and the others by chain_node_init; nothing in the image calls it; part of vf4lib/librobdisp/src/osage.c; as the game has it: the root node's matrix pointer comes from the root descriptor's rotation shorts read as a matrix slot; exercised 2026-11-12: called by the harness with robs (matrices at 0x0C43F930), a cleared slot and bone_chain_a_cmds_0 (joint slots 3, 4, 5, lengths 0.25, 0.5, 1.0 poked): the slot got on 1, root slot 2, the list and nodes 0x0C3AB818; nodes 0x68 apart, the root by chain_root_node_calc and the three joints by chain_node_init on rob matrices 3, 4 and 5 (0x0C43F9F0, 0x0C43FA30, 0x0C43FA70); bone_chain_nodes_cur moved on four nodes (fault row on the root's matrix)
  * matched: source/vf4lib/librobdisp/src/osage.c (tools/match/match.py)
  */
 void chain_slot_build(rob_rec *rob, osage_chain_slot *chain, int *cmds)
@@ -805,8 +805,8 @@ void chain_slot_build(rob_rec *rob, osage_chain_slot *chain, int *cmds)
 }
 
 /* 0x0c0d9cc0  size 0x106  file by match with source
- * confidence: inferred
- * evidence: (node descriptor, node): places the node at its length from the previous one in the direction of the descriptor's angles lowered by gravity times the chain's weight (chain_weight), keeps the length (point_dist_clamp), turns the matrix toward it (chain_node_rotate by the chain's rottype chain_rot_type), stores matrix and end point and collides it (osage_node_collide); callers chain_slot_build, chain_reset; part of vf4lib/librobdisp/src/osage.c
+ * confidence: exercised
+ * evidence: (node descriptor, node): places the node at its length from the previous one in the direction of the descriptor's angles lowered by gravity times the chain's weight (chain_weight), keeps the length (point_dist_clamp), turns the matrix toward it (chain_node_rotate by the chain's rottype chain_rot_type), stores matrix and end point and collides it (osage_node_collide); callers chain_slot_build, chain_reset; part of vf4lib/librobdisp/src/osage.c; exercised 2026-11-12: called by the harness inside a call of chain_slot_build with bone_chain_a_cmds_0 (lengths 0.25, 0.5, 1.0 poked, chain weight 1.0): each of the three nodes ended exactly its length from the one before (0.25, 0.5, 1.0; the last two straight down)
  * matched: source/vf4lib/librobdisp/src/osage.c (tools/match/match.py)
  */
 void chain_node_init(chain_joint_desc *joint, bone_chain_node *node)
@@ -836,9 +836,9 @@ void chain_node_init(chain_joint_desc *joint, bone_chain_node *node)
 }
 
 /* 0x0c0d9e20  size 0xbe  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x100
- * evidence: (chain slot): places every node again (chain_root_node_calc, chain_node_init, op 2 osage_coli_list_set), then chain_settle_step osage_settle_steps times from the same root matrix; nothing in the image calls it; part of vf4lib/librobdisp/src/osage.c
+ * evidence: (chain slot): places every node again (chain_root_node_calc, chain_node_init, op 2 osage_coli_list_set), then chain_settle_step osage_settle_steps times from the same root matrix; nothing in the image calls it; part of vf4lib/librobdisp/src/osage.c; exercised 2026-11-12: called by the harness on a slot built by chain_slot_build_straight: it called osage_coli_list_set(0x0C2FF750) for the op 2, chain_root_node_calc for the root, chain_node_init for the three joints, then chain_settle_step twice (osage_settle_steps 2), and three times after osage_settle_steps was poked to 3
  * matched: source/vf4lib/librobdisp/src/osage.c (tools/match/match.py)
  */
 void chain_reset(osage_chain_slot *chain)
@@ -884,9 +884,9 @@ void chain_reset(osage_chain_slot *chain)
 }
 
 /* 0x0c0d9f60  size 0xa6  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xda
- * evidence: (chain slot): one pass of chain_root_node_calc / chain_node_calc that zeroes each node's velocity; caller chain_reset; part of vf4lib/librobdisp/src/osage.c
+ * evidence: (chain slot): one pass of chain_root_node_calc / chain_node_calc that zeroes each node's velocity; caller chain_reset; part of vf4lib/librobdisp/src/osage.c; exercised 2026-11-12: called by the harness on a slot built by chain_slot_build_straight with velocities 1.0 / 2.0 planted in the joints: osage_coli_list_set(0x0C2FF750) for the op 2, chain_root_node_calc(root, node 0), chain_node_calc(J1, node 1, 0), (J2, node 2, 0), (J3, node 3, 1); afterwards every joint velocity was 0 and bone_chain_nodes_cur was past node 3
  * matched: source/vf4lib/librobdisp/src/osage.c (tools/match/match.py)
  */
 void chain_settle_step(osage_chain_slot *chain)
@@ -930,9 +930,9 @@ void chain_settle_step(osage_chain_slot *chain)
 }
 
 /* 0x0c0da060  size 0x7c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xa6
- * evidence: (chain slot): one frame of a 0x68-node chain: clears osage_coli_list, the root (chain_root_node_calc), op 2 collision lists and each node (chain_node_calc, the last with its end flag); caller bone_chains_update; part of vf4lib/librobdisp/src/osage.c
+ * evidence: (chain slot): one frame of a 0x68-node chain: clears osage_coli_list, the root (chain_root_node_calc), op 2 collision lists and each node (chain_node_calc, the last with its end flag); caller bone_chains_update; part of vf4lib/librobdisp/src/osage.c; exercised 2026-11-12: called by the harness on a slot built by chain_slot_build_straight with osage_coli_list poked to 0x1234: osage_coli_list_set(0x0C2FF750) for the op 2 (the list ends at that value), chain_root_node_calc(root, node 0), then chain_node_calc for nodes 1, 2, 3 with the last flag 0, 0, 1
  * matched: source/vf4lib/librobdisp/src/osage.c (tools/match/match.py)
  */
 void chain_calc(osage_chain_slot *chain)
@@ -966,9 +966,9 @@ void chain_calc(osage_chain_slot *chain)
 }
 
 /* 0x0c0da120  size 0xe6  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xee
- * evidence: (root descriptor, node): as osage_root_node_calc, and also loads the chain's settings from the descriptor: rottype (+0x16, chain_rot_type), angle limit (+0x18, chain_limit), +0x1A (chain_root_1a) and weight (+0x1C, chain_weight); callers chain_slot_build_straight, chain_slot_build, chain_reset, chain_settle_step, chain_calc; part of vf4lib/librobdisp/src/osage.c
+ * evidence: (root descriptor, node): as osage_root_node_calc, and also loads the chain's settings from the descriptor: rottype (+0x16, chain_rot_type), angle limit (+0x18, chain_limit), +0x1A (chain_root_1a) and weight (+0x1C, chain_weight); callers chain_slot_build_straight, chain_slot_build, chain_reset, chain_settle_step, chain_calc; part of vf4lib/librobdisp/src/osage.c; exercised 2026-11-12: called by the harness with a planted root descriptor (+0x16 3, +0x18 -300, +0x1A 7, +0x1C 2.5, angles x 0x100, y 0x200, z 0x300): chain_rot_type 3, chain_limit -300, chain_root_1a 7, chain_weight 2.5 and mtx_rot_z_s16(0x300), mtx_rot_y_s16(0x200), mtx_rot_x_s16(0x100); with 1, 0x2000, -1, 0.25 the four globals became 1, 0x2000, -1, 0.25
  * matched: source/vf4lib/librobdisp/src/osage.c (tools/match/match.py)
  */
 void chain_root_node_calc(chain_root_desc *root, bone_chain_node *node)
@@ -1070,8 +1070,8 @@ void chain_node_calc(chain_joint_desc *joint, bone_chain_node *node, int last)
 }
 
 /* 0x0c0da4c0  size 0x7a  file by match with source
- * confidence: inferred
- * evidence: (point, anchor a, anchor b, length): moves the point along b - a scaled by -(b-a).y times (gravity * chain weight + osage_gravity_add) over the length (vec3_set_length), then keeps it at the length from b (point_dist_clamp); caller chain_node_calc; part of vf4lib/librobdisp/src/osage.c
+ * confidence: exercised
+ * evidence: (point, anchor a, anchor b, length): moves the point along b - a scaled by -(b-a).y times (gravity * chain weight + osage_gravity_add) over the length (vec3_set_length), then keeps it at the length from b (point_dist_clamp); caller chain_node_calc; part of vf4lib/librobdisp/src/osage.c; exercised 2026-11-12: called by the harness with world_gravity 0.5, chain_weight 2.0 and osage_gravity_add 0.25 poked, point (1, 2, 3), anchor a (-3, 4, 0), b (0, 0, 0): with length 10 the point moved 0.5 along (3, -4, 0) to (1.3, 1.6, 3) (vec3_set_length 4 x 1.25 / 10), with length 2 by 2.5 to (2.5, 0, 3) and then back to 2 from b, (1.2804, 0, 1.5364)
  * matched: source/vf4lib/librobdisp/src/osage.c (tools/match/match.py)
  */
 void chain_node_sag_apply(float *point, float *old, float *neighbour, float length)
@@ -1159,8 +1159,8 @@ void chain_node_rotate(int rot_type,float *dir)
 }
 
 /* 0x0c0da7e0  size 0x10  file by match with source
- * confidence: inferred
- * evidence: (collision list): sets osage_coli_list (0x0C2FF5CC), the list osage_node_collide tests; the op 2 command of both chain kinds; callers osage_chain_reset, osage_chain_settle_step, osage_chain_calc, chain_reset, chain_settle_step, chain_calc; part of vf4lib/librobdisp/src/osage.c
+ * confidence: exercised
+ * evidence: (collision list): sets osage_coli_list (0x0C2FF5CC), the list osage_node_collide tests; the op 2 command of both chain kinds; callers osage_chain_reset, osage_chain_settle_step, osage_chain_calc, chain_reset, chain_settle_step, chain_calc; part of vf4lib/librobdisp/src/osage.c; exercised 2026-11-12: called by the harness in one sandbox: after osage_coli_list_set(0x0F002000) osage_coli_list read 0x0F002000, after osage_coli_list_set(0x0C123450) 0x0C123450
  * matched: source/vf4lib/librobdisp/src/osage.c (tools/match/match.py)
  */
 void osage_coli_list_set(int list)
@@ -1202,9 +1202,9 @@ int osage_node_collide(float *point)
 }
 
 /* 0x0c0da8c0  size 0x60  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xa6
- * evidence: (chain slot): from the second node, bone_chain_part_draw for each op 3 node and the last; caller bone_chains_draw; part of vf4lib/librobdisp/src/osage.c
+ * evidence: (chain slot): from the second node, bone_chain_part_draw for each op 3 node and the last; caller bone_chains_draw; part of vf4lib/librobdisp/src/osage.c; exercised 2026-11-12: called by the harness with a planted slot (0x68-byte nodes) whose list is {1 root} {3 J1 model 0x24} {2 -} {3 J2 model 0} {0 J3 model 0x24} {3 J4}: bone_chain_part_draw(J1, node 1), (J2, node 2), (J3, node 3) and nothing after the op 0
  * matched: source/vf4lib/librobdisp/src/osage.c (tools/match/match.py)
  */
 void chain_models_draw(osage_chain_slot *chain)
@@ -1228,8 +1228,8 @@ void chain_models_draw(osage_chain_slot *chain)
 }
 
 /* 0x0c0da980  size 0x42  file by match with source
- * confidence: inferred
- * evidence: (chain part {+4 object id}, node {+4 matrix}): when the part has an object id above 0, pushes the matrix stack, multiplies by the node's matrix and draws the object (obj_draw); the bone-chain twin of osage_node_model_draw; only caller chain_models_draw (the per-chain draw that bone_chains_draw runs); part of vf4lib/librobdisp/src/osage.c
+ * confidence: exercised
+ * evidence: (chain part {+4 object id}, node {+4 matrix}): when the part has an object id above 0, pushes the matrix stack, multiplies by the node's matrix and draws the object (obj_draw); the bone-chain twin of osage_node_model_draw; only caller chain_models_draw (the per-chain draw that bone_chains_draw runs); part of vf4lib/librobdisp/src/osage.c; exercised 2026-11-12: called by the harness with a part whose +4 is 0x24 and a node whose matrix pointer is 0x0F00A0C0: mtx_mul_by(0x0F00A0C0) and obj_draw(0x24) between the push and the pop; with +4 0 it drew nothing
  * matched: source/vf4lib/librobdisp/src/osage.c (tools/match/match.py)
  */
 void bone_chain_part_draw(chain_joint_desc *joint, bone_chain_node *node)
@@ -1410,7 +1410,7 @@ void shun_drink_tint_apply(rob_rec *rob)
 
 /* 0x0c0dae00  size 0xae  file by match with source
  * confidence: inferred
- * evidence: (cloth slot, source {object id, word, 3 floats, -, -, collision list}, word): looks the object up by id (obj_node_get), takes its cloth header (object kind +0x3C 9: +0x40, 15: +0x80, else returns), fills the slot (+0 on, +4 id, +8 word, +0x0C object, +0x10..+0x18 the floats, +0x28 header, +0x2C list, +0x30 source, +0x34 word) and places the nodes (cloth_nodes_place); the by-id form of cloth_slot_start; nothing in the image calls it; part of vf4lib/librobdisp/src/osage.c
+ * evidence: (cloth slot, source {object id, word, 3 floats, -, -, collision list}, word): looks the object up by id (obj_node_get; returns for id 0 or no object) but takes the kind and the cloth header from cloth_obj, the object cloth_nodes_place last placed (kind +0x3C 9: +0x40, 15: +0x80, else returns; nothing when that offset is 0), fills the slot (+0 on, +4 id, +8 word, +0x0C cloth_obj, +0x10..+0x18 the floats, +0x28 header, +0x2C list, +0x30 source, +0x34 word) and places the looked-up object's nodes with that header (cloth_nodes_place); the by-id form of cloth_slot_start; nothing in the image calls it; part of vf4lib/librobdisp/src/osage.c; as the game has it: the kind and header come from cloth_obj, the previous cloth object, and the looked-up object's nodes are placed with that header; corrected 2026-11-12 from harness calls: called by the harness with object id 0x24 (kind +0x3C 0, not 9 or 15) after cloth_nodes_place had made cloth_obj a planted kind-9 object (header offset +0x40 0x100): it did not return but filled the slot with on 1, id 0x24, word 7, the floats 1, 2, 3, +0x0C = cloth_obj (not the looked-up object), header = cloth_obj file + 0x100, list 0x1234, source, word 5, and called cloth_nodes_place with the looked-up object; with the snapshot cloth_obj (0) it returned without writing
  * matched: source/vf4lib/librobdisp/src/osage.c (tools/match/match.py)
  */
 void cloth_slot_start_by_id(cloth_slot_rec *slot, cloth_source_rec *src, int map_order)
@@ -1793,8 +1793,8 @@ void cloth_node_move(cloth_slot_rec *slot, cloth_node_rec *node, float *out)
 }
 
 /* 0x0c0db920  size 0x10a  file by match with source
- * confidence: inferred
- * evidence: (node, out, force, columns, strength): out = position + (the node's direction +0x34 through the current matrix) x strength + velocity +0x1C + force, then cloth_link_constrain toward the node below (unless node bit 1), left (bit 2; length +0x48 + cloth_side_add), right (bit 3; +0x4C + cloth_side_add) and always the node above (+0x40); the C counterpart of cloth_node_integrate_asm but not equivalent to it (the assembly runs the side links right before left and adds no cloth_side_add); only caller cloth_node_move when cloth_asm_flags bit 0 is clear, which never happens in the shipped game (cloth_asm_flags is 3 and nothing writes it), so this and its yoko term never run; part of vf4lib/librobdisp/src/osage.c
+ * confidence: exercised
+ * evidence: (node, out, force, columns, strength): out = position + (the node's direction +0x34 through the current matrix) x strength + velocity +0x1C + force, then cloth_link_constrain toward the node below (unless node bit 1), left (bit 2; length +0x48 + cloth_side_add), right (bit 3; +0x4C + cloth_side_add) and always the node above (+0x40); the C counterpart of cloth_node_integrate_asm but not equivalent to it (the assembly runs the side links right before left and adds no cloth_side_add); only caller cloth_node_move when cloth_asm_flags bit 0 is clear, which never happens in the shipped game (cloth_asm_flags is 3 and nothing writes it), so this and its yoko term never run; part of vf4lib/librobdisp/src/osage.c; exercised 2026-11-12: called by the harness on a planted 3-column node grid, node 4 at (0, 0, 0) with velocity (0.1, 0, 0), direction (0, 1, 0) (the snapshot matrix keeps y), strength 0.5, force (0, -0.2, 0), lengths up 0.5, down 0.4, left 0.3, right 0.2: with flags 0xE only the node above (0, 1, 0) pulled, giving (0.0701, 0.5049, 0); with flags 0 the links ran below, left, right, above and gave (0.0592, 0.5037, 0.0146), both as computed by hand
  * matched: source/vf4lib/librobdisp/src/osage.c (tools/match/match.py)
  */
 void cloth_node_integrate(cloth_node_rec *node, float *out, float *force, int cols, float scale)
@@ -1816,8 +1816,8 @@ void cloth_node_integrate(cloth_node_rec *node, float *out, float *force, int co
 }
 
 /* 0x0c0dba40  size 0x6e  file by match with source
- * confidence: inferred
- * evidence: (point, old position, neighbor, length): adds (neighbor - old) x (-(neighbor - old).y x rope_cloth_gravity / length) to the point, then keeps it within length of the neighbor (point_dist_clamp); the C twin of link_constrain_core; only caller cloth_node_integrate; part of vf4lib/librobdisp/src/osage.c
+ * confidence: exercised
+ * evidence: (point, old position, neighbor, length): adds (neighbor - old) x (-(neighbor - old).y x rope_cloth_gravity / length) to the point, then keeps it within length of the neighbor (point_dist_clamp); the C twin of link_constrain_core; only caller cloth_node_integrate; part of vf4lib/librobdisp/src/osage.c; exercised 2026-11-12: called by the harness with rope_cloth_gravity 0.75 poked, point (1, 2, 3), old (-3, 4, 0), neighbor (0, 0, 0): with length 10 the point became (1.9, 0.8, 3), with length 2 (5.5, -4, 3) pulled to 2 from the neighbor, (1.4799, -1.0763, 0.8072); with gravity 0 it stayed (1, 2, 3)
  * matched: source/vf4lib/librobdisp/src/osage.c (tools/match/match.py)
  */
 void cloth_link_constrain(float *point, float *old, float *neighbour, float length)
@@ -2041,8 +2041,8 @@ void bone_chains_update(void)
 }
 
 /* 0x0c0dc080  size 0x112  file by match with source
- * confidence: inferred
- * evidence: (chain slot, rob): for each command of the slot's list up to the end (types 3 and 0), copies the node matrix (bone_chain_nodes +0x20) of each node whose id matches a row of bone_chain_bone_map (10 rows {node id, rob matrix}) into that rob matrix (rob +0x54 + n x 0x40); for the row with matrix 1 rebuilds matrices 2 (translated by bone_chain_mtx2_x), 4 and 9 (translated by skeleton vectors rob +0x4E4 +0x16C / +0x2CC); so the chains drive the rob's own bones; only caller bone_chains_update, when bone_chains_enabled is set (0 in .data, never written); part of vf4lib/librobdisp/src/osage.c
+ * confidence: exercised
+ * evidence: (chain slot, rob): for each command of the slot's list up to the end (types 3 and 0), copies the node matrix (bone_chain_nodes[rob side] + id x 0x68 + 0x20, id being the joint descriptor's +0x10; not the slot's own nodes) of each joint whose id matches a row of bone_chain_bone_map (10 rows {node id, rob matrix}) into that rob matrix (rob +0x54 + n x 0x40); for every op 3 / op 0 command, whether or not its id matched (at the map row with matrix 1), rebuilds from matrix 1 the matrices 2 (translated by bone_chain_mtx2_x), 4 and 9 (translated by skeleton vectors rob +0x4E4 +0x16C / +0x2CC); so the chains drive the rob's own bones; only caller bone_chains_update, when bone_chains_enabled is set (0 in .data, never written); part of vf4lib/librobdisp/src/osage.c; exercised 2026-11-12: called by the harness with robs and a planted slot {1 root} {3 joint id 3} {2 -} {0 joint id 9}, words 0xA000-0xA00F in node 3 and 0xB000-0xB00F in node 9 of bone_chain_nodes[0] (+0x20): rob matrix 5 got the A words, matrices 12 and 13 the B words, matrix 6 kept its value; matrices 2, 4 and 9 were rebuilt from matrix 1 (mtx_translate(0.4 = bone_chain_mtx2_x), then the rig vectors) for each joint, though none had id 1 (notes row)
  * matched: source/vf4lib/librobdisp/src/osage.c (tools/match/match.py)
  */
 void bone_chain_to_rob_bones(osage_chain_slot *chain, rob_rec *rob)

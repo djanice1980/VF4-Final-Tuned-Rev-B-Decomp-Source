@@ -2506,8 +2506,8 @@ int vp_user_renkei_combo_pick(vp_work *work)
 }
 
 /* 0x0c058e80  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: (vp): builds a one-step action at the combo block (vp +0x6c, +0x28: flags 0, +6 = 100 (the startup frames vp_attack_pick and vp_punish_pick read there), the current chain step's input list) and makes it the action (vp +0x50). Only caller vp_mode_stroke, at its start under USER_RENKEI; part of vf4lib/libenemy/src/vp_main.c
+ * confidence: exercised
+ * evidence: (vp): builds a one-step action at the combo block (vp +0x6c, +0x28: flags 0, +6 = 100 (the startup frames vp_attack_pick and vp_punish_pick read there), the current chain step's input list) and makes it the action (vp +0x50). Only caller vp_mode_stroke, at its start under USER_RENKEI; part of vf4lib/libenemy/src/vp_main.c; exercised 2026-11-12: called by the harness with a planted vp whose +0x6C points at a block filled with 0xFF and whose step (+0x64) starts with 0x0C123450: block +0x28 flags 0, +0x2C 0, +0x2E 100, +0x30 0x0C123450, +0x34 0, and vp +0x50 = block + 0x28; with another block and 0x0C654320 the same at that block
  * matched: source/vf4lib/libenemy/src/vp_main.c (tools/match/match.py)
  */
 void vp_renkei_action_build(vp_work *work)
@@ -2527,9 +2527,9 @@ void vp_renkei_action_build(vp_work *work)
 }
 
 /* 0x0c058ec0  size 0x7a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x112
- * evidence: (vp): tests the chain step's condition (vp +0x64, its +4: 1 always, 2 counter 0x38, 3 hit, 4 guarded, 5 no hit, 6 air, 7 stagger, against the stroke result vp +0x30) and when it holds moves to the next step; returns 1 when there is one. Only caller vp_mode_stroke (USER_RENKEI); part of vf4lib/libenemy/src/vp_main.c
+ * evidence: (vp): tests the chain step's condition (vp +0x64, its +4: 1 always, 2 counter 0x38, 3 hit, 4 guarded, 5 no hit, 6 air, 7 stagger, against the stroke result vp +0x30) and when it holds moves to the next step; returns 1 when there is one. Only caller vp_mode_stroke (USER_RENKEI); part of vf4lib/libenemy/src/vp_main.c; exercised 2026-11-12: called by the harness with a vp record in a scratch buffer whose +0x64 pointed at two planted steps: condition 3 (hit) with stroke 1 returned 1 and moved +0x64 on by one step (8 bytes), with stroke 0x200 it returned 0 and left it; condition 5 (no hit) with stroke 0x200 and a next step whose stroke is 0 moved on but returned 0; condition 2 with stroke 0x10, 7 with 2 and 4 with 0x100 returned 1, condition 6 with stroke 2 and 0 with all bits set returned 0
  * matched: source/vf4lib/libenemy/src/vp_main.c (tools/match/match.py)
  */
 byte vp_renkei_next_check(vp_work *work)
@@ -4229,9 +4229,9 @@ int vp_exc_press_punch(vp_work *work)
 }
 
 /* 0x0c05bfa0  size 0x9e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xd8
- * evidence: (vp): exception 4: as vp_exc_press_punch with vp_exc_kicks (K, 2K, G+P) and vp_exc_kick_input. vp_exc_funcs[4]; part of vf4lib/libenemy/src/vp_main.c
+ * evidence: (vp): exception 4: as vp_exc_press_punch with vp_exc_kicks (K, 2K, G+P) and vp_exc_kick_input. vp_exc_funcs[4]; part of vf4lib/libenemy/src/vp_main.c; exercised 2026-11-12: called by the harness five times in one sandbox on vp_work_2p with +0x10 poked 0: the first stored vp_exc_kicks[vp_rand() % 5] (vp_rand 31134, entry 4, value 3) in vp_exc_kick_input, wrote 0 to the rob's pad word (control_objects+0xc4) and set +0x10 to 2; the second wrote 0 again (3), the third and fourth wrote 3 (4, 5), and the fifth called vp_state_change and left mode 1 (MODE_ACT_SELECT)
  * matched: source/vf4lib/libenemy/src/vp_main.c (tools/match/match.py)
  */
 int vp_exc_press_kick(vp_work *work)
@@ -4387,8 +4387,8 @@ int vp_trait_get(int trait, uchar *choices)
 }
 
 /* 0x0c05c2c0  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (mode): vp_mode_names[mode] ("MODE_NO_ACT" ...). Ghidra did not make this a function (it sits in the literal pool area after vp_trait_get); nothing in the image calls it (a debug display's helper); part of vf4lib/libenemy/src/vp_main.c
+ * confidence: exercised
+ * evidence: (mode): vp_mode_names[mode] ("MODE_NO_ACT" ...). Ghidra did not make this a function (it sits in the literal pool area after vp_trait_get); nothing in the image calls it (a debug display's helper); part of vf4lib/libenemy/src/vp_main.c; exercised 2026-11-12: called by the harness with 1 it returned 0x0C222098 ("MODE_ACT_SELECT") and with 17 0x0C222218 ("MODE_ATEMI"), entries 1 and 17 of vp_mode_names in work/main.bin
  * matched: source/vf4lib/libenemy/src/vp_main.c (tools/match/match.py)
  */
 char * vp_mode_name(int mode)
@@ -4397,8 +4397,8 @@ char * vp_mode_name(int mode)
 }
 
 /* 0x0c05c2e0  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (bit): vp_flag_names[bit] ("INIT_SUCCESS" ...), the names of the vp +0x2c bits. Ghidra did not make this a function; nothing in the image calls it; part of vf4lib/libenemy/src/vp_main.c
+ * confidence: exercised
+ * evidence: (bit): vp_flag_names[bit] ("INIT_SUCCESS" ...), the names of the vp +0x2c bits. Ghidra did not make this a function; nothing in the image calls it; part of vf4lib/libenemy/src/vp_main.c; exercised 2026-11-12: called by the harness with 0 it returned 0x0C2222F0 ("INIT_SUCCESS") and with 16 0x0C222470 ("USER_RENKEI"), entries 0 and 16 of vp_flag_names in work/main.bin
  * matched: source/vf4lib/libenemy/src/vp_main.c (tools/match/match.py)
  */
 char * vp_flag_name(int flag)
@@ -4407,8 +4407,8 @@ char * vp_flag_name(int flag)
 }
 
 /* 0x0c05c300  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (bit): vp_stroke_names[bit] ("STROKE_HIT" ...), the names of the vp +0x30 bits. Ghidra did not make this a function; nothing in the image calls it; part of vf4lib/libenemy/src/vp_main.c
+ * confidence: exercised
+ * evidence: (bit): vp_stroke_names[bit] ("STROKE_HIT" ...), the names of the vp +0x30 bits. Ghidra did not make this a function; nothing in the image calls it; part of vf4lib/libenemy/src/vp_main.c; exercised 2026-11-12: called by the harness with 0 it returned 0x0C222518 ("STROKE_HIT") and with 9 0x0C2225F0 ("STROKE_NOHIT"), entries 0 and 9 of vp_stroke_names in work/main.bin
  * matched: source/vf4lib/libenemy/src/vp_main.c (tools/match/match.py)
  */
 char * vp_stroke_name(int stroke)

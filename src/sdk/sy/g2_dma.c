@@ -7,9 +7,9 @@
 #include "vf4ft.h"
 
 /* 0x0c137620  size 0x46  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x5e
- * evidence: with interrupts masked: returns 0x90102 when the channel record's in-use byte (+0x28) is not set, else clears it and returns 0; part of the G2 DMA object (syG2 in the binary); checked against reference material (not in this repo)
+ * evidence: with interrupts masked: returns 0x90102 when the channel record's in-use byte (+0x28) is not 1 (a 2 also gives 0x90102 and is left as it is), else clears it and returns 0; part of the G2 DMA object (syG2 in the binary); checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on a buffer with the byte at +0x28 = 1 it returned 0 and cleared the byte; with 0 it returned 0x90102; with 2 it also returned 0x90102 and left the 2
  * matched: source/sdk/sy/g2_dma.c (tools/match/match.py)
  */
 int g2dma_slot_mark_unused(g2_dma_channel *ch)
@@ -39,8 +39,8 @@ int g2dma_slot_mark_unused(g2_dma_channel *ch)
 }
 
 /* 0x0c1376a0  size 0x86  file by match with source
- * confidence: inferred
- * evidence: the DMA end handler g2_subsystem_start hooks to events 0xa60/0xa80/0xaa0/0xac0 (Holly normal bits 15-18) with the channel record as argument: clears the channel's enable register (+0x14 of its block at 0xa05f7800), marks it idle (+0x29) and done (+0x2a), counts the end in the G2 state, acknowledges the bit in 0xa05f6900 (read back twice) and calls the channel's callback with its argument; part of the G2 DMA object; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: the DMA end handler g2_subsystem_start hooks to events 0xa60/0xa80/0xaa0/0xac0 (Holly normal bits 15-18) with the channel record as argument: clears the channel's enable register (+0x14 of its block at 0xa05f7800), marks it idle (+0x29) and done (+0x2a), counts the end in the G2 state, acknowledges the bit in 0xa05f6900 (read back twice) and calls the channel's callback with its argument; part of the G2 DMA object; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on channel 2 of the snapshot's G2 state (0x0c41de5c) with g2dma_slot_mark_unused and the buffer 0x0f002000 poked as its callback and argument and +0x29 set to 1: it wrote 0 to 0xa05f7854 and 0x20000 to 0xa05f6900, set +0x29 to 0 and +0x2a to 1, counted done_count[2] 0 to 1 and called g2dma_slot_mark_unused(0x0f002000); on channel 0 with no callback it wrote 0xa05f7814 and 0x8000 and called nothing
  * matched: source/sdk/sy/g2_dma.c (tools/match/match.py)
  */
 int g2dma_done_isr(g2_dma_channel *ch)
@@ -151,9 +151,9 @@ int g2dma_slot_init_in_use(g2_dma_channel **out, int number)
 }
 
 /* 0x0c137880  size 0x94  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xb6
- * evidence: (channel, G2 address, memory address, length, direction, two trigger flags, callback, argument): stores the addresses masked to 32-byte lines, the length with bit 31 set, the direction bit, trigger bits 0 and 2 from the two flags, the callback and its argument, and clears the done byte; part of the G2 DMA object; checked against reference material (not in this repo)
+ * evidence: (channel, G2 address, memory address, length, direction, two trigger flags, callback, argument): stores the addresses masked to 32-byte lines, the length with bit 31 set, the direction bit, trigger bits 0 and 2 from the two flags (each set only when its flag is exactly 1; bit 1 of the old trigger word is kept and the bits above 2 cleared), the callback and its argument, and clears the done byte; part of the G2 DMA object; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on a channel record filled with 0xff, (G2 0x00712345, memory 0x0c123456, length 0x12345, direction 3, flags 1 and 0, callback 0x0c111111, argument 77) stored 0x00712340, 0x0c123440, 0x80012340, direction 1, trigger 3 (bit 0 set, bit 2 clear, the old bit 1 kept), the callback, 77 and done byte 0, and returned 0; then all-ones addresses and length, direction 2 and flags 0 and 1 stored 0x1fffffe0, 0x1fffffe0, 0x81ffffe0, direction 0 and trigger 6
  * matched: source/sdk/sy/g2_dma.c (tools/match/match.py)
  */
 int g2dma_slot_store_transfer(g2_dma_channel *ch,uint g2_addr,uint mem_addr,uint length,uint direction,uchar trigger_flag0,uchar trigger_flag2,g2_dma_done_fn done_fn,int done_arg)
@@ -185,8 +185,8 @@ int g2dma_slot_store_transfer(g2_dma_channel *ch,uint g2_addr,uint mem_addr,uint
 }
 
 /* 0x0c137960  size 0x5a  file by match with source
- * confidence: inferred
- * evidence: clears the channel's start register, marks it idle and done and counts it in the G2 state; part of the G2 DMA object; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: clears the channel's start register, marks it idle and done and counts it in the G2 state; part of the G2 DMA object; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on a channel record filled with 0x11 and numbered 2, it wrote 0 to the start register a05f7858 (g2_state's regs_base 0xa05f7800 + 2 x 0x20 + 0x18), set the running byte to 0 and the done byte to 1, raised g2_state's stop_count[2] from 0 to 1 and returned 0
  * matched: source/sdk/sy/g2_dma.c (tools/match/match.py)
  */
 int g2dma_start_bit_clear(g2_dma_channel *ch)
@@ -211,9 +211,9 @@ int g2dma_start_bit_clear(g2_dma_channel *ch)
 }
 
 /* 0x0c1379e0  size 0xc4  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xda
- * evidence: (channel, flag): returns 0x90180 when the channel is running (g2dma_start_bit_read); else writes the memory buffer back from the cache (dcache_writeback_range_uncached), disables the channel, writes G2 address, memory address, length and direction, the trigger select (bit 1 added when flag), enables it, marks it busy, counts the start and sets the start register; part of the G2 DMA object; checked against reference material (not in this repo)
+ * evidence: (channel, flag): returns 0x90180 when the channel is running (g2dma_start_bit_read); else writes the memory buffer back from the cache (dcache_writeback_range_uncached), disables the channel, writes G2 address, memory address, length and direction, the trigger select (bit 1 added when flag), enables it, marks it busy, counts the start and sets the start register; part of the G2 DMA object; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on channel 1 after g2dma_slot_store_transfer(0x00712345, 0x0c123456, 0x12345, direction 1, flags 1, 1) in one sandbox, with flag 1 it wrote back 0xac123440 for 0x12340 bytes, wrote a05f7820-30 = 0x712340, 0xc123440, 0x80012340, 1, trigger 7, enable 1 and start 1, set the running byte and start_count[1] 1 and returned 0; called again before a stop it returned 0x90180 writing nothing; after g2dma_start_bit_clear, flag 0 wrote trigger 5 and start_count[1] became 2
  * matched: source/sdk/sy/g2_dma.c (tools/match/match.py)
  */
 int g2dma_regs_load_and_start(g2_dma_channel *channel, int trigger_bit1)

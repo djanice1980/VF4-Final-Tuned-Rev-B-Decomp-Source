@@ -116,8 +116,8 @@ uint input_error_flags_get(void)
 }
 
 /* 0x0c0488a0  size 0x10  file by match with source
- * confidence: inferred
- * evidence: returns jvs_board_count as an int; nothing in the image calls it (uncalled code, made a function 2026-11-09); between input_error_flags_get and jvs_node_input_read, so by link order part of vf4lib/libbase/src/input.c
+ * confidence: exercised
+ * evidence: returns jvs_board_count as an int; nothing in the image calls it (uncalled code, made a function 2026-11-09); between input_error_flags_get and jvs_node_input_read, so by link order part of vf4lib/libbase/src/input.c; exercised 2026-11-12: called by the harness it returned 1, the snapshot's jvs_board_count, and 2 after jvs_board_count was poked to 2
  * matched: source/vf4lib/libbase/src/input.c (tools/match/match.py)
  */
 int jvs_board_count_get(void)
@@ -248,9 +248,9 @@ uint board_switch_bits(void)
 }
 
 /* 0x0c048cc0  size 0x40  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x50
- * evidence: (index): a bit of the latched system word system_switches through the four-byte map dip_switch_bit_map (index 0 = bit 24, DIP switch 1; the others -1, giving 0); nothing in the image calls it; part of vf4lib/libbase/src/input.c
+ * evidence: (index): a bit of the latched system word system_switches through the four-byte map dip_switch_bit_map (index 0 = bit 24, DIP switch 1; the others -1, giving 0); nothing in the image calls it; part of vf4lib/libbase/src/input.c; exercised 2026-11-12: called by the harness with dip_switch_bit_map as the image has it (24, -1, -1, -1): with system_switches 0x01000000 index 0 returned 1 and index 1 returned 0; with 0xFEFFFFFF index 0 returned 0; with 0xFFFFFFFF index 0 returned 1 and index 3 returned 0
  * matched: source/vf4lib/libbase/src/input.c (tools/match/match.py)
  */
 uint dip_switch_bit_get(int index)
@@ -320,8 +320,8 @@ void input_merged_update(void)
 }
 
 /* 0x0c048ea0  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (n): 1 when n is 1 or 2, else 0; role unclear (input_merged_update tests jvs_board_count against the same two values); nothing in the image calls it (uncalled code, made a function 2026-11-09); between input_merged_update and input_merged_bit_pressed, so by link order part of vf4lib/libbase/src/input.c
+ * confidence: exercised
+ * evidence: (n): 1 when n is 1 or 2, else 0; role unclear (input_merged_update tests jvs_board_count against the same two values); nothing in the image calls it (uncalled code, made a function 2026-11-09); between input_merged_update and input_merged_bit_pressed, so by link order part of vf4lib/libbase/src/input.c; exercised 2026-11-12: called by the harness with 0, 1, 2, 3 and -1 it returned 0, 1, 1, 0 and 0
  * matched: source/vf4lib/libbase/src/input.c (tools/match/match.py)
  */
 int input_is_1_or_2(int n)
@@ -330,8 +330,8 @@ int input_is_1_or_2(int n)
 }
 
 /* 0x0c048ec0  size 0x16  file by match with source
- * confidence: inferred
- * evidence: (bit): that bit of the merged record's newly pressed word; the twin of input_merged_bit_held; nothing in the image calls it (uncalled code, made a function 2026-11-09); between input_is_1_or_2 and input_merged_bit_held, so by link order part of vf4lib/libbase/src/input.c
+ * confidence: exercised
+ * evidence: (bit): that bit of the merged record's newly pressed word; the twin of input_merged_bit_held; nothing in the image calls it (uncalled code, made a function 2026-11-09); between input_is_1_or_2 and input_merged_bit_held, so by link order part of vf4lib/libbase/src/input.c; exercised 2026-11-12: called by the harness with input_merged +0 (held) poked to 0x30 and +8 (newly pressed) to 0x05: bit 2 returned 4 and bit 4 returned 0 (set only in the held word)
  * matched: source/vf4lib/libbase/src/input.c (tools/match/match.py)
  */
 uint input_merged_bit_pressed(uint bit)
@@ -340,8 +340,8 @@ uint input_merged_bit_pressed(uint bit)
 }
 
 /* 0x0c048ee0  size 0x16  file by match with source
- * confidence: inferred
- * evidence: (bit): the bit of the merged button word the block at input_merged; only caller switch_29_latch; part of vf4lib/libbase/src/input.c
+ * confidence: exercised
+ * evidence: (bit): that bit of the merged record's held word (input_merged +0, the twin of input_merged_bit_pressed's +8); only caller switch_29_latch; part of vf4lib/libbase/src/input.c; exercised 2026-11-12: called by the harness with input_merged +0 (held) poked to 0x30 and +8 (newly pressed) to 0x05: bit 4 returned 0x10 and bit 0 returned 0 (set only in the pressed word)
  * matched: source/vf4lib/libbase/src/input.c (tools/match/match.py)
  */
 uint input_merged_bit_held(uint bit)
@@ -360,8 +360,8 @@ uint input_merged_pressed(uint mask)
 }
 
 /* 0x0c048f20  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (mask): the mask ANDed with the merged record's current word; the twin of input_merged_pressed; nothing in the image calls it (uncalled code, made a function 2026-11-09); between input_merged_pressed and jvs_error_counts_clear, so by link order part of vf4lib/libbase/src/input.c
+ * confidence: exercised
+ * evidence: (mask): the mask ANDed with the merged record's current word; the twin of input_merged_pressed; nothing in the image calls it (uncalled code, made a function 2026-11-09); between input_merged_pressed and jvs_error_counts_clear, so by link order part of vf4lib/libbase/src/input.c; exercised 2026-11-12: called by the harness with input_merged +0 (held) poked to 0x30 and +8 (newly pressed) to 0x05: mask 0x1F returned 0x10 and mask 0xFF0 returned 0x30
  * matched: source/vf4lib/libbase/src/input.c (tools/match/match.py)
  */
 uint input_merged_held(uint mask)

@@ -269,8 +269,8 @@ void demo_cmd_03_chara_load(void)
 }
 
 /* 0x0c02f820  size 0x3a  file by match with source
- * confidence: inferred
- * evidence: demo_cmd_table[4]: demo_cmd_state = 1 and clears rob +0x18 bit 0 on both robs (rob_get(0) / (1)); role of that bit not settled; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * confidence: exercised
+ * evidence: demo_cmd_table[4]: demo_cmd_state = 1 and clears rob +0x18 bit 0 on both robs (rob_get(0) / (1)); role of that bit not settled; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness: demo_cmd_state became 1, rob 0's flags (+0x18) went from 0x00010001 to 0x00010000 and rob 1's from 0x31 to 0x30
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_cmd_04_robs_bit0_clear(void)
@@ -286,8 +286,8 @@ void demo_cmd_04_robs_bit0_clear(void)
 }
 
 /* 0x0c02f880  size 0x12  file by match with source
- * confidence: inferred
- * evidence: demo_cmd_table[5] (0x0C1632F4), run by demo_cmd_list_run: demo_cmd_state = 0; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * confidence: exercised
+ * evidence: demo_cmd_table[5] (0x0C1632F4), run by demo_cmd_list_run: demo_cmd_state = 0; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c; exercised 2026-11-12: called by the harness with demo_cmd_state poked 5 and demo_flags 0x1234: demo_cmd_state became 0 and demo_flags stayed 0x1234
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_cmd_05_state_clear(void)
@@ -297,8 +297,8 @@ void demo_cmd_05_state_clear(void)
 }
 
 /* 0x0c02f8a0  size 0x12  file by match with source
- * confidence: inferred
- * evidence: demo_cmd_table[7] (0x0C1632F4), run by demo_cmd_list_run: demo_cmd_state = 0 (the same body as command 5); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * confidence: exercised
+ * evidence: demo_cmd_table[7] (0x0C1632F4), run by demo_cmd_list_run: demo_cmd_state = 0 (the same body as command 5); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c; exercised 2026-11-12: called by the harness with demo_cmd_state poked 5 and demo_flags 0x1234: demo_cmd_state became 0 and demo_flags stayed 0x1234
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_cmd_07_state_clear(void)
@@ -308,8 +308,8 @@ void demo_cmd_07_state_clear(void)
 }
 
 /* 0x0c02f8c0  size 0x12  file by match with source
- * confidence: inferred
- * evidence: demo_cmd_table[6] (0x0C1632F4), run by demo_cmd_list_run: demo_cmd_state = 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * confidence: exercised
+ * evidence: demo_cmd_table[6] (0x0C1632F4), run by demo_cmd_list_run: demo_cmd_state = 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c; exercised 2026-11-12: called by the harness with demo_cmd_state 0 and demo_flags poked 0x1234: demo_cmd_state became 2 and demo_flags stayed 0x1234
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_cmd_06_state_2(void)
@@ -319,8 +319,8 @@ void demo_cmd_06_state_2(void)
 }
 
 /* 0x0c02f8e0  size 0x14  file by match with source
- * confidence: inferred
- * evidence: demo_cmd_table[8] (0x0C1632F4), run by demo_cmd_list_run: demo_flags |= 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * confidence: exercised
+ * evidence: demo_cmd_table[8] (0x0C1632F4), run by demo_cmd_list_run: demo_flags |= 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c; exercised 2026-11-12: called by the harness with demo_flags poked 0x1234 it became 0x1236, and 0xffff stayed 0xffff
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_cmd_08_flag2_set(void)
@@ -330,8 +330,8 @@ void demo_cmd_08_flag2_set(void)
 }
 
 /* 0x0c02f900  size 0x16  file by match with source
- * confidence: inferred
- * evidence: demo_cmd_table[9] (0x0C1632F4), run by demo_cmd_list_run: demo_flags &= ~2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * confidence: exercised
+ * evidence: demo_cmd_table[9] (0x0C1632F4), run by demo_cmd_list_run: demo_flags &= ~2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c; exercised 2026-11-12: called by the harness with demo_flags poked 0xffff it became 0xfffd, and 0x1234 stayed 0x1234
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_cmd_09_flag2_clear(void)
@@ -356,9 +356,9 @@ void demo_cmd_10_chara_apply(void)
 }
 
 /* 0x0c02f960  size 0x68  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xcc
- * evidence: demo_cmd_table[11], argument { stage choice }: stores it in demo_stage_select and loads stg_light_num / rob_light_num from +0x14 / +0x16 of the stage record stage_table[n] (choice 0: n 17, 1: 21, 2: 0, other: 7), then stage_lights_load applies them; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * evidence: demo_cmd_table[11], argument { stage choice }: stores it in demo_stage_select and loads stg_light_num / rob_light_num from +0x14 / +0x16 of the stage record stage_table[n] (choice 0: n 17, 1: 21, 2: 0, other: 7), then stage_lights_load applies them; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness with demo_cmd_pos poked to a command whose argument is the choice (as demo_cmd_list_run hands it on): choice 1 set demo_stage_select 1 and stg_light_num / rob_light_num 0x1a / 0x1b (stage 21's +0x14 / +0x16), choice 5 gave 0x0a / 0x0b (stage 7), choice 0 0x13 / 0x14 (stage 17); stage_lights_load followed each time
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_cmd_11_stage_lights(void)
@@ -387,9 +387,9 @@ void demo_cmd_11_stage_lights(void)
 }
 
 /* 0x0c02fa60  size 0x9e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xf8
- * evidence: demo_cmd_table[12] (0x0C1632F4), run by demo_cmd_list_run: sets demo_flags 0x200 / 0x2000 and the fog bits 0x10 / 0x20 of fog_flags by the argument's mode; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_cmd_table[12] (0x0C1632F4), run by demo_cmd_list_run: by the argument's mode byte (+2): 3 sets demo_flags 0x200 and nothing else; 0 sets fog_flags 0x10; 1 sets fog_flags 0x20 and demo_flags 0x2000; 2 clears 0xc4 of fog_flags; every mode but 3 also stores the argument's short +0 in fog_timer and its shorts +4, +6, +8 in fade_color; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c; exercised 2026-11-12: called by the harness with demo_cmd_pos poked to a command whose argument is {0x77, mode, 0x11, 0x22, 0x33}: mode 3 set demo_flags 0x200 only; mode 1 set fog_flags 0x20 and demo_flags 0x2000 (and fog_timer 0x77, fade_color 0x11 0x22 0x33); mode 0 set fog_flags 0x10; mode 2 cleared 0xc4 of fog_flags
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_cmd_12_mode_flags(void)
@@ -422,8 +422,8 @@ void demo_cmd_12_mode_flags(void)
 }
 
 /* 0x0c02fb80  size 0x54  file by match with source
- * confidence: inferred
- * evidence: demo_cmd_table[13]: clears rob +0x18 bit 0 on both robs and frees model slots 5-7 and 9-11 (objbank_free_req), the slots demo_rob_model_load fills; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * confidence: exercised
+ * evidence: demo_cmd_table[13]: clears rob +0x18 bit 0 on both robs and frees model slots 5-7 and 9-11 (objbank_free_req), the slots demo_rob_model_load fills; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness: rob 0's flags (+0x18) went from 0x00010001 to 0x00010000, rob 1's from 0x31 to 0x30, and objbank_free_req was called with 5, 9, 6, 10, 7, 11
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_cmd_13_robs_models_free(void)
@@ -467,9 +467,9 @@ void demo_cmd_14_bg_color(void)
 }
 
 /* 0x0c02fca0  size 0x7a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xae
- * evidence: demo_cmd_table[15] (0x0C1632F4), run by demo_cmd_list_run: op 0 (argument byte +2) copies the argument's three floats (+4) to adv_light_target and sets a flag; op 1 another path; role unclear; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_cmd_table[15] (0x0C1632F4), run by demo_cmd_list_run: op 0 (argument byte +2) copies the argument's three floats (+4) to adv_light_target and sets adv_light_blend_mode 1 and adv_light_blend_frames from the argument's short +0; op 1 does the same with mode 2; any other op only sets mode 4; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c; exercised 2026-11-12: called by the harness with demo_cmd_pos poked to a command whose argument is {30, op, 1.5, 2.5, 3.5}: op 0 copied 1.5, 2.5, 3.5 to adv_light_target and set adv_light_blend_mode 1 (adv_light_blend_frames 30); op 1 with 4.5 first copied the floats too and set mode 2; op 7 left the floats and set mode 4
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_cmd_15_vec3_set(void)
@@ -500,8 +500,8 @@ void demo_cmd_15_vec3_set(void)
 }
 
 /* 0x0c02fd60  size 0x36  file by match with source
- * confidence: inferred
- * evidence: demo_cmd_table[16], argument { scene }: demo_scene = scene, demo_scene_frame and demo_phase = 0, then runs demo_scene_init_table[scene] when not null; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * confidence: exercised
+ * evidence: demo_cmd_table[16], argument { scene }: demo_scene = scene, demo_scene_frame and demo_phase = 0, then runs demo_scene_init_table[scene] when not null; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness with demo_cmd_pos poked to a command whose argument byte is the scene, demo_scene_frame poked 50 and demo_phase 3: scene 1 set demo_scene 1, frame 0, phase 0 and ran demo_scene_01_init (demo_phase_end 9, demo_phase_list 0x0c28ca26); scene 3 ran demo_scene_03_init (end 0x12, list 0x0c28cc92)
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_cmd_16_scene_set(void)
@@ -516,8 +516,8 @@ void demo_cmd_16_scene_set(void)
 }
 
 /* 0x0c02fdc0  size 0x50  file by match with source
- * confidence: inferred
- * evidence: demo_cmd_table[17], argument +4 priority: starts the whole aet scene 0x1C0001 (aet_param_init / aet_param_scene_set / aet_param_flags_set / aet_param_depth_range_set depth 0.03 / aet_obj_start) without keeping a handle; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * confidence: exercised
+ * evidence: demo_cmd_table[17], argument +4 the play flags (aet_param_flags_set): starts the whole aet scene 0x1C0001 (aet_param_init / aet_param_scene_set / aet_param_flags_set / aet_param_depth_range_set depth 0.03 / aet_obj_start) without keeping a handle; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness with demo_cmd_pos poked to a command whose argument word +4 is 0x1234 and then 0x56: aet_param_scene_set(param, 0x1c0001), aet_param_flags_set(param, 0x1234 / 0x56), aet_param_depth_range_set(param, 0.03, 0.03) and aet_obj_start(param), whose handle was not kept
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_cmd_17_aet_play(void)
@@ -616,7 +616,7 @@ void demo_cmd_20_end(void)
 
 /* 0x0c030060  size 0xc  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[0] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 0; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[0] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 0: empty; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_00_init(void)
@@ -636,7 +636,7 @@ void demo_scene_00_draw(void)
 
 /* 0x0c0300a0  size 0x24  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[1] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 1; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[1] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 1: starts the scene's phases: demo_phase 0, demo_phase_start 0, demo_phase_end = demo_scene_01_phases[0], demo_phase_list = &demo_scene_01_phases[1]; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_01_init(void)
@@ -650,8 +650,8 @@ void demo_scene_01_init(void)
 }
 
 /* 0x0c0300e0  size 0x48  file by match with source
- * confidence: inferred
- * evidence: demo_scene_draw_table[1] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 1: takes the phase progress from demo_phase_progress and draws layout set demo_scene_01_layouts (demo_layout_draw) and bands 5 and 6 (demo_band_draw); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * confidence: exercised
+ * evidence: demo_scene_draw_table[1] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 1: takes the phase progress from demo_phase_progress and draws layout set demo_scene_01_layouts (demo_layout_draw) and bands 5 and 6 (demo_band_draw); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness after demo_scene_01_init with demo_scene_frame poked 5: demo_phase_progress returned 0.5556 (5 / 9), then demo_layout_draw(demo_scene_01_layouts, 0, 0.5556), demo_band_draw(5, 0, 0.5556) and demo_band_draw(6, 0, 0.5556)
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_01_draw(void)
@@ -667,7 +667,7 @@ void demo_scene_01_draw(void)
 
 /* 0x0c030140  size 0x24  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[2] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[2] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 2: starts the scene's phases: demo_phase 0, demo_phase_start 0, demo_phase_end = demo_scene_02_phases[0], demo_phase_list = &demo_scene_02_phases[1]; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_02_init(void)
@@ -681,8 +681,8 @@ void demo_scene_02_init(void)
 }
 
 /* 0x0c030180  size 0x52  file by match with source
- * confidence: inferred
- * evidence: demo_scene_draw_table[2] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 2: takes the phase progress from demo_phase_progress and draws layout sets demo_scene_02_layouts_a and demo_scene_02_layouts_b and bands 5 and 3; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * confidence: exercised
+ * evidence: demo_scene_draw_table[2] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 2: takes the phase progress from demo_phase_progress and draws layout sets demo_scene_02_layouts_a and demo_scene_02_layouts_b and bands 5 and 3; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness after demo_scene_02_init with demo_scene_frame poked 5: demo_phase_progress returned 0.2778 (5 / 18), then demo_layout_draw with demo_scene_02_layouts_a and with demo_scene_02_layouts_b, demo_band_draw(5, ...) and demo_band_draw(3, ...), all with phase 0 and 0.2778
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_02_draw(void)
@@ -699,7 +699,7 @@ void demo_scene_02_draw(void)
 
 /* 0x0c030200  size 0x24  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[3] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 3; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[3] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 3: starts the scene's phases: demo_phase 0, demo_phase_start 0, demo_phase_end = demo_scene_03_phases[0], demo_phase_list = &demo_scene_03_phases[1]; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_03_init(void)
@@ -713,8 +713,8 @@ void demo_scene_03_init(void)
 }
 
 /* 0x0c030240  size 0x52  file by match with source
- * confidence: inferred
- * evidence: demo_scene_draw_table[3] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 3: takes the phase progress from demo_phase_progress and draws layout sets demo_scene_03_layouts_a and demo_scene_03_layouts_b and bands 7 and 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * confidence: exercised
+ * evidence: demo_scene_draw_table[3] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 3: takes the phase progress from demo_phase_progress and draws layout sets demo_scene_03_layouts_a and demo_scene_03_layouts_b and bands 7 and 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness after demo_scene_03_init with demo_scene_frame poked 5: demo_phase_progress returned 0.2778 (5 / 18), then demo_layout_draw with demo_scene_03_layouts_a and with demo_scene_03_layouts_b, demo_band_draw(7, ...) and demo_band_draw(2, ...), all with phase 0 and 0.2778
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_03_draw(void)
@@ -731,7 +731,7 @@ void demo_scene_03_draw(void)
 
 /* 0x0c0302c0  size 0x24  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[4] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 4; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[4] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 4: starts the scene's phases: demo_phase 0, demo_phase_start 0, demo_phase_end = demo_scene_04_phases[0], demo_phase_list = &demo_scene_04_phases[1]; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_04_init(void)
@@ -745,8 +745,8 @@ void demo_scene_04_init(void)
 }
 
 /* 0x0c030300  size 0x48  file by match with source
- * confidence: inferred
- * evidence: demo_scene_draw_table[4] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 4: takes the phase progress from demo_phase_progress and draws layout set demo_scene_04_layouts and bands 1 and 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * confidence: exercised
+ * evidence: demo_scene_draw_table[4] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 4: takes the phase progress from demo_phase_progress and draws layout set demo_scene_04_layouts and bands 1 and 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness in one sandbox after demo_scene_04_init (demo_phase 0, demo_phase_end 14): with demo_scene_frame poked 7 it called demo_layout_draw with demo_scene_04_layouts (0x0C28CCE0), then demo_band_draw with bands 1 and 2, all with phase 0 and progress 0.5; with frame 14 the same three calls with phase 1 and progress 0 (the next phase begun), and with frame 21 phase 1 and progress 0.5
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_04_draw(void)
@@ -762,7 +762,7 @@ void demo_scene_04_draw(void)
 
 /* 0x0c030360  size 0x24  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[5] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 5; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[5] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 5: starts the scene's phase 0 (demo_phase 0, demo_phase_start 0, demo_phase_end the first entry of demo_scene_05_phases, 14, and demo_phase_list the entries after it, which demo_phase_progress steps through); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_05_init(void)
@@ -776,8 +776,8 @@ void demo_scene_05_init(void)
 }
 
 /* 0x0c0303a0  size 0x52  file by match with source
- * confidence: inferred
- * evidence: demo_scene_draw_table[5] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 5: takes the phase progress from demo_phase_progress and draws layout sets demo_scene_05_layouts_a and demo_scene_05_layouts_b and bands 1 and 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * confidence: exercised
+ * evidence: demo_scene_draw_table[5] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 5: takes the phase progress from demo_phase_progress and draws layout sets demo_scene_05_layouts_a and demo_scene_05_layouts_b and bands 1 and 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness in one sandbox after demo_scene_05_init (demo_phase 0, demo_phase_end 14): with demo_scene_frame poked 7 it called demo_layout_draw with demo_scene_05_layouts_a (0x0C28CD78) and then demo_scene_05_layouts_b (0x0C28CE14), then demo_band_draw with bands 1 and 2, all with phase 0 and progress 0.5; with frame 14 the same four calls with phase 1 and progress 0 (the next phase begun), and with frame 21 phase 1 and progress 0.5
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_05_draw(void)
@@ -794,7 +794,7 @@ void demo_scene_05_draw(void)
 
 /* 0x0c030420  size 0x24  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[6] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 6; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[6] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 6: starts the scene's phase 0 (demo_phase 0, demo_phase_start 0, demo_phase_end the first entry of demo_scene_06_phases, 16, and demo_phase_list the entries after it, which demo_phase_progress steps through); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_06_init(void)
@@ -808,8 +808,8 @@ void demo_scene_06_init(void)
 }
 
 /* 0x0c030460  size 0x52  file by match with source
- * confidence: inferred
- * evidence: demo_scene_draw_table[6] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 6: takes the phase progress from demo_phase_progress and draws layout sets demo_scene_06_layouts_a and demo_scene_06_layouts_b and bands 1 and 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * confidence: exercised
+ * evidence: demo_scene_draw_table[6] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 6: takes the phase progress from demo_phase_progress and draws layout sets demo_scene_06_layouts_a and demo_scene_06_layouts_b and bands 1 and 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness in one sandbox after demo_scene_06_init (demo_phase 0, demo_phase_end 16): with demo_scene_frame poked 7 it called demo_layout_draw with demo_scene_06_layouts_a (0x0C28CEAC) and then demo_scene_06_layouts_b (0x0C28CF48), then demo_band_draw with bands 1 and 2, all with phase 0 and progress 0.4375; with frame 16 the same four calls with phase 1 and progress 0 (the next phase begun), and with frame 23 phase 1 and progress 0.5
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_06_draw(void)
@@ -826,7 +826,7 @@ void demo_scene_06_draw(void)
 
 /* 0x0c0304e0  size 0x24  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[7] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 7; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[7] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 7: starts the scene's phase 0 (demo_phase 0, demo_phase_start 0, demo_phase_end the first entry of demo_scene_07_phases, 14, and demo_phase_list the entries after it, which demo_phase_progress steps through); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_07_init(void)
@@ -840,8 +840,8 @@ void demo_scene_07_init(void)
 }
 
 /* 0x0c030520  size 0x52  file by match with source
- * confidence: inferred
- * evidence: demo_scene_draw_table[7] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 7: takes the phase progress from demo_phase_progress and draws layout sets demo_scene_07_layouts_a and demo_scene_07_layouts_b and bands 1 and 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * confidence: exercised
+ * evidence: demo_scene_draw_table[7] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 7: takes the phase progress from demo_phase_progress and draws layout sets demo_scene_07_layouts_a and demo_scene_07_layouts_b and bands 1 and 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness in one sandbox after demo_scene_07_init (demo_phase 0, demo_phase_end 14): with demo_scene_frame poked 7 it called demo_layout_draw with demo_scene_07_layouts_a (0x0C28D070) and then demo_scene_07_layouts_b (0x0C28CFE0), then demo_band_draw with bands 1 and 2, all with phase 0 and progress 0.5; with frame 14 the same four calls with phase 1 and progress 0 (the next phase begun), and with frame 21 phase 1 and progress 0.5
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_07_draw(void)
@@ -858,7 +858,7 @@ void demo_scene_07_draw(void)
 
 /* 0x0c0305a0  size 0xc  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[8] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 8; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[8] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 8: does nothing (an empty routine); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_08_init(void)
@@ -867,9 +867,9 @@ void demo_scene_08_init(void)
 }
 
 /* 0x0c0305c0  size 0xce  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xe6
- * evidence: demo_scene_draw_table[8] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 8: a full-screen picture of four sprites (x 0 / 512, y 64 / 216 / 368) that changes with demo_scene_frame: 0x81C-0x81F, from frame 19 0x820-0x823, from frame 33 0x824-0x827; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * evidence: demo_scene_draw_table[8] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 8: a full-screen picture of four sprites (x 0 / 512, y 64 / 216 / 368) that changes with demo_scene_frame: 0x81C-0x81F, from frame 19 0x820-0x823, from frame 33 0x824-0x827; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness with demo_scene_frame poked 18 it called sprite_put_xy with 0x81C (0, 64), 0x81D (512, 64), 0x81E (512, 216), 0x81F (512, 368); with 19 and 32 the same places with 0x820-0x823, and with 33 with 0x824-0x827
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_08_draw(void)
@@ -896,7 +896,7 @@ void demo_scene_08_draw(void)
 
 /* 0x0c0306e0  size 0xc  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[9] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 9; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[9] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 9: does nothing (an empty routine); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_09_init(void)
@@ -906,7 +906,7 @@ void demo_scene_09_init(void)
 
 /* 0x0c030700  size 0xc  file by match with source
  * confidence: inferred
- * evidence: demo_scene_draw_table[9] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 9; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_draw_table[9] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 9: does nothing (an empty routine); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_09_draw(void)
@@ -916,7 +916,7 @@ void demo_scene_09_draw(void)
 
 /* 0x0c030720  size 0x24  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[10] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 10; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[10] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 10: starts the scene's phase 0 (demo_phase 0, demo_phase_start 0, demo_phase_end the first entry of demo_scene_10_phases, 15, and demo_phase_list the entries after it, which demo_phase_progress steps through); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_10_init(void)
@@ -930,8 +930,8 @@ void demo_scene_10_init(void)
 }
 
 /* 0x0c030760  size 0x52  file by match with source
- * confidence: inferred
- * evidence: demo_scene_draw_table[10] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 10: takes the phase progress from demo_phase_progress and draws layout sets demo_scene_10_layouts_a and demo_scene_10_layouts_b and bands 1 and 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * confidence: exercised
+ * evidence: demo_scene_draw_table[10] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 10: takes the phase progress from demo_phase_progress and draws layout sets demo_scene_10_layouts_a and demo_scene_10_layouts_b and bands 1 and 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness in one sandbox after demo_scene_10_init (demo_phase 0, demo_phase_end 15): with demo_scene_frame poked 7 it called demo_layout_draw with demo_scene_10_layouts_a (0x0C28D180) and then demo_scene_10_layouts_b (0x0C28D108), then demo_band_draw with bands 1 and 2, all with phase 0 and progress 0.4666667; with frame 15 the same four calls with phase 1 and progress 0 (the next phase begun), and with frame 22 phase 1 and progress 0.4375
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_10_draw(void)
@@ -948,7 +948,7 @@ void demo_scene_10_draw(void)
 
 /* 0x0c0307e0  size 0x12  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[11] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 11; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[11] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 11: sets demo_phase_end to 20, the length of the fade-out of demo_scene_11_draw (demo_layout_fade_out divides demo_scene_frame by it); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_11_init(void)
@@ -970,7 +970,7 @@ void demo_scene_11_draw(void)
 
 /* 0x0c030820  size 0x12  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[12] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 12; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[12] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 12: sets demo_phase_end to 20, the length of the fade-out of demo_scene_12_draw (demo_layout_fade_out divides demo_scene_frame by it); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_12_init(void)
@@ -992,7 +992,7 @@ void demo_scene_12_draw(void)
 
 /* 0x0c030860  size 0x12  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[13] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 13; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[13] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 13: sets demo_phase_end to 20, the length of the fade-out of demo_scene_13_draw (demo_layout_fade_out divides demo_scene_frame by it); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_13_init(void)
@@ -1014,7 +1014,7 @@ void demo_scene_13_draw(void)
 
 /* 0x0c0308a0  size 0x12  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[14] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 14; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[14] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 14: sets demo_phase_end to 20, the length of the fade-out of demo_scene_14_draw (demo_layout_fade_out divides demo_scene_frame by it); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_14_init(void)
@@ -1036,7 +1036,7 @@ void demo_scene_14_draw(void)
 
 /* 0x0c0308e0  size 0xc  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[15] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 15; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[15] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 15: does nothing (an empty routine); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_15_init(void)
@@ -1045,9 +1045,9 @@ void demo_scene_15_init(void)
 }
 
 /* 0x0c030900  size 0xb0  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xb4
- * evidence: demo_scene_draw_table[15] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 15: a full-screen picture of four sprites (x 0 / 512, y 60 / 212 / 364) that changes with demo_scene_frame: 0x7EE-0x7F1, from frame 18 0x7F2-0x7F5; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * evidence: demo_scene_draw_table[15] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 15: a full-screen picture of four sprites (x 0 / 512, y 60 / 212 / 364) that changes with demo_scene_frame: 0x7EE-0x7F1, from frame 18 0x7F2-0x7F5; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness with demo_scene_frame poked 17 it called sprite_put_xy with 0x7EE (0, 60), 0x7EF (512, 60), 0x7F0 (512, 212), 0x7F1 (512, 364), and with 18 the same places with 0x7F2-0x7F5
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_15_draw(void)
@@ -1070,7 +1070,7 @@ void demo_scene_15_draw(void)
 
 /* 0x0c0309e0  size 0xc  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[16] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 16; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[16] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 16: does nothing (an empty routine); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_16_init(void)
@@ -1079,9 +1079,9 @@ void demo_scene_16_init(void)
 }
 
 /* 0x0c030a00  size 0xb0  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xb4
- * evidence: demo_scene_draw_table[16] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 16: a full-screen picture of four sprites (x 0 / 512, y 60 / 212 / 364) that changes with demo_scene_frame: 0x7F6-0x7F9, from frame 17 0x7FA-0x7FD; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * evidence: demo_scene_draw_table[16] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 16: a full-screen picture of four sprites (x 0 / 512, y 60 / 212 / 364) that changes with demo_scene_frame: 0x7F6-0x7F9, from frame 17 0x7FA-0x7FD; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness with demo_scene_frame poked 16 it called sprite_put_xy with 0x7F6 (0, 60), 0x7F7 (512, 60), 0x7F8 (512, 212), 0x7F9 (512, 364), and with 17 the same places with 0x7FA-0x7FD
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_16_draw(void)
@@ -1103,7 +1103,7 @@ void demo_scene_16_draw(void)
 
 /* 0x0c030ae0  size 0xc  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[17] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 17; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[17] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 17: does nothing (an empty routine); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_17_init(void)
@@ -1112,9 +1112,9 @@ void demo_scene_17_init(void)
 }
 
 /* 0x0c030b00  size 0xb0  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xb4
- * evidence: demo_scene_draw_table[17] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 17: a full-screen picture of four sprites (x 0 / 512, y 60 / 212 / 364) that changes with demo_scene_frame: 0x7FE-0x801, from frame 15 0x802-0x805; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * evidence: demo_scene_draw_table[17] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 17: a full-screen picture of four sprites (x 0 / 512, y 60 / 212 / 364) that changes with demo_scene_frame: 0x7FE-0x801, from frame 15 0x802-0x805; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness with demo_scene_frame poked 14 it called sprite_put_xy with 0x7FE (0, 60), 0x7FF (512, 60), 0x800 (512, 212), 0x801 (512, 364), and with 15 the same places with 0x802-0x805
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_17_draw(void)
@@ -1138,7 +1138,7 @@ void demo_scene_17_draw(void)
 
 /* 0x0c030be0  size 0xc  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[18] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 18; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[18] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 18: does nothing (an empty routine); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_18_init(void)
@@ -1167,7 +1167,7 @@ void demo_scene_18_draw(void)
 
 /* 0x0c030ca0  size 0xc  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[19] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 19; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[19] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 19: does nothing (an empty routine); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_19_init(void)
@@ -1176,9 +1176,9 @@ void demo_scene_19_init(void)
 }
 
 /* 0x0c030cc0  size 0xfe  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x110
- * evidence: demo_scene_draw_table[19] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 19: sprites at depth 0.05 chosen by demo_scene_frame: 0x86C-0x86E, from frame 17 the row 0x86F-0x873 at y 200, from frame 31 the full screen 0x861-0x863; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * evidence: demo_scene_draw_table[19] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 19: sprites at depth 0.05 chosen by demo_scene_frame: 0x86C-0x86E, from frame 17 the row 0x86F-0x873 at y 200, from frame 31 the full screen 0x861-0x863; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness with demo_scene_frame poked 16 it called sprite_put_xyz with 0x86C (88, 168), 0x86D (88, 296), 0x86E (344, 168); with 17 and 30 with 0x86F-0x873 at x 32, 160, 288, 416, 544 and y 200; with 31 with 0x861 (0, 0), 0x862 (512, 0), 0x863 (512, 256); always at depth 0.05
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_19_draw(void)
@@ -1205,7 +1205,7 @@ void demo_scene_19_draw(void)
 
 /* 0x0c030e40  size 0x12  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[20] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 20; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[20] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 20: sets demo_phase_end to 30; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_20_init(void)
@@ -1215,8 +1215,8 @@ void demo_scene_20_init(void)
 }
 
 /* 0x0c030e60  size 0x96  file by match with source
- * confidence: inferred
- * evidence: demo_scene_draw_table[20] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 20: two sprites 0x7E6 / 0x7E7 turned a quarter (-0x4000) scrolling up 36 px per scene frame; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * confidence: exercised
+ * evidence: demo_scene_draw_table[20] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 20: two sprites 0x7E6 / 0x7E7 turned a quarter (-0x4000) scrolling up 36 px per scene frame; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness with demo_scene_frame poked 0 it called sprite_put_xyz_scaled_alpha_angle_flags with 0x7E6 at (203, 480) and 0x7E7 at (203, 992), depth 0.05, angle -0x4000, flags 5; with frame 10 the same with y 120 and 632 (360 = 10 x 36 px higher)
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_20_draw(void)
@@ -1238,8 +1238,8 @@ void demo_scene_20_draw(void)
 }
 
 /* 0x0c030f40  size 0x22  file by match with source
- * confidence: inferred
- * evidence: demo_scene_init_table[21] (0x0C1633DC), run by demo_cmd_16_scene_set: sets the background colors from the record bg_color_presets[4] (bg_color_set) and clears demo_flags 0x100 (the letterbox bars of demo_scene_draw); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * confidence: exercised
+ * evidence: demo_scene_init_table[21] (0x0C1633DC), run by demo_cmd_16_scene_set: sets the background colors from the record bg_color_presets[4] (bg_color_set) and clears demo_flags 0x100 (the letterbox bars of demo_scene_draw); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness with demo_flags poked 0xFFFF it left 0xFEFF and with 0x0300 0x0200; both times it called bg_color_set with 0x0C294384 (bg_color_presets[4]), and with that record's first word poked 0x11223344 the three colors stored at bg_color_top (pointed at a scratch buffer) were 0x11223344, 0xFFFFFFFF, 0xFFFFFFFF
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_21_init(void)
@@ -1267,7 +1267,7 @@ void demo_scene_21_draw(void)
 
 /* 0x0c031020  size 0xc  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[22] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 22; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[22] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 22: does nothing (an empty routine); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_22_init(void)
@@ -1276,9 +1276,9 @@ void demo_scene_22_init(void)
 }
 
 /* 0x0c031040  size 0xfa  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x114
- * evidence: demo_scene_draw_table[22] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 22: a full-screen picture of four sprites (x 0 / 512, y 60 / 212 / 364) that changes with demo_scene_frame: 0x39D0-0x39D3, from frame 18 0x39D4-0x39D7, from frame 35 0x39D8-0x39DB; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * evidence: demo_scene_draw_table[22] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 22: a full-screen picture of four sprites (x 0 / 512, y 60 / 212 / 364) that changes with demo_scene_frame: 0x39D0-0x39D3, from frame 18 0x39D4-0x39D7, from frame 35 0x39D8-0x39DB; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness with demo_scene_frame poked 17 it called sprite_put_xy with 0x39D0 (0, 60), 0x39D1 (512, 60), 0x39D2 (512, 212), 0x39D3 (512, 364); with 18 and 34 the same places with 0x39D4-0x39D7, and with 35 with 0x39D8-0x39DB
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_22_draw(void)
@@ -1307,7 +1307,7 @@ void demo_scene_22_draw(void)
 
 /* 0x0c0311a0  size 0xc  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[23] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 23; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[23] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 23: does nothing (an empty routine); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_23_init(void)
@@ -1316,9 +1316,9 @@ void demo_scene_23_init(void)
 }
 
 /* 0x0c0311c0  size 0xfa  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x114
- * evidence: demo_scene_draw_table[23] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 23: a full-screen picture of four sprites (x 0 / 512, y 60 / 212 / 364) that changes with demo_scene_frame: 0x39DC-0x39DF, from frame 18 0x39E0-0x39E3, from frame 36 0x39E4-0x39E7; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * evidence: demo_scene_draw_table[23] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 23: a full-screen picture of four sprites (x 0 / 512, y 60 / 212 / 364) that changes with demo_scene_frame: 0x39DC-0x39DF, from frame 18 0x39E0-0x39E3, from frame 36 0x39E4-0x39E7; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness with demo_scene_frame poked 17 it called sprite_put_xy with 0x39DC (0, 60), 0x39DD (512, 60), 0x39DE (512, 212), 0x39DF (512, 364); with 18 and 35 the same places with 0x39E0-0x39E3, and with 36 with 0x39E4-0x39E7
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_23_draw(void)
@@ -1347,7 +1347,7 @@ void demo_scene_23_draw(void)
 
 /* 0x0c031320  size 0xc  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[24] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 24; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[24] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 24: does nothing (an empty routine); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_24_init(void)
@@ -1356,9 +1356,9 @@ void demo_scene_24_init(void)
 }
 
 /* 0x0c031340  size 0xfa  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x114
- * evidence: demo_scene_draw_table[24] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 24: a full-screen picture of four sprites (x 0 / 512, y 60 / 212 / 364) that changes with demo_scene_frame: 0x39EC-0x39EF, from frame 17 0x39F0-0x39F3, from frame 34 0x39F4-0x39F7; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * evidence: demo_scene_draw_table[24] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 24: a full-screen picture of four sprites (x 0 / 512, y 60 / 212 / 364) that changes with demo_scene_frame: 0x39EC-0x39EF, from frame 17 0x39F0-0x39F3, from frame 34 0x39F4-0x39F7; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness with demo_scene_frame poked 16 it called sprite_put_xy with 0x39EC (0, 60), 0x39ED (512, 60), 0x39EE (512, 212), 0x39EF (512, 364); with 17 and 33 the same places with 0x39F0-0x39F3, and with 34 with 0x39F4-0x39F7
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_24_draw(void)
@@ -1387,7 +1387,7 @@ void demo_scene_24_draw(void)
 
 /* 0x0c0314a0  size 0xc  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[25] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 25; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[25] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 25: does nothing (an empty routine); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_25_init(void)
@@ -1411,8 +1411,8 @@ void demo_scene_25_draw(void)
 }
 
 /* 0x0c031560  size 0x22  file by match with source
- * confidence: inferred
- * evidence: demo_scene_init_table[26]: the same body as demo_scene_21_init (background record bg_color_presets[4], demo_flags 0x100 cleared); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * confidence: exercised
+ * evidence: demo_scene_init_table[26]: the same body as demo_scene_21_init (background record bg_color_presets[4], demo_flags 0x100 cleared); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness with demo_flags poked 0xFFFF it left 0xFEFF and with 0x0300 0x0200; both times it called bg_color_set with 0x0C294384 (bg_color_presets[4]), and with that record's first word poked 0x11223344 the three colors stored at bg_color_top (pointed at a scratch buffer) were 0x11223344, 0xFFFFFFFF, 0xFFFFFFFF
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_26_init(void)
@@ -1438,7 +1438,7 @@ void demo_scene_26_draw(void)
 
 /* 0x0c031640  size 0xc  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[27] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 27; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[27] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 27: does nothing (an empty routine); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_27_init(void)
@@ -1447,9 +1447,9 @@ void demo_scene_27_init(void)
 }
 
 /* 0x0c031660  size 0xfa  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x114
- * evidence: demo_scene_draw_table[27] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 27: a full-screen picture of four sprites (x 0 / 512, y 60 / 212 / 364) that changes with demo_scene_frame: 0x39F8-0x39FB, from frame 21 0x39FC-0x39FF, from frame 40 0x3A00-0x3A03; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * evidence: demo_scene_draw_table[27] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 27: a full-screen picture of four sprites (x 0 / 512, y 60 / 212 / 364) that changes with demo_scene_frame: 0x39F8-0x39FB, from frame 21 0x39FC-0x39FF, from frame 40 0x3A00-0x3A03; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness with demo_scene_frame poked 20 it called sprite_put_xy with 0x39F8 (0, 60), 0x39F9 (512, 60), 0x39FA (512, 212), 0x39FB (512, 364); with 21 and 39 the same places with 0x39FC-0x39FF, and with 40 with 0x3A00-0x3A03
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_27_draw(void)
@@ -1478,7 +1478,7 @@ void demo_scene_27_draw(void)
 
 /* 0x0c0317c0  size 0xc  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[28] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 28; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[28] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 28: does nothing (an empty routine); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_28_init(void)
@@ -1487,9 +1487,9 @@ void demo_scene_28_init(void)
 }
 
 /* 0x0c0317e0  size 0xfa  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x114
- * evidence: demo_scene_draw_table[28] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 28: a full-screen picture of four sprites (x 0 / 512, y 60 / 212 / 364) that changes with demo_scene_frame: 0x3A04-0x3A07, from frame 20 0x3A08-0x3A0B, from frame 38 0x3A0C-0x3A0F; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * evidence: demo_scene_draw_table[28] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 28: a full-screen picture of four sprites (x 0 / 512, y 60 / 212 / 364) that changes with demo_scene_frame: 0x3A04-0x3A07, from frame 20 0x3A08-0x3A0B, from frame 38 0x3A0C-0x3A0F; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness with demo_scene_frame poked 19 it called sprite_put_xy with 0x3A04 (0, 60), 0x3A05 (512, 60), 0x3A06 (512, 212), 0x3A07 (512, 364); with 20 and 37 the same places with 0x3A08-0x3A0B, and with 38 with 0x3A0C-0x3A0F
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_28_draw(void)
@@ -1517,7 +1517,7 @@ void demo_scene_28_draw(void)
 
 /* 0x0c031940  size 0xc  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[29] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 29; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[29] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 29: does nothing (an empty routine); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_29_init(void)
@@ -1526,9 +1526,9 @@ void demo_scene_29_init(void)
 }
 
 /* 0x0c031960  size 0xfa  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x114
- * evidence: demo_scene_draw_table[29] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 29: a full-screen picture of four sprites (x 0 / 512, y 60 / 212 / 364) that changes with demo_scene_frame: 0x3A10-0x3A13, from frame 20 0x3A14-0x3A17, from frame 38 0x3A18-0x3A1B; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * evidence: demo_scene_draw_table[29] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 29: a full-screen picture of four sprites (x 0 / 512, y 60 / 212 / 364) that changes with demo_scene_frame: 0x3A10-0x3A13, from frame 20 0x3A14-0x3A17, from frame 38 0x3A18-0x3A1B; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness with demo_scene_frame poked 19 it called sprite_put_xy with 0x3A10 (0, 60), 0x3A11 (512, 60), 0x3A12 (512, 212), 0x3A13 (512, 364); with 20 and 37 the same places with 0x3A14-0x3A17, and with 38 with 0x3A18-0x3A1B
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_29_draw(void)
@@ -1558,7 +1558,7 @@ void demo_scene_29_draw(void)
 
 /* 0x0c031ac0  size 0x24  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[30] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 30; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[30] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 30: starts the scene's phase 0 (demo_phase 0, demo_phase_start 0, demo_phase_end the first entry of demo_scene_30_phases, 15, and demo_phase_list the entries after it, which demo_phase_progress steps through); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_30_init(void)
@@ -1572,8 +1572,8 @@ void demo_scene_30_init(void)
 }
 
 /* 0x0c031b00  size 0x52  file by match with source
- * confidence: inferred
- * evidence: demo_scene_draw_table[30] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 30: takes the phase progress from demo_phase_progress and draws layout sets demo_scene_30_layouts_a and demo_scene_30_layouts_b and bands 1 and 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * confidence: exercised
+ * evidence: demo_scene_draw_table[30] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 30: takes the phase progress from demo_phase_progress and draws layout sets demo_scene_30_layouts_a and demo_scene_30_layouts_b and bands 1 and 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness in one sandbox after demo_scene_30_init (demo_phase 0, demo_phase_end 15): with demo_scene_frame poked 7 it called demo_layout_draw with demo_scene_30_layouts_a (0x0C28D348) and then demo_scene_30_layouts_b (0x0C28D3D8), then demo_band_draw with bands 1 and 2, all with phase 0 and progress 0.4666667; with frame 15 the same four calls with phase 1 and progress 0 (the next phase begun), and with frame 22 phase 1 and progress 0.4666667
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_30_draw(void)
@@ -1590,7 +1590,7 @@ void demo_scene_30_draw(void)
 
 /* 0x0c031b80  size 0x24  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[31] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 31; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[31] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 31: starts the scene's phase 0 (demo_phase 0, demo_phase_start 0, demo_phase_end the first entry of demo_scene_31_phases, 15, and demo_phase_list the entries after it, which demo_phase_progress steps through); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_31_init(void)
@@ -1604,8 +1604,8 @@ void demo_scene_31_init(void)
 }
 
 /* 0x0c031bc0  size 0x52  file by match with source
- * confidence: inferred
- * evidence: demo_scene_draw_table[31] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 31: takes the phase progress from demo_phase_progress and draws layout sets demo_scene_31_layouts_a and demo_scene_31_layouts_b and bands 1 and 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * confidence: exercised
+ * evidence: demo_scene_draw_table[31] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 31: takes the phase progress from demo_phase_progress and draws layout sets demo_scene_31_layouts_a and demo_scene_31_layouts_b and bands 1 and 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness in one sandbox after demo_scene_31_init (demo_phase 0, demo_phase_end 15): with demo_scene_frame poked 7 it called demo_layout_draw with demo_scene_31_layouts_a (0x0C28D458) and then demo_scene_31_layouts_b (0x0C28D50C), then demo_band_draw with bands 1 and 2, all with phase 0 and progress 0.4666667; with frame 15 the same four calls with phase 1 and progress 0 (the next phase begun), and with frame 22 phase 1 and progress 0.4666667
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_31_draw(void)
@@ -1622,7 +1622,7 @@ void demo_scene_31_draw(void)
 
 /* 0x0c031c40  size 0x24  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[32] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 32; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[32] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 32: starts the scene's phase 0 (demo_phase 0, demo_phase_start 0, demo_phase_end the first entry of demo_scene_32_phases, 15, and demo_phase_list the entries after it, which demo_phase_progress steps through); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_32_init(void)
@@ -1636,8 +1636,8 @@ void demo_scene_32_init(void)
 }
 
 /* 0x0c031c80  size 0x52  file by match with source
- * confidence: inferred
- * evidence: demo_scene_draw_table[32] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 32: takes the phase progress from demo_phase_progress and draws layout sets demo_scene_32_layouts_a and demo_scene_32_layouts_b and bands 1 and 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * confidence: exercised
+ * evidence: demo_scene_draw_table[32] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 32: takes the phase progress from demo_phase_progress and draws layout sets demo_scene_32_layouts_a and demo_scene_32_layouts_b and bands 1 and 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness in one sandbox after demo_scene_32_init (demo_phase 0, demo_phase_end 15): with demo_scene_frame poked 7 it called demo_layout_draw with demo_scene_32_layouts_a (0x0C28D58C) and then demo_scene_32_layouts_b (0x0C28D610), then demo_band_draw with bands 1 and 2, all with phase 0 and progress 0.4666667; with frame 15 the same four calls with phase 1 and progress 0 (the next phase begun), and with frame 22 phase 1 and progress 0.4666667
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_32_draw(void)
@@ -1654,7 +1654,7 @@ void demo_scene_32_draw(void)
 
 /* 0x0c031d00  size 0x24  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[33] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 33; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[33] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 33: starts the scene's phase 0 (demo_phase 0, demo_phase_start 0, demo_phase_end the first entry of demo_scene_33_phases, 15, and demo_phase_list the entries after it, which demo_phase_progress steps through); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_33_init(void)
@@ -1668,8 +1668,8 @@ void demo_scene_33_init(void)
 }
 
 /* 0x0c031d40  size 0x52  file by match with source
- * confidence: inferred
- * evidence: demo_scene_draw_table[33] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 33: takes the phase progress from demo_phase_progress and draws layout sets demo_scene_33_layouts_a and demo_scene_33_layouts_b and bands 1 and 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * confidence: exercised
+ * evidence: demo_scene_draw_table[33] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 33: takes the phase progress from demo_phase_progress and draws layout sets demo_scene_33_layouts_a and demo_scene_33_layouts_b and bands 1 and 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness in one sandbox after demo_scene_33_init (demo_phase 0, demo_phase_end 15): with demo_scene_frame poked 7 it called demo_layout_draw with demo_scene_33_layouts_a (0x0C28D690) and then demo_scene_33_layouts_b (0x0C28D750), then demo_band_draw with bands 1 and 2, all with phase 0 and progress 0.4666667; with frame 15 the same four calls with phase 1 and progress 0 (the next phase begun), and with frame 22 phase 1 and progress 0.4666667
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_33_draw(void)
@@ -1686,7 +1686,7 @@ void demo_scene_33_draw(void)
 
 /* 0x0c031dc0  size 0x24  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[34] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 34; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[34] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 34: starts the scene's phase 0 (demo_phase 0, demo_phase_start 0, demo_phase_end the first entry of demo_scene_34_phases, 15, and demo_phase_list the entries after it, which demo_phase_progress steps through); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_34_init(void)
@@ -1700,8 +1700,8 @@ void demo_scene_34_init(void)
 }
 
 /* 0x0c031e00  size 0x52  file by match with source
- * confidence: inferred
- * evidence: demo_scene_draw_table[34] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 34: takes the phase progress from demo_phase_progress and draws layout sets demo_scene_34_layouts_a and demo_scene_34_layouts_b and bands 1 and 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * confidence: exercised
+ * evidence: demo_scene_draw_table[34] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 34: takes the phase progress from demo_phase_progress and draws layout sets demo_scene_34_layouts_a and demo_scene_34_layouts_b and bands 1 and 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness in one sandbox after demo_scene_34_init (demo_phase 0, demo_phase_end 15): with demo_scene_frame poked 7 it called demo_layout_draw with demo_scene_34_layouts_a (0x0C28D7B8) and then demo_scene_34_layouts_b (0x0C28D848), then demo_band_draw with bands 1 and 2, all with phase 0 and progress 0.4666667; with frame 15 the same four calls with phase 1 and progress 0 (the next phase begun), and with frame 22 phase 1 and progress 0.4666667
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_34_draw(void)
@@ -1718,7 +1718,7 @@ void demo_scene_34_draw(void)
 
 /* 0x0c031e80  size 0x24  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[35] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 35; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[35] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 35: starts the scene's phase 0 (demo_phase 0, demo_phase_start 0, demo_phase_end the first entry of demo_scene_35_phases, 15, and demo_phase_list the entries after it, which demo_phase_progress steps through); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_35_init(void)
@@ -1732,8 +1732,8 @@ void demo_scene_35_init(void)
 }
 
 /* 0x0c031ec0  size 0x52  file by match with source
- * confidence: inferred
- * evidence: demo_scene_draw_table[35] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 35: takes the phase progress from demo_phase_progress and draws layout sets demo_scene_33_layouts_a (shared with scene 33) and demo_scene_35_layouts_b and bands 1 and 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * confidence: exercised
+ * evidence: demo_scene_draw_table[35] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 35: takes the phase progress from demo_phase_progress and draws layout sets demo_scene_33_layouts_a (shared with scene 33) and demo_scene_35_layouts_b and bands 1 and 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness in one sandbox after demo_scene_35_init (demo_phase 0, demo_phase_end 15): with demo_scene_frame poked 7 it called demo_layout_draw with demo_scene_33_layouts_a (0x0C28D690) and then demo_scene_35_layouts_b (0x0C28D8C8), then demo_band_draw with bands 1 and 2, all with phase 0 and progress 0.4666667; with frame 15 the same four calls with phase 1 and progress 0 (the next phase begun), and with frame 22 phase 1 and progress 0.4666667
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_35_draw(void)
@@ -1750,7 +1750,7 @@ void demo_scene_35_draw(void)
 
 /* 0x0c031f40  size 0x24  file by match with source
  * confidence: inferred
- * evidence: demo_scene_init_table[36] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 36; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
+ * evidence: demo_scene_init_table[36] (0x0C1633DC), run by demo_cmd_16_scene_set when demo_scene becomes 36: starts the scene's phase 0 (demo_phase 0, demo_phase_start 0, demo_phase_end the first entry of demo_scene_36_phases, 15, and demo_phase_list the entries after it, which demo_phase_progress steps through); nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_36_init(void)
@@ -1764,8 +1764,8 @@ void demo_scene_36_init(void)
 }
 
 /* 0x0c031f80  size 0x52  file by match with source
- * confidence: inferred
- * evidence: demo_scene_draw_table[36] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 36: takes the phase progress from demo_phase_progress and draws layout sets demo_scene_36_layouts_a and demo_scene_36_layouts_b and bands 1 and 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * confidence: exercised
+ * evidence: demo_scene_draw_table[36] (0x0C163348), run each frame by demo_scene_draw while demo_scene is 36: takes the phase progress from demo_phase_progress and draws layout sets demo_scene_36_layouts_a and demo_scene_36_layouts_b and bands 1 and 2; nothing calls it directly; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness in one sandbox after demo_scene_36_init (demo_phase 0, demo_phase_end 15): with demo_scene_frame poked 7 it called demo_layout_draw with demo_scene_36_layouts_a (0x0C28D948) and then demo_scene_36_layouts_b (0x0C28DA2C), then demo_band_draw with bands 1 and 2, all with phase 0 and progress 0.4666667; with frame 15 the same four calls with phase 1 and progress 0 (the next phase begun), and with frame 22 phase 1 and progress 0.4666667
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_scene_36_draw(void)
@@ -1982,9 +1982,9 @@ void demo_scene_draw(void)
 }
 
 /* 0x0c032620  size 0x40a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x55c
- * evidence: (layout set, phase, progress): row [phase] of the set is { anchor 1-4, x, y, sprite list of { id, x, y } to id < 0 }; the list is placed against the anchor's screen corner (1 top-left, 2 bottom-right, 3 bottom-left, 4 top-right); phase 1 slides it in from the side (offset (1 - progress) x 640) at scale 1 + 2 (1 - progress), phase 2 draws it at alpha 0.5, phase 3 fades it from 0.5 to 0; called by the layout scene draws (demo_scene_01_draw and others); part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * evidence: (layout set, phase, progress): row [phase] of the set is { anchor 1-4, x, y, sprite list of { id, x, y } to id < 0 }; the list is placed against the anchor's screen corner (1 top-left, 2 bottom-right, 3 bottom-left, 4 top-right); phase 1 slides it in from the side (x offset (1 - progress) x 640, negative for anchors 2 and 4) at scale 1 + 2 (1 - progress), phase 2 draws it at alpha 0.5, phase 3 fades it from 0.5 to 0; called by the layout scene draws (demo_scene_01_draw and others); part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness with a layout set planted in a buffer (rows at x 100, y 50, list {5 at (20, 30)}, {6 at (40, 10)}, -1): anchor 1 phase 1 progress 0.5 drew sprites 5 and 6 scaled 2 at (420, 70) and (440, 50), progress 1 at (100, 70) and (120, 50) scale 1; phase 2 at alpha 0.5 there for anchor 1, at (520, 430) / (540, 410) for anchor 2, (100, 430) / (120, 410) for 3, (520, 70) / (540, 50) for 4; phase 3 progress 0.5 at alpha 0.25
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_layout_draw(demo_layout_rec *layouts, char phase, float progress)
@@ -2114,9 +2114,9 @@ void demo_layout_draw(demo_layout_rec *layouts, char phase, float progress)
 }
 
 /* 0x0c032ba0  size 0x138  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x1d2
- * evidence: (band 1-7, phase, progress): draws band sprite 0x860 (0x3A54 when demo_type is 1) stretched 10 x 1 at y 90 or 390 (bands 1-4, from the left or right) or turned a quarter at x 30 or 610 (bands 5-7, from above or below); phase 0 slides it in by progress, later phases hold it, phase 3 fades it out; called by the layout scene draws; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * evidence: (band 1-7, phase, progress): draws band sprite 0x860 (0x3A54 when demo_type is 1) stretched 10 x 1 at y 90 or 390 (bands 1-4, from the left or right) or turned a quarter at x 30 or 610 (bands 5-7, from above or below); phase 0 slides it in by progress, later phases hold it, phase 3 fades it out; called by the layout scene draws; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness with demo_type 0: band 1 phase 0 drew sprite 0x860 scaled 10 x 1 at y 90, alpha 0.5, x 0 at progress 1 and x -320 at 0.5, and x 0 in phase 2 (held); band 3 at y 390; band 2 at x 640 (progress 1) and 960 (0.5), from the right; band 5 phase 1 turned 0x4000 at x 610, band 6 at x 30; phase 3 progress 0.5 gave alpha 0.25; with demo_type 1 the sprite was 0x3A54
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_band_draw(char band, char phase, float progress)
@@ -2163,9 +2163,9 @@ void demo_band_draw(char band, char phase, float progress)
 }
 
 /* 0x0c032dc0  size 0x6a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x84
- * evidence: returns the progress of the current demo phase: (demo_scene_frame - demo_phase_start) / (demo_phase_end - demo_phase_start); when demo_scene_frame reaches demo_phase_end it starts the next phase from demo_phase_list (start = old end, end += next s16, demo_phase++) and returns 0, or 1.0 once the list ends with -2; called by the layout scene draws; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * evidence: returns the progress of the current demo phase: (demo_scene_frame - demo_phase_start) / (demo_phase_end - demo_phase_start); when demo_scene_frame reaches demo_phase_end it starts the next phase from demo_phase_list (start = old end, end += next s16, demo_phase++) and returns 0, or 1.0 once the list ends with -2; called by the layout scene draws; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness with demo_scene_frame 15, demo_phase_start 10, demo_phase_end 30 it returned 0.25; with frame 30 and demo_phase_list at the shorts {20, 12, -2} it returned 0 and left start 30, end 50, demo_phase 2 and the list 2 bytes on; frame 40 then gave 0.5, frame 50 started phase 3 (end 62), and frame 62 with -2 next returned 1.0 and changed nothing; a list at 0 returned 0 and changed nothing
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 float demo_phase_progress(void)
@@ -2189,8 +2189,8 @@ float demo_phase_progress(void)
 }
 
 /* 0x0c032e60  size 0xac  file by match with source
- * confidence: inferred
- * evidence: (layout group { anchor, x, y, list }): draws the group's sprites against the top-left corner at alpha 1 - demo_scene_frame / demo_phase_end until that reaches 1; called by demo_scene_11_draw to demo_scene_14_draw; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes)
+ * confidence: exercised
+ * evidence: (layout group { anchor, x, y, list }): draws the group's sprites against the top-left corner at alpha 1 - demo_scene_frame / demo_phase_end until that reaches 1; called by demo_scene_11_draw to demo_scene_14_draw; part of vf4lib/libbase/src/adv_demo.c (the attract demo; file name ours, see notes); exercised 2026-11-12: called by the harness with a planted group (anchor 3, x 100, y 50, sprites 5 at (20, 30) and 6 at (40, 10)): with demo_scene_frame 10 and demo_phase_end 40 it drew them at (100, 70) and (120, 50), the top-left placement whatever the anchor, at alpha 0.75 (sprite_put_xy_alpha_flags, flags 5); at frame 40 it drew nothing
  * matched: source/vf4lib/libbase/src/adv_demo.c (tools/match/match.py)
  */
 void demo_layout_fade_out(demo_layout_rec *layout)

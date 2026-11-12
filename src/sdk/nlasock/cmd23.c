@@ -28,8 +28,8 @@ int dimm_cmd24_ignore(void)
 }
 
 /* 0x0c125280  size 0x58  file by match with source
- * confidence: inferred
- * evidence: (16-bit value, 16-bit value): needs bit 8 of board information word +0x1c (dimm_board_info_fetch, -3) and the board lock (-2); sends board command 0x23 with sub-code 0, offset 1 and the two values as parameters (dimm_cmd_post) and returns 0 without waiting for a reply; meaning not known; nothing in the image calls it; part of NLASOCK
+ * confidence: exercised
+ * evidence: (16-bit value, 16-bit value): needs bit 8 of board information word +0x1c (dimm_board_info_fetch, -3) and the board lock (-2); sends board command 0x23 with sub-code 0, offset 1 and the two values as parameters (dimm_cmd_post) and returns 0 without waiting for a reply; meaning not known; nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): with dimm_board_word_24 0 it returned -3; with 8 poked and dimm_busy_word 1 it returned -2; free, (0x1234, 0xabcd) posted dimm_cmd_post(0x23, 0, 1, 0x1234, 0xabcd) and (0x00ff, 0x8001) posted (0x23, 0, 1, 0xff, 0x8001), each returning 0 with the lock dropped
  * matched: source/sdk/nlasock/cmd23.c (tools/match/match.py)
  */
 int dimm_cmd23_send_pair(ushort value1, ushort value2)
@@ -42,8 +42,8 @@ int dimm_cmd23_send_pair(ushort value1, ushort value2)
 }
 
 /* 0x0c125300  size 0x4e  file by match with source
- * confidence: inferred
- * evidence: (): needs bit 8 of board information word +0x1c (-3) and the board lock (-2); sends board command 0x23 with sub-code 0, offset 2 and no parameters and returns 0; the counterpart of dimm_cmd23_send_pair; nothing in the image calls it; part of NLASOCK
+ * confidence: exercised
+ * evidence: (): needs bit 8 of board information word +0x1c (-3) and the board lock (-2); sends board command 0x23 with sub-code 0, offset 2 and no parameters and returns 0; the counterpart of dimm_cmd23_send_pair; nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): with dimm_board_word_24 0 and with 0xfffffff7 (all but bit 8) it returned -3; with 8 poked it posted dimm_cmd_post(0x23, 0, 2, 0, 0) and returned 0, and with dimm_busy_word poked 1 it returned -2
  * matched: source/sdk/nlasock/cmd23.c (tools/match/match.py)
  */
 int dimm_cmd23_send_op2(void)

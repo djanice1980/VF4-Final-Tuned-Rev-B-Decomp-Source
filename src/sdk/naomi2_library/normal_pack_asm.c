@@ -15,8 +15,8 @@
 uint normal_pack_bytes(float *normal);
 
 /* 0x0c0fbe9a  size 0x3a  file by match with source
- * confidence: inferred
- * evidence: hand-written: a byte-identical second copy of normal_pack_bytes, 2 bytes off its 4-byte alignment; nothing in the image calls it (uncalled code, made a function 2026-11-09); between normal_pack_bytes and elan_light_cmd_build, so by link order part of sdk/naomi2_library/normal_pack_asm.c
+ * confidence: exercised
+ * evidence: hand-written: a byte-identical second copy of normal_pack_bytes, 2 bytes off its 4-byte alignment; nothing in the image calls it (uncalled code, made a function 2026-11-09); between normal_pack_bytes and elan_light_cmd_build, so by link order part of sdk/naomi2_library/normal_pack_asm.c; exercised 2026-11-12: called by the harness on buf:1 holding (0.5, -0.25, 1.0) it returned 0x7FE13F and on (0, 0, -1) 0x810000, the same words normal_pack_bytes returned for the same buffers
  * convention: __keeps_r1_r3_r5_r6_r7_fr1_fr2_fr3_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c0fbe9a.s (hand-written assembly, tools/match/match.py)
  */

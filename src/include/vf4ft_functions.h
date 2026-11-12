@@ -1464,7 +1464,7 @@ int script_move_if(control_rec *ctrl, char other_side, char chara); /* 0x0c060f8
 #endif
 int script_op_60_move_if_side(control_rec *ctrl); /* 0x0c061080 */
 int script_op_61_move_if_other_side(control_rec *ctrl); /* 0x0c0610a0 */
-int script_op_62_move_if_opponent(control_rec *ctrl); /* 0x0c0610c0 */
+int script_op_62_move_if_chara(control_rec *ctrl); /* 0x0c0610c0 */
 int script_op_63_escape(control_rec *ctrl); /* 0x0c061100 */
 int script_op_64_hold(control_rec *ctrl); /* 0x0c0611a0 */
 int script_op_66_if_frame_flag(control_rec *ctrl); /* 0x0c061300 */
@@ -2741,7 +2741,7 @@ int item_give_both(uint side, int item); /* 0x0c08f320 */
 uint item_slot_lock_test(int side, uint slot); /* 0x0c08f3c0 */
 int item_slot_lock_match(int side, int costume, uint slot, int item); /* 0x0c08f400 */
 void item_slot_unlock(int side, uint slot); /* 0x0c08f460 */
-void item_has_88(int side); /* 0x0c08f4a0 */
+int item_has_88(int side); /* 0x0c08f4a0 */
 int item_has_79(int side); /* 0x0c08f4c0 */
 int item_has_7a(int side); /* 0x0c08f4e0 */
 int item_has_7b(int side); /* 0x0c08f500 */
@@ -2749,7 +2749,7 @@ int item_has_7c(int side); /* 0x0c08f520 */
 int item_has_7d(int side); /* 0x0c08f540 */
 int item_has_7e(int side); /* 0x0c08f560 */
 int item_has_7f(int side); /* 0x0c08f580 */
-void item_has_83(int side); /* 0x0c08f5a0 */
+int item_has_83(int side); /* 0x0c08f5a0 */
 uchar item_slot_get(int side, int costume, int slot); /* 0x0c08f5c0 */
 void item_equip(int side, int costume, int slot, int item); /* 0x0c08f620 */
 #if defined(NOPROTO_item_equip_unchecked)
@@ -5350,7 +5350,7 @@ void fatal_at(const char *file, int line, const char *format, ...); /* 0x0c0f23a
 void fatal_at_va(const char *file, int line, const char *format, va_list ap); /* 0x0c0f2420 */
 void fatal_record_store(const char *file, int line, char *text); /* 0x0c0f24a0 */
 tm * get_now_tm(tm *t); /* 0x0c0f24c0 */
-void now_seconds_get(int *out); /* 0x0c0f2580 */
+int now_seconds_get(int *out); /* 0x0c0f2580 */
 int string_hash_x5(char *str); /* 0x0c0f25c0 */
 void spin_delay(int count); /* 0x0c0f2600 */
 void g1_bus_hold(void); /* 0x0c0f2640 */
@@ -5406,7 +5406,7 @@ void * malloc_internal(heap *h, void *tag, int size); /* 0x0c0f3f80 */
 void * realloc_internal(heap *h, void *tag, void *p, int size); /* 0x0c0f40c0 */
 void * heap_malloc(heap *h, int size); /* 0x0c0f41a0 */
 void heap_free(heap *h, void *p); /* 0x0c0f4220 */
-void heap_realloc(heap *h, void *p, int size); /* 0x0c0f42a0 */
+void *heap_realloc(heap *h, void *p, int size); /* 0x0c0f42a0 */
 void * heap_calloc(heap *h, int n, int size); /* 0x0c0f4320 */
 void heap_stats_get(heap *h, struct mallinfo *info); /* 0x0c0f43a0 */
 void heap_blocks_snapshot(heap *h, heap_block **out, int count); /* 0x0c0f4460 */
@@ -5414,7 +5414,7 @@ heap * main_heap_get(void); /* 0x0c0f4520 */
 void main_heap_init(void); /* 0x0c0f4540 */
 void * malloc(size_t size); /* 0x0c0f45a0 */
 void free(void *p); /* 0x0c0f4620 */
-void realloc(void *p, int size); /* 0x0c0f46a0 */
+void *realloc(void *p, int size); /* 0x0c0f46a0 */
 void * calloc(size_t n, size_t size); /* 0x0c0f4720 */
 void main_heap_stats_get(struct mallinfo *info); /* 0x0c0f47c0 */
 struct mallinfo main_heap_mallinfo(void); /* 0x0c0f4820 */
@@ -5443,7 +5443,7 @@ int strbuf_printf(strbuf_rec *sb, char *format, ...); /* 0x0c0f53e0 */
 #endif
 void strbuf_drop_line(strbuf_rec *sb, int offset); /* 0x0c0f5460 */
 int strbuf_vscanf(strbuf_rec *sb, char *format, va_list ap); /* 0x0c0f5500 */
-void strbuf_scanf(strbuf_rec *sb, char *format, ...); /* 0x0c0f5560 */
+int strbuf_scanf(strbuf_rec *sb, char *format, ...); /* 0x0c0f5560 */
 #if defined(NOPROTO_sin_s16)
 #elif defined(KRPROTO_sin_s16)
 float sin_s16();
@@ -6046,13 +6046,13 @@ void strip_send_uv_colour(int count, uint *verts); /* 0x0c10f700 */
 void strip_send_uv_two_colours(int count, uint *verts); /* 0x0c10f880 */
 #if defined(NOPROTO_line3d_quads_opaque)
 #elif defined(KRPROTO_line3d_quads_opaque)
-void line3d_quads_opaque();
+int line3d_quads_opaque();
 #else
-void line3d_quads_opaque(float *a, float *b, uint colour); /* 0x0c10fa00 */
+int line3d_quads_opaque(float *a, float *b, uint colour); /* 0x0c10fa00 */
 #endif
-void line3d_quads_opaque_world(float *a, float *b, uint colour); /* 0x0c10fa20 */
+int line3d_quads_opaque_world(float *a, float *b, uint colour); /* 0x0c10fa20 */
 int line3d_quads_alpha(float *a, float *b, uint colour); /* 0x0c10fa40 */
-void line3d_quads_alpha_world(float *a, float *b, uint colour); /* 0x0c10fa60 */
+int line3d_quads_alpha_world(float *a, float *b, uint colour); /* 0x0c10fa60 */
 void line3d_runs_opaque(uint *runs); /* 0x0c10fa80 */
 void line3d_runs_opaque_world(uint *runs); /* 0x0c10faa0 */
 void line3d_runs_alpha(uint *runs); /* 0x0c10fac0 */
@@ -7298,7 +7298,7 @@ void stall_limits_vertex_and_render(void); /* 0x0c130600 */
 void punch_list_share_set(int share); /* 0x0c130620 */
 void ta_param_base_put(uint addr); /* 0x0c130640 */
 int ta_list_sizes_apply(int size0, int size1, int size2, int size3); /* 0x0c1306a0 */
-void ta_list_sizes_set_up(void); /* 0x0c1308e0 */
+int ta_list_sizes_set_up(int size0, int size1, int size2, int size3); /* 0x0c1308e0 */
 void render_config_flag20_off(void); /* 0x0c130920 */
 void render_config_flag20_on(void); /* 0x0c130940 */
 void tmu0_restart_usec_scale(void); /* 0x0c130960 */
@@ -7457,7 +7457,7 @@ void mtx_xform_points(float (*src)[3], float (*dst)[3], int count); /* 0x0c13304
 void mtx_xform_dirs(float (*src)[3], float (*dst)[3], int count); /* 0x0c1330a0 */
 void mtx_pop_all(void); /* 0x0c133100 */
 void mtx_copy_or_current(float *dst, float *src); /* 0x0c133140 */
-void mtx_determinant(float *mtx); /* 0x0c1331a0 */
+float mtx_determinant(float *mtx); /* 0x0c1331a0 */
 float * mtx_store_wordwise(float *mtx); /* 0x0c1331e0 */
 float * mtx_store_3x3(float *dst); /* 0x0c133220 */
 float * mtx_store_3x3_stride4(float *dst); /* 0x0c133240 */
@@ -7505,7 +7505,7 @@ void mtx_push_view_times_current(void); /* 0x0c133c80 */
 void mtx_push_then_view(void); /* 0x0c133cc0 */
 void mtx_mul_plane_flatten(float *plane); /* 0x0c133ce0 */
 void mtx_mul_plane_flatten_along(float *plane, float *from, float *to); /* 0x0c133da0 */
-void mtx_stack_drop(int count); /* 0x0c133ee0 */
+bool mtx_stack_drop(int count); /* 0x0c133ee0 */
 bool mtx_push_identity(void); /* 0x0c133f00 */
 void mtx_rot_axis_s16(float *axis, uint angle); /* 0x0c133f40 */
 void mtx_rot_unit_axis_s16(float *axis, uint angle); /* 0x0c133fa0 */
@@ -7513,7 +7513,7 @@ void mtx_rot_unit_axis_sincos(float *axis, float sine, float cosine); /* 0x0c133
 void mtx_rot_x_rad_reversed(float angle); /* 0x0c1340a0 */
 void mtx_rot_y_rad_reversed(float angle); /* 0x0c1340e0 */
 void mtx_rot_z_rad_reversed(float angle); /* 0x0c134120 */
-void mtx_rot_vec_to_vec(uint *from, float *to); /* 0x0c134160 */
+void mtx_rot_vec_to_vec(float *from, float *to); /* 0x0c134160 */
 void mtx_translate_by_minus_v(float *v); /* 0x0c134200 */
 #if defined(NOPROTO_mtx_translate_by_vec3)
 #elif defined(KRPROTO_mtx_translate_by_vec3)
@@ -7587,7 +7587,7 @@ int ticks_to_usec_at_rate();
 int ticks_to_usec_at_rate(uint ticks, ushort rate); /* 0x0c135da0 */
 #endif
 int usec_to_ticks_at_rate(int usec, uint rate); /* 0x0c135e80 */
-void tmu2_ticks_between(int first, int second); /* 0x0c135fa0 */
+uint tmu2_ticks_between(int first, int second); /* 0x0c135fa0 */
 void caches_reset_to_mode(uint mode); /* 0x0c135fc0 */
 void cache_turn_off(void); /* 0x0c136020 */
 uint cache_control_get(void); /* 0x0c136080 */

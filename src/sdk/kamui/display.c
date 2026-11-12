@@ -26,8 +26,8 @@ void fb_regs_reload_blanked(void)
 }
 
 /* 0x0c141220  size 0x16  file by match with source
- * confidence: inferred
- * evidence: spins until the tick count at +0x36c of the library's state block (gfx_state) changes, i.e. until the next V-blank interrupt counts one; the same count measures the render and vertex time-outs; called by fb_rebuild_dither_aa and display_blank_and_quiesce; part of KamuiTL
+ * confidence: exercised
+ * evidence: spins until the tick count at +0x36c of the library's state block (gfx_state) changes, i.e. until the next V-blank interrupt counts one; the same count measures the render and vertex time-outs; called by fb_rebuild_dither_aa and display_blank_and_quiesce; part of KamuiTL; exercised 2026-11-12: called by the harness with interrupts allowed it returned and the tick count at gfx_state+0x36c had gone from 0 to 2 (vblank_irq counts it); with interrupts held off it had not returned after 2 frames
  * matched: source/sdk/kamui/display.c (tools/match/match.py)
  */
 void vblank_tick_await_next(void)
@@ -132,9 +132,9 @@ int display_timing_and_fb_program(uint requested_mode, uint format, uint dither,
 }
 
 /* 0x0c1414a0  size 0xbc  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xee
- * evidence: (which): rewrites FB_R_CTRL (display off, then back) and VO_CONTROL with or without the blank bit: 1 blanks both graphics chips through the shared window (0xA85F8000); with bit 30 or bit 31 set, the first chip (0xA05F8000, pvr_reg_write_first) is blanked when bit 30 is set and the second (0xA25F8000, pvr_reg_write_second) when bit 31 is set, the other shown; any other value shows both; nothing calls it; part of KamuiTL; checked against reference material (not in this repo)
+ * evidence: (which): rewrites FB_R_CTRL (display off, then back) and VO_CONTROL with or without the blank bit: 1 blanks both graphics chips through the shared window (0xA85F8000); with bit 30 or bit 31 set, the first chip (0xA05F8000, pvr_reg_write_first) is blanked when bit 30 is set and the second (0xA25F8000, pvr_reg_write_second) when bit 31 is set, the other shown; any other value shows both; nothing calls it; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the kept FB_R_CTRL 0x800005 and VO_CONTROL 0x160000 (the snapshot's): 1 wrote 0x800004, VO_CONTROL 0x160008 and 0x800005 through pvr_reg_write_both; 0x40000000 wrote 0x160008 to the first chip (pvr_reg_write_first) and 0x160000 to the second; 0x80000000 the reverse; 0xc0000000 0x160008 to both; 2 wrote 0x160000 through pvr_reg_write_both; returned 0
  * matched: source/sdk/kamui/display.c (tools/match/match.py)
  */
 int vo_blank_per_chip(uint chips)
@@ -175,9 +175,9 @@ int vo_blank_per_chip(uint chips)
 }
 
 /* 0x0c1415c0  size 0x11c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x128
- * evidence: (dither, anti-alias): waits for the render in flight (render_drain), keeps the two flags (+0x2c, +0x30 of the state block), works out width, height and interlace from the kept display mode as display_timing_and_fb_program does, waits a V-blank, sets the frame buffers up again (fb_layout_compute), reloads the frame buffer registers, shows the display again (FB_R_CTRL, VO_CONTROL without the blank bit), soft-resets the TA and core (pvr_reset_pulse), rebuilds the tile set-up (ta_buffers_lay_out) and marks it done (+0x2a0 = 1) after one more V-blank; returns 0; called by display_flag_bits_reapply; part of KamuiTL; checked against reference material (not in this repo)
+ * evidence: (dither, anti-alias): waits for the render in flight (render_drain), keeps the two flags (+0x2c, +0x30 of the state block), works out width, height and interlace from the kept display mode as display_timing_and_fb_program does, waits a V-blank, sets the frame buffers up again (fb_layout_compute), reloads the frame buffer registers, shows the display again (FB_R_CTRL, VO_CONTROL without the blank bit), soft-resets the TA and core (pvr_reset_pulse), rebuilds the tile set-up (ta_buffers_lay_out) and marks it done (+0x2a0 = 1) after one more V-blank; returns 0; called by display_flag_bits_reapply; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness (interrupts allowed) in display mode 1 (the snapshot's): (5, 0) left +0x2c = 1 and +0x30 = 0 and called fb_layout_compute(640, 480, 0, 0, 1, 0), (0, 7) left 0 and 1 and passed (..., 0, 1); each then wrote FB_R_CTRL 0x800004, VO_CONTROL 0x160000 and FB_R_CTRL 0x800005, called pvr_reset_pulse and ta_buffers_lay_out, set +0x2a0 to 1 and returned 0
  * matched: source/sdk/kamui/display.c (tools/match/match.py)
  */
 int fb_rebuild_dither_aa(int dither, int anti_alias)
@@ -239,8 +239,8 @@ int fb_rebuild_dither_aa(int dither, int anti_alias)
 }
 
 /* 0x0c141720  size 0x6a  file by match with source
- * confidence: inferred
- * evidence: turns the display off and blanks it (FB_R_CTRL without display enable, VO_CONTROL with the blank bit), waits for the render in flight (render_drain), soft-resets the TA and core (pvr_reset_pulse), blanks again, waits a V-blank and marks the tile set-up done (+0x2a0 = 1); returns 0; video_reconfigure runs it before changing the display; part of KamuiTL
+ * confidence: exercised
+ * evidence: turns the display off and blanks it (FB_R_CTRL without display enable, VO_CONTROL with the blank bit), waits for the render in flight (render_drain), soft-resets the TA and core (pvr_reset_pulse), blanks again, waits a V-blank and marks the tile set-up done (+0x2a0 = 1); returns 0; video_reconfigure runs it before changing the display; part of KamuiTL; exercised 2026-11-12: called by the harness (interrupts allowed) with the kept FB_R_CTRL 0x800005 and VO_CONTROL 0x160000 (the snapshot's) it wrote 0x800004 to 0x44 and 0x160008 to 0xe8 through pvr_reg_write_both, called render_drain and pvr_reset_pulse, wrote the same two again, waited in vblank_tick_await_next, left +0x2a0 = 1 and returned 0
  * matched: source/sdk/kamui/display.c (tools/match/match.py)
  */
 int display_blank_and_quiesce(void)
@@ -257,9 +257,9 @@ int display_blank_and_quiesce(void)
 }
 
 /* 0x0c1417c0  size 0x110  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x134
- * evidence: (x, y): moves the picture: when x moves it keeps x at +0x50 of the state block and writes VO_STARTX (0xec) = the base start (+0x58) + x; when y moves (and the result stays on screen) keeps it at +0x54 and writes VO_STARTY (0xf0) with both field starts (+0x5c, +0x60) + y, and for a positive y shortens the frame buffer read height in FB_R_SIZE (0x5c) by the lines pushed off; returns 0; nothing calls it; part of KamuiTL; checked against reference material (not in this repo)
+ * evidence: (x, y): moves the picture: when x moves it keeps x at +0x50 of the state block and writes VO_STARTX (0xec) = the base start (+0x58) + x; when y moves (and the result stays on screen) keeps it at +0x54 and writes VO_STARTY (0xf0) with both field starts (+0x5c, +0x60) + y, and for a positive y shortens the frame buffer read height in FB_R_SIZE (0x5c) by the lines pushed off; returns 0; nothing calls it; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness in one sandbox with the snapshot's starts (x 0xa5, y 0x24 / 0x24, FB_R_SIZE 0x177d3f): (5, 0) kept x 5 and wrote VO_STARTX 0xaa only; (5, 10) kept y 10, wrote VO_STARTY 0x002e002e and FB_R_SIZE 0x17553f (height 0x1df - 10); (5, -4) wrote VO_STARTY 0x00200020 only; (0, -0x30) wrote VO_STARTX 0xa5 and left y at -4; returned 0
  * matched: source/sdk/kamui/display.c (tools/match/match.py)
  */
 int vo_start_offset_apply(int x, int y)

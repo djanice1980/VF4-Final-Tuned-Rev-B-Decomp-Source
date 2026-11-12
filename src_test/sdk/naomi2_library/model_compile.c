@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c03ac40  size 0x16  file by match with source
- * confidence: inferred
- * evidence: sets both elan_ram_top and the saved mark elan_ram_top_after_lists to the initial top elan_ram_top_after_lists2, freeing every model buffer; nothing in the image calls it (uncalled code, made a function 2026-11-09); between elan_ram_top_mark_restore and elan_cmd_half_size_set, so by link order part of sdk/naomi2_library/model_compile.c
+ * confidence: exercised
+ * evidence: sets both elan_ram_top and the saved mark elan_ram_top_after_lists to the initial top elan_ram_top_after_lists2, freeing every model buffer; nothing in the image calls it (uncalled code, made a function 2026-11-09); between elan_ram_top_mark_restore and elan_cmd_half_size_set, so by link order part of sdk/naomi2_library/model_compile.c; exercised 2026-11-12: called by the harness in one sandbox with elan_ram_top_after_lists2 poked 0xAB950000 (elan_ram_top 1, elan_ram_top_after_lists 2) both became 0xAB950000, and with it poked 0xAB960020 both became 0xAB960020
  * same code as main.bin 0c0fc720 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/model_compile.c (tools/match/match.py)
  */
@@ -20,8 +20,8 @@ void elan_ram_top_reset(void)
 }
 
 /* 0x0c03ac80  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (bytes): stores the size rounded up to 32 bytes in elan_cmd_half_size, the size of one frame's display list area (elan_cmd_buffer_flip places the write pointer at the base plus the frame index times it); nothing in the image calls it (uncalled code, made a function 2026-11-09); between elan_ram_top_reset and model_heap_top, so by link order part of sdk/naomi2_library/model_compile.c
+ * confidence: exercised
+ * evidence: (bytes): stores the size rounded up to 32 bytes in elan_cmd_half_size, the size of one frame's display list area (elan_cmd_buffer_flip places the write pointer at the base plus the frame index times it); nothing in the image calls it (uncalled code, made a function 2026-11-09); between elan_ram_top_reset and model_heap_top, so by link order part of sdk/naomi2_library/model_compile.c; exercised 2026-11-12: called by the harness in one sandbox: 0x1001 stored 0x1020 in elan_cmd_half_size, 0x40 stored 0x40 and 1 stored 0x20
  * same code as main.bin 0c0fc760 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/model_compile.c (tools/match/match.py)
  */
@@ -291,8 +291,8 @@ uint * model_modvol_compile_alloc(int *model)
 }
 
 /* 0x0c03b200  size 0x18  file by match with source
- * confidence: inferred
- * evidence: gives a model buffer back to the model heap (elan_ram_top_release_to with the size kept at +0x3c), nothing for 0; callers model_compile_alloc and model_modvol_compile_alloc; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: gives a model buffer back to the model heap (elan_ram_top_release_to with the size kept at +0x3c), nothing for 0; callers model_compile_alloc and model_modvol_compile_alloc; part of the NAOMI2 library; exercised 2026-11-12: called by the harness in one sandbox after model_buf_alloc had taken 0x140 at 0xAB97BD40 (size kept at +0x3C): model_buf_free(0xAB97BD40) called elan_ram_top_release_to(0xAB97BD40, 0x140) and elan_ram_top went back to 0xAB97BE80; model_buf_free(0) called nothing
  * same code as main.bin 0c0fcce0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/model_compile.c (tools/match/match.py)
  */
@@ -380,8 +380,8 @@ uint * model_modvol_compile_to_frame_list(int *model)
 }
 
 /* 0x0c03b420  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: (vertex index in a strip): 0 for the first two vertices, 3 for the third, 1 after; model_list_compile puts it in bits 29-30 of the vertex control word for strips with flag bit 4 and for triangle lists (index within each triangle); part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: (vertex index in a strip): 0 for the first two vertices, 3 for the third, 1 after; model_list_compile puts it in bits 29-30 of the vertex control word for strips with flag bit 4 and for triangle lists (index within each triangle); part of the NAOMI2 library; exercised 2026-11-12: called by the harness with 0, 1, 2, 3 and 9 it returned 0, 0, 3, 1 and 1
  * same code as main.bin 0c0fcf00 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/model_compile.c (tools/match/match.py)
  */
@@ -395,8 +395,8 @@ uint strip_vertex_code_1(uint n)
 }
 
 /* 0x0c03b440  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: (vertex index in a strip): 0 for the first two vertices, 3 for the third, 2 after; model_list_compile's code for strips without flag bit 4; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: (vertex index in a strip): 0 for the first two vertices, 3 for the third, 2 after; model_list_compile's code for strips without flag bit 4; part of the NAOMI2 library; exercised 2026-11-12: called by the harness with 0, 1, 2, 3 and 9 it returned 0, 0, 3, 2 and 2
  * same code as main.bin 0c0fcf20 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/model_compile.c (tools/match/match.py)
  */
@@ -514,8 +514,8 @@ uint model_list_compiled_size(int *model, uint list)
 }
 
 /* 0x0c03b760  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: (a, b floats): the top 16 bits of a's bit pattern in the upper half and those of b in the lower half (two truncated 16-bit floats in one word); nothing in the image calls it (uncalled code, made a function 2026-11-09); between model_list_compiled_size and model_list_compile, so by link order part of sdk/naomi2_library/model_compile.c
+ * confidence: exercised
+ * evidence: (a, b floats): the top 16 bits of a's bit pattern in the upper half and those of b in the lower half (two truncated 16-bit floats in one word); nothing in the image calls it (uncalled code, made a function 2026-11-09); between model_list_compiled_size and model_list_compile, so by link order part of sdk/naomi2_library/model_compile.c; exercised 2026-11-12: called by the harness with (1.5, -2.75) it returned 0x3FC0C030 and with (0.1, 0.3) 0x3DCC3E99 (0x3DCCCCCD and 0x3E99999A cut to their top halves)
  * same code as main.bin 0c0fd240 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/model_compile.c (tools/match/match.py)
  */

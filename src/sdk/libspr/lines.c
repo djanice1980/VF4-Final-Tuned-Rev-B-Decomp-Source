@@ -7,25 +7,23 @@
 #include "vf4ft.h"
 
 /* 0x0c10fa00  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (point a, point b, color): line3d_quads_emit(a, b, color, 0): one 3D line drawn as screen-space quads into the opaque list, projection only; returns what that returns (1 drawn, 0 clipped away); callers nyc_searchlight_spot_build, nyc_searchlight_spot_pair_build, leaf_grid_cell_draw, cloth_grid_lines_draw, cloth_normal_lines_draw, rope_draw, spline_test_draw, normal_line_draw (game); part of libspr (the line object after the strip object; see notes); checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (point a, point b, color): line3d_quads_emit(a, b, color, 0): one 3D line drawn as screen-space quads into the opaque list, projection only; returns what that returns (1 drawn, 0 clipped away); callers nyc_searchlight_spot_build, nyc_searchlight_spot_pair_build, leaf_grid_cell_draw, cloth_grid_lines_draw, cloth_normal_lines_draw, rope_draw, spline_test_draw, normal_line_draw (game); part of libspr (the line object after the strip object; see notes); checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the two fighters' positions as points and color 0x44556677 it called line3d_quads_emit(a, b, color, 0) (projection matrix only, no view), returned r0 1 and moved list 0's cursor by 0x20 + 0x80; with two points behind the camera eye it returned 0 and the cursor stayed
  * matched: source/sdk/libspr/lines.c (tools/match/match.py)
  */
-void line3d_quads_opaque(float *a, float *b, uint colour)
+int line3d_quads_opaque(float *a, float *b, uint colour)
 {
-  line3d_quads_emit(a,b,colour,0);
-  return;
+  return line3d_quads_emit(a,b,colour,0);
 }
 
 /* 0x0c10fa20  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (point a, point b, color): line3d_quads_emit(a, b, color, 2): one 3D line drawn as screen-space quads into the opaque list, with the view matrix; returns what that returns (1 drawn, 0 clipped away); nothing in the image calls it; part of libspr (the line object after the strip object; see notes); checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (point a, point b, color): line3d_quads_emit(a, b, color, 2): one 3D line drawn as screen-space quads into the opaque list, with the view matrix; returns what that returns (1 drawn, 0 clipped away); nothing in the image calls it; part of libspr (the line object after the strip object; see notes); checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the two fighters' positions it called line3d_quads_emit(a, b, color, 2), which multiplied in mtx_view_stack_slots + 0x10 after the projection, returned r0 1 and moved list 0's cursor by 0xa0; with two points behind the camera eye r0 was 0 and the cursor stayed
  * matched: source/sdk/libspr/lines.c (tools/match/match.py)
  */
-void line3d_quads_opaque_world(float *a, float *b, uint colour)
+int line3d_quads_opaque_world(float *a, float *b, uint colour)
 {
-  line3d_quads_emit(a,b,colour,2);
-  return;
+  return line3d_quads_emit(a,b,colour,2);
 }
 
 /* 0x0c10fa40  size 0x14  file by match with source
@@ -39,19 +37,18 @@ int line3d_quads_alpha(float *a, float *b, uint colour)
 }
 
 /* 0x0c10fa60  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (point a, point b, color): line3d_quads_emit(a, b, color, 3): one 3D line drawn as screen-space quads into the translucent list, with the view matrix; returns what that returns (1 drawn, 0 clipped away); nothing in the image calls it; part of libspr (the line object after the strip object; see notes); checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (point a, point b, color): line3d_quads_emit(a, b, color, 3): one 3D line drawn as screen-space quads into the translucent list, with the view matrix; returns what that returns (1 drawn, 0 clipped away); nothing in the image calls it; part of libspr (the line object after the strip object; see notes); checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the two fighters' positions it called line3d_quads_emit(a, b, color, 3) (projection and view matrices), returned r0 1 and moved list 2's cursor (translucent) by 0xa0, list 0 untouched; with two points behind the camera eye r0 was 0
  * matched: source/sdk/libspr/lines.c (tools/match/match.py)
  */
-void line3d_quads_alpha_world(float *a, float *b, uint colour)
+int line3d_quads_alpha_world(float *a, float *b, uint colour)
 {
-  line3d_quads_emit(a,b,colour,3);
-  return;
+  return line3d_quads_emit(a,b,colour,3);
 }
 
 /* 0x0c10fa80  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (runs list): line3d_runs_emit(list, 0): every connected run of the zero-terminated list drawn as quads into the opaque list, projection only; returns nothing useful; nothing in the image calls it; part of libspr (the line object after the strip object; see notes); checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (runs list): line3d_runs_emit(list, 0): every connected run of the zero-terminated list drawn as quads into the opaque list, projection only; returns nothing useful; nothing in the image calls it; part of libspr (the line object after the strip object; see notes); checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with a buffer of three runs {1, C1, 2 points} {2, C2, 3 points} {1, C3, 2 points behind the eye}, 0: it called line3d_runs_emit(list, 0) (projection only, no view matrix) and list 0's cursor moved by 0x1a0 (header and three quads), list 2 untouched
  * matched: source/sdk/libspr/lines.c (tools/match/match.py)
  */
 void line3d_runs_opaque(uint *runs)
@@ -61,8 +58,8 @@ void line3d_runs_opaque(uint *runs)
 }
 
 /* 0x0c10faa0  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (runs list): line3d_runs_emit(list, 2): every connected run of the zero-terminated list drawn as quads into the opaque list, with the view matrix; returns nothing useful; nothing in the image calls it; part of libspr (the line object after the strip object; see notes); checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (runs list): line3d_runs_emit(list, 2): every connected run of the zero-terminated list drawn as quads into the opaque list, with the view matrix; returns nothing useful; nothing in the image calls it; part of libspr (the line object after the strip object; see notes); checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with a buffer of three runs (two on screen, one behind the eye), 0: it called line3d_runs_emit(list, 2), which multiplied in the view matrix (mtx_view_stack_slots + 0x10), and list 0's cursor moved by 0x1a0, list 2 untouched
  * matched: source/sdk/libspr/lines.c (tools/match/match.py)
  */
 void line3d_runs_opaque_world(uint *runs)
@@ -72,8 +69,8 @@ void line3d_runs_opaque_world(uint *runs)
 }
 
 /* 0x0c10fac0  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (runs list): line3d_runs_emit(list, 1): every connected run of the zero-terminated list drawn as quads into the translucent list, projection only; returns nothing useful; nothing in the image calls it; part of libspr (the line object after the strip object; see notes); checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (runs list): line3d_runs_emit(list, 1): every connected run of the zero-terminated list drawn as quads into the translucent list, projection only; returns nothing useful; nothing in the image calls it; part of libspr (the line object after the strip object; see notes); checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with a buffer of three runs (two on screen, one behind the eye), 0: it called line3d_runs_emit(list, 1) (projection only) and list 2's cursor (translucent) moved by 0x1a0, list 0 untouched
  * matched: source/sdk/libspr/lines.c (tools/match/match.py)
  */
 void line3d_runs_alpha(uint *runs)
@@ -83,8 +80,8 @@ void line3d_runs_alpha(uint *runs)
 }
 
 /* 0x0c10fae0  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (runs list): line3d_runs_emit(list, 3): every connected run of the zero-terminated list drawn as quads into the translucent list, with the view matrix; returns nothing useful; nothing in the image calls it; part of libspr (the line object after the strip object; see notes); checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (runs list): line3d_runs_emit(list, 3): every connected run of the zero-terminated list drawn as quads into the translucent list, with the view matrix; returns nothing useful; nothing in the image calls it; part of libspr (the line object after the strip object; see notes); checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with a buffer of three runs (two on screen, one behind the eye), 0: it called line3d_runs_emit(list, 3), which multiplied in the view matrix, and list 2's cursor (translucent) moved by 0x1a0, list 0 untouched
  * matched: source/sdk/libspr/lines.c (tools/match/match.py)
  */
 void line3d_runs_alpha_world(uint *runs)
@@ -94,8 +91,8 @@ void line3d_runs_alpha_world(uint *runs)
 }
 
 /* 0x0c10fb00  size 0xe  file by match with source
- * confidence: inferred
- * evidence: (length float): stores line3d_split_length; nothing in the image calls it (uncalled code, made a function 2026-11-09); between line3d_runs_alpha_world and line3d_width_store, so by link order part of sdk/libspr/lines.c
+ * confidence: exercised
+ * evidence: (length float): stores line3d_split_length; nothing in the image calls it (uncalled code, made a function 2026-11-09); between line3d_runs_alpha_world and line3d_width_store, so by link order part of sdk/libspr/lines.c; exercised 2026-11-12: called by the harness in one sandbox, after line3d_split_length_set(12.5) line3d_split_length read 0x41480000 (12.5) and after line3d_split_length_set(3.0) it read 3.0
  * matched: source/sdk/libspr/lines.c (tools/match/match.py)
  */
 void line3d_split_length_set(float length)
@@ -116,8 +113,8 @@ void line3d_width_store(float width)
 }
 
 /* 0x0c10fb40  size 0x2a  file by match with source
- * confidence: inferred
- * evidence: (src, dst): the blend factors of the translucent line header's third word (src << 29, (dst & 7) << 26); nothing in the image calls it (uncalled code, made a function 2026-11-09); between line3d_width_store and line3d_fog_set, so by link order part of sdk/libspr/lines.c
+ * confidence: exercised
+ * evidence: (src, dst): the blend factors of the translucent line header's third word (src << 29, (dst & 7) << 26); nothing in the image calls it (uncalled code, made a function 2026-11-09); between line3d_width_store and line3d_fog_set, so by link order part of sdk/libspr/lines.c; exercised 2026-11-12: called by the harness in one sandbox from the snapshot's translucent header word 2 0x94180440: (5, 3) made it 0xac180440 (src << 29, dst << 26) and then (1, 14) made it 0x38180440 (dst & 7 = 6); the opaque header's word 2 stayed 0x20080440
  * matched: source/sdk/libspr/lines.c (tools/match/match.py)
  */
 void line3d_alpha_blend_set(int src, uint dst)
@@ -130,9 +127,9 @@ void line3d_alpha_blend_set(int src, uint dst)
 }
 
 /* 0x0c10fb80  size 0x3a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x3e
- * evidence: (flag): the fog field of both line headers: flag 1 clears bits 22-23 (table fog), anything else sets 0x800000 (no fog); nothing in the image calls it (uncalled code, made a function 2026-11-09); between line3d_alpha_blend_set and line3d_quads_emit, so by link order part of sdk/libspr/lines.c
+ * evidence: (flag): the fog field of both line headers: flag 1 clears bits 22-23 (table fog), anything else sets 0x800000 (no fog); nothing in the image calls it (uncalled code, made a function 2026-11-09); between line3d_alpha_blend_set and line3d_quads_emit, so by link order part of sdk/libspr/lines.c; exercised 2026-11-12: called by the harness with word 2 of the opaque and translucent line headers poked 0x12400000 and 0x34c00000: flag 0 made them 0x12800000 and 0x34800000, flag 1 then 0x12000000 and 0x34000000, flag 7 again 0x12800000 and 0x34800000
  * matched: source/sdk/libspr/lines.c (tools/match/match.py)
  */
 void line3d_fog_set(int flag)
@@ -200,9 +197,9 @@ int line3d_quads_emit(float *point_a, float *point_b, uint colour, uint mode)
 }
 
 /* 0x0c10fd60  size 0x14a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x16c
- * evidence: (runs list, mode): as line3d_quads_emit for a list of runs {count n, color, n + 1 points of x, y, z}, ended by a zero count: one header, one matrix set-up, then each of the n segments of each run is transformed, clipped (seg_clip_near_z, seg_clip_to_screen), projected and drawn (line3d_screen_quads) with the run's color; sets the list write pointer once at the end and returns 1; callers line3d_runs_opaque, line3d_runs_opaque_world, line3d_runs_alpha, line3d_runs_alpha_world; part of libspr (the line object after the strip object; see notes)
+ * evidence: (runs list, mode): as line3d_quads_emit for a list of runs {count n, color, n + 1 points of x, y, z}, ended by a zero count: one header, one matrix set-up, then each of the n segments of each run is transformed, clipped (seg_clip_near_z, seg_clip_to_screen), projected and drawn (line3d_screen_quads) with the run's color; sets the list write pointer once at the end and returns 1; callers line3d_runs_opaque, line3d_runs_opaque_world, line3d_runs_alpha, line3d_runs_alpha_world; part of libspr (the line object after the strip object; see notes); exercised 2026-11-12: called by the harness, mode 0, with runs {1, 0x11111111, fighter 0, fighter 1} {2, 0x22222222, fighter 1, fighter 0, a point beside them} {1, 0x33333333, two points behind the eye}, 0: one header, one matrix set-up, line3d_screen_quads three times (colors 11111111, 22222222, 22222222), nothing for the clipped run, r0 1, list 0's cursor set once to +0x1a0; mode 3 put the same in list 2
  * matched: source/sdk/libspr/lines.c (tools/match/match.py)
  */
 int line3d_runs_emit(uint *runs, uint mode)
@@ -559,8 +556,8 @@ void seg_quad_ext_first(int sq_addr, float *a, float *b, uint *colour, float ox,
 }
 
 /* 0x0c110620  size 0x78  file by match with source
- * confidence: inferred
- * evidence: (store-queue address, point a, point b, color pointer, ox, oy): the corners for an inner piece: both ends cut square, offset by (+oy, -ox) and (-oy, +ox) only; sends them with quad_vertices_send; only caller line3d_screen_quads; part of libspr (the line object after the strip object; see notes)
+ * confidence: exercised
+ * evidence: (store-queue address, point a, point b, color pointer, ox, oy): the corners for an inner piece: both ends cut square, offset by (+oy, -ox) and (-oy, +ox) only; sends them with quad_vertices_send; only caller line3d_screen_quads; part of libspr (the line object after the strip object; see notes); exercised 2026-11-12: called by the harness with a buffer as the store-queue address, a = (10, 20, 0.5), b = (50, 60, 0.25), color 0x11223344, ox 2, oy 3: it wrote four 32-byte vertices (e0, e0, e0, f0000000) at (13, 18, 0.5) (7, 22, 0.5) (53, 58, 0.25) (47, 62, 0.25), each with the color in words 4 and 6
  * matched: source/sdk/libspr/lines.c (tools/match/match.py)
  */
 void seg_quad_plain(int sq_addr, float *a, float *b, uint *colour, float ox, float oy)
@@ -607,8 +604,8 @@ void seg_quad_ext_second(int sq_addr, float *a, float *b, uint *colour, float ox
 }
 
 /* 0x0c110740  size 0x5e  file by match with source
- * confidence: inferred
- * evidence: (store-queue address, point, color pointer, h): the quad of a zero-length line: a square from (x - h, y - h) to (x + h, y + h) at the point's z, sent with quad_vertices_send; only caller line3d_screen_quads; part of libspr (the line object after the strip object; see notes)
+ * confidence: exercised
+ * evidence: (store-queue address, point, color pointer, h): the quad of a zero-length line: a square from (x - h, y - h) to (x + h, y + h) at the point's z, sent with quad_vertices_send; only caller line3d_screen_quads; part of libspr (the line object after the strip object; see notes); exercised 2026-11-12: called by the harness with a buffer as the store-queue address, the point (10, 20, 0.5), color 0x11223344 and h 1.5: it wrote four vertices (last one f0000000) at (8.5, 18.5) (11.5, 18.5) (8.5, 21.5) (11.5, 21.5), all at z 0.5, with the color in words 4 and 6
  * matched: source/sdk/libspr/lines.c (tools/match/match.py)
  */
 void point_square_quad(int sq_addr, float *point, uint *colour, float half)

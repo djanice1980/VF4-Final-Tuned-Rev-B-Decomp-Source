@@ -32,7 +32,7 @@ tm * get_now_tm(tm *t)
   return t;
 }
 
-void now_seconds_get(int *out)
+int now_seconds_get(int *out)
 {
   int seconds;
   tm t;
@@ -42,5 +42,5 @@ void now_seconds_get(int *out)
   if (out != (int *)0x0) {
     *out = seconds;
   }
-  return;
+  return seconds;
 }

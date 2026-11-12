@@ -38,7 +38,7 @@ uchar *maple_send(uint command, int port, int address, uint *data, int words)
 
 /* 0x0c114960  size 0xa8  file by match with source
  * confidence: inferred
- * evidence: (port, address, command, data words, count): builds the same Maple frame as maple_send and starts the transfer without waiting for it; returns nothing; nothing in the image calls it (uncalled code, made a function 2026-11-09); between maple_send and mie_send_no_data, so by link order part of sdk/libam/maple.c
+ * evidence: (command, port, address, data words, count): builds the same Maple frame as maple_send and starts the transfer without waiting for it; returns nothing; nothing in the image calls it (uncalled code, made a function 2026-11-09); between maple_send and mie_send_no_data, so by link order part of sdk/libam/maple.c; corrected 2026-11-12 from harness calls: the parameter order: called by the harness as (0x13, 1, 0x21, data, 1), 0x13 landed in the command byte (frame 0x80000401, reply address, 0x01012113, 0x55667788), so the first argument is the command, then port and address, as the header has it; the rest fit: with (0x86, 0, 0x20, data, 2) the frame matched maple_send's with the same arguments, and it started the DMA (0xa05f6c18 = 1) and returned without clearing 0xa05f6c14
  * matched: source/sdk/libam/maple.c (tools/match/match.py)
  */
 void maple_send_start(uint command, int port, int address, uint *data, int words)

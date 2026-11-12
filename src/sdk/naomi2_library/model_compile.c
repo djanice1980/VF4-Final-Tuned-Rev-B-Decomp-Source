@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c0fc6e0  size 0x12  file by match with source
- * confidence: inferred
- * evidence: copies elan_ram_top, the top-down allocation point, to the saved mark elan_ram_top_after_lists; nothing in the image calls it (uncalled code, made a function 2026-11-09); between model_cmd_iter_next and elan_ram_top_mark_restore, so by link order part of sdk/naomi2_library/model_compile.c
+ * confidence: exercised
+ * evidence: copies elan_ram_top, the top-down allocation point, to the saved mark elan_ram_top_after_lists; nothing in the image calls it (uncalled code, made a function 2026-11-09); between model_cmd_iter_next and elan_ram_top_mark_restore, so by link order part of sdk/naomi2_library/model_compile.c; exercised 2026-11-12: called by the harness in one sandbox with elan_ram_top poked 0xAB900000 it set elan_ram_top_after_lists to 0xAB900000, and with 0xAB800020 to 0xAB800020
  * matched: source/sdk/naomi2_library/model_compile.c (tools/match/match.py)
  */
 void elan_ram_top_mark_set(void)
@@ -18,8 +18,8 @@ void elan_ram_top_mark_set(void)
 }
 
 /* 0x0c0fc700  size 0x12  file by match with source
- * confidence: inferred
- * evidence: sets elan_ram_top back to the mark elan_ram_top_mark_set saved (elan_ram_top_after_lists), freeing every block allocated since; nothing in the image calls it (uncalled code, made a function 2026-11-09); between elan_ram_top_mark_set and elan_ram_top_reset, so by link order part of sdk/naomi2_library/model_compile.c
+ * confidence: exercised
+ * evidence: sets elan_ram_top back to the mark elan_ram_top_mark_set saved (elan_ram_top_after_lists), freeing every block allocated since; nothing in the image calls it (uncalled code, made a function 2026-11-09); between elan_ram_top_mark_set and elan_ram_top_reset, so by link order part of sdk/naomi2_library/model_compile.c; exercised 2026-11-12: called by the harness in one sandbox with elan_ram_top_after_lists poked 0xAB900000 (elan_ram_top 0xAB000000) it set elan_ram_top to 0xAB900000, and with the mark poked 0xAB700040 to 0xAB700040
  * matched: source/sdk/naomi2_library/model_compile.c (tools/match/match.py)
  */
 void elan_ram_top_mark_restore(void)
@@ -29,8 +29,8 @@ void elan_ram_top_mark_restore(void)
 }
 
 /* 0x0c0fc720  size 0x16  file by match with source
- * confidence: inferred
- * evidence: sets both elan_ram_top and the saved mark elan_ram_top_after_lists to the initial top elan_ram_top_after_lists2, freeing every model buffer; nothing in the image calls it (uncalled code, made a function 2026-11-09); between elan_ram_top_mark_restore and elan_cmd_half_size_set, so by link order part of sdk/naomi2_library/model_compile.c
+ * confidence: exercised
+ * evidence: sets both elan_ram_top and the saved mark elan_ram_top_after_lists to the initial top elan_ram_top_after_lists2, freeing every model buffer; nothing in the image calls it (uncalled code, made a function 2026-11-09); between elan_ram_top_mark_restore and elan_cmd_half_size_set, so by link order part of sdk/naomi2_library/model_compile.c; exercised 2026-11-12: called by the harness in one sandbox with elan_ram_top_after_lists2 poked 0xAB950000 (elan_ram_top 1, elan_ram_top_after_lists 2) both became 0xAB950000, and with it poked 0xAB960020 both became 0xAB960020
  * matched: source/sdk/naomi2_library/model_compile.c (tools/match/match.py)
  */
 void elan_ram_top_reset(void)
@@ -41,8 +41,8 @@ void elan_ram_top_reset(void)
 }
 
 /* 0x0c0fc760  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (bytes): stores the size rounded up to 32 bytes in elan_cmd_half_size, the size of one frame's display list area (elan_cmd_buffer_flip places the write pointer at the base plus the frame index times it); nothing in the image calls it (uncalled code, made a function 2026-11-09); between elan_ram_top_reset and model_heap_top, so by link order part of sdk/naomi2_library/model_compile.c
+ * confidence: exercised
+ * evidence: (bytes): stores the size rounded up to 32 bytes in elan_cmd_half_size, the size of one frame's display list area (elan_cmd_buffer_flip places the write pointer at the base plus the frame index times it); nothing in the image calls it (uncalled code, made a function 2026-11-09); between elan_ram_top_reset and model_heap_top, so by link order part of sdk/naomi2_library/model_compile.c; exercised 2026-11-12: called by the harness in one sandbox: 0x1001 stored 0x1020 in elan_cmd_half_size, 0x40 stored 0x40 and 1 stored 0x20
  * matched: source/sdk/naomi2_library/model_compile.c (tools/match/match.py)
  */
 void elan_cmd_half_size_set(int bytes)
@@ -172,9 +172,9 @@ int model_size(int *model)
 }
 
 /* 0x0c0fc9a0  size 0x4e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x64
- * evidence: like model_size for the modifier-volume form: -1 for no model, the size word +0x18 for a compiled model, else the compiled size of lists 1 and 3 (model_list_compiled_size) plus 0x60 when non-zero; only caller model_modvol_buf_alloc; part of the NAOMI2 library
+ * evidence: like model_size for the modifier-volume form: -1 for no model, the size word +0x18 for a compiled model, else the compiled size of lists 1 and 3 (model_list_compiled_size) plus 0x60 when non-zero; only caller model_modvol_buf_alloc; part of the NAOMI2 library; exercised 2026-11-12: called by the harness: a null model and one with word 0 = -1 returned -1; a compiled model (word 0 0x100, word 6 0x1234) returned 0x1234; a two-record source model built in buf:2 by the described layout (record 0: list 0, type -1, one strip, flags 0x41, of 3 full vertices; record 1: list 2, type 0, one strip, flags 0x112, of 4) returned 0x120, its list 1 and list 3 sizes 0x60 + 0x60 plus 0x60
  * matched: source/sdk/naomi2_library/model_compile.c (tools/match/match.py)
  */
 int model_modvol_size(int *model)
@@ -195,8 +195,8 @@ int model_modvol_size(int *model)
 }
 
 /* 0x0c0fca20  size 0x34  file by match with source
- * confidence: inferred
- * evidence: allocates a buffer for the model's compiled form from the model heap (elan_ram_alloc_top) with model_size rounded up to 32 bytes and stores that size at +0x3c; returns 0 when the size is not positive; only caller model_compile_alloc; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: allocates a buffer for the model's compiled form from the model heap (elan_ram_alloc_top) with model_size rounded up to 32 bytes and stores that size at +0x3c; returns 0 when the size is not positive; only caller model_compile_alloc; part of the NAOMI2 library; exercised 2026-11-12: called by the harness in one sandbox on a compiled model with size word 0x123 it called elan_ram_alloc_top(0x140) and returned 0xAB97BD40 with 0x140 at +0x3C; with the size word 0 it returned 0 and allocated nothing; on the buf:2 source model (model_size 0x1E0) it allocated 0x1E0
  * matched: source/sdk/naomi2_library/model_compile.c (tools/match/match.py)
  */
 uint * model_buf_alloc(int *model)
@@ -215,8 +215,8 @@ uint * model_buf_alloc(int *model)
 }
 
 /* 0x0c0fca60  size 0x34  file by match with source
- * confidence: inferred
- * evidence: as model_buf_alloc with model_modvol_size; only caller model_modvol_compile_alloc; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: as model_buf_alloc with model_modvol_size; only caller model_modvol_compile_alloc; part of the NAOMI2 library; exercised 2026-11-12: called by the harness on a compiled model with size word 0x123 it called model_modvol_size and elan_ram_alloc_top(0x140) and returned 0xAB97BD40; with the size word 0 it returned 0 without allocating; on the buf:2 source model (lists 1 and 3, 0x120) it allocated 0x120
  * matched: source/sdk/naomi2_library/model_compile.c (tools/match/match.py)
  */
 uint * model_modvol_buf_alloc(int *model)
@@ -234,9 +234,9 @@ uint * model_modvol_buf_alloc(int *model)
 }
 
 /* 0x0c0fcaa0  size 0xa4  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xbe
- * evidence: (model, buffer): a compiled model (0x100) is copied with model_header_sq_copy and model_body_sq_copy; otherwise lists 0, 2 and 4 are compiled one after another with model_list_compile into the buffer from +0x60, their {offset, size} slots at +0x40, +0x48, +0x50, then the header is written: 0x100, total size at +0x18, the source's words 2-5, word 7 = 0; returns the buffer, 0 for a null argument or a model with word 0 = -1; only caller model_compile_alloc; part of the NAOMI2 library
+ * evidence: (model, buffer): a compiled model (0x100) is copied with model_header_sq_copy and model_body_sq_copy; otherwise lists 0, 2 and 4 are compiled one after another with model_list_compile into the buffer from +0x60, their {offset, size} slots at +0x40, +0x48, +0x50, then the header is written: 0x100, total size at +0x18, the source's words 2-5, word 7 = 0; returns the buffer, 0 for a null argument or a model with word 0 = -1; only caller model_compile_alloc; part of the NAOMI2 library; exercised 2026-11-12: called by the harness on the buf:2 source model into buf:3 it called model_list_compile for lists 0, 2, 4 (slots +0x40/+0x48/+0x50, from +0x60), wrote 0x100, size 0x1E0 at +0x18, the source words 2-5 and 0 at +0x1C (slots {0x20, 0xC0}, {0xD8, 0xC0}, {0, 0}) and returned buf:3; given that compiled model and buf:5 it copied the 0x1E0 bytes (model_header_sq_copy, model_body_sq_copy) keeping buf:5's +0x3C; null model, null buffer and word 0 = -1 returned 0
  * matched: source/sdk/naomi2_library/model_compile.c (tools/match/match.py)
  */
 uint * model_compile_to(int *model, uint *dst)
@@ -265,9 +265,9 @@ uint * model_compile_to(int *model, uint *dst)
 }
 
 /* 0x0c0fcb80  size 0xa2  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xba
- * evidence: as model_compile_to for the modifier-volume lists 1 and 3 (slots +0x40 and +0x48, slot +0x50 cleared); only caller model_modvol_compile_alloc; part of the NAOMI2 library
+ * evidence: as model_compile_to for the modifier-volume lists 1 and 3 (slots +0x40 and +0x48, slot +0x50 cleared); only caller model_modvol_compile_alloc; part of the NAOMI2 library; exercised 2026-11-12: called by the harness on the buf:2 source model into buf:5 it called model_list_compile for lists 1 and 3 (slots +0x40, +0x48, from +0x60), zeroed +0x50 and +0x54, wrote 0x100 and size 0x120 (slots {0x20, 0x60}, {0x78, 0x60}: 16-byte x, y, z vertices under 0x09000712 and 0x0B000700 headers) and returned buf:5; a null model returned 0
  * matched: source/sdk/naomi2_library/model_compile.c (tools/match/match.py)
  */
 uint * model_modvol_compile_to(int *model, uint *dst)
@@ -297,8 +297,8 @@ uint * model_modvol_compile_to(int *model, uint *dst)
 }
 
 /* 0x0c0fcc60  size 0x32  file by match with source
- * confidence: inferred
- * evidence: model_buf_alloc then model_compile_to; on failure frees the buffer with model_buf_free and returns 0, else returns the compiled model; nothing in the image calls it; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: model_buf_alloc then model_compile_to; on failure frees the buffer with model_buf_free and returns 0, else returns the compiled model; nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness in one sandbox on the buf:2 source model it called model_buf_alloc and model_compile_to and returned 0xAB97BCA0 (elan_ram_top lowered by 0x1E0) holding 0x100, size 0x1E0, 0x1E0 at +0x3C and slots {0x20, 0xC0}, {0xD8, 0xC0}; on a model with word 0 = -1 it returned 0 after model_buf_free(0)
  * matched: source/sdk/naomi2_library/model_compile.c (tools/match/match.py)
  */
 uint * model_compile_alloc(int *model)
@@ -315,8 +315,8 @@ uint * model_compile_alloc(int *model)
 }
 
 /* 0x0c0fcca0  size 0x32  file by match with source
- * confidence: inferred
- * evidence: model_modvol_buf_alloc then model_modvol_compile_to; frees the buffer and returns 0 on failure; nothing in the image calls it; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: model_modvol_buf_alloc then model_modvol_compile_to; frees the buffer and returns 0 on failure; nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness in one sandbox on the buf:2 source model it called model_modvol_buf_alloc and model_modvol_compile_to and returned 0xAB97BD60 (0x120 taken) holding 0x100, size 0x120, 0x120 at +0x3C and slots {0x20, 0x60}, {0x78, 0x60}; on a model with word 0 = -1 it returned 0 after model_buf_free(0)
  * matched: source/sdk/naomi2_library/model_compile.c (tools/match/match.py)
  */
 uint * model_modvol_compile_alloc(int *model)
@@ -333,8 +333,8 @@ uint * model_modvol_compile_alloc(int *model)
 }
 
 /* 0x0c0fcce0  size 0x18  file by match with source
- * confidence: inferred
- * evidence: gives a model buffer back to the model heap (elan_ram_top_release_to with the size kept at +0x3c), nothing for 0; callers model_compile_alloc and model_modvol_compile_alloc; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: gives a model buffer back to the model heap (elan_ram_top_release_to with the size kept at +0x3c), nothing for 0; callers model_compile_alloc and model_modvol_compile_alloc; part of the NAOMI2 library; exercised 2026-11-12: called by the harness in one sandbox after model_buf_alloc had taken 0x140 at 0xAB97BD40 (size kept at +0x3C): model_buf_free(0xAB97BD40) called elan_ram_top_release_to(0xAB97BD40, 0x140) and elan_ram_top went back to 0xAB97BE80; model_buf_free(0) called nothing
  * matched: source/sdk/naomi2_library/model_compile.c (tools/match/match.py)
  */
 void model_buf_free(uint *buf)
@@ -344,9 +344,9 @@ void model_buf_free(uint *buf)
 }
 
 /* 0x0c0fcd00  size 0xc8  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xd4
- * evidence: like model_compile_to but places the compiled model in the current frame's display list area at the write pointer elan_cmd_write_ptr, which it advances; for a model that still needs compiling sets model_compile_to_frame (0c3256e0) while model_list_compile runs, so environment-mapped strips get their texture coordinates from the current matrix; returns the header address, 0 for no model; nothing in the image calls it; part of the NAOMI2 library
+ * evidence: like model_compile_to but places the compiled model in the current frame's display list area at the write pointer elan_cmd_write_ptr, which it advances; for a model that still needs compiling sets model_compile_to_frame (0c3256e0) while model_list_compile runs, so environment-mapped strips get their texture coordinates from the current matrix; returns the header address, 0 for no model; nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness in one sandbox with elan_cmd_write_ptr 0xAA100000: on the buf:2 source model it returned 0xAA100000 holding the compiled model (size 0x1E0), left the pointer at 0xAA1001E0 and model_compile_to_frame 0; the flag-bit-8 strip got u, v from mtx_xform_dir (0.0103, 0.5), not its own (0.1, 0.2) as under model_compile_to; a compiled 0x1E0 model was copied to 0xAA1001E0 with +0x3C 0x1E0; null returned 0
  * matched: source/sdk/naomi2_library/model_compile.c (tools/match/match.py)
  */
 uint * model_compile_to_frame_list(int *model)
@@ -382,9 +382,9 @@ uint * model_compile_to_frame_list(int *model)
 }
 
 /* 0x0c0fce00  size 0xc0  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xcc
- * evidence: as model_compile_to_frame_list for the modifier-volume lists 1 and 3; nothing in the image calls it; part of the NAOMI2 library
+ * evidence: as model_compile_to_frame_list for the modifier-volume lists 1 and 3; nothing in the image calls it; part of the NAOMI2 library; exercised 2026-11-12: called by the harness in one sandbox with elan_cmd_write_ptr 0xAA100000 on the buf:2 source model it returned 0xAA100000 holding 0x100, size 0x120, slots {0x20, 0x60}, {0x78, 0x60} and +0x50/+0x54 zero, left the pointer at 0xAA100120 and model_compile_to_frame 0; with the model's word 0 poked -1 it returned 0
  * matched: source/sdk/naomi2_library/model_compile.c (tools/match/match.py)
  */
 uint * model_modvol_compile_to_frame_list(int *model)
@@ -421,8 +421,8 @@ uint * model_modvol_compile_to_frame_list(int *model)
 }
 
 /* 0x0c0fcf00  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: (vertex index in a strip): 0 for the first two vertices, 3 for the third, 1 after; model_list_compile puts it in bits 29-30 of the vertex control word for strips with flag bit 4 and for triangle lists (index within each triangle); part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: (vertex index in a strip): 0 for the first two vertices, 3 for the third, 1 after; model_list_compile puts it in bits 29-30 of the vertex control word for strips with flag bit 4 and for triangle lists (index within each triangle); part of the NAOMI2 library; exercised 2026-11-12: called by the harness with 0, 1, 2, 3 and 9 it returned 0, 0, 3, 1 and 1
  * matched: source/sdk/naomi2_library/model_compile.c (tools/match/match.py)
  */
 uint strip_vertex_code_1(uint n)
@@ -435,8 +435,8 @@ uint strip_vertex_code_1(uint n)
 }
 
 /* 0x0c0fcf20  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: (vertex index in a strip): 0 for the first two vertices, 3 for the third, 2 after; model_list_compile's code for strips without flag bit 4; part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: (vertex index in a strip): 0 for the first two vertices, 3 for the third, 2 after; model_list_compile's code for strips without flag bit 4; part of the NAOMI2 library; exercised 2026-11-12: called by the harness with 0, 1, 2, 3 and 9 it returned 0, 0, 3, 2 and 2
  * matched: source/sdk/naomi2_library/model_compile.c (tools/match/match.py)
  */
 uint strip_vertex_code_2(uint n)
@@ -449,9 +449,9 @@ uint strip_vertex_code_2(uint n)
 }
 
 /* 0x0c0fcf40  size 0x8a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xb2
- * evidence: packs four color floats (0..1) into an ARGB8888 word, each scaled by 255 and clamped to 0..255; only caller model_list_compile (base and offset colors of the material command); part of the NAOMI2 library
+ * evidence: packs four color floats (0..1) into an ARGB8888 word, each scaled by 255 and clamped to 0..255; only caller model_list_compile (base and offset colors of the material command); part of the NAOMI2 library; exercised 2026-11-12: called by the harness with (alpha 1.0, red 0.2, green 0.6, blue 0.0) it returned 0xFF339900 and with (2.0, -0.5, 1.0, 0.2) 0xFF00FF33 (alpha and red clamped)
  * matched: source/sdk/naomi2_library/model_compile.c (tools/match/match.py)
  */
 uint argb_pack_clamped(float alpha, float red, float green, float blue)
@@ -474,9 +474,9 @@ uint argb_pack_clamped(float alpha, float red, float green, float blue)
 }
 
 /* 0x0c0fd000  size 0x1b4  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x216
- * evidence: (model, list 0-4): the bytes model_list_compile will write for one list, rounded up to 32: 0 when the list is switched off in model_list_enabled or the model is empty; walks the model's records from word 6 (0x50-byte header, list type in bits 24-26 of word 0, material type word 9, next record at word 19) and their strips: per vertex 16 bytes for a record of the list below (modifier volume), 24 for types -1 and up, 40 for type -2, 32 or 40 (mode word modvol_two_volume) for the rest, plus 96 bytes per record (32 for a volume) and 32 per new strip header; callers model_size and model_modvol_size; part of the NAOMI2 library
+ * evidence: (model, list 0-4): the bytes model_list_compile will write for one list, rounded up to 32: 0 when the list is switched off in model_list_enabled or the model is empty; walks the model's records from word 6 (0x50-byte header, list type in bits 24-26 of word 0, material type word 9, next record at word 19) and their strips: per vertex 16 bytes for a record of the list below (modifier volume), 24 for types -1 and up, 40 for type -2, 32 or 40 (mode word modvol_two_volume) for the rest, plus 96 bytes per record (32 for a volume) and 32 per new strip header; callers model_size and model_modvol_size; part of the NAOMI2 library; exercised 2026-11-12: called by the harness on a two-record source model built in buf:2 by the described layout (record 0: list 0, type -1, one strip, flags 0x41, of 3 full vertices; record 1: list 2, type 0, one strip, flags 0x112, of 4): list 0 returned 0xC0 (3 x 24 + 96 rounded), list 1 0x60 (record 0 as a volume, 3 x 16 + 32), list 2 0xC0, list 3 0x60, list 4 0; with model_list_enabled poked 0 list 0 returned 0
  * matched: source/sdk/naomi2_library/model_compile.c (tools/match/match.py)
  */
 uint model_list_compiled_size(int *model, uint list)
@@ -553,8 +553,8 @@ uint model_list_compiled_size(int *model, uint list)
 }
 
 /* 0x0c0fd240  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: (a, b floats): the top 16 bits of a's bit pattern in the upper half and those of b in the lower half (two truncated 16-bit floats in one word); nothing in the image calls it (uncalled code, made a function 2026-11-09); between model_list_compiled_size and model_list_compile, so by link order part of sdk/naomi2_library/model_compile.c
+ * confidence: exercised
+ * evidence: (a, b floats): the top 16 bits of a's bit pattern in the upper half and those of b in the lower half (two truncated 16-bit floats in one word); nothing in the image calls it (uncalled code, made a function 2026-11-09); between model_list_compiled_size and model_list_compile, so by link order part of sdk/naomi2_library/model_compile.c; exercised 2026-11-12: called by the harness with (1.5, -2.75) it returned 0x3FC0C030 and with (0.1, 0.3) 0x3DCC3E99 (0x3DCCCCCD and 0x3E99999A cut to their top halves)
  * matched: source/sdk/naomi2_library/model_compile.c (tools/match/match.py)
  */
 uint float_pair_pack16(float a, float b)
@@ -568,7 +568,7 @@ uint float_pair_pack16(float a, float b)
 /* 0x0c0fd280  size 0xe64  file by match with source
  * confidence: inferred
  * extent: 0x12ea
- * evidence: (model, {offset, size} slot, destination address, list 0-4, expected size or -1): compiles the model's records for one list into ELAN commands written through the store queue (QACR from dst): per record a 0x08000500 material command (base and offset colors from argb_pack_clamped, alpha 0.5 under model_opaque_as_translucent, a byte from material_param_byte_table for positive types) and an end block, then per strip a 0x08000700 header (the record's parameter words with list type (word 0 bits 24-26), Gouraud bit (word 0 bit 1, from strip flag bit 6), culling mode (word 1 bits 27-28, from strip flag bits 0-1) and blend factors (word 2 bits 26-31) rewritten from model_opaque_as_translucent with model_forced_blend_src/dst, model_translucent_as_opaque and the mode model_type_m2_blend_mode for type -2; the vertex count patched into +0x1c) and the vertices: a control word (strip_vertex_code_1/2 in bits 29-30, bit 31 on the last, the normal as three bytes) with x, y, z and u, v (24 bytes; for model_compile_to_frame with flag bit 8 the uv come from mtx_xform_dir of the normal plus offsets 0c3dc1a4/1a8), 40-byte vertices for type -2, x, y, z only for records of the list below turned into modifier volumes; pads to 32 bytes with 0x08000000 words; when expected >= 0 and the size differs, fills the error record at model_error_record and executes trapa #0x3a; stores the block's offset (from the slot) and size in the slot and returns the new end address; skips (returns dst) a list switched off in model_list_enabled; callers model_compile_to, model_modvol_compile_to, model_compile_to_frame_list, model_modvol_compile_to_frame_list; part of the NAOMI2 library
+ * evidence: (model, {offset, size} slot, destination address, list 0-4, expected size or -1): compiles the model's records for one list into ELAN commands written through the store queue (QACR from dst): per record a 0x08000500 material command (base and offset colors from argb_pack_clamped, alpha 0.5 under model_opaque_as_translucent, a byte from material_param_byte_table for positive types) and an end block, then per strip a 0x08000700 header (the record's parameter words with list type (word 0 bits 24-26), Gouraud bit (word 0 bit 1, from strip flag bit 6), culling mode (word 1 bits 27-28, from strip flag bits 0-1) and blend factors (word 2 bits 26-31) rewritten from model_opaque_as_translucent with model_forced_blend_src/dst, model_translucent_as_opaque and the mode model_type_m2_blend_mode for type -2; +0x1c meant for the vertex count, which as compiled stays 0 (see the fault row)) and the vertices: a control word (strip_vertex_code_1/2 in bits 29-30, bit 31 on the last, the normal as three bytes) with x, y, z and u, v (24 bytes; for model_compile_to_frame with flag bit 8 the uv come from mtx_xform_dir of the normal plus offsets 0c3dc1a4/1a8), 40-byte vertices for type -2, x, y, z only for records of the list below turned into modifier volumes; pads to 32 bytes with 0x08000000 words; when expected >= 0 and the size differs, fills the error record at model_error_record and executes trapa #0x3a; stores the block's offset (from the slot) and size in the slot and returns the new end address; skips (returns dst) a list switched off in model_list_enabled; callers model_compile_to, model_modvol_compile_to, model_compile_to_frame_list, model_modvol_compile_to_frame_list; part of the NAOMI2 library; as the game has it: every compiled strip header gets 0 at +0x1C instead of its vertex count, and a stray word is stored at n + 0x1C in low memory; nothing in the game reaches model_list_compile; corrected 2026-11-12 from harness calls: called by the harness through model_compile_to on the buf:2 source model, everything described fit (material 0x08000500 with 0xFF339900, end block, header 0x08000712 / 0x08000001 with the Gouraud and cull bits, vertices 0x00C1003F ... 0xE07F0000 with x, y, z, u, v, 0x08000000 pads, slot {0x20, 0xC0}) except the count: header +0x1C stayed 0 for the 3- and 4-vertex strips, and the routine stored 3 at address 0x1F and 4 at 0x20
  * matched: source/sdk/naomi2_library/model_compile.c (tools/match/match.py)
  */
 uint model_list_compile(int *model,int *span,uint dst,uint list,int expected_size)

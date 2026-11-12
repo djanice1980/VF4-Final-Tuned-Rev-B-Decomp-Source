@@ -239,8 +239,8 @@ void rob_draw_mode_set(int side, uint mode)
 }
 
 /* 0x0c0d1140  size 0x72  file by match with source
- * confidence: inferred
- * evidence: (rob): takes the model list for character*2 + costume from rob_part_lists ({count, ids...}) and draws each id whose bit is set in rob_part_mask[player] with rob_model_draw_bones; nothing in the image calls it; part of vf4lib/librobdisp/src/rob_disp.c
+ * confidence: exercised
+ * evidence: (rob): takes the model list for character*2 + costume from rob_part_lists ({count, ids...}) and draws each id whose bit is set in rob_part_mask[player] with rob_model_draw_bones; nothing in the image calls it; part of vf4lib/librobdisp/src/rob_disp.c; exercised 2026-11-12: called by the harness after pointing rob_part_lists[14][0] (robs: character 14, costume 0; the table is all null in the image) at a planted {3, 0x10, 0x11, 0x12}: with rob_part_mask[0] 5 it drew 0x10 and 0x12 (rob_model_draw_bones), with 2 only 0x11; robs[1] (side 1, costume 1) with list {2, 0x20, 0x21, 0x22} and rob_part_mask[1] 0xFFFFFFFF drew 0x20 and 0x21 only
  * matched: source/vf4lib/librobdisp/src/rob_disp.c (tools/match/match.py)
  */
 void rob_part_list_draw(rob_rec *rob)
@@ -916,8 +916,8 @@ void osage_chains_add_list(rob_rec *rob, int model, int *list)
 }
 
 /* 0x0c0d2400  size 0x4e  file by match with source
- * confidence: inferred
- * evidence: (list, out): copies up to seven 7-word records {node, six words} until one whose first short is 0, then ends the copy with a zero short; nothing when either pointer is 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between osage_chains_add_list and osage_node_link_set, so by link order part of vf4lib/librobdisp/src/rob_disp.c
+ * confidence: exercised
+ * evidence: (list, out): copies up to seven 7-word records {node, six words} until one whose first short is 0, then ends the copy with a zero short; nothing when either pointer is 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between osage_chains_add_list and osage_node_link_set, so by link order part of vf4lib/librobdisp/src/rob_disp.c; exercised 2026-11-12: called by the harness with three 7-word records (first shorts 1, 2, 3) and then a 0 short: it copied the 21 words and wrote a 0 short at out +0x54; with nine nonzero records it copied seven and put the 0 short at out +0xC4; with the list or the out pointer 0 it wrote nothing
  * matched: source/vf4lib/librobdisp/src/rob_disp.c (tools/match/match.py)
  */
 void osage_param_list_copy(int *list, int *out)
@@ -1478,8 +1478,8 @@ void rob_shun_item_draw(rob_rec *rob)
 }
 
 /* 0x0c0d3c40  size 0x54  file by match with source
- * confidence: inferred
- * evidence: (segment length pointer, node): draws object osage_stick_obj at the node's matrix (+4) scaled (length, osage_stick_width, osage_stick_width), after coord_scale_store(length); caller osage_chain_sticks_draw; part of vf4lib/librobdisp/src/rob_disp.c
+ * confidence: exercised
+ * evidence: (segment length pointer, node): draws object osage_stick_obj at the node's matrix (+4) scaled (length, osage_stick_width, osage_stick_width), after coord_scale_store(length); caller osage_chain_sticks_draw; part of vf4lib/librobdisp/src/rob_disp.c; exercised 2026-11-12: called by the harness with a length word 2.5 and a planted node whose matrix pointer (+4) is 0x0F00A080: it called mtx_mul_by(0x0F00A080), mtx_scale_xyz(2.5, 0.2, 0.2) (osage_stick_width 0.2), coord_scale_store(2.5) and obj_draw(0x24) (osage_stick_obj)
  * matched: source/vf4lib/librobdisp/src/rob_disp.c (tools/match/match.py)
  */
 void osage_node_stick_draw(float *length, osage_node *node)
@@ -1494,9 +1494,9 @@ void osage_node_stick_draw(float *length, osage_node *node)
 }
 
 /* 0x0c0d3cc0  size 0x60  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xa6
- * evidence: (osage chain): walks the chain's command list from the second node, osage_node_stick_draw for each op 3 node and the last (op 0 or 4); caller rob_shun_item_draw (debug flag osage_sticks_on); part of vf4lib/librobdisp/src/rob_disp.c
+ * evidence: (osage chain): walks the chain's command list from the second node, osage_node_stick_draw for each op 3 node and the last (op 0 or 4); caller rob_shun_item_draw (debug flag osage_sticks_on); part of vf4lib/librobdisp/src/rob_disp.c; exercised 2026-11-12: called by the harness with a planted chain whose list is {1 root} {3 J1} {2 -} {3 J2} {0 J3} {3 J4} and nodes 0x2C apart: osage_node_stick_draw(J1, node 1), (J2, node 2), (J3, node 3), nothing for the op 2 and nothing after the op 0
  * matched: source/vf4lib/librobdisp/src/rob_disp.c (tools/match/match.py)
  */
 void osage_chain_sticks_draw(osage_chain_slot *chain)
@@ -1519,8 +1519,8 @@ void osage_chain_sticks_draw(osage_chain_slot *chain)
 }
 
 /* 0x0c0d3d80  size 0x24  file by match with source
- * confidence: inferred
- * evidence: clears the coli_list word of the 100 records of j_ex_00[0]; nothing in the image calls it (uncalled code, made a function 2026-11-09); between osage_chain_sticks_draw and face_draw_skinned, so by link order part of vf4lib/librobdisp/src/rob_disp.c
+ * confidence: exercised
+ * evidence: clears the coli_list word of the 100 records of j_ex_00[0]; nothing in the image calls it (uncalled code, made a function 2026-11-09); between osage_chain_sticks_draw and face_draw_skinned, so by link order part of vf4lib/librobdisp/src/rob_disp.c; exercised 2026-11-12: called by the harness after planting 0x11111111 in j_ex_00[0][0].coli_list (+0x14) and 0x44444444 in [0][99]: both became 0, while [0][0] +0x10 (0x22223333) and j_ex_00[1][0].coli_list (0x55555555) were kept
  * matched: source/vf4lib/librobdisp/src/rob_disp.c (tools/match/match.py)
  */
 void j_ex_coli_lists_clear(void)
@@ -1705,8 +1705,8 @@ void bone_tree_debug_draw(rob_rec *rob)
 }
 
 /* 0x0c0d4220  size 0x134  file by match with source
- * confidence: inferred
- * evidence: (node): for each child (+0x68 list, count at +0x64 record +0x24): crosses with the name (debug_cross_label_draw) at the child's position (+0x38 +0x30) by flag bits of the +0x64 records (0x40 with 0x80, 0x1900), a line between parent and child with the parent's name at its middle (flags 0x80 and 0x3100), then recurses; callers bone_tree_debug_draw and itself; part of vf4lib/librobdisp/src/rob_disp.c
+ * confidence: exercised
+ * evidence: (node): for each child (+0x68 list, count at +0x64 record +0x24): crosses (debug_cross_label_draw) at the child's position (+0x38 +0x30): with the parent's name when the parent's +0x64 record has flag 0x40 and the child's 0x80, with the child's own name when the child's flags hold all of 0x1900, a line between parent and child with the parent's name at its middle (flags 0x80 and 0x3100), then recurses; callers bone_tree_debug_draw and itself; part of vf4lib/librobdisp/src/rob_disp.c; exercised 2026-11-12: called by the harness on a planted tree: root flags 0xC0 with children A (0x80) and B (0x1900) gave a cross named ROOT at A and one named B at B, and a line root-B (proj_point_to_pixel_xy of both, screen_line_draw) with ROOT at its middle, none to A; root 0x80 with A (0x2000, child C 0x1900) and B gave lines root-A and root-B with ROOT, a cross named B at B and, by the recursion, one named C at C
  * matched: source/vf4lib/librobdisp/src/rob_disp.c (tools/match/match.py)
  */
 void bone_tree_debug_draw_node(bone_work_rec *bone)
@@ -2033,9 +2033,9 @@ void osage_debug_link_draw(osage_joint_desc *joint, osage_node *node, float *pre
 }
 
 /* 0x0c0d4c20  size 0x9c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xe4
- * evidence: (chain): sets each node's collision list (its j_ex_00 parameter +0x14) to the osage_coli_edit entry named by osage_edit_coli_index[node], or null for -1; caller ex_osage_new_update with coli_flag; part of vf4lib/librobdisp/src/rob_disp.c
+ * evidence: (chain): sets each node's collision list (its j_ex_00 parameter +0x14) to the osage_coli_edit entry named by osage_edit_coli_index[node], or null for -1; caller ex_osage_new_update with coli_flag; part of vf4lib/librobdisp/src/rob_disp.c; exercised 2026-11-12: called by the harness on snapshot chains 0 (op 0 node 3) and 1 (node 4) with osage_edit_coli_index[3] = 2 and [4] = -1: j_ex_00[0][3].coli_list became 0x0C2EE488 (the records of osage_coli_edit[2]) and [4] 0 (0x1234 planted); with index 5 node 3 got 0x0C2EE734
  * matched: source/vf4lib/librobdisp/src/rob_disp.c (tools/match/match.py)
  */
 void osage_chain_coli_attach(osage_chain_slot *chain)
@@ -2106,8 +2106,8 @@ void screen_diamond_draw(float x, float y, float size, float depth, uint color)
 }
 
 /* 0x0c0d4da0  size 0x64  file by match with source
- * confidence: inferred
- * evidence: for each of player 0's chains of the selected edit target, osage_edit_chain_restore; then clears the request osage_edit_restore_request; caller ex_osage_new_update; part of vf4lib/librobdisp/src/rob_disp.c
+ * confidence: exercised
+ * evidence: for each of player 0's chains of the selected edit target, osage_edit_chain_restore; then clears the request osage_edit_restore_request; caller ex_osage_new_update; part of vf4lib/librobdisp/src/rob_disp.c; exercised 2026-11-12: called by the harness with the request 1: with osage_edit_targets[0] 0 (no chain has that model) it restored nothing and cleared the request; with 0x610000 it called osage_edit_chain_restore for the ten side-0 chains with that model id (0x0C39C450 to 0x0C39C54C) but not chains 10-12 (0x610001), and cleared the request
  * matched: source/vf4lib/librobdisp/src/rob_disp.c (tools/match/match.py)
  */
 void osage_edit_restore_selected(void)
@@ -2127,8 +2127,8 @@ void osage_edit_restore_selected(void)
 }
 
 /* 0x0c0d4e20  size 0x72  file by match with source
- * confidence: inferred
- * evidence: (chain): for each op 3 / op 0 node copies rot_type[node] into the chain's parameters and coli_num[node] into osage_edit_coli_index[node] (indexed by node number, where osage_edit_chain_exchange indexes the edit values by position); caller osage_edit_restore_selected; part of vf4lib/librobdisp/src/rob_disp.c
+ * confidence: exercised
+ * evidence: (chain): for each op 3 / op 0 node copies rot_type[node] into the chain's parameters and coli_num[node] into osage_edit_coli_index[node] (indexed by node number, where osage_edit_chain_exchange indexes the edit values by position); caller osage_edit_restore_selected; part of vf4lib/librobdisp/src/rob_disp.c; exercised 2026-11-12: called by the harness on snapshot chain 0 (op 0 node 3) with rot_type[3] planted as the words 0xA1-0xA6 and coli_num[3] 5: j_ex_00[0][3] became 0xA1-0xA6 and osage_edit_coli_index[3] 5; on chain 1 (node 4) with 0xB1-0xB6 and coli_num[4] 0xFE: [4] became 0xB1-0xB6 and the index -2; index[2] was kept
  * matched: source/vf4lib/librobdisp/src/rob_disp.c (tools/match/match.py)
  */
 void osage_edit_chain_restore(osage_chain_slot *chain)
@@ -2161,8 +2161,8 @@ void osage_edit_chain_restore(osage_chain_slot *chain)
 }
 
 /* 0x0c0d4ea0  size 0x30  file by match with source
- * confidence: inferred
- * evidence: (chain, int table): sets table[node] = 1 for each op 3 / op 0 node of the chain; caller make_osage_param_text; part of vf4lib/librobdisp/src/rob_disp.c
+ * confidence: exercised
+ * evidence: (chain, int table): sets table[node] = 1 for each op 3 / op 0 node of the chain; caller make_osage_param_text; part of vf4lib/librobdisp/src/rob_disp.c; exercised 2026-11-12: called by the harness snapshot chain 0 (op 1 root, op 0 node 3) set only table[3] and chain 4 table[1]; a planted list {1 root} {3 node 10} {2 -} {3 node 12} {0 node 20} {3 node 30} set 10, 12 and 20 and not 30
  * matched: source/vf4lib/librobdisp/src/rob_disp.c (tools/match/match.py)
  */
 void osage_chain_nodes_mark(osage_chain_slot *chain, int *marks)
@@ -2184,7 +2184,7 @@ void osage_chain_nodes_mark(osage_chain_slot *chain, int *marks)
 /* 0x0c0d4ee0  size 0x310  file by match with source
  * confidence: named
  * extent: 0x3a4
- * evidence: the debug menu item "[make_osage_param_text]" (menu word 0x0C1E652C): for the selected target model (name cut at "_o_body") writes into osage_param_text (strbuf) C text of its collision tables ("static CLOTH_COLI coli_%s_%d[] = ..." from osage_coli_edit) and its node parameters ("OSAGE_COLI_TBL2 osp_%s[] = ...", one "{%d, {%s, 0x%04x, %f, ...} }" line per marked node with the rottype names, ending with the "{-1, {ROTTYPE_ZY, ...} }" line), stores its length, prepares the shell commands ("shell mv tmp.txt osage2_%s.txt", "shell mv tmp.bin ../data/param/osage_coli_%s.bin", the osage_param and osage_coli_idx moves and copies) with their lengths, then window_trap; part of vf4lib/librobdisp/src/rob_disp.c; name from the game: the debug menu item "[make_osage_param_text]" (label at 0x0C23DC08) has this routine as its function word (0x0C1E652C)
+ * evidence: the debug menu item "[make_osage_param_text]" (menu word 0x0C1E652C): for the selected target model (name cut at "_o_body") writes into osage_param_text (strbuf) C text of its collision tables ("static CLOTH_COLI coli_%s_%d[] = ..." from osage_coli_edit) and its node parameters ("OSAGE_COLI_TBL2 osp_%s[] = ...", one "{%d, {%s, 0x%04x, %f, ...} }" line per marked node with the rottype names, ending with the "{-1, {ROTTYPE_ZY, ...} }" line), stores its length, prepares the shell commands ("shell mv tmp.txt osage2_%s.txt", "shell mv tmp.bin ../data/param/osage_coli_%s.bin", the osage_param and osage_coli_idx moves and copies) with their lengths, then window_trap; part of vf4lib/librobdisp/src/rob_disp.c; name from the game: the debug menu item "[make_osage_param_text]" (label at 0x0C23DC08) has this routine as its function word (0x0C1E652C); exercised 2026-11-12: called by the harness with osage_edit_targets[0] 0x610000, osage_coli_edit[1] holding one record (type 1, slot 2, 1.5, 2.25, -3, 0.5, 0.25, 0.75) and osage_edit_coli_index[3] 1: osage_param_text got "static CLOTH_COLI coli_CH_JDK_CH_JDK_1[] =" with that ball line and the END line, then "OSAGE_COLI_TBL2 osp_CH_JDK_CH_JDK[] =" with lines for the marked nodes 1-10 (node 3 naming coli_CH_JDK_CH_JDK_1, the rest NULL) and the -1 line; osage_param_text_len 1111, its strlen; then window_trap
  * matched: source/vf4lib/librobdisp/src/rob_disp.c (tools/match/match.py)
  */
 void make_osage_param_text(void)
@@ -2457,8 +2457,8 @@ void rob_zanzou_make_all(void)
 }
 
 /* 0x0c0d5a40  size 0xe6  file by match with source
- * confidence: inferred
- * evidence: (rob, trail 0-8, value): restarts the trail at its current edge (the two bones' points, zanzou_trail_restart) and marks the slot on (rob_zanzou_slots: on 1, +8 0, +0xC value); nothing in the image calls it; part of vf4lib/librobdisp/src/rob_disp.c
+ * confidence: exercised
+ * evidence: (rob, trail 0-8, value): restarts the trail at its current edge (the two bones' points, zanzou_trail_restart) and marks the slot on (rob_zanzou_slots: on 1, +8 0, +0xC value); nothing in the image calls it; part of vf4lib/librobdisp/src/rob_disp.c; exercised 2026-11-12: called by the harness with robs (side 0), trail 3, value 7: zanzou_trail_restart(0x0C498B98 = rob_zanzou_trails[0][3], the two bone points, 1) and slot 0x0C498E5C became {1, 0xAAAA kept, 0, 7}; with robs[1] (side 1), trail 8, value 0x55: the trail 0x0C498E00 ([1][8]) and slot 0x0C498F3C {1, kept, 0, 0x55}
  * matched: source/vf4lib/librobdisp/src/rob_disp.c (tools/match/match.py)
  */
 void rob_zanzou_start(rob_rec *rob, int trail, int value)
@@ -2890,7 +2890,7 @@ void item_zanzou_disp(void)
 
 /* 0x0c0d6840  size 0x104  file by match with source
  * confidence: inferred
- * evidence: (out, count, four-point history): count points between history[1] and history[0], per axis a two-key curve (curve_sample) with end slopes from history[0]-history[2] and history[1]-history[3]; caller rob_zanzou_calc; part of vf4lib/librobdisp/src/rob_disp.c
+ * evidence: (out, count, four-point history): count points between history[2] and history[1] (at t = 1/(count+1) to count/(count+1)), per axis a two-key curve (curve_sample) from history[2] with slope history[1]-history[3] to history[1] with slope history[0]-history[2]; caller rob_zanzou_calc; part of vf4lib/librobdisp/src/rob_disp.c; corrected 2026-11-12 from harness calls: called by the harness with count 3 and a history whose x are 100, 10, 1, 0 and y 40, 30, 20, 10, it wrote x -0.828, -5.625, -4.859 and y 23.44, 25, 26.56: the curve runs from history[2] to history[1] (Hermite with slopes history[1]-history[3] and history[0]-history[2]), not between history[1] and history[0] (which gives y about 35 at the middle)
  * matched: source/vf4lib/librobdisp/src/rob_disp.c (tools/match/match.py)
  */
 void zanzou_spline_points4(float *out, int count, float *hist)
@@ -2972,9 +2972,9 @@ void zanzou_spline_points3(float *out, int count, float *hist)
 }
 
 /* 0x0c0d6a80  size 0xb8  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xde
- * evidence: (out, points, index, count, t): the point at t between points[index-1] and points[index] with slopes from their neighbors (zero at the ends), per axis through curve_sample; caller spline_test_draw; part of vf4lib/librobdisp/src/rob_disp.c
+ * evidence: (out, points, index, count, t): the point at t between points[index-1] and points[index] with slopes from their neighbors (zero at the ends), per axis through curve_sample; caller spline_test_draw; part of vf4lib/librobdisp/src/rob_disp.c; exercised 2026-11-12: called by the harness with the points (0, 5, 10), (1, 5, 20), (4, 5, 30), (9, 5, 40) and count 3: index 2 gave (1, 5, 20) at t 0, (4, 5, 30) at t 1 and (2, 5, 25) at t 0.5; index 1 at t 0.5 (no slope at the start) (0, 5, 12.5); index 3 at t 0.5 (no slope at the end) (7.5, 5, 37.5)
  * matched: source/vf4lib/librobdisp/src/rob_disp.c (tools/match/match.py)
  */
 void spline_point_eval(float *out_point, float *points, int index, int count, float t)
@@ -3004,8 +3004,8 @@ void spline_point_eval(float *out_point, float *points, int index, int count, fl
 }
 
 /* 0x0c0d6b80  size 0xec  file by match with source
- * confidence: inferred
- * evidence: draws the four control points at spline_test_points joined by thick 3D lines (line3d_width_store spline_test_width, color spline_test_color) and the curve through them at t = 0.25, 0.5, 0.75 per span (spline_point_eval) in thinner lines; caller item_zanzou_disp when spline_test_on is set; part of vf4lib/librobdisp/src/rob_disp.c
+ * confidence: exercised
+ * evidence: draws the four control points at spline_test_points joined by thick 3D lines (line3d_width_store spline_test_width, color spline_test_color) and the curve at t = 0.25, 0.5, 0.75 per span (spline_point_eval with count 4) over four spans, the last running on to a fifth point, spline_test_points[4], in lines of width spline_test_curve_width (1.0 in the image, the same as spline_test_width); caller item_zanzou_disp when spline_test_on is set; part of vf4lib/librobdisp/src/rob_disp.c; exercised 2026-11-12: called by the harness with the image values (points (0,0,0), (1,0,0), (1,1,0), (2,1,0), (2,2,0); widths 1.0; colors 0xFFFFFFFF, 0xFFFF0000): line3d_width_store(1.0), three lines joining points 0-3 in 0xFFFFFFFF, then for index 1 to 4 three spline_point_eval calls (count 4, t 0.25, 0.5, 0.75) and four 0xFFFF0000 lines from point index-1 through them to point index, the last span ending at spline_test_points[4] (notes row)
  * matched: source/vf4lib/librobdisp/src/rob_disp.c (tools/match/match.py)
  */
 void spline_test_draw(void)
@@ -3059,8 +3059,8 @@ void item_zanzou_dural_nop(rob_rec *rob)
 }
 
 /* 0x0c0d6ce0  size 0x70  file by match with source
- * confidence: inferred
- * evidence: (model, buffer, color): for each {offset, color, ...} record of the model's +0x84 list (16 bytes, offset 0 ends) writes the record color multiplied by the color per channel (argb_mul) at buffer + offset - 0x54 and - 0x4C; nothing in the image calls it; part of vf4lib/librobdisp/src/rob_disp.c
+ * confidence: exercised
+ * evidence: (model, buffer, color): for each {offset, color, ...} record of the list at the model's file (+0x38) plus the offset at +0x84 (16 bytes, offset 0 ends) writes the record color multiplied by the color per channel (argb_mul) at buffer + offset - 0x54 and - 0x4C; nothing in the image calls it; part of vf4lib/librobdisp/src/rob_disp.c; exercised 2026-11-12: called by the harness with color 0x80FF4020 and a planted model whose list holds {0x60, 0xFF8040C0} and {0x82, 0x80FFFF00}: it wrote 0x7F7F1018 at buffer +0x0C and +0x14 and 0x40FE3F00 at +0x2C and +0x34 and nothing else; the same with the list at file (+0x38) + offset (+0x84) (notes row); with buffer 0 nothing
  * matched: source/vf4lib/librobdisp/src/rob_disp.c (tools/match/match.py)
  */
 void model_color_list_tint(obj_node *node, char *buf, uint color)
@@ -3161,8 +3161,8 @@ void itmtst_display_setup(void)
 }
 
 /* 0x0c0d6ea0  size 0x2c  file by match with source
- * confidence: inferred
- * evidence: the undoing of itmtst_display_setup: restores pause_flags, shadow_erase 1, console_disp and stage_disp on, disp_sw 0 for both; caller itmtst_step; part of vf4lib/librobdisp/src/rob_disp.c
+ * confidence: exercised
+ * evidence: the undoing of itmtst_display_setup: restores pause_flags, shadow_erase 1, console_disp and stage_disp on, disp_sw 0 for both; caller itmtst_step; part of vf4lib/librobdisp/src/rob_disp.c; exercised 2026-11-12: called by the harness with itmtst_state.saved_pause_flags 0x1234, pause_flags 0x5555, shadow_erase 0, console_disp and stage_disp 0x55, disp_sw 9, 9: pause_flags became 0x1234, shadow_erase 1, both displays 0 (ON_OFF_ON), disp_sw 0, 0 and the next word kept; with saved 0x8001 pause_flags became 0x8001
  * matched: source/vf4lib/librobdisp/src/rob_disp.c (tools/match/match.py)
  */
 void itmtst_display_restore(void)
@@ -3178,8 +3178,8 @@ void itmtst_display_restore(void)
 }
 
 /* 0x0c0d6f00  size 0xe0  file by match with source
- * confidence: inferred
- * evidence: moves the item test to the next costume, then the next character (skipping 13) by rob_reload_costume / rob_reload_chara, reloading banks 5-8 and 0xD-0x14 (objbank_free), clearing both hand tables and calling robs_flags_clear, robs_match_clear, rob0_reload, rob1_reload; returns 0 when player 0 is already the last (character 15, costume 1), else 1; caller itmtst_step; part of vf4lib/librobdisp/src/rob_disp.c
+ * confidence: exercised
+ * evidence: moves the item test to the next costume, then the next character (skipping 13) by rob_reload_costume / rob_reload_chara, reloading banks 5-8 and 0xD-0x14 (objbank_free), clearing both hand tables and calling robs_flags_clear, robs_match_clear, rob0_reload, rob1_reload; returns 0 when player 0 is already the last (character 15, costume 1), else 1; caller itmtst_step; part of vf4lib/librobdisp/src/rob_disp.c; exercised 2026-11-12: called by the harness with player 0 poked to character 15, costume 1 it returned 0 and changed nothing; with 14 / 0 it set rob_reload_costume[0] 1, with 14 / 1 costume 0 and rob_reload_chara[0] 15, with 12 / 1 costume 0 and character 14 (13 skipped), each after the twelve objbank_free calls and disp_sw 3, 3; those calls did not return within 30 frames (rob0_reload waits for its loads), so the 1 was not seen
  * matched: source/vf4lib/librobdisp/src/rob_disp.c (tools/match/match.py)
  */
 int itmtst_next_chara(void)
@@ -3650,8 +3650,8 @@ void itmtst_samples_average(float *cpu, float *render, float *ta)
 }
 
 /* 0x0c0d7da0  size 0xde  file by match with source
- * confidence: inferred
- * evidence: records the measured values without items (cpu, render, altex, obj) as the starting best in each of the four slots of the CPU, RENDER, TEX and OBJ tables, with item -1; caller itmtst_summary_write (summary "DEFAULT"); part of vf4lib/librobdisp/src/rob_disp.c
+ * confidence: exercised
+ * evidence: records the measured values without items (cpu, render, altex, obj) into each of the four slots of the CPU, RENDER, TEX and OBJ tables whose value is lower, with item -1 (a higher value is kept; for slots 2 and 3 also item -1 in the matching "(part 0&1)" table); caller itmtst_summary_write (summary "DEFAULT"); part of vf4lib/librobdisp/src/rob_disp.c; exercised 2026-11-12: called by the harness with the slots of the eight tables at -1.0 and the measured values cpu 0, render 0, altex 1186, obj 0 (itmtst_samples_average, itmtst_altex_kb, itmtst_obj_kb in the snapshot): the CPU, RENDER, TEX and OBJ slots got 0, 0, 1186.0 and 0 with item -1 (and item -1 in slots 2 and 3 of the part tables), but a planted 1e9 in CPU slot 1 was kept with its item (notes row)
  * matched: source/vf4lib/librobdisp/src/rob_disp.c (tools/match/match.py)
  */
 void itmtst_default_record(void)
@@ -3767,9 +3767,9 @@ void itmtst_item_record(void)
 }
 
 /* 0x0c0d8100  size 0x248  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x33c
- * evidence: appends a summary block to the log: the heading by summary mode ("DEFAULT", "CPU_MAX", "RENDER_MAX", "TEX_MAX", "OBJ_MAX" and the "(part 0&1)" ones), for DEFAULT itmtst_default_record and the per-slot tex lines, else the four best items' labels, then the measured values line; caller itmtst_step; part of vf4lib/librobdisp/src/rob_disp.c
+ * evidence: appends a summary block to the log: the heading by summary mode ("DEFAULT", "CPU_MAX", "RENDER_MAX", "TEX_MAX", "OBJ_MAX" and the "(part 0&1)" ones), for DEFAULT itmtst_default_record and the per-slot tex lines, else the four best items' labels, then the measured values line; caller itmtst_step; part of vf4lib/librobdisp/src/rob_disp.c; exercised 2026-11-12: called by the harness with itmtst_stats.log at a cleared buffer: mode 2 appended "\n", the CPU_MAX heading, four item label lines and " , 0.0, 0.0, [ 0.0], 1186.0, 0.0\n" (cpu, render, ta, altex, obj as measured); mode 4 the same block under the TEX_MAX heading
  * matched: source/vf4lib/librobdisp/src/rob_disp.c (tools/match/match.py)
  */
 void itmtst_summary_write(void)

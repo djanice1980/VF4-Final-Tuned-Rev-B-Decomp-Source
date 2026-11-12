@@ -18,8 +18,8 @@ void strip_state_clear(void)
 }
 
 /* 0x0c10ee40  size 0xe  file by match with source
- * confidence: inferred
- * evidence: (mode): stores strip_matrix_mode, the flag the strip vertex senders test; nothing in the image calls it (uncalled code, made a function 2026-11-09); between strip_state_clear and strip_texidx_ref, so by link order part of sdk/libspr/strips.c
+ * confidence: exercised
+ * evidence: (mode): stores strip_matrix_mode, the flag the strip vertex senders test; nothing in the image calls it (uncalled code, made a function 2026-11-09); between strip_state_clear and strip_texidx_ref, so by link order part of sdk/libspr/strips.c; exercised 2026-11-12: called by the harness in one sandbox: 3 and then 0 left strip_matrix_mode 3 and then 0
  * matched: source/sdk/libspr/strips.c (tools/match/match.py)
  */
 void strip_matrix_mode_set(int mode)
@@ -90,9 +90,9 @@ void strip_texidx_unref(int index)
 }
 
 /* 0x0c10efc0  size 0xac  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xd4
- * evidence: (palette group, palette header {kind +2, colors +4, count +8}): outside the raw palette mode (pal_raw_mode clear) takes a use of the group (below the group count of graphics_work +4), on its first use finding and marking palette blocks (pal_find_free_blocks, pal_mark_blocks_used) and writing the colors (palette_shadow_write); returns 1 for a group out of range or no room, else 0 (0 at once in the raw mode); nothing in the image calls it; part of the strip object built after libspr
+ * evidence: (palette group, palette header {kind +2, colors +4, count +8}): outside the raw palette mode (pal_raw_mode clear) takes a use of the group (below the group count of graphics_work +4), on its first use finding and marking palette blocks (pal_find_free_blocks, pal_mark_blocks_used) and writing the colors (palette_shadow_write); returns 1 for a group out of range or no room, else 0 (0 at once in the raw mode); nothing in the image calls it; part of the strip object built after libspr; exercised 2026-11-12: called by the harness with a header in a buffer (kind 1 at +2, colors at 0x0F004000, count 20): with pal_raw_mode poked to 1, group 5 returned 0 and its record stayed unused; with it 0, group 0x40 (the count) returned 1, group 5 returned 0 with the record { block 0, kind 1, 2 blocks, 1 use, group 5 } after pal_find_free_blocks(1, 20) gave 0 and palette_shadow_write(0, 0x0F004000, 20), and a second call returned 0 with 2 uses
  * matched: source/sdk/libspr/strips.c (tools/match/match.py)
  */
 int strip_pal_group_ref(int group_no, int pal_header)
@@ -131,8 +131,8 @@ int strip_pal_group_ref(int group_no, int pal_header)
 }
 
 /* 0x0c10f0c0  size 0x24  file by match with source
- * confidence: inferred
- * evidence: (palette group): pal_group_unref when outside the raw palette mode and the group is below the group count; nothing in the image calls it; the uncalled routine after it (strip_pal_group_set) keeps a group number in strip_pal_group; part of the strip object built after libspr
+ * confidence: exercised
+ * evidence: (palette group): pal_group_unref when outside the raw palette mode and the group is below the group count; nothing in the image calls it; the uncalled routine after it (strip_pal_group_set) keeps a group number in strip_pal_group; part of the strip object built after libspr; exercised 2026-11-12: called by the harness with pal_raw_mode 0 and the snapshot's 64 palette groups: strip_pal_group_unref(3) called pal_group_unref(3), strip_pal_group_unref(64) called nothing, and with pal_raw_mode poked to 1 strip_pal_group_unref(3) called nothing
  * matched: source/sdk/libspr/strips.c (tools/match/match.py)
  */
 void strip_pal_group_unref(int group_no)
@@ -144,8 +144,8 @@ void strip_pal_group_unref(int group_no)
 }
 
 /* 0x0c10f100  size 0xe  file by match with source
- * confidence: inferred
- * evidence: (group): stores strip_pal_group, which strip_ctx_record_apply_textured reads; nothing in the image calls it (uncalled code, made a function 2026-11-09); between strip_pal_group_unref and strip_send_plain_opaque, so by link order part of sdk/libspr/strips.c
+ * confidence: exercised
+ * evidence: (group): stores strip_pal_group, which strip_ctx_record_apply_textured reads; nothing in the image calls it (uncalled code, made a function 2026-11-09); between strip_pal_group_unref and strip_send_plain_opaque, so by link order part of sdk/libspr/strips.c; exercised 2026-11-12: called by the harness in one sandbox, after strip_pal_group_set(5) strip_pal_group read 5 and after strip_pal_group_set(9) it read 9
  * matched: source/sdk/libspr/strips.c (tools/match/match.py)
  */
 void strip_pal_group_set(int group)
@@ -155,8 +155,8 @@ void strip_pal_group_set(int group)
 }
 
 /* 0x0c10f120  size 0x2a  file by match with source
- * confidence: inferred
- * evidence: (count, vertices): applies context record 0 of strip_ctx_records (opaque, untextured) with strip_ctx_record_apply and sends the strip with vertex table entry 0 (strip_send_untextured); nothing in the image calls it; part of the strip object built after libspr
+ * confidence: exercised
+ * evidence: (count, vertices): applies context record 0 of strip_ctx_records (opaque, untextured) with strip_ctx_record_apply and sends the strip with vertex table entry 0 (strip_send_untextured); nothing in the image calls it; part of the strip object built after libspr; exercised 2026-11-12: called by the harness with count 1 and a 4-word vertex (10, 20, 4, 0x11223344) in a buffer: it called strip_ctx_record_apply(strip_ctx_records + 0, record 0) and strip_send_untextured(1, 0, the buffer), and only list 0's cursor moved, by 0x40 (header and one vertex)
  * matched: source/sdk/libspr/strips.c (tools/match/match.py)
  */
 void strip_send_plain_opaque(int count, uint *verts)
@@ -167,8 +167,8 @@ void strip_send_plain_opaque(int count, uint *verts)
 }
 
 /* 0x0c10f160  size 0x30  file by match with source
- * confidence: inferred
- * evidence: (count, vertex kind, vertices): as strip_send_plain_opaque with record 1 and the caller's vertex kind passed to strip_send_untextured; nothing in the image calls it; part of the strip object built after libspr
+ * confidence: exercised
+ * evidence: (count, vertex kind, vertices): as strip_send_plain_opaque with record 1 and the caller's vertex kind passed to strip_send_untextured; nothing in the image calls it; part of the strip object built after libspr; exercised 2026-11-12: called by the harness with count 1, vertex kind 3 and a 7-word vertex in a buffer: it called strip_ctx_record_apply(strip_ctx_records + 0x14, record 1) and strip_send_untextured(1, 3, the buffer), and only list 0's cursor moved, by 0x40
  * matched: source/sdk/libspr/strips.c (tools/match/match.py)
  */
 void strip_send_plain_opaque_kind(int count, int format, uint *verts)
@@ -179,8 +179,8 @@ void strip_send_plain_opaque_kind(int count, int format, uint *verts)
 }
 
 /* 0x0c10f1a0  size 0x2a  file by match with source
- * confidence: inferred
- * evidence: (count, vertices): record 2 (translucent list) and vertex table entry 0 through strip_send_untextured; nothing in the image calls it; part of the strip object built after libspr
+ * confidence: exercised
+ * evidence: (count, vertices): record 2 (translucent list) and vertex table entry 0 through strip_send_untextured; nothing in the image calls it; part of the strip object built after libspr; exercised 2026-11-12: called by the harness with count 1 and a 4-word vertex in a buffer: it called strip_ctx_record_apply(strip_ctx_records + 0x28, record 2) and strip_send_untextured(1, 0, the buffer), and only list 2's cursor (translucent) moved, by 0x40
  * matched: source/sdk/libspr/strips.c (tools/match/match.py)
  */
 void strip_send_plain_blended(int count, uint *verts)
@@ -191,8 +191,8 @@ void strip_send_plain_blended(int count, uint *verts)
 }
 
 /* 0x0c10f1e0  size 0x30  file by match with source
- * confidence: inferred
- * evidence: (count, vertex kind, vertices): record 3 (translucent) and the caller's vertex kind through strip_send_untextured; nothing in the image calls it; part of the strip object built after libspr
+ * confidence: exercised
+ * evidence: (count, vertex kind, vertices): record 3 (translucent) and the caller's vertex kind through strip_send_untextured; nothing in the image calls it; part of the strip object built after libspr; exercised 2026-11-12: called by the harness with count 1, vertex kind 3 and a 7-word vertex in a buffer: it called strip_ctx_record_apply(strip_ctx_records + 0x3c, record 3) and strip_send_untextured(1, 3, the buffer), and only list 2's cursor (translucent) moved, by 0x40
  * matched: source/sdk/libspr/strips.c (tools/match/match.py)
  */
 void strip_send_plain_blended_kind(int count, int format, uint *verts)
@@ -203,8 +203,8 @@ void strip_send_plain_blended_kind(int count, int format, uint *verts)
 }
 
 /* 0x0c10f220  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: (count, vertices, texture index): applies record 4 (opaque, textured) with strip_ctx_record_apply_textured and, when the index is in use, sends the strip with strip_send_uv_colour; nothing in the image calls it; part of the strip object built after libspr
+ * confidence: exercised
+ * evidence: (count, vertices, texture index): applies record 4 (opaque, textured) with strip_ctx_record_apply_textured and, when the index is in use, sends the strip with strip_send_uv_colour; nothing in the image calls it; part of the strip object built after libspr; exercised 2026-11-12: called by the harness with count 1 and a 7-word vertex: with texture index 10 (use count 0 in the snapshot) strip_ctx_record_apply_textured(strip_ctx_records + 0x50, 10) returned 1 and nothing was sent; with index 0 (in use) it returned 0, strip_send_uv_colour(1, the buffer) followed and list 0's cursor moved by 0x40
  * matched: source/sdk/libspr/strips.c (tools/match/match.py)
  */
 void strip_send_textured_opaque(int count, uint *verts, int tex_index)
@@ -235,8 +235,8 @@ void strip_send_textured_blended(int count, uint *verts, int tex_index)
 }
 
 /* 0x0c10f2a0  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: (count, vertices, texture index): record 6 (opaque, textured, offset color on), then strip_send_uv_two_colours (vertices with the offset color word); nothing in the image calls it; part of the strip object built after libspr
+ * confidence: exercised
+ * evidence: (count, vertices, texture index): record 6 (opaque, textured, offset color on) with strip_ctx_record_apply_textured, then, when the index is in use, strip_send_uv_two_colours (vertices with the offset color word); nothing in the image calls it; part of the strip object built after libspr; exercised 2026-11-12: called by the harness with count 1 and a 7-word vertex: with texture index 0 (in use) it applied strip_ctx_records + 0x78 (record 6) with strip_ctx_record_apply_textured, then strip_send_uv_two_colours(1, the buffer) put header and vertex in list 0 (cursor +0x40); with index 10 (unused) nothing was sent
  * matched: source/sdk/libspr/strips.c (tools/match/match.py)
  */
 void strip_send_textured_offset_opaque(int count, uint *verts, int tex_index)
@@ -251,8 +251,8 @@ void strip_send_textured_offset_opaque(int count, uint *verts, int tex_index)
 }
 
 /* 0x0c10f2e0  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: (count, vertices, texture index): record 7 (translucent, textured, offset color), then strip_send_uv_two_colours; nothing in the image calls it; part of the strip object built after libspr
+ * confidence: exercised
+ * evidence: (count, vertices, texture index): record 7 (translucent, textured, offset color) with strip_ctx_record_apply_textured, then, when the index is in use, strip_send_uv_two_colours; nothing in the image calls it; part of the strip object built after libspr; exercised 2026-11-12: called by the harness with count 1 and a 7-word vertex: with texture index 1 (in use) it applied strip_ctx_records + 0x8c (record 7) with strip_ctx_record_apply_textured, then strip_send_uv_two_colours(1, the buffer) put header and vertex in list 2 (cursor +0x40); with index 10 (unused) nothing was sent
  * matched: source/sdk/libspr/strips.c (tools/match/match.py)
  */
 void strip_send_textured_offset_blended(int count, uint *verts, int tex_index)
@@ -267,8 +267,8 @@ void strip_send_textured_offset_blended(int count, uint *verts, int tex_index)
 }
 
 /* 0x0c10f320  size 0x86  file by match with source
- * confidence: inferred
- * evidence: (context record of five words): writes 0x600608 to the current draw context's first word (draw_ctx_ptr) and the record's words into its words 2, 3, 8, 17 and 16, rebuilds its hardware words (context_hw_words_compute), clears bits 6-7 and 16-17 of the parameter control word and ORs in the global word poly_header_or_words +0, keeps only 0x031ff0ff of the TSP word and ORs in the blend factors ((blend_pair_bits ^ 0xfc) << 24) and poly_header_or_words +4, then makes the context current (context_header_select); callers the four untextured senders; part of the strip object built after libspr
+ * confidence: exercised
+ * evidence: (context record of five words): writes 0x600608 to the current draw context's first word (draw_ctx_ptr) and the record's words into its words 2, 3, 8, 17 and 16, rebuilds its hardware words (context_hw_words_compute), clears bits 6-7 and 16-17 of the parameter control word and ORs in the global word poly_header_or_words +0, keeps only 0x031ff0ff of the TSP word and ORs in the blend factors ((blend_pair_bits ^ 0xfc) << 24) and poly_header_or_words +4, then makes the context current (context_header_select); callers the four untextured senders; part of the strip object built after libspr; exercised 2026-11-12: called by the harness with record 2 {2,0,1,1,0} it left context words 0, 2, 3, 8, 17, 16 = 0x600608, 2, 0, 1, 1, 0, control bits 6-7/16-17 clear and the TSP word's top six bits 0x94 (blend_pair_bits 0x68 ^ 0xfc); with a record {0,0,0,1,1} in a buffer, blend_pair_bits poked 0x24 and poly_header_or_words 0x10080 / 0x400: words 0, 0, 0, 1, 1, control 0x808d0084 (bits 7 and 16 only), TSP 0xd81024f6
  * matched: source/sdk/libspr/strips.c (tools/match/match.py)
  */
 void strip_ctx_record_apply(uint *rec)
@@ -338,9 +338,9 @@ int strip_ctx_record_apply_textured(int *rec, int n)
 }
 
 /* 0x0c10f580  size 0x12a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x142
- * evidence: (count, vertex format, vertices): copies the polygon header the caller prepared (pointer and size in vertex_buffer_desc) through the store queue (QACR0/1 0xff000038/3c) to the current list's write pointer and advances it, pref-ing the second 32 bytes when the header is 64 bytes; then for each of the count vertices writes a 32-byte TA vertex (command 0xe0000000, 0xf0000000 for the last, end of strip) through the store queue: x and y, and 1/z, transformed by the current matrix (mtx_xform_point) when the flag strip_matrix_mode is set, else taken as given, then the color word at the format's index; the per-format {stride in words, color word index} pairs come from strip_vertex_formats (0x0C2118D8), the only user of that table; callers strip_send_plain_opaque, strip_send_plain_opaque_kind, strip_send_plain_blended, strip_send_plain_blended_kind (the untextured strip entries, which pass format 0 or their own); part of the strip object built after libspr
+ * evidence: (count, vertex format, vertices): copies the polygon header the caller prepared (pointer and size in vertex_buffer_desc) through the store queue (QACR0/1 0xff000038/3c) to the current list's write pointer and advances it, pref-ing the second 32 bytes when the header is 64 bytes; then for each of the count vertices writes a 32-byte TA vertex (command 0xe0000000, 0xf0000000 for the last, end of strip) through the store queue: x and y, and 1/z, transformed by the current matrix (mtx_xform_point) when the flag strip_matrix_mode is set, else taken as given, then the color word at the format's index; the per-format {stride in words, color word index} pairs come from strip_vertex_formats (0x0C2118D8), the only user of that table; callers strip_send_plain_opaque, strip_send_plain_opaque_kind, strip_send_plain_blended, strip_send_plain_blended_kind (the untextured strip entries, which pass format 0 or their own); part of the strip object built after libspr; exercised 2026-11-12: called by the harness after strip_ctx_record_apply (strip_matrix_mode 0): count 2, format 0 (stride 4, color word 3), vertices (10,20,4,0x11223344) (30,40,0.5,0x55667788) wrote the 32-byte header then e0000000 10 20 0.25 .. .. 11223344 and f0000000 30 40 2 .. .. 55667788 to list 0 (cursor +0x60); format 3 (stride 7, color word 5) took colors 0x12345678 and 0x9abcdef0 from word 5 of each 7-word vertex
  * matched: source/sdk/libspr/strips.c (tools/match/match.py)
  */
 void strip_send_untextured(int count, int format, uint *verts)
@@ -448,9 +448,9 @@ void strip_send_uv_colour(int count, uint *verts)
 }
 
 /* 0x0c10f880  size 0x138  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x154
- * evidence: (count, vertices of 7 words: x, y, z, u, v, base color, offset color): copies the polygon header the caller prepared (pointer and size in vertex_buffer_desc) through the store queue (QACR0/1 0xff000038/3c) to the current list's write pointer and advances it, pref-ing the second 32 bytes when the header is 64 bytes; then for each of the count vertices writes a 32-byte TA vertex (command 0xe0000000, 0xf0000000 for the last, end of strip) through the store queue: x and y, and 1/z, transformed by the current matrix (mtx_xform_point) when the flag strip_matrix_mode is set, else taken as given, then u, v and both color words; callers strip_send_textured_offset_opaque, strip_send_textured_offset_blended (the textured strip entries with an offset color); part of the strip object built after libspr
+ * evidence: (count, vertices of 7 words: x, y, z, u, v, base color, offset color): copies the polygon header the caller prepared (pointer and size in vertex_buffer_desc) through the store queue (QACR0/1 0xff000038/3c) to the current list's write pointer and advances it, pref-ing the second 32 bytes when the header is 64 bytes; then for each of the count vertices writes a 32-byte TA vertex (command 0xe0000000, 0xf0000000 for the last, end of strip) through the store queue: x and y, and 1/z, transformed by the current matrix (mtx_xform_point) when the flag strip_matrix_mode is set, else taken as given, then u, v and both color words; callers strip_send_textured_offset_opaque, strip_send_textured_offset_blended (the textured strip entries with an offset color); part of the strip object built after libspr; exercised 2026-11-12: called by the harness after strip_ctx_record_apply (strip_matrix_mode 0) with count 2 and vertices (1,2,8,0.25,0.75,0x12345678,0xbbbbbbbb) (3,4,0.25,0.5,0.125,0x9abcdef0,0xdddddddd): after the header it wrote e0000000 1 2 0.125 0.25 0.75 12345678 bbbbbbbb and f0000000 3 4 4 0.5 0.125 9abcdef0 dddddddd, cursor +0x60
  * matched: source/sdk/libspr/strips.c (tools/match/match.py)
  */
 void strip_send_uv_two_colours(int count, uint *verts)

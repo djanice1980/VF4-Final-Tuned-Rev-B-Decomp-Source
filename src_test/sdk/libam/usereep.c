@@ -91,8 +91,8 @@ void eeprom_save_write_headers(void)
 }
 
 /* 0x0c04c400  size 0x4a  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file usereep.c: copies the game's buffer into both copies in eeprom_image (+0x2c and after it)
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file usereep.c: copies the game's buffer into both copies in eeprom_image (+0x2c and after it); exercised 2026-11-12: called by the harness after eeprom_save_load(6, buffer) in the same sandbox (padded size 8) and the buffer filled with "abcdefgh", it wrote those 8 bytes to eeprom_image+0x2c and again at +0x34, leaving the headers at +0x24 and +0x28 as they were
  * same code as main.bin 0c1172e0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/libam/usereep.c (tools/match/match.py)
  */
@@ -125,8 +125,8 @@ void eeprom_save_write_copies(void)
 }
 
 /* 0x0c04c460  size 0x50  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file usereep.c: computes the buffer's CRC, fills both headers and puts headers and copies into eeprom_image (the EEPROM itself is written by the caller)
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file usereep.c: computes the buffer's CRC, fills both headers and puts headers and copies into eeprom_image (the EEPROM itself is written by the caller); exercised 2026-11-12: called by the harness after eeprom_save_load(6, buffer) and the buffer filled with "ABCDEFGH", it wrote the headers 65 B6 06 08 at eeprom_image+0x24 and +0x28 (CRC 0xB665, which crc16_ccitt gave for those 8 bytes in the same sandbox, low byte first, then size 6 and padded size 8) and the 8 bytes at +0x2c and +0x34; it made no EEPROM write
  * same code as main.bin 0c117340 (ghidra/TransferFromMain.java)
  * matched: source/sdk/libam/usereep.c (tools/match/match.py)
  */
@@ -146,8 +146,8 @@ void eeprom_save_store(void)
 }
 
 /* 0x0c04c4e0  size 0x22  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file usereep.c: reads the first copy out of eeprom_image
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file usereep.c: reads the first copy out of eeprom_image; exercised 2026-11-12: called by the harness with (4, buffer) after eeprom_image+0x2c was poked to 11 22 33 44 55 66 77 88, the buffer read 11 22 33 44 and its next bytes kept the planted EE
  * same code as main.bin 0c1173c0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/libam/usereep.c (tools/match/match.py)
  */
@@ -167,8 +167,8 @@ void eeprom_save_read_copy_a(int n, uchar *dst)
 }
 
 /* 0x0c04c520  size 0x26  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file usereep.c: reads the second copy out of eeprom_image
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file usereep.c: reads the second copy out of eeprom_image; exercised 2026-11-12: called by the harness after eeprom_image+0x2c was poked to 11 22 33 44 55 66 77 88: with n 4 it copied 55 66 77 88 (from +0x30) and with n 2 it copied 33 44 (from +0x2e), the second copy starting n bytes after the first
  * same code as main.bin 0c117400 (ghidra/TransferFromMain.java)
  * matched: source/sdk/libam/usereep.c (tools/match/match.py)
  */
@@ -189,7 +189,7 @@ void eeprom_save_read_copy_b(int n, uchar *dst)
 
 /* 0x0c04c560  size 0xe  file by match with source
  * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file usereep.c: returns 0x2a, the largest area two copies can have in the 0x80-byte EEPROM after its first 0x2c bytes
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file usereep.c: returns 0x2a, the largest area two copies can have in the 0x80-byte EEPROM after its first 0x2c bytes; record as the library has it: the largest size eeprom_save_load accepts is 0x28, below the 0x2A this routine returns
  * same code as main.bin 0c117440 (ghidra/TransferFromMain.java)
  * matched: source/sdk/libam/usereep.c (tools/match/match.py)
  */

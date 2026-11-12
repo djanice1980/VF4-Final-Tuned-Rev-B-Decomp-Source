@@ -7,9 +7,9 @@
 #include "vf4ft.h"
 
 /* 0x0c14e740  size 0x18  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x26
- * evidence: when its argument is 0 writes magenta (0xff00ff) to the border color register of both rendering chips (0xa85f8040) and spins forever; a second copy of the check at elancmd_check_or_halt, this one used only by tile_split_restrict; part of KamuiTL
+ * evidence: when its argument is 0 writes magenta (0xff00ff) to the border color register of both rendering chips (0xa85f8040) and spins forever; a second copy of the check at elancmd_check_or_halt, this one used only by tile_split_restrict; part of KamuiTL; exercised 2026-11-12: called by the harness: with 1 it returned at once; with 0 it wrote 0xff00ff to 0xa85f8040 and did not return within its budget
  * matched: source/sdk/kamui/tile_split.c (tools/match/match.py)
  */
 void tilesplit_check_or_halt(int ok)

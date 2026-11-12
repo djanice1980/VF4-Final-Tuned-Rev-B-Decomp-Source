@@ -48,8 +48,8 @@ void light_unit_axis_set(int entry, float x, float y, float z)
 }
 
 /* 0x0c132aa0  size 0x22  file by match with source
- * confidence: inferred
- * evidence: (x, y, z, light): stores the light's position floats; nothing in the image calls it (uncalled code, made a function 2026-11-09); between light_unit_axis_set and light_atten_set, so by link order part of sdk/naomi_library/lights.c
+ * confidence: exercised
+ * evidence: (light, x, y, z): stores the light's position floats (+0x34 of its light_table entry); nothing in the image calls it (uncalled code, made a function 2026-11-09); between light_unit_axis_set and light_atten_set, so by link order part of sdk/naomi_library/lights.c; exercised 2026-11-12: called by the harness in one sandbox: light_pos_set(3, 1.5, -2, 4.25) stored 1.5, -2, 4.25 at +0x34 of light_table entry 3, and (5, 7, 8, 9) stored 7, 8, 9 at +0x34 of entry 5
  * matched: source/sdk/naomi_library/lights.c (tools/match/match.py)
  */
 void light_pos_set(int light, float x, float y, float z)
@@ -61,8 +61,8 @@ void light_pos_set(int light, float x, float y, float z)
 }
 
 /* 0x0c132ae0  size 0x22  file by match with source
- * confidence: inferred
- * evidence: (light, constant, linear, quadratic): stores the light's three attenuation terms (floats at +0x4C of its record; the lit senders divide by their polynomial in the distance when it is above 1); nothing in the image calls it (uncalled code, made a function 2026-11-09); between light_pos_set and light_range_set, so by link order part of sdk/naomi_library/lights.c
+ * confidence: exercised
+ * evidence: (light, constant, linear, quadratic): stores the light's three attenuation terms (floats at +0x4C of its record; the lit senders divide by their polynomial in the distance when it is above 1); nothing in the image calls it (uncalled code, made a function 2026-11-09); between light_pos_set and light_range_set, so by link order part of sdk/naomi_library/lights.c; exercised 2026-11-12: called by the harness in one sandbox: (2, 1, 0.5, 0.25) stored 1, 0.5, 0.25 at +0x4c of light_table entry 2, and (6, 2, 3, 4) stored 2, 3, 4 at +0x4c of entry 6
  * matched: source/sdk/naomi_library/lights.c (tools/match/match.py)
  */
 void light_atten_set(int light, float constant, float linear, float quadratic)
@@ -74,8 +74,8 @@ void light_atten_set(int light, float constant, float linear, float quadratic)
 }
 
 /* 0x0c132b20  size 0x28  file by match with source
- * confidence: inferred
- * evidence: (light, range): stores the light's range, its square at +0x98 and its reciprocal at +0x90; nothing in the image calls it (uncalled code, made a function 2026-11-09); between light_atten_set and spot_cone_set_cos, so by link order part of sdk/naomi_library/lights.c
+ * confidence: exercised
+ * evidence: (light, range): stores the light's range, its square at +0x98 and its reciprocal at +0x90; nothing in the image calls it (uncalled code, made a function 2026-11-09); between light_atten_set and spot_cone_set_cos, so by link order part of sdk/naomi_library/lights.c; exercised 2026-11-12: called by the harness in one sandbox: range 8 for light 4 stored 8 at +0xa0, 64 at +0x98 and 0.125 at +0x90; range 0.5 for light 7 stored 0.5, 0.25 and 2.0 there
  * matched: source/sdk/naomi_library/lights.c (tools/match/match.py)
  */
 void light_range_set(int light, float range)
@@ -87,8 +87,8 @@ void light_range_set(int light, float range)
 }
 
 /* 0x0c132b60  size 0x20  file by match with source
- * confidence: inferred
- * evidence: (entry, c): spot_cone_set_sincos(entry, sqrt(1 - c*c), c); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (entry, c): spot_cone_set_sincos(entry, sqrt(1 - c*c), c); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness in one sandbox: (6, 0.6) stored 0.8 (the sine, sqrt(1 - 0.36)) at +0xa4, 0.6 at +0x58 and 2.5 = 1 / (1 - 0.6) at +0x9c of light_table entry 6
  * matched: source/sdk/naomi_library/lights.c (tools/match/match.py)
  */
 void spot_cone_set_cos(int entry,float cone_cos)
@@ -97,8 +97,8 @@ void spot_cone_set_cos(int entry,float cone_cos)
 }
 
 /* 0x0c132ba0  size 0x2a  file by match with source
- * confidence: inferred
- * evidence: (entry, s, c): stores the spot cone of a light_table entry: s at +0xa4, c at +0x58 and 1 / (1 - c) at +0x9c; called by the three other cone setters; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (entry, s, c): stores the spot cone of a light_table entry: s at +0xa4, c at +0x58 and 1 / (1 - c) at +0x9c; called by the three other cone setters; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness in one sandbox: (1, 0.6, 0.8) stored 0.6 at +0xa4, 0.8 at +0x58 and 5.0 = 1 / (1 - 0.8) at +0x9c of light_table entry 1
  * matched: source/sdk/naomi_library/lights.c (tools/match/match.py)
  */
 void spot_cone_set_sincos(int entry, float cone_sin, float cone_cos)
@@ -113,8 +113,8 @@ void spot_cone_set_sincos(int entry, float cone_sin, float cone_cos)
 }
 
 /* 0x0c132be0  size 0x36  file by match with source
- * confidence: inferred
- * evidence: (entry, 16-bit angle): spot_cone_set_sincos with sin_ang16 and cos_ang16 of the angle; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (entry, 16-bit angle): spot_cone_set_sincos with sin_ang16 and cos_ang16 of the angle; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness in one sandbox: angle 0x2000 for entry 8 stored sine and cosine 0.707107 and 3.41421 at +0x9c; angle 0x1555 for entry 9 stored sine 0.49997, cosine 0.866041 and 7.4650
  * matched: source/sdk/naomi_library/lights.c (tools/match/match.py)
  */
 void spot_cone_set_ang16(int entry, int angle)
@@ -129,8 +129,8 @@ void spot_cone_set_ang16(int entry, int angle)
 }
 
 /* 0x0c132c40  size 0x34  file by match with source
- * confidence: inferred
- * evidence: (entry, radians): spot_cone_set_sincos with sin_radians and cos_radians of the angle; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (entry, radians): spot_cone_set_sincos with sin_radians and cos_radians of the angle; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness in one sandbox: angle 0.5 for entry 10 stored the sine 0.479426 at +0xa4, the cosine 0.877583 at +0x58 and 8.1688 = 1 / (1 - cos) at +0x9c
  * matched: source/sdk/naomi_library/lights.c (tools/match/match.py)
  */
 void spot_cone_set_radians(int entry, float angle)
@@ -145,8 +145,8 @@ void spot_cone_set_radians(int entry, float angle)
 }
 
 /* 0x0c132c80  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (light, type): stores the light's type short; nothing in the image calls it (uncalled code, made a function 2026-11-09); between spot_cone_set_radians and light_ambient_from_rgb, so by link order part of sdk/naomi_library/lights.c
+ * confidence: exercised
+ * evidence: (light, type): stores the light's type short; nothing in the image calls it (uncalled code, made a function 2026-11-09); between spot_cone_set_radians and light_ambient_from_rgb, so by link order part of sdk/naomi_library/lights.c; exercised 2026-11-12: called by the harness in one sandbox: (11, 0x1234) stored the short 0x1234 at +2 of light_table entry 11, and (11, 2) then stored 2
  * matched: source/sdk/naomi_library/lights.c (tools/match/match.py)
  */
 void light_type_set(int light, short type)
@@ -156,8 +156,8 @@ void light_type_set(int light, short type)
 }
 
 /* 0x0c132ca0  size 0x38  file by match with source
- * confidence: inferred
- * evidence: (color record): copies all four floats of the argument into light_ambient_color, then overwrites the first with 0.3 r + 0.59 g + 0.11 b; nothing in the image calls it (uncalled code, made a function 2026-11-09); between light_type_set and light_put_color4, so by link order part of sdk/naomi_library/lights.c
+ * confidence: exercised
+ * evidence: (color record): copies all four floats of the argument into light_ambient_color, then overwrites the first with 0.3 r + 0.59 g + 0.11 b; nothing in the image calls it (uncalled code, made a function 2026-11-09); between light_type_set and light_put_color4, so by link order part of sdk/naomi_library/lights.c; exercised 2026-11-12: called by the harness in one sandbox: with (9, 1, 0.5, 0.25) light_ambient_color became (0.6225, 1, 0.5, 0.25), 0.6225 = 0.3 + 0.295 + 0.0275; with (9, 0, 1, 0) it became (0.59, 0, 1, 0)
  * matched: source/sdk/naomi_library/lights.c (tools/match/match.py)
  */
 void light_ambient_from_rgb(float *in)
@@ -170,8 +170,8 @@ void light_ambient_from_rgb(float *in)
 }
 
 /* 0x0c132d00  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: (entry, float[4]): copies four floats into +0x14..+0x20 of the light_table entry, the color the lighting code reads; called by lights_stash_and_blackout; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (entry, float[4]): copies four floats into +0x14..+0x20 of the light_table entry, the color the lighting code reads; called by lights_stash_and_blackout; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness in one sandbox: (0, (1, 2, 3, 4)) stored 1, 2, 3, 4 at +0x14..+0x20 of light_table entry 0 and (1, (5, 6, 7, 8)) stored 5, 6, 7, 8 at +0x14 of entry 1
  * matched: source/sdk/naomi_library/lights.c (tools/match/match.py)
  */
 void light_put_color4(int entry, float *color)
@@ -186,8 +186,8 @@ void light_put_color4(int entry, float *color)
 }
 
 /* 0x0c132d40  size 0x66  file by match with source
- * confidence: inferred
- * evidence: pushes the matrix stack, inverts the current matrix (mtx_invert_rigid), and for every switched-on light_table entry (nonzero first halfword) transforms its view-space direction (+0x68, w = 0) into +0x80 and its view-space position (+0x5c, w = 1) into +0x74, then pops; installed as a per-object hook by the set-up at lights_xform_by_current and called by the naomi2 library (obj_put_lit and three siblings); part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: pushes the matrix stack, inverts the current matrix (mtx_invert_rigid), and for every switched-on light_table entry (nonzero first halfword) transforms its view-space direction (+0x68, w = 0) into +0x80 and its view-space position (+0x5c, w = 1) into +0x74, then pops; installed as a per-object hook by the set-up at lights_xform_by_current and called by the naomi2 library (obj_put_lit and three siblings); part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the snapshot's current matrix M0 (a Y turn, X axis (0.2017, 0, 0.9795), translation (-0.096, -5, -3.945)) and light_table entries poked: entry 0 on, view pos (1, 2, 3), view dir (0, 0, 1): model pos became (7.023, 7, 0.3269), model dir (0.9795, 0, 0.2017), the inverse M0's; entry 2 on, pos 0, dir (1, 0, 0): (3.883, 5, 0.7014) and (0.2017, 0, -0.9795); entry 1, off, kept its 77s; M0 current again and depth 0 at the return
  * matched: source/sdk/naomi_library/lights.c (tools/match/match.py)
  */
 void lights_by_inverse_matrix(void)
@@ -213,8 +213,8 @@ void lights_by_inverse_matrix(void)
 }
 
 /* 0x0c132de0  size 0x30  file by match with source
- * confidence: inferred
- * evidence: the one-light version of lights_by_inverse_matrix: transposes the rotation part of the current matrix in the back register bank (mtx_transpose), turns entry 0's view-space direction (light_table+0x68) into +0x80 and the vector (0, 0, 1) at view_unit_z into model_unit_z, and swaps back; installed as the hook by the set-up at lights_xform_by_current when the .data word lighting_path is 0; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: the one-light version of lights_by_inverse_matrix: transposes the rotation part of the current matrix in the back register bank (mtx_transpose), turns entry 0's view-space direction (light_table+0x68) into +0x80 and the vector (0, 0, 1) at view_unit_z into model_unit_z, and swaps back; installed as the hook by the set-up at lights_xform_by_current when the .data word lighting_path is 0; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the snapshot's current matrix M0 (a Y turn, X axis (0.2017, 0, 0.9795), translation (-0.096, -5, -3.945)) and entry 0's view dir poked to (1, 2, 3): light_table+0x80 became (3.140, 2, -0.3745), the direction times the transposed rotation, and model_unit_z became (0.9795, 0, 0.2017) from view_unit_z (0, 0, 1); M0 was current again at the return
  * matched: source/sdk/naomi_library/lights.c (tools/match/match.py)
  */
 void light0_by_inverse_rotation(void)
@@ -226,8 +226,8 @@ void light0_by_inverse_rotation(void)
 }
 
 /* 0x0c132e40  size 0x2c  file by match with source
- * confidence: inferred
- * evidence: (light, on): stores the light's on short (the low byte of the argument) and sets or clears its bit in lights_on_mask; nothing in the image calls it (uncalled code, made a function 2026-11-09); between light0_by_inverse_rotation and lights_stash_and_blackout, so by link order part of sdk/naomi_library/lights.c
+ * confidence: exercised
+ * evidence: (light, on): stores the light's on short (the low byte of the argument) and sets or clears its bit in lights_on_mask; nothing in the image calls it (uncalled code, made a function 2026-11-09); between light0_by_inverse_rotation and lights_stash_and_blackout, so by link order part of sdk/naomi_library/lights.c; exercised 2026-11-12: called by the harness in one sandbox from lights_on_mask 0: (0, 1) made the mask 1; (1, 2) and (2, 1) made it 7 with the on shorts 1, 2, 1; (2, 0) cleared bit 2 (mask 3) and entry 2's on short to 0
  * matched: source/sdk/naomi_library/lights.c (tools/match/match.py)
  */
 void light_on_set(int light, uchar on)
@@ -241,8 +241,8 @@ void light_on_set(int light, uchar on)
 }
 
 /* 0x0c132e80  size 0x84  file by match with source
- * confidence: inferred
- * evidence: for each of the 16 light_table entries keeps its switch halfword in light_stash_flags and its color (+0x14..+0x20) in light_stash_colors, sets the color to light_color_black (light_put_color4) and switches it off; clears lights_on_mask; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: for each of the 16 light_table entries keeps its switch halfword in light_stash_flags and its color (+0x14..+0x20) in light_stash_colors, sets the color to light_color_black (light_put_color4) and switches it off; clears lights_on_mask; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness in one sandbox after light_put_color4 and light_on_set gave entry 0 color (1, 2, 3, 4) on 1 and entry 1 color (5, 6, 7, 8) on 2: light_stash_flags read 1, 2, 0, light_stash_colors held both colors, the two entries' colors became light_color_black (zeros), their on shorts 0 and lights_on_mask 0
  * matched: source/sdk/naomi_library/lights.c (tools/match/match.py)
  */
 void lights_stash_and_blackout(void)
@@ -269,8 +269,8 @@ void lights_stash_and_blackout(void)
 }
 
 /* 0x0c132f20  size 0x82  file by match with source
- * confidence: inferred
- * evidence: copies the 16 stashed colors and on flags back into light_table and rebuilds lights_on_mask (light_stash_flags is int[16] but only the low half of each is read: the value goes to the short on member); the undo of lights_stash_and_blackout; nothing in the image calls it (uncalled code, made a function 2026-11-09); between lights_stash_and_blackout and light_ambient_color_get, so by link order part of sdk/naomi_library/lights.c
+ * confidence: exercised
+ * evidence: copies the 16 stashed colors and on flags back into light_table and rebuilds lights_on_mask from the entries whose on value is exactly 1 (a stashed 2 comes back as on 2 without its mask bit) (light_stash_flags is int[16] but only the low half of each is read: the value goes to the short on member); the undo of lights_stash_and_blackout; nothing in the image calls it (uncalled code, made a function 2026-11-09); between lights_stash_and_blackout and light_ambient_color_get, so by link order part of sdk/naomi_library/lights.c; exercised 2026-11-12: called by the harness in one sandbox right after lights_stash_and_blackout (entry 0 stashed with color (1, 2, 3, 4) and on 1, entry 1 with (5, 6, 7, 8) and on 2): both colors and on shorts 1 and 2 came back, and lights_on_mask became 1: only the entry whose on value is 1 got its bit
  * matched: source/sdk/naomi_library/lights.c (tools/match/match.py)
  */
 void lights_unstash(void)
@@ -294,8 +294,8 @@ void lights_unstash(void)
 }
 
 /* 0x0c132fc0  size 0x2a  file by match with source
- * confidence: inferred
- * evidence: (out): copies the four floats of light_ambient_color out; nothing in the image calls it (uncalled code, made a function 2026-11-09); between lights_unstash and light_ambient_color_set, so by link order part of sdk/naomi_library/lights.c
+ * confidence: exercised
+ * evidence: (out): copies the four floats of light_ambient_color out; nothing in the image calls it (uncalled code, made a function 2026-11-09); between lights_unstash and light_ambient_color_set, so by link order part of sdk/naomi_library/lights.c; exercised 2026-11-12: called by the harness in one sandbox: after light_ambient_color_set with (1, 2, 3, 4) it copied out (1, 2, 3, 4), and after a set with (5, 6, 7, 8) it copied out (5, 6, 7, 8)
  * matched: source/sdk/naomi_library/lights.c (tools/match/match.py)
  */
 void light_ambient_color_get(float *out)
@@ -308,8 +308,8 @@ void light_ambient_color_get(float *out)
 }
 
 /* 0x0c133000  size 0x24  file by match with source
- * confidence: inferred
- * evidence: (in): copies four floats into light_ambient_color; nothing in the image calls it (uncalled code, made a function 2026-11-09); between light_ambient_color_get and mtx_xform_points, so by link order part of sdk/naomi_library/lights.c
+ * confidence: exercised
+ * evidence: (in): copies four floats into light_ambient_color; nothing in the image calls it (uncalled code, made a function 2026-11-09); between light_ambient_color_get and mtx_xform_points, so by link order part of sdk/naomi_library/lights.c; exercised 2026-11-12: called by the harness in one sandbox: with (1, 2, 3, 4) light_ambient_color read 1, 2, 3, 4, and with (5, 6, 7, 8) light_ambient_color_get then returned 5, 6, 7, 8
  * matched: source/sdk/naomi_library/lights.c (tools/match/match.py)
  */
 void light_ambient_color_set(float *in)

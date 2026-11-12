@@ -796,8 +796,8 @@ void water_patch_submit(int model)
 }
 
 /* 0x0c0af2e0  size 0x82  file by match with source
- * confidence: inferred
- * evidence: (stage record): the stage callback of one screen description (0x0C2A2048): for each object of the list at +0x44 that is visible (stage_obj_visible) sets its model's +0x6c to stage_screen_obj_word and projects its vertices in place (model_verts_project); what the projected models are for is unclear (role unclear); nothing calls it directly; part of vf4lib/libeffect/src/stage_screen.c
+ * confidence: exercised
+ * evidence: (stage record): the stage callback of one screen description (0x0C2A2048): for each object of the list at +0x44 that is visible (stage_obj_visible) sets its model's +0x6c to stage_screen_obj_word and projects its vertices in place (model_verts_project); what the projected models are for is unclear (role unclear); nothing calls it directly; part of vf4lib/libeffect/src/stage_screen.c; exercised 2026-11-12: called by the harness on a stage record in a scratch buffer whose +0x44 list held object 0x610002 (a loaded model, 0xAAB3BF60) at (0, 4, 0) and again at (5000, 4, 0): the first was visible, its model +0x6C became 0xB0808080 and model_verts_project(0xAAB3BF60) was called; the second was not visible and got nothing
  * matched: source/vf4lib/libeffect/src/stage_screen.c (tools/match/match.py)
  */
 void stage_screen_objs_project(stage_rec *stage)
@@ -1148,9 +1148,9 @@ int stage_obj_visible(stage_obj_place *place, compiled_model_rec **model)
 }
 
 /* 0x0c0afc60  size 0x16e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x188
- * evidence: (model): the C form of model_verts_project_scaled: each vertex's position, pulled along its normal by 1 - stage_screen_vert_scale_inv and scaled by stage_screen_vert_scale_inv, projected with the factors in stage_screen_proj and stored in place as screen x, y (6-word stride); nothing in the image calls it; part of vf4lib/libeffect/src/stage_screen.c
+ * evidence: (model): the C form of model_verts_project_scaled: each vertex's position P and normal N (through the current matrix), scaled by k = stage_screen_vert_scale_inv except along the normal (kP + (1 - k)(P.N)N), projected with the factors in stage_screen_proj and stored in place as screen x, y (6-word stride); nothing in the image calls it; part of vf4lib/libeffect/src/stage_screen.c; exercised 2026-11-12: called by the harness on a scratch model of 2 vertices (positions (0, 4, 0) and (1, 5, -1), normals +Y and +X) with stage_screen_proj poked (320, -240, 10, 20) and stage_screen_vert_scale_inv 0.8, against the snapshot matrix, it stored (-17.796, 56.052) and (67.643, -20) after each position (6-word stride), the values P' = kP + (1 - k)(P.N)N projected
  * matched: source/vf4lib/libeffect/src/stage_screen.c (tools/match/match.py)
  */
 void model_verts_project_scaled_a(compiled_model_rec *model)
@@ -1215,9 +1215,9 @@ void model_verts_project_scaled_a(compiled_model_rec *model)
 }
 
 /* 0x0c0afe20  size 0x162  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x17c
- * evidence: (model): as model_verts_project_scaled_a with an 8-word vertex stride; nothing in the image calls it; part of vf4lib/libeffect/src/stage_screen.c
+ * evidence: (model): as model_verts_project_scaled_a with an 8-word vertex stride; nothing in the image calls it; part of vf4lib/libeffect/src/stage_screen.c; exercised 2026-11-12: called by the harness as for model_verts_project_scaled_a but with 8-word vertices after a 0x08000500 block, it stored the same (-17.796, 56.052) and (67.643, -20) at +0x10 / +0x14 of each vertex and left the two words after them as poked
  * matched: source/vf4lib/libeffect/src/stage_screen.c (tools/match/match.py)
  */
 void model_verts_project_scaled_b(compiled_model_rec *model)
@@ -1276,8 +1276,8 @@ void model_verts_project_scaled_b(compiled_model_rec *model)
 }
 
 /* 0x0c0affc0  size 0x64  file by match with source
- * confidence: inferred
- * evidence: (screen): a view callback mapping the projection to the target 64 pixels up (proj_map_to_rect 0, -64, width, height) and sending it (proj_cmds_send on stack 3); nothing in the image refers to it; part of vf4lib/libeffect/src/stage_screen.c
+ * confidence: exercised
+ * evidence: (screen): a view callback mapping the projection to the target 64 pixels up (proj_map_to_rect 0, -64, width, height) and sending it (proj_cmds_send on stack 3); nothing in the image refers to it; part of vf4lib/libeffect/src/stage_screen.c; exercised 2026-11-12: called by the harness on a screen record in a scratch buffer with texture 640 x 480, it stored rect (0, -64, 640, 480), called proj_map_to_rect with those four floats, then mtx_stack_select(3), proj_cmds_send and mtx_stack_select(1); with 256 x 128 the rect and call were (0, -64, 256, 128)
  * matched: source/vf4lib/libeffect/src/stage_screen.c (tools/match/match.py)
  */
 void stage_screen_view_shifted(stage_screen_rec *screen)
@@ -1451,8 +1451,8 @@ undefined * water_grid_project(void);
 void model_verts_project_scaled(compiled_model_rec *model);
 
 /* 0x0c0b0580  size 0xb8  file by match with source
- * confidence: inferred
- * evidence: (model): hand-written assembly: returns at once for 0, else (body at 0x0C0B058A) projects the model's vertex positions in place to screen x, y (the two floats after each position) with the factors in stage_screen_proj, without the scale; walks the blocks after the 0x60-byte record until vertex_count vertices are done (a block starting with 0x08000500 has 64 bytes stepped over first; count at +0x1c, vertices from +0x20), always as 24-byte vertices: the block's header word at +0x18 is loaded into r6 and not looked at; returns nothing (r0 is left pointing past stage_screen_proj); not the compiled code's convention: it changes fr14 and fr15 without saving them and saves fr12 and fr13, which it never writes; only caller stage_screen_objs_project; part of vf4lib/libeffect/src/stage_screen.c
+ * confidence: exercised
+ * evidence: (model): hand-written assembly: returns at once for 0, else (body at 0x0C0B058A) projects the model's vertex positions in place to screen x, y (the two floats after each position) with the factors in stage_screen_proj, without the scale; walks the blocks after the 0x60-byte record until vertex_count vertices are done (a block starting with 0x08000500 has 64 bytes stepped over first; count at +0x1c, vertices from +0x20), always as 24-byte vertices: the block's header word at +0x18 is loaded into r6 and not looked at; returns nothing (r0 is left pointing past stage_screen_proj); not the compiled code's convention: it changes fr14 and fr15 without saving them and saves fr12 and fr13, which it never writes; only caller stage_screen_objs_project; part of vf4lib/libeffect/src/stage_screen.c; exercised 2026-11-12: called by the harness on a scratch model of 2 vertices behind a 0x08000500 block, stage_screen_proj poked (320, -240, 10, 20), against the snapshot matrix, it stored (-17.796, 40.842) and (99.637, -20), the plain projection of the positions (no scale); with 0 it returned at once
  * matched: source/asm/0c0b0580.s (hand-written assembly, tools/match/match.py)
  */
 void model_verts_project(compiled_model_rec *model);

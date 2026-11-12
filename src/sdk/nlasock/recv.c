@@ -28,9 +28,9 @@ void sock_recv_pack_args(uint sock, uint addr, int len, uint flags, sock_slot_re
 }
 
 /* 0x0c122760  size 0x174  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x1a8
- * evidence: (socket, buffer, length, flags): blocking receive into a host buffer: -2 for a socket above 63, a null buffer or a length that does not fit the 1 MiB receive area at board base +0xb00000 (recv_area_addr, recv_area_span_check); cuts the length so that an unaligned copy stays within the 8 KiB bounce buffer (32-byte rule with DMA, 2-byte rule without, transfer mode from xfer_setting_get); takes the board lock and, for socket 0, the slot 0 lock (-4 when taken); marks the slot busy with op code 9, packs the request with sock_recv_pack_args (data lands at the start of the receive area), posts board command 0x11, spins on sock_call_done until the slot is done, reads the result with sock_result_take and copies the received bytes back to the buffer with dimm_mem_read_chunk; returns the board's result (byte count or error); nothing in the image calls it; part of NLASOCK
+ * evidence: (socket, buffer, length, flags): blocking receive into a host buffer: -2 for a socket above 63, a null buffer or a length that does not fit the 1 MiB receive area at board base +0xb00000 (recv_area_addr, recv_area_span_check); cuts the length so that an unaligned copy stays within the 8 KiB bounce buffer (32-byte rule with DMA, 2-byte rule without, transfer mode from xfer_setting_get); takes the board lock and, for socket 0, the slot 0 lock (-4 when taken); marks the slot busy with op code 9, packs the request with sock_recv_pack_args (data lands at the start of the receive area), posts board command 0x11, spins on sock_call_done until the slot is done, reads the result with sock_result_take and copies the received bytes back to the buffer with dimm_mem_read_chunk; returns the board's result (byte count or error); nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): socket 64, a null buffer and length 0x100001 gave -2, dimm_busy_word 1 gave -4; (3, buffer, 100, 0) wrote {9, 3, 0x0fb00000, 100, 0} to 0x0f803000, posted dimm_cmd_post(0x11, 3), returned the board model's -1 and called dimm_mem_read_chunk(0x0fb00000, buffer, 100, 0, 0); with buffer+1 and 0x3000 (no DMA) the length became 0x2000, with an aligned buffer it stayed 0x3000
  * matched: source/sdk/nlasock/recv.c (tools/match/match.py)
  */
 int sock_recv(uint sock, uint dst, int len, uint flags)
@@ -129,8 +129,8 @@ int sock_recv_to_area_async(uint sock, int offset, int len, uint flags)
 }
 
 /* 0x0c122a40  size 0x3a  file by match with source
- * confidence: inferred
- * evidence: (socket, board address, length, flags, address-buffer board address, length-word board address, slot record): writes the 32-byte request block (tag word, the six values, one zero word) to the slot's board parameter area with dimm_pio_write; same code as sock_sendto_pack_args; callers sock_recvfrom, sock_recvfrom_to_area_async; part of NLASOCK
+ * confidence: exercised
+ * evidence: (socket, board address, length, flags, address-buffer board address, length-word board address, slot record): writes the 32-byte request block (tag word, the six values, one zero word) to the slot's board parameter area with dimm_pio_write; same code as sock_sendto_pack_args; callers sock_recvfrom, sock_recvfrom_to_area_async; part of NLASOCK; exercised 2026-11-12: called by the harness on slot 4 (op poked 0x16) with (4, 0x0fb00010, 100, 2, 0x0f804204, 0x0f804200): dimm_pio_write of the 0x20 bytes {0x16, 4, 0x0fb00010, 100, 2, 0x0f804204, 0x0f804200, 0} to 0x0f804000; inside sock_recvfrom(3, ...) {0x16, 3, 0x0fb00000, 64, 0, 0x0f803204, 0x0f803200, 0} to 0x0f803000
  * matched: source/sdk/nlasock/recv.c (tools/match/match.py)
  */
 void sock_recvfrom_pack_args(uint sock, uint addr, int len, uint flags, uint from_board, uint from_len_board, sock_slot_rec *slot)
@@ -148,8 +148,8 @@ void sock_recvfrom_pack_args(uint sock, uint addr, int len, uint flags, uint fro
 }
 
 /* 0x0c122a80  size 0x26  file by match with source
- * confidence: inferred
- * evidence: (board address, pointer to length): writes the caller's 32-bit address-length word to the board (dimm_pio_write, 4 bytes) so the board knows the size of the sender-address buffer; same code as accept_len_write, getopt_len_write and ioctl_arg_write in the other request files; callers sock_recvfrom, sock_recvfrom_to_area_async; part of NLASOCK
+ * confidence: exercised
+ * evidence: (board address, pointer to length): writes the caller's 32-bit address-length word to the board (dimm_pio_write, 4 bytes) so the board knows the size of the sender-address buffer; same code as accept_len_write, getopt_len_write and ioctl_arg_write in the other request files; callers sock_recvfrom, sock_recvfrom_to_area_async; part of NLASOCK; exercised 2026-11-12: called by the harness with (0x0f804200, pointer to 16) it called dimm_pio_write of the 4-byte word 16 to 0x0f804200; inside sock_recvfrom on socket 3 the same word went to 0x0f803200
  * matched: source/sdk/nlasock/recv.c (tools/match/match.py)
  */
 void sock_recvfrom_put_addrlen(uint board_addr, uint *from_len)
@@ -162,8 +162,8 @@ void sock_recvfrom_put_addrlen(uint board_addr, uint *from_len)
 }
 
 /* 0x0c122ac0  size 0x78  file by match with source
- * confidence: inferred
- * evidence: (socket, address board address, address buffer, length board address, length pointer): when an address buffer was given, reads the first 0x200 bytes of the slot's data area (sock_slot_data_addr, dimm_pio_read) into the 8 KiB bounce buffer xfer_recv_bounce, copies the returned length word out and then max(length, 16) bytes of the sender address; same code as accept_addr_copy_back (the accept form); callers sock_recvfrom and sock_result_take, which runs it when a posted op 0x16 completes; part of NLASOCK
+ * confidence: exercised
+ * evidence: (socket, address board address, address buffer, length board address, length pointer): when an address buffer was given, reads the first 0x200 bytes of the slot's data area (sock_slot_data_addr, dimm_pio_read) into the 8 KiB bounce buffer xfer_recv_bounce, copies the returned length word out and then max(length, 16) bytes of the sender address; same code as accept_addr_copy_back (the accept form); callers sock_recvfrom and sock_result_take, which runs it when a posted op 0x16 completes; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on) with slot 4's data area (0x0f804200) filled by dimm_pio_write with the length word 8 and bytes 60..7b: (4, 0x0f804204, buffer, 0x0f804200, length pointer) read 0x200 bytes into xfer_recv_bounce, set *length 8 and copied 16 bytes 60..6f (max(8, 16)); with the length word 20 it copied 20 bytes 60..73; with a null buffer it did nothing
  * matched: source/sdk/nlasock/recv.c (tools/match/match.py)
  */
 void sock_recvfrom_copy_addr(uint sock, int from_board, int from, int from_len_board, uint *from_len)
@@ -181,9 +181,9 @@ void sock_recvfrom_copy_addr(uint sock, int from_board, int from, int from_len_b
 }
 
 /* 0x0c122b60  size 0x1f8  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x244
- * evidence: (socket, buffer, length, flags, address buffer, length pointer): blocking datagram receive with the sender's address: -3 without bit 0x08000000 of the board information word (dimm_board_info_fetch); -2 for a bad socket, a null buffer, a length outside the receive area (recv_area_span_check) or only one of address buffer / length pointer given; cuts the length to the bounce-buffer rule as sock_recv does; takes the board lock and the slot 0 lock for socket 0 (-4); with an address buffer, places the sender address at slot data +4 and the length word at slot data +0 (sock_slot_data_addr) and writes the length with sock_recvfrom_put_addrlen; marks the slot busy with op code 0x16, packs with sock_recvfrom_pack_args, posts board command 0x11, waits for the slot, reads the result (sock_result_take), copies address and data back (sock_recvfrom_copy_addr, dimm_mem_read_chunk); returns the board's result; nothing in the image calls it; part of NLASOCK
+ * evidence: (socket, buffer, length, flags, address buffer, length pointer): blocking datagram receive with the sender's address: -3 without bit 0x08000000 of the board information word (dimm_board_info_fetch); -2 for a bad socket, a null buffer, a length outside the receive area (recv_area_span_check) or only one of address buffer / length pointer given; cuts the length to the bounce-buffer rule as sock_recv does; takes the board lock and the slot 0 lock for socket 0 (-4); with an address buffer, places the sender address at slot data +4 and the length word at slot data +0 (sock_slot_data_addr) and writes the length with sock_recvfrom_put_addrlen; marks the slot busy with op code 0x16, packs with sock_recvfrom_pack_args, posts board command 0x11, waits for the slot, reads the result (sock_result_take), copies address and data back (sock_recvfrom_copy_addr, dimm_mem_read_chunk); returns the board's result; nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): with the board word 0x600200f0 (bit 27 clear) -3; with 0x680200f0 poked, a buffer without length pointer or the reverse and length 0x100001 gave -2, dimm_busy_word 1 gave -4; (3, data, 64, 0, address buffer, length 16) wrote 16 to 0x0f803200 and {0x16, 3, 0x0fb00000, 64, 0, 0x0f803204, 0x0f803200}, posted dimm_cmd_post(0x11, 3), took the model's -1, ran sock_recvfrom_copy_addr and dimm_mem_read_chunk(0x0fb00000, data, 64)
  * matched: source/sdk/nlasock/recv.c (tools/match/match.py)
  */
 int sock_recvfrom(uint sock, uint dst, int len, uint flags, int from, int from_len)
@@ -257,9 +257,9 @@ int sock_recvfrom(uint sock, uint dst, int len, uint flags, int from, int from_l
 }
 
 /* 0x0c122e00  size 0x14a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x16e
- * evidence: (socket, receive-area offset, length, flags, address buffer, length pointer): the posting form of sock_recvfrom: same checks (-3, -2, -4), data to the receive area at the given offset (recv_area_addr); stores the address board address, the address buffer, the length board address and the length pointer in slot record +0x10..+0x1c so that sock_result_take copies the sender address out when the op completes; op code 0x16, packs with sock_recvfrom_pack_args, posts board command 0x12 and returns 0; nothing in the image calls it; part of NLASOCK
+ * evidence: (socket, receive-area offset, length, flags, address buffer, length pointer): the posting form of sock_recvfrom: same checks (-3, -2, -4), data to the receive area at the given offset (recv_area_addr); stores the address board address, the address buffer, the length board address and the length pointer in slot record +0x10..+0x1c so that sock_result_take copies the sender address out when the op completes; op code 0x16, packs with sock_recvfrom_pack_args, posts board command 0x12 and returns 0; nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): with the board word 0x600200f0 (bit 27 clear) -3; with 0x680200f0 poked, offset 0xfff00 length 0x200 and a buffer without length pointer gave -2, dimm_busy_word 1 -4; (4, 0x100, 64, 0, buffer, length 16) wrote 16 to 0x0f804200, left slot 4 at op 0x16 with copy-back {0x0f804204, buffer, 0x0f804200, length pointer}, wrote {0x16, 4, 0x0fb00100, 64, 0, 0x0f804204, 0x0f804200}, posted dimm_cmd_post(0x12, 4), returned 0
  * matched: source/sdk/nlasock/recv.c (tools/match/match.py)
  */
 int sock_recvfrom_to_area_async(uint sock, int offset, int len, uint flags, int from, int from_len)

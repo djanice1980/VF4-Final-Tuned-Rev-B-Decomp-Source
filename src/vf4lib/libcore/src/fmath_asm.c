@@ -23,24 +23,24 @@ float sin_s16(int angle);
 float cos_s16(int angle);
 
 /* 0x0c0f5620  size 0xc  file by match with source
- * confidence: inferred
- * evidence: hand-written: (16-bit angle, sign-extended): returns cosine / sine, the cotangent, not the tangent its place beside sin_s16 and cos_s16 and its "dkTan" label suggest (as the game has it): fsca leaves the sine in fr0 and the cosine in fr1, fdiv fr0,fr1 makes fr1 = cosine / sine, and that is moved to fr0; "dkTan" in trig_benchmark_draw, its only caller, which times it and drops the result; part of vf4lib/libcore/src/fmath_asm.c
+ * confidence: exercised
+ * evidence: hand-written: (16-bit angle, sign-extended): returns cosine / sine, the cotangent, not the tangent its place beside sin_s16 and cos_s16 and its "dkTan" label suggest (as the game has it): fsca leaves the sine in fr0 and the cosine in fr1, fdiv fr0,fr1 makes fr1 = cosine / sine, and that is moved to fr0; "dkTan" in trig_benchmark_draw, its only caller, which times it and drops the result; part of vf4lib/libcore/src/fmath_asm.c; exercised 2026-11-12: called by the harness, angle 0x1555 returned 1.7321787 (cos / sin of 30 degrees; the tangent would be 0.577), 0x0800 returned 5.0273395 and -4096 returned -2.4142134, the cotangent each time
  * convention: __keeps_r1_r2_r3_r5_r6_r7_fr2_fr3_fr4_fr5_fr6_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c0f5620.s (hand-written assembly, tools/match/match.py)
  */
 float tan_s16(int angle);
 
 /* 0x0c0f5640  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: hand-written: (a, b): the distance |a - b| of two 3-float points (fipr, fsqrt), in fr0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between tan_s16 and point_distance_inv, so by link order part of vf4lib/libcore/src/fmath_asm.c
+ * confidence: exercised
+ * evidence: hand-written: (a, b): the distance |a - b| of two 3-float points (fipr, fsqrt), in fr0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between tan_s16 and point_distance_inv, so by link order part of vf4lib/libcore/src/fmath_asm.c; exercised 2026-11-12: called by the harness with a = (1, 2, 3) and b = (4, 6, 3) it returned 5 in fr0, with (0, 0, 0) and (1, -1, 1) 1.7320508 and with two equal points 0
  * convention: __keeps_r1_r2_r3_r6_r7_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c0f5640.s (hand-written assembly, tools/match/match.py)
  */
 float point_distance_fsqrt(float *param_1,float *param_2);
 
 /* 0x0c0f5660  size 0x28  file by match with source
- * confidence: inferred
- * evidence: hand-written: (a, b): 1 / |a - b| of two 3-float points (fsrra), 0 for coincident points; nothing in the image calls it (uncalled code, made a function 2026-11-09); between point_distance_fsqrt and vec3_rot_y_s16, so by link order part of vf4lib/libcore/src/fmath_asm.c
+ * confidence: exercised
+ * evidence: hand-written: (a, b): 1 / |a - b| of two 3-float points (fsrra), 0 for coincident points; nothing in the image calls it (uncalled code, made a function 2026-11-09); between point_distance_fsqrt and vec3_rot_y_s16, so by link order part of vf4lib/libcore/src/fmath_asm.c; exercised 2026-11-12: called by the harness with a = (1, 2, 3) and b = (4, 6, 3) it returned 0.2 in fr0, with (0, 0, 0) and (1, -1, 1) 0.57735026 and with two equal points (1, 2, 3) 0
  * convention: __keeps_r1_r2_r3_r6_r7_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c0f5660.s (hand-written assembly, tools/match/match.py)
  */
@@ -71,24 +71,24 @@ void vec3_move_on_heading(undefined4 heading, float *in, float *out, float dist)
 void vec_xz_from_heading(float dist, undefined4 heading, float *out);
 
 /* 0x0c0f5740  size 0x3a  file by match with source
- * confidence: inferred
- * evidence: hand-written: (pitch, heading as 16-bit angles, in, out, distance in fr4): out = in + distance x (sin h cos p, sin p, -cos h cos p); nothing in the image calls it (uncalled code, made a function 2026-11-09); between vec_xz_from_heading and vec3_from_pitch_heading, so by link order part of vf4lib/libcore/src/fmath_asm.c
+ * confidence: exercised
+ * evidence: hand-written: (pitch, heading as 16-bit angles, in, out, distance in fr4): out = in + distance x (sin h cos p, sin p, -cos h cos p); nothing in the image calls it (uncalled code, made a function 2026-11-09); between vec_xz_from_heading and vec3_from_pitch_heading, so by link order part of vf4lib/libcore/src/fmath_asm.c; exercised 2026-11-12: called by the harness with in = (1, 2, 3) and distance 10: pitch 0x1000 and heading 0x2000 stored out = (7.53281, 5.82683, -3.53281) and pitch 0xF000 and heading 0xC000 stored (-8.23880, -1.82683, 3), in + 10 x (sin h cos p, sin p, -cos h cos p) both times, with in untouched
  * convention: __keeps_r6_r7_fr4_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c0f5740.s (hand-written assembly, tools/match/match.py)
  */
 void vec3_move_on_pitch_heading(int pitch, int heading, float *in, float *out, float distance);
 
 /* 0x0c0f5780  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: hand-written: (pitch, heading as 16-bit angles, out, distance in fr4): out = distance x (sin h cos p, sin p, -cos h cos p); nothing in the image calls it (uncalled code, made a function 2026-11-09); between vec3_move_on_pitch_heading and vec_to_local_into_alt, so by link order part of vf4lib/libcore/src/fmath_asm.c
+ * confidence: exercised
+ * evidence: hand-written: (pitch, heading as 16-bit angles, out, distance in fr4): out = distance x (sin h cos p, sin p, -cos h cos p); nothing in the image calls it (uncalled code, made a function 2026-11-09); between vec3_move_on_pitch_heading and vec_to_local_into_alt, so by link order part of vf4lib/libcore/src/fmath_asm.c; exercised 2026-11-12: called by the harness with distance 10: pitch 0x1000 and heading 0x2000 stored out = (6.53281, 3.82683, -6.53281) and pitch 0xF000 and heading 0xC000 stored (-9.23880, -3.82683, 0), 10 x (sin h cos p, sin p, -cos h cos p), the word after out untouched
  * convention: __keeps_r6_r7_fr5_fr6_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c0f5780.s (hand-written assembly, tools/match/match.py)
  */
 void vec3_from_pitch_heading(int pitch, int heading, float *out, float distance);
 
 /* 0x0c0f57c0  size 0x10  file by match with source
- * confidence: inferred
- * evidence: hand-written: an alternate entry of vec_to_local_into that skips the subtraction of the matrix's translation: loads the point and branches into its body at vec_to_local_into+0x14; nothing in the image calls it (uncalled code, made a function 2026-11-09); between vec3_from_pitch_heading and vec_to_local_into, so by link order part of vf4lib/libcore/src/fmath_asm.c
+ * confidence: exercised
+ * evidence: hand-written: an alternate entry of vec_to_local_into that skips the subtraction of the matrix's translation: loads the point and branches into its body at vec_to_local_into+0x14; nothing in the image calls it (uncalled code, made a function 2026-11-09); between vec3_from_pitch_heading and vec_to_local_into, so by link order part of vf4lib/libcore/src/fmath_asm.c; exercised 2026-11-12: called by the harness with the back FPU bank as the snapshot has it (axes X (0.20166, 0, 0.97946), Y (0, 1, 0), Z (-0.97946, 0, 0.20166), translation (-0.0961, -5, -3.94466)) and in = (1, 2, 3) it stored out = (3.14003, 2, -0.37448), the three axes' products with in, the translation not taken off (vec_to_local_into gave (7.02303, 7, 0.32688) for the same in)
  * convention: __keeps_r1_r2_r3_r6_r7_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c0f57c0.s (hand-written assembly, tools/match/match.py)
  */
@@ -103,8 +103,8 @@ void vec_to_local_into_alt(float *param_1,float *param_2);
 void vec_to_local_into(float *in, float *out);
 
 /* 0x0c0f5820  size 0x8  file by match with source
- * confidence: inferred
- * evidence: hand-written: an alternate entry of vec_to_local_regs that skips the subtraction of the matrix's translation: branches into its body at vec_to_local_regs+0xc; nothing in the image calls it (uncalled code, made a function 2026-11-09); between vec_to_local_into and vec_to_local_regs, so by link order part of vf4lib/libcore/src/fmath_asm.c
+ * confidence: exercised
+ * evidence: hand-written: an alternate entry of vec_to_local_regs that skips the subtraction of the matrix's translation: branches into its body at vec_to_local_regs+0xc; nothing in the image calls it (uncalled code, made a function 2026-11-09); between vec_to_local_into and vec_to_local_regs, so by link order part of vf4lib/libcore/src/fmath_asm.c; exercised 2026-11-12: called by the harness with the back FPU bank as the snapshot has it (axes X (0.20166, 0, 0.97946), Y (0, 1, 0), Z (-0.97946, 0, 0.20166), translation (-0.0961, -5, -3.94466)): the point (1, 2, 3) in fr4-fr6 came back as fr4-fr6 = (3.14003, 2, -0.37448) and (1, 2, 0.5) as (0.69139, 2, -0.87863), the axes' products without the translation taken off; the back bank was unchanged
  * convention: __keeps_r1_r2_r3_r4_r5_r6_r7_fr4_fr5_fr6_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c0f5820.s (hand-written assembly, tools/match/match.py)
  */
@@ -119,56 +119,56 @@ undefined8 vec_to_local_regs_alt(float param_1,float param_2,float param_3);
 undefined8 vec_to_local_regs(float param_1,float param_2,float param_3);
 
 /* 0x0c0f5880  size 0x32  file by match with source
- * confidence: inferred
- * evidence: hand-written: pushes the 16 matrix registers onto the matrix stack record mtx_stack_records (count +0, pointer +8, 64 bytes an entry); nothing in the image calls it (uncalled code, made a function 2026-11-09); between vec_to_local_regs and mtx_push_load_identity_regs, so by link order part of vf4lib/libcore/src/fmath_asm.c
+ * confidence: exercised
+ * evidence: hand-written: pushes the 16 matrix registers onto the matrix stack record mtx_stack_records (count +0, pointer +8, 64 bytes an entry); nothing in the image calls it (uncalled code, made a function 2026-11-09); between vec_to_local_regs and mtx_push_load_identity_regs, so by link order part of vf4lib/libcore/src/fmath_asm.c; exercised 2026-11-12: called by the harness with the 64 bytes at the stack top 0x0C371BE0 filled with 0xEE: it stored the back bank as the snapshot has it (0.20166 0 0.97946 0 / 0 1 0 0 / -0.97946 0 0.20166 0 / -0.0961 -5 -3.94466 1) there, raised the depth short at mtx_stack_records +0 from 0 to 1 and the pointer +8 from 0x0C371BE0 to 0x0C371C20, and left the next word and the back bank unchanged
  * convention: __keeps_r4_r5 (AssignCallEffects)
  * matched: source/asm/0c0f5880.s (hand-written assembly, tools/match/match.py)
  */
 void mtx_push_regs(void);
 
 /* 0x0c0f58c0  size 0x4c  file by match with source
- * confidence: inferred
- * evidence: hand-written: the same push as mtx_push_regs, then loads the identity into the matrix registers; nothing in the image calls it (uncalled code, made a function 2026-11-09); between mtx_push_regs and mtx_copy16, so by link order part of vf4lib/libcore/src/fmath_asm.c
+ * confidence: exercised
+ * evidence: hand-written: the same push as mtx_push_regs, then loads the identity into the matrix registers; nothing in the image calls it (uncalled code, made a function 2026-11-09); between mtx_push_regs and mtx_copy16, so by link order part of vf4lib/libcore/src/fmath_asm.c; exercised 2026-11-12: called by the harness with the stack top 0x0C371BE0 filled with 0xEE: it stored the snapshot's back bank there (0.20166 0 0.97946 0 ... -3.94466 1), raised the depth short at mtx_stack_records +0 from 0 to 1 and the pointer +8 to 0x0C371C20, and the back bank at the return was the identity
  * convention: __keeps_r4_r5 (AssignCallEffects)
  * matched: source/asm/0c0f58c0.s (hand-written assembly, tools/match/match.py)
  */
 undefined8 mtx_push_load_identity_regs(void);
 
 /* 0x0c0f5920  size 0x34  file by match with source
- * confidence: inferred
- * evidence: hand-written: (destination, source): copies 16 floats with paired moves; nothing in the image calls it (uncalled code, made a function 2026-11-09); between mtx_push_load_identity_regs and mtx_rot_x_radians, so by link order part of vf4lib/libcore/src/fmath_asm.c
+ * confidence: exercised
+ * evidence: hand-written: (destination, source): copies 16 floats with paired moves; nothing in the image calls it (uncalled code, made a function 2026-11-09); between mtx_push_load_identity_regs and mtx_rot_x_radians, so by link order part of vf4lib/libcore/src/fmath_asm.c; exercised 2026-11-12: called by the harness with the floats 1 to 16 at the source and 0xEE bytes at the destination: the 64 bytes were copied and the next word stayed 0xEEEEEEEE
  * convention: __keeps_r1_r2_r3_r6_r7_fr4_fr5_fr6_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c0f5920.s (hand-written assembly, tools/match/match.py)
  */
 void mtx_copy16(undefined4 *param_1,undefined4 *param_2);
 
 /* 0x0c0f5960  size 0x16  file by match with source
- * confidence: inferred
- * evidence: hand-written: converts float radians to a 16-bit angle (x 10430.378, the constant at rad_to_ang16), fsca, then mtx_rot_x_sc; nothing in the image calls it; part of vf4lib/libcore/src/fmath_asm.c
+ * confidence: exercised
+ * evidence: hand-written: converts float radians to a 16-bit angle (x 10430.378, the constant at rad_to_ang16), fsca, then mtx_rot_x_sc; nothing in the image calls it; part of vf4lib/libcore/src/fmath_asm.c; exercised 2026-11-12: called by the harness on the back FPU bank as the snapshot has it (axes X (0.20166, 0, 0.97946), Y (0, 1, 0), Z (-0.97946, 0, 0.20166), translation (-0.0961, -5, -3.94466)): 1.0 (angle 10430) left Y = (-0.82416, 0.54033, 0.16969) and Z = (-0.52923, -0.84145, 0.10896), cos Y + sin Z and -sin Y + cos Z, X and the translation kept; -0.5 (angle -5215) left Y = (0.46956, 0.87759, -0.09668) and Z = (-0.85956, 0.47941, 0.17697)
  * convention: __keeps_r1_r2_r3_r4_r5_r6_r7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c0f5960.s (hand-written assembly, tools/match/match.py)
  */
 void mtx_rot_x_radians(float param_1);
 
 /* 0x0c0f5976  size 0x16  file by match with source
- * confidence: inferred
- * evidence: the same for mtx_rot_y_sc; nothing in the image calls it; part of vf4lib/libcore/src/fmath_asm.c
+ * confidence: exercised
+ * evidence: the same for mtx_rot_y_sc; nothing in the image calls it; part of vf4lib/libcore/src/fmath_asm.c; exercised 2026-11-12: called by the harness on the back FPU bank as the snapshot has it (axes X (0.20166, 0, 0.97946), Y (0, 1, 0), Z (-0.97946, 0, 0.20166), translation (-0.0961, -5, -3.94466)): 1.0 (angle 10430) left X = (0.93313, 0, 0.35955) and Z = (-0.35955, 0, 0.93313), cos X - sin Z and sin X + cos Z, Y and the translation kept; -0.5 (angle -5215) left X = (-0.29259, 0, 0.95624) and Z = (-0.95624, 0, -0.29259)
  * convention: __keeps_r1_r2_r3_r4_r5_r6_r7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c0f5960.s (hand-written assembly, tools/match/match.py)
  */
 void mtx_rot_y_radians(float param_1);
 
 /* 0x0c0f598c  size 0x16  file by match with source
- * confidence: inferred
- * evidence: the same for mtx_rot_z_sc; nothing in the image calls it; part of vf4lib/libcore/src/fmath_asm.c
+ * confidence: exercised
+ * evidence: the same for mtx_rot_z_sc; nothing in the image calls it; part of vf4lib/libcore/src/fmath_asm.c; exercised 2026-11-12: called by the harness on the back FPU bank as the snapshot has it (axes X (0.20166, 0, 0.97946), Y (0, 1, 0), Z (-0.97946, 0, 0.20166), translation (-0.0961, -5, -3.94466)): 1.0 (angle 10430) left X = (0.10896, 0.84145, 0.52923) and Y = (-0.16969, 0.54033, -0.82416), cos X + sin Y and -sin X + cos Y, Z and the translation kept; -0.5 (angle -5215) left X = (0.17697, -0.47941, 0.85956) and Y = (0.09668, 0.87759, 0.46956)
  * convention: __keeps_r1_r2_r3_r4_r5_r6_r7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c0f5960.s (hand-written assembly, tools/match/match.py)
  */
 void mtx_rot_z_radians(float param_1);
 
 /* 0x0c0f59c0  size 0x24  file by match with source
- * confidence: inferred
- * evidence: rotate about X by (sin, cos)
+ * confidence: exercised
+ * evidence: rotate about X by (sin, cos); exercised 2026-11-12: called by the harness on the back FPU bank as the snapshot has it (axes X (0.20166, 0, 0.97946), Y (0, 1, 0), Z (-0.97946, 0, 0.20166), translation (-0.0961, -5, -3.94466)): (sin 0.6, cos 0.8) left Y = (-0.58767, 0.8, 0.12100) and Z = (-0.78356, -0.6, 0.16133) and (-0.28, 0.96) left Y = (0.27425, 0.96, -0.05646) and Z = (-0.94028, 0.28, 0.19359), cos Y + sin Z and -sin Y + cos Z, X and the translation kept
  * convention: __keeps_r1_r2_r3_r4_r5_r6_r7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c0f5960.s (hand-written assembly, tools/match/match.py)
  */
@@ -191,16 +191,16 @@ void mtx_rot_y_sc(float sine, float cosine);
 void mtx_rot_z_sc(float sine, float cosine);
 
 /* 0x0c0f5a40  size 0x3e  file by match with source
- * confidence: inferred
- * evidence: rotates by float radians wrapped to 16-bit angles: Z, then Y, then X
+ * confidence: exercised
+ * evidence: rotates by float radians wrapped to 16-bit angles: Z, then Y, then X; exercised 2026-11-12: called by the harness on the back FPU bank as the snapshot has it (axes X (0.20166, 0, 0.97946), Y (0, 1, 0), Z (-0.97946, 0, 0.20166), translation (-0.0961, -5, -3.94466)): the angles (0.3, -0.7, 1.2) left X = (-0.57507, 0.71287, 0.40140), Y = (-0.41485, 0.16879, -0.89410), Z = (-0.70512, -0.68069, 0.19867) and (-1.0, 0.4, 0) left X = (0.56715, 0, 0.82362), Y = (0.69303, 0.54033, -0.47723), Z = (-0.44503, 0.84145, 0.30645), each the turn about Z, then Y, then X by the angles x 10430.378 truncated
  * convention: __keeps_r1_r2_r3_r4_r5_r6_r7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c0f5a40.s (hand-written assembly, tools/match/match.py)
  */
 void mtx_rot_zyx(float *param_1);
 
 /* 0x0c0f5aa0  size 0x10  file by match with source
- * confidence: inferred
- * evidence: hand-written: (pointer to three 16-bit angles): loads them into r4, r5 and r6 and falls into mtx_rot_zyx_s16; nothing in the image calls it (uncalled code, made a function 2026-11-09); between mtx_rot_zyx and mtx_rot_zyx_s16, so by link order part of vf4lib/libcore/src/fmath_asm.c
+ * confidence: exercised
+ * evidence: hand-written: (pointer to three 16-bit angles): loads them into r4, r5 and r6 and falls into mtx_rot_zyx_s16; nothing in the image calls it (uncalled code, made a function 2026-11-09); between mtx_rot_zyx and mtx_rot_zyx_s16, so by link order part of vf4lib/libcore/src/fmath_asm.c; exercised 2026-11-12: called by the harness on the back FPU bank as the snapshot has it (axes X (0.20166, 0, 0.97946), Y (0, 1, 0), Z (-0.97946, 0, 0.20166), translation (-0.0961, -5, -3.94466)) with the shorts (0x0E46, 0xC659, 0x6867) it left r4-r6 = 0x0E46, 0xFFFFC659, 0x6867 and the back bank mtx_rot_zyx_s16(0x0E46, 0xFFFFC659, 0x6867) gives (X = (-0.99378, 0.08493, 0.07202), Y = (-0.09861, -0.97165, -0.21487)); with (0x4000, 0, 0) a quarter turn about X: Y = (-0.97946, 0, 0.20166), Z = (0, -1, 0)
  * convention: __keeps_r1_r2_r3_r7_fr1_fr2_fr3_fr4_fr5_fr6_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c0f5aa0.s (hand-written assembly, tools/match/match.py)
  */

@@ -78,8 +78,8 @@ int form_map_clear(form_map *map)
 }
 
 /* 0x0c11eee0  size 0x2c  file by match with source
- * confidence: inferred
- * evidence: (map, key): the key's value read as a signed decimal number (strtol, strtol-shaped, base 10), 0 when the key is missing (form_map_find); nothing in the image calls it; part of libnl2http map.c
+ * confidence: exercised
+ * evidence: (map, key): the key's value read as a signed decimal number (strtol, strtol-shaped, base 10), 0 when the key is missing (form_map_find); nothing in the image calls it; part of libnl2http map.c; exercised 2026-11-12: called by the harness after form_map_parse(buf:2, "a=-42&h=1f&z=") it returned -42 for "a", 1 for "h" (decimal digits up to the f) and 0 for the missing key "q"
  * matched: source/naomi2lib/libnl2http/src/map.c (tools/match/match.py)
  */
 int form_map_int(form_map *map, char *name)
@@ -118,8 +118,8 @@ uint form_map_uint(form_map *map, char *name)
 }
 
 /* 0x0c11ef60  size 0x2c  file by match with source
- * confidence: inferred
- * evidence: (map, key): the key's value read as an unsigned hexadecimal number (strtoul, base 16), 0 when missing; nothing in the image calls it; part of libnl2http map.c
+ * confidence: exercised
+ * evidence: (map, key): the key's value read as an unsigned hexadecimal number (strtoul, base 16), 0 when missing; nothing in the image calls it; part of libnl2http map.c; exercised 2026-11-12: called by the harness after form_map_parse(buf:2, "a=-42&h=1f&z=") it returned 0x1F for "h", 0xFFFFFFBE for "a" (strtoul of -42 in base 16) and 0 for the missing key "q"
  * matched: source/naomi2lib/libnl2http/src/map.c (tools/match/match.py)
  */
 uint form_map_hex(form_map *map, char *name)

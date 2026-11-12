@@ -154,8 +154,8 @@ void part_color_menu_text(int bank, int part)
 }
 
 /* 0x0c0f0d80  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: clears the 0x4000-byte part color text area texcol_part_text; nothing in the image calls it; part of vf4lib/libdebug/src/chara_load.c
+ * confidence: exercised
+ * evidence: clears the 0x4000-byte part color text area texcol_part_text; nothing in the image calls it; part of vf4lib/libdebug/src/chara_load.c; exercised 2026-11-12: called by the harness with bytes poked into texcol_part_text at +0, +0x2000 and +0x3FFF and 0x33 at +0x4000, it called memset(texcol_part_text, 0, 0x4000) and left the first three 0 and +0x4000 0x33
  * matched: source/vf4lib/libdebug/src/chara_load.c (tools/match/match.py)
  */
 void part_color_text_clear(void)
@@ -219,9 +219,9 @@ void texcol_entries_to_text(txn_entry *entries, char *text, int *length, char *n
 }
 
 /* 0x0c0f0fa0  size 0x8e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xa0
- * evidence: (token, prefix, name list): -1 for "NULL", else the index of the token less the prefix in the NULL-ended name list, -2 when the prefix or the name does not match; caller texcol_text_to_entries; part of vf4lib/libdebug/src/chara_load.c
+ * evidence: (token, prefix, name list): -1 for "NULL", else the index of the token less the prefix in the NULL-ended name list, -2 when the prefix or the name does not match; caller texcol_text_to_entries; part of vf4lib/libdebug/src/chara_load.c; exercised 2026-11-12: called by the harness with prefix "PRE_" and the name list {"a", "b", "c", 0} in scratch buffers, "NULL" returned -1, "PRE_a" 0, "PRE_b" 1, "PRE_c" 2, "PRE_z" -2 and "XX_b" -2
  * matched: source/vf4lib/libdebug/src/chara_load.c (tools/match/match.py)
  */
 int texcol_name_lookup(char *token, char *prefix, char **names)
@@ -414,8 +414,8 @@ void chara_body_load(rob_rec *rob)
 }
 
 /* 0x0c0f1560  size 0xe6  file by match with source
- * confidence: inferred
- * evidence: the queued form of chara_body_load for player 0: objbank_free_req(player + 5), rob_hand_models_clear(player), rob_disp_release, the same merged txn list, then the load_poly request load_poly_req with the same set and buffers instead of load_poly, and sets texcol_reload_pending = 1; nothing in the image calls it; part of vf4lib/libdebug/src/chara_load.c
+ * confidence: exercised
+ * evidence: the queued form of chara_body_load for player 0: nothing while poly_queue_busy_get() is nonzero, else objbank_free_req(player + 5), rob_hand_models_clear(player), rob_disp_release, the same merged txn list, then the load_poly request load_poly_req with the same set and buffers instead of load_poly, and sets texcol_reload_pending = 1; nothing in the image calls it; part of vf4lib/libdebug/src/chara_load.c; exercised 2026-11-12: called by the harness (fighter 0: chara 14, costume 0, rob_color_flags 1), it called objbank_free_req(5), rob_hand_models_clear(0), rob_disp_release(fighter 0), txn_list_append five times (0, then texcol_body_lists 0-3), txn_list_current_set, load_poly_req(5, 97, ...), 97 being the costume word of chara_data_get(14) +0x48, and set texcol_reload_pending 1
  * matched: source/vf4lib/libdebug/src/chara_load.c (tools/match/match.py)
  */
 void chara_body_load_req_player0(void)

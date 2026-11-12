@@ -437,8 +437,8 @@ void texidx_snapshot_save(void)
 }
 
 /* 0x0c0e9b40  size 0x24  file by match with source
- * confidence: inferred
- * evidence: (texture descriptor list): texdesc_free_start, then texdesc_free_step until it returns 1; nothing in the image calls it; part of vf4lib/libpoly/src/tex_txn.c
+ * confidence: exercised
+ * evidence: (texture descriptor list): texdesc_free_start, then texdesc_free_step until it returns 1; nothing in the image calls it; part of vf4lib/libpoly/src/tex_txn.c; exercised 2026-11-12: called by the harness with three 16-byte descriptors in a buffer (format words 0x101, 0x101 and 0): texdesc_free_start(buffer), then texdesc_free_step, which returned 0, 0 and 1, and it stopped; with an all-zero list one step returned 1
  * matched: source/vf4lib/libpoly/src/tex_txn.c (tools/match/match.py)
  */
 void texdesc_free(tex_desc_rec *descs)

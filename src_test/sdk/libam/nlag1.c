@@ -547,8 +547,8 @@ void card_queue_da(int side)
 }
 
 /* 0x0c04f4e0  size 0x40  file by match with source
- * confidence: inferred
- * evidence: (side, byte): queues request 0xd1 (follow-up 0x91) with the byte at entry +0x10; the next request after card_queue_da's 0xda; nothing in the image calls it (uncalled code, made a function 2026-11-09); between card_queue_da and md5_init, so by link order part of sdk/libam/nlag1.c
+ * confidence: exercised
+ * evidence: (side, byte): queues request 0xd1 (follow-up 0x91) with the byte at entry +0x10; the next request after card_queue_da's 0xda; nothing in the image calls it (uncalled code, made a function 2026-11-09); between card_queue_da and md5_init, so by link order part of sdk/libam/nlag1.c; exercised 2026-11-12: called by the harness with (1, 0x5A) after card_queue_begin(1) and card_queue_da(1), it stored 400, 0xD1, 0x91, 0 and the byte 0x5A at +0x10 in side 1's slot 1 (card_queues+0x1A4) behind card_queue_da's 0xDA entry, card_queue_len 2; with (0, 0x1FF) after card_queue_begin(0) it filled slot 0 at card_queues+0 with the byte 0xFF, len 1
  * same code as main.bin 0c11a3c0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/libam/nlag1.c (tools/match/match.py)
  */

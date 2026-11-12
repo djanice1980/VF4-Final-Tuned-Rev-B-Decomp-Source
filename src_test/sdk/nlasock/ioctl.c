@@ -41,8 +41,8 @@ void ioctl_arg_write(uint board_addr, uint *arg)
 }
 
 /* 0x0c0549c0  size 0x52  file by match with source
- * confidence: inferred
- * evidence: (socket, argument word address, argument pointer): when a pointer was given, reads the slot's 0x200-byte data area into xfer_recv_bounce and copies the argument word back to it; caller sock_ioctl; part of NLASOCK
+ * confidence: exercised
+ * evidence: (socket, argument word address, argument pointer): when a pointer was given, reads the slot's 0x200-byte data area into xfer_recv_bounce and copies the argument word back to it; caller sock_ioctl; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on) with the words 0x11111111 0x22222222 0x33333333 written by dimm_pio_write to slot 9's data area (0x0f809200): (9, 0x0f809208, pointer) read 0x200 bytes from 0x0f809200 into xfer_recv_bounce and stored 0x33333333 (next word untouched); with a null pointer it read nothing
  * same code as main.bin 0c1221c0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/nlasock/ioctl.c (tools/match/match.py)
  */

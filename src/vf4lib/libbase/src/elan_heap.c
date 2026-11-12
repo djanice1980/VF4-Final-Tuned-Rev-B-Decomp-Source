@@ -96,8 +96,8 @@ void * elan_gap_alloc(int size)
 }
 
 /* 0x0c04fda0  size 0x2c  file by match with source
- * confidence: inferred
- * evidence: heap_free on elan_gap_heap and its statistics. Nothing in the image calls it; part of vf4lib/libbase/src/elan_heap.c
+ * confidence: exercised
+ * evidence: heap_free on elan_gap_heap and its statistics. Nothing in the image calls it; part of vf4lib/libbase/src/elan_heap.c; exercised 2026-11-12: called by the harness in one sandbox after elan_gap_alloc(0x1000) had returned 0xAA420060 and moved elan_gap_heap's statistics words +0x58 / +0x5C from 0x9BE40 / 0x300040 to 0x9AE00 / 0x301080: elan_gap_free(0xAA420060) called heap_free and heap_stats_get(heap, heap + 0x40) on elan_gap_heap and put them back to 0x9BE40 / 0x300040, and the next elan_gap_alloc(0x1000) returned 0xAA420060 again
  * matched: source/vf4lib/libbase/src/elan_heap.c (tools/match/match.py)
  */
 void elan_gap_free(void *p)

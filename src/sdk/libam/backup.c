@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c115700  size 0x5e  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file backup.c: keeps bit 0 of the bank flag, zeroes the first 0x1f8 bytes of the backup SRAM (0xa0200000: the time words and both banks), then writes a fresh CRC and the kept flag into both banks; credit_sram_reset calls it
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file backup.c: keeps bit 0 of the bank flag, zeroes the first 0x1f8 bytes of the backup SRAM (0xa0200000: the time words and both banks), then writes a fresh CRC and the kept flag into both banks; credit_sram_reset calls it; exercised 2026-11-12: called by the harness with 0x1234 at 0xA0200000, bank 0 flag 3, 0xFFFF and 0xEEEE in the banks, 0x9999 at +0x1F4 and 0x5555 at +0x1F8: everything up to +0x1F7 became 0 except both banks' CRC 0x33B5 (what crc16_ccitt gives for 0xF0 zero bytes) and flag 1; +0x1F8 kept 0x5555; with flag 2 the flag became 0
  * matched: source/sdk/libam/backup.c (tools/match/match.py)
  */
 void sram_banks_clear(void)
@@ -173,8 +173,8 @@ int saturating_increment(int *counter)
 }
 
 /* 0x0c115a20  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: (counter): subtracts 1 unless it holds 0 and returns the new value (0 when it was empty); the opposite of saturating_increment; nothing in the image calls it (uncalled code, made a function 2026-11-09); between saturating_increment and sram_set_bank_flag, so by link order part of sdk/libam/backup.c
+ * confidence: exercised
+ * evidence: (counter): subtracts 1 unless it holds 0 and returns the new value (0 when it was empty); the opposite of saturating_increment; nothing in the image calls it (uncalled code, made a function 2026-11-09); between saturating_increment and sram_set_bank_flag, so by link order part of sdk/libam/backup.c; exercised 2026-11-12: called by the harness on a counter holding 5 it returned 4 and stored 4; holding 0 it returned 0 and left 0; holding 1 it returned 0 and stored 0
  * matched: source/sdk/libam/backup.c (tools/match/match.py)
  */
 int saturating_decrement(int *counter)
@@ -189,8 +189,8 @@ int saturating_decrement(int *counter)
 }
 
 /* 0x0c115a40  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file backup.c: stores a value in the flag word of both SRAM banks and saves bank 0; nothing calls it
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file backup.c: stores a value in the flag word of both SRAM banks and saves bank 0; nothing calls it; exercised 2026-11-12: called by the harness with 0x55 it stored 0x55 at 0xA020000C and 0xA0200104 (the flag words of both banks) and called sram_sync_from_bank0; then with 0xA1 both words became 0xA1
  * matched: source/sdk/libam/backup.c (tools/match/match.py)
  */
 void sram_set_bank_flag(uint flag)

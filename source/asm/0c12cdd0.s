@@ -6,8 +6,10 @@
 	.balign	4
 
 ! Transforms a run of points by the current matrix and divides by w:
-! each input point is three floats in a 16-byte record and is taken as
-! (x, y, z, 1); each 16-byte output record gets x / w, y / w and 1 / w.
+! each input point is three floats at the start of a 24-byte record (the
+! vertices light_vertex_single reads) and is taken as (x, y, z, 1); each
+! 16-byte output record gets x / w, y / w and 1 / w (its fourth word is
+! not written).
 ! The loop is unrolled three times, the three phases rotating through
 ! fv0, fv4 and fv8 so that each divide overlaps the next point's load;
 ! every phase has its own exit that finishes the points still pending.

@@ -118,8 +118,8 @@ int irq_hook_insert(int event_code,irq_hook_fn fn,uint priority,void *arg)
 }
 
 /* 0x0c136dc0  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: calls every hook of the event code's list with its argument; installed in the VBR handler table by irq_hook_insert, called by holly_irq_dispatch; part of syChain; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: calls every hook of the event code's list with its argument; installed in the VBR handler table by irq_hook_insert, called by holly_irq_dispatch; part of syChain; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with 0x400 after irq_hook_insert had put g2dma_slot_mark_unused on that list with the buffers 0x0f002000 (priority 5) and 0x0f004000 (priority 3), and on list 0x420 with 0x0f006000, it called g2dma_slot_mark_unused(0x0f004000) and then (0x0f002000), clearing their +0x28 bytes, and left the 0x420 hook's byte at 1
  * matched: source/sdk/sy/sychain.c (tools/match/match.py)
  */
 void irq_hooks_run(int event_code)
@@ -210,9 +210,9 @@ int holly_irq_dispatch(void)
 }
 
 /* 0x0c136f80  size 0x146  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x1a6
- * evidence: takes a record number: unlinks it from the middle of a list, or from a list head, clearing its flags; when a list empties, clears the 3D library callback (0x900 / 0x920) or masks the Holly interrupt bit and puts int_break_handler back into the VBR handler table slot; part of syChain; checked against reference material (not in this repo)
+ * evidence: takes a record number: unlinks it from the middle of a list, or from a list head, clearing its flags; when a list empties, clears the 3D library callback (0x900 / 0x920) or else puts int_break_handler into the event code's VBR handler table slot (VBR + 0x200 + (code - 0x200) / 8), first masking the Holly interrupt bit for an event of 0xa00-0xbff; for such an event that slot is not one irq_hook_insert set (holly_irq_dispatch stays at VBR + 0x22c): removing the only hook of 0xa20 wrote irq_handler_table+0x104; part of syChain; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on list 0x400, which irq_hook_insert had built as hooks 10, 9, 12: remove(9) linked 10 to 12 and zeroed 9's priority word, remove(10) made 12 the head, and remove(12) emptied the list and put int_break_handler at irq_handler_table+0x40, where insert had put irq_hooks_run; for the only hook of event 0xa20 it cleared bit 13 in its write of 0xa05f6920 (0x7a000 to 0x78000)
  * matched: source/sdk/sy/sychain.c (tools/match/match.py)
  */
 void irq_hook_remove(int hook)

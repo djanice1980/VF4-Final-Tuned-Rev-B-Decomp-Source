@@ -107,9 +107,9 @@ stop:
 }
 
 /* 0x0c098040  size 0xb2  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xc2
- * evidence: starts bonus time with chance 1 / (400 / lottery_bonus_odds[lottery_symbol]): sets bonus_time_flags bit 0, sound_state_bit6_set (bit 6 of sound_state), counts user_back_data.bonus_time_starts, and draws its length bonus_time_left as 10-30 games, keeping the longest and shortest in user_back_data.bonus_time_longest / user_back_data.bonus_time_shortest; while bonus time lasts mission_choose raises both prize chances to at least 0x4CC8 (60%); only caller bonus_lottery_step; part of vf4lib/libmission/src/mission.c
+ * evidence: starts bonus time with chance 1 / (400 / lottery_bonus_odds[lottery_symbol]): sets bonus_time_flags bit 0, sound_state_bit6_set (bit 6 of sound_state), counts user_back_data.bonus_time_starts, and draws its length bonus_time_left as 10-30 games, keeping the longest and shortest in user_back_data.bonus_time_longest / user_back_data.bonus_time_shortest; while bonus time lasts mission_choose raises both prize chances to at least 0x4CC8 (60%); only caller bonus_lottery_step; part of vf4lib/libmission/src/mission.c; exercised 2026-11-12: called by the harness with the random state stepped by three lcg_next15 calls (next rolls 6348, 9447): with lottery_symbol 14 (odds 80, threshold 32767/5) it set bit 0 of bonus_time_flags, called sound_state_bit6_set, set bonus_time_left 28 (9447 % 21 + 10) and stored 1 in user_back_data.bonus_time_starts and 28 in bonus_time_shortest and bonus_time_longest; with symbol 0 (threshold 409), or symbol 14 with the roll 31134, nothing changed
  * matched: source/vf4lib/libmission/src/mission.c (tools/match/match.py)
  */
 void bonus_time_roll(void)
@@ -135,9 +135,9 @@ void bonus_time_roll(void)
 }
 
 /* 0x0c098140  size 0x10c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x1ba
- * evidence: returns a random symbol 0-11, where 1, 2, 7, 5, 10 (one in two), 4, 9 (one in three), 6, 11 (one in five) and 3, 8 (one in ten) become a rarer twin 12-22; callers bonus_lottery_step and mission_sim_item_roll; part of vf4lib/libmission/src/mission.c
+ * evidence: returns a random symbol 0-11, where 1, 2, 7, 5, 10 (one in two), 4, 9 (one in three), 6, 11 (one in five) and 3, 8 (one in ten) become a rarer twin 12-22; callers bonus_lottery_step and mission_sim_item_roll; part of vf4lib/libmission/src/mission.c; exercised 2026-11-12: called by the harness after 0, 2, 3, 4 and 6 lcg_next15 calls (rolls known from the generator's formula): first rolls 31134, 19942, 6348, 9447, 24016 (mod 12: 6, 10, 0, 3, 4) with second rolls 26128, 6348, none, 19172, 6408 gave 6 (26128 not below 0x1999), 21 (the twin of 10), 0, 3 (19172 not below 0xccc) and 15 (the twin of 4)
  * matched: source/vf4lib/libmission/src/mission.c (tools/match/match.py)
  */
 int lottery_symbol_draw(void)
@@ -191,8 +191,8 @@ int lottery_symbol_draw(void)
 }
 
 /* 0x0c098320  size 0x10  file by match with source
- * confidence: inferred
- * evidence: returns lottery_symbol (0x0C2A06D4); Ghidra has no function here and nothing in the image calls it; part of the mission and prize file (file name ours, see notes)
+ * confidence: exercised
+ * evidence: returns lottery_symbol (0x0C2A06D4); Ghidra has no function here and nothing in the image calls it; part of the mission and prize file (file name ours, see notes); exercised 2026-11-12: called by the harness with lottery_symbol poked 7 it returned 7, and poked 21 it returned 21
  * matched: source/vf4lib/libmission/src/mission.c (tools/match/match.py)
  */
 int lottery_symbol_get(void)
@@ -940,8 +940,8 @@ void mission_hud_draw(void)
 }
 
 /* 0x0c0997c0  size 0x76  file by match with source
- * confidence: inferred
- * evidence: (x right, y, x left, side): centers on the side's x "成功しました！" (succeeded) for mission_result -1, "失敗しました！" (failed) for 1 (the reverse of mission_text_draw's labels: mission_hud_draw calls it for the side that has no mission, or for side 1 when both have one), else "試合に勝て！" (win the match) in the font euc_text_font; only caller mission_hud_draw; part of vf4lib/libmission/src/mission.c
+ * confidence: exercised
+ * evidence: (x right, y, x left, side): centers on the side's x "成功しました！" (succeeded) for mission_result -1, "失敗しました！" (failed) for 1 (the reverse of mission_text_draw's labels: mission_hud_draw calls it for the side that has no mission, or for side 1 when both have one), else "試合に勝て！" (win the match) in the font euc_text_font; only caller mission_hud_draw; part of vf4lib/libmission/src/mission.c; exercised 2026-11-12: called by the harness with (500, 100, 200, side): mission_result -1, side 0 put "成功しました！" (sprite_text_put, euc_text_font) at x 144 (200 - 14 x 8 / 2), y 100, z 0.006; 1, side 1 put "失敗しました！" at x 444; 0 put "試合に勝て！" at 152 for side 0 and 452 for side 1
  * matched: source/vf4lib/libmission/src/mission.c (tools/match/match.py)
  */
 void mission_result_draw(float x_2p, float y, float x_1p, int side)
@@ -1498,9 +1498,9 @@ int prize_item_pick(uint side)
 }
 
 /* 0x0c09a700  size 0x10e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x11a
- * evidence: (side, class, character): for the top rank class: first class 1 when prize_loss_tier is set, then prize_item_pick_unowned of the class; when the card holds all of them a random unowned item of the fourth list (item_rank_lists[3][character]) into prize_item_pool, setting prize_item_fallback[side]; -1 when none; only caller prize_item_pick; part of vf4lib/libmission/src/mission.c
+ * evidence: (side, class, character): for the top rank class: first class 1 when prize_loss_tier is set, then prize_item_pick_unowned of the class; when the card holds all of them a random unowned item of the fourth list (item_rank_lists[3][character]) into prize_item_pool, setting prize_item_fallback[side]; -1 when none; only caller prize_item_pick; part of vf4lib/libmission/src/mission.c; exercised 2026-11-12: called by the harness with (0, 2, 14): with the snapshot card prize_loss_tier(0) gave 0 and it returned what prize_item_pick_unowned(0, 2, 14) picked (35); with the card's losses (header +8) poked 500 the tier was 2 and it asked prize_item_pick_unowned(0, 1, 14) first and returned its 90; with all 64 item bits of the card set it returned -1 with prize_item_pool[0] all -1 and prize_item_fallback[0] still 0 (the fallback pick itself was not reached)
  * matched: source/vf4lib/libmission/src/mission.c (tools/match/match.py)
  */
 int prize_item_pick_high(int side, int cls, int chara)
@@ -2224,8 +2224,8 @@ void bonus_item_init(void)
 }
 
 /* 0x0c09b6e0  size 0x1e6  file by match with source
- * confidence: inferred
- * evidence: a prize-rate test: clears the per-side statistics arrays 0x0C447160-0x0C450E00 (ten counters and ten 1000-entry tables per side) and bonus_time_flags, then prize_test_runs times gives 2P a random profile of prize_test_profiles (220 entries: record +3, rank +4, +6, +8) and runs mission_clear, mission_sim_vs_draw, prize_choose, mission_sim_item_roll, mission_sim_match_result, prize_miss_count_update; nothing in the image calls it or sets prize_test_runs; part of vf4lib/libmission/src/mission.c
+ * confidence: exercised
+ * evidence: a prize-rate test: clears the per-side statistics arrays 0x0C447160-0x0C450E00 (ten counters and ten 1000-entry tables per side) and bonus_time_flags, then prize_test_runs times gives 2P a random profile of prize_test_profiles (220 entries: record +3, rank +4, +6, +8) and runs mission_clear, mission_sim_vs_draw, prize_choose, mission_sim_item_roll, mission_sim_match_result, prize_miss_count_update; nothing in the image calls it or sets prize_test_runs (1000 in the image's data); part of vf4lib/libmission/src/mission.c; exercised 2026-11-12: called by the harness with prize_test_runs poked 0 and nonzero values planted in prize_test_side_prizes, entries of prize_test_table_0, _9 and _10, bonus_time_flags, prize_test_prize_matches and prize_test_lottery_starts: all were 0 afterwards and no simulation routine ran; with 1 run (roll 31134, profile 114) card 1 got character 7, level 16, wins 366, losses 325, +0x20/+0x21 0, and mission_clear, mission_sim_vs_draw, prize_choose, mission_sim_item_roll, mission_sim_match_result, prize_miss_count_update ran once each
  * matched: source/vf4lib/libmission/src/mission.c (tools/match/match.py)
  */
 void prize_rate_test_run(void)
@@ -4036,8 +4036,8 @@ uint quest_opponent_listed(uint side)
 }
 
 /* 0x0c09e600  size 0x36  file by match with source
- * confidence: inferred
- * evidence: (side): 1 when net_ready_latched() (net_ready_at_stage, set with the network) and the side's quest state (quest_state_get) is 1 (in progress), else 0; nothing in the image calls it; part of vf4lib/libmission/src/mission.c
+ * confidence: exercised
+ * evidence: (side): 1 when net_ready_latched() (net_ready_at_stage, set with the network) and the side's quest state (quest_state_get) is 1 (in progress), else 0; nothing in the image calls it; part of vf4lib/libmission/src/mission.c; exercised 2026-11-12: called by the harness with side 0's quest state set to 1 by card_body_quest0_b0_set: with net_ready_at_stage poked 1 it returned 1, with 0 it returned 0; with the state 2 it returned 0; with side 1's state 1 and side 0's 0 it returned 1 for side 1 and 0 for side 0
  * matched: source/vf4lib/libmission/src/mission.c (tools/match/match.py)
  */
 int quest_in_progress(int side)
@@ -4351,9 +4351,9 @@ bool quest_kind_valid(int side)
 }
 
 /* 0x0c09ed40  size 0x24e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x2c4
- * evidence: the VS in-match mission draw inside the uncalled simulation loop prize_rate_test_run: base chances of 1 per side, mission_sim_chances_set from both cards' rank bytes; the card's day field (card_body_syu_low5_get / card_body_syu_low5_set on card +0x1C) is cleared when it is not today's tm_mday, side 0 (only, the loop skips side 1) gets today's day with chance 1 in net_syuchu_value0_get() (800 when 0), each set day is cleared again with chance 0xccc/0x7fff; the bonus period (bit 0 of bonus_time_flags) counts bonus_time_left down and raises both chances to at least 0x4cc8, as a set day does; then per side mission 29 (0x1d) in mission_of_side when lcg_next15() falls under the chance, else -1, and the points of the chosen side's mission from the mission table mission_table (+4 of a 24-byte row) into mission_count; counts each event in prize_test_prize_matches-0c2a0670 and prize_test_side_prizes; mirrors the VS branch of mission_choose; only caller prize_rate_test_run; part of vf4lib/libmission/src/mission.c
+ * evidence: the VS in-match mission draw inside the uncalled simulation loop prize_rate_test_run: base chances of 1 per side, mission_sim_chances_set from both cards' rank bytes; the card's day field (card_body_syu_low5_get / card_body_syu_low5_set on card +0x1C) is cleared when it is not today's tm_mday, side 0 (only, the loop skips side 1) gets today's day with chance 1 in net_syuchu_value0_get() (800 when 0), each set day is cleared again with chance 0xccc/0x7fff; the bonus period (bit 0 of bonus_time_flags) counts bonus_time_left down and raises both chances to at least 0x4cc8, as a set day does; then per side mission 29 (0x1d) in mission_of_side when lcg_next15() falls under the chance, else -1, and the points of the chosen side's mission from the mission table mission_table (+4 of a 24-byte row) into mission_count; counts each event in prize_test_prize_matches-0c2a0670 and prize_test_side_prizes; mirrors the VS branch of mission_choose; only caller prize_rate_test_run; part of vf4lib/libmission/src/mission.c; exercised 2026-11-12: called by the harness after one lcg_next15 call (next rolls 26128, 19942, 6348), with bonus_time_flags 1 and bonus_time_left 5: chances rose from 1310 to 0x4cc8 each, side 0 (19942) got -1 and side 1 (6348) mission 29, mission_count 0x55 became 0 (mission_table[29] +4), prize_test_prize_matches, prize_test_side_prizes[1] and prize_test_bonus_time_matches 0 to 1, bonus_time_left 4; with bonus_time_left 0 the flag was cleared, chances stayed 1310 and both sides got -1
  * matched: source/vf4lib/libmission/src/mission.c (tools/match/match.py)
  */
 void mission_sim_vs_draw(void)
@@ -4441,9 +4441,9 @@ void mission_sim_vs_draw(void)
 }
 
 /* 0x0c09f020  size 0x220  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x2ac
- * evidence: the item roll of the uncalled simulation loop prize_rate_test_run (after net_info_get; VS only, with net_ready_latched() and not net_free_play_is_on()): a state in lottery_state: -1 waits for a chance of 1 in net_syuchu_value1_get() (400 when 0) to start, 0 fills the three slots at lottery_reels with the class (lottery_symbol_values) of random items lottery_symbol_draw, 1 sets a count of further rolls from the slots' sum (random below 6, 4 or 2), 2 rolls items one by one until the count and the per-class rows at lottery_spin_lists run out; each item roll calls mission_sim_bonus_roll; the bonus period (bit 0 of bonus_time_flags) clears all of it; only caller prize_rate_test_run; role of the slots unclear; part of vf4lib/libmission/src/mission.c
+ * evidence: the item roll of the uncalled simulation loop prize_rate_test_run (after net_info_get; VS only, with net_ready_latched() and not net_free_play_is_on()): a state in lottery_state: -1 waits for a chance of 1 in net_syuchu_value1_get() (400 when 0) to start, 0 fills the three slots at lottery_reels with the class (lottery_symbol_values) of random items lottery_symbol_draw, 1 sets a count of further rolls from the slots' sum (random below 6, 4 or 2), 2 rolls items one by one until the count and the per-class rows at lottery_spin_lists run out; each item roll calls mission_sim_bonus_roll; the bonus period (bit 0 of bonus_time_flags) clears all of it; only caller prize_rate_test_run; role of the slots unclear; part of vf4lib/libmission/src/mission.c; exercised 2026-11-12: called by the harness with play_style poked 2 and net_ready_at_stage 1: with bonus_time_flags 1 it set lottery_state, lottery_symbol and the three lottery_reels to -1 and lottery_spins to 0; in state 0 with empty reels after two lcg_next15 calls it drew symbol 21 and put lottery_symbol_values[21] = 4 in reels[0]; in state 1 with reels 1, 1, 1 after one call it set spins 26128 % 6 = 4, went to state 2 and rolled once (symbol 21, spins 3); with play_style 1 nothing changed
  * matched: source/vf4lib/libmission/src/mission.c (tools/match/match.py)
  */
 void mission_sim_item_roll(void)
@@ -4510,8 +4510,8 @@ stop:
 }
 
 /* 0x0c09f300  size 0x7c  file by match with source
- * confidence: inferred
- * evidence: starts the bonus period with chance 1 in (400 / the item's weight in lottery_bonus_odds): sets bit 0 of bonus_time_flags, sound_state_bit6_set (bit 0x40 of sound_state), counts it in prize_test_bonus_time_starts and sets the countdown bonus_time_left to 10-30; the simulation's copy of the roll in bonus_time_roll; only caller mission_sim_item_roll; part of vf4lib/libmission/src/mission.c
+ * confidence: exercised
+ * evidence: starts the bonus period with chance 1 in (400 / the item's weight in lottery_bonus_odds): sets bit 0 of bonus_time_flags, sound_state_bit6_set (bit 0x40 of sound_state), counts it in prize_test_bonus_time_starts and sets the countdown bonus_time_left to 10-30; the simulation's copy of the roll in bonus_time_roll; only caller mission_sim_item_roll; part of vf4lib/libmission/src/mission.c; exercised 2026-11-12: called by the harness with the random state stepped by three lcg_next15 calls (next rolls 6348, 9447): with lottery_symbol 14 (odds 80, threshold 32767/5) it set bit 0 of bonus_time_flags, called sound_state_bit6_set, set bonus_time_left 28 (9447 % 21 + 10) and prize_test_bonus_time_starts from 3 to 4; with symbol 0 (threshold 409), or symbol 14 with the roll 31134, nothing changed
  * matched: source/vf4lib/libmission/src/mission.c (tools/match/match.py)
  */
 void mission_sim_bonus_roll(void)
@@ -4527,9 +4527,9 @@ void mission_sim_bonus_roll(void)
 }
 
 /* 0x0c09f3c0  size 0x102  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x12e
- * evidence: the simulated match result of the uncalled loop prize_rate_test_run: picks champion_side 0 with chance prize_test_win_rate x 0x147, else 1 with chance player_win_rate(1) x 0x147 (both percent-like), else 1 when the first is 0, updates win_streak (+1 for the same side, else 1), card_match_result_record with both robs (rob_get) and the winner/loser order, and prize_give(champion_side) when an in-match mission is active (mission_active_get() != -1); only caller prize_rate_test_run; part of vf4lib/libmission/src/mission.c
+ * evidence: the simulated match result of the uncalled loop prize_rate_test_run: picks champion_side 0 with chance prize_test_win_rate x 0x147, else 1 with chance player_win_rate(1) x 0x147 (both percent-like), else 1 when the first is 0, else champion_side stays as it was, updates win_streak (+1 for the same side, else 1), card_match_result_record with both robs (rob_get) and the winner/loser order, and prize_give(champion_side) when an in-match mission is active (mission_active_get() != -1); only caller prize_rate_test_run; part of vf4lib/libmission/src/mission.c; exercised 2026-11-12: called by the harness with champion_side 0 and win_streak 5 (first rolls 31134, 26128; player_win_rate(1) 0): prize_test_win_rate 100.0 (31134 below 32700) kept champion 0, win_streak 6, card_match_result_record(robs, robs+0x86c, 0, 1); 0.0 gave champion 1, win_streak 1, record(.., 1, 0); 50.0 left champion 0 (streak 6); with champion 1 and the roll 6348 under 50.0 it gave champion 0, win_streak 1
  * matched: source/vf4lib/libmission/src/mission.c (tools/match/match.py)
  */
 void mission_sim_match_result(void)
@@ -4579,9 +4579,9 @@ void mission_sim_match_result(void)
 }
 
 /* 0x0c09f520  size 0x1ce  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x1fe
- * evidence: (side 0 rank, side 1 rank): the simulation's copy of prize_chances_set: the two mission chances prize_item_chance from win_streak bands (30+, 20-29, 10-19, below 10) for champion_side and the other through prize_rate_get, raised to prize_rate_get(4, 8) when ranks_matched(ranks) holds and set by prize_loss_tier(side) 1 or 2 (counted in prize_test_loss_tier1_count / prize_test_loss_tier2_count), 0x6660 when the card value card_body_prize_misses_get is 30 or more (counted in prize_test_miss_capped_count); only caller mission_sim_vs_draw; part of vf4lib/libmission/src/mission.c
+ * evidence: (side 0 rank, side 1 rank): the simulation's copy of prize_chances_set: the two mission chances prize_item_chance from win_streak bands (30+, 20-29, 10-19, below 10) for champion_side and the other through prize_rate_get, raised to prize_rate_get(4, 8) when ranks_matched(ranks) holds and set by prize_loss_tier(side) 1 or 2 (counted in prize_test_loss_tier1_count / prize_test_loss_tier2_count), 0x6660 when the card value card_body_prize_misses_get is 30 or more (counted in prize_test_miss_capped_count); only caller mission_sim_vs_draw; part of vf4lib/libmission/src/mission.c; exercised 2026-11-12: called by the harness with ranks (0, 0): win_streak 35 and champion_side 0 gave prize_item_chance prize_rate_get(9, 10) = 3276 and (3, 4) = 1310; 25 with champion 1 gave 1310 and (8, 8) = 2621; 15 with champion 0 gave (7, 6) = 1966 and 1310; 5 gave 1310 for both; with ranks (12, 12) ranks_matched held and both rose to prize_rate_get(4, 8) = 2621, prize_loss_tier giving 0 for both sides
  * matched: source/vf4lib/libmission/src/mission.c (tools/match/match.py)
  */
 void mission_sim_chances_set(uchar rank_a, uchar rank_b)
@@ -4651,9 +4651,9 @@ void mission_sim_chances_set(uchar rank_a, uchar rank_b)
 }
 
 /* 0x0c09f760  size 0xa0  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xa8
- * evidence: for both sides prints "1P" or "2P" (text_cursor_to_cell 10 or 40, row 20) and the card's money word +0x52 as "SEND_DATA  : %d", "ID         : %d" (bits 12-15), "SEND_MONEY : %d" (bits 6-11) and "TEMP_MONEY : %d" (bits 0-5) through text_draw_formatted; nothing in the image calls it; part of vf4lib/libmission/src/mission.c
+ * evidence: for both sides prints "1P" or "2P" (text_cursor_to_cell 10 or 40, row 20) and the card's money word +0x52 as "SEND_DATA  : %d", "ID         : %d" (bits 12-15), "SEND_MONEY : %d" (bits 6-11) and "TEMP_MONEY : %d" (bits 0-5) through text_draw_formatted; nothing in the image calls it; part of vf4lib/libmission/src/mission.c; exercised 2026-11-12: called by the harness with card image money words (+0x52) poked 0xABCD (side 0) and 0x1041 (side 1): text_cursor_to_cell(10, 20), "1P", then "SEND_DATA" 43981, "ID" 10, "SEND_MONEY" 47, "TEMP_MONEY" 13 through text_draw_formatted; then text_cursor_to_cell(40, 20), "2P", 4161, 1, 1, 1
  * matched: source/vf4lib/libmission/src/mission.c (tools/match/match.py)
  */
 void card_money_debug_print(void)

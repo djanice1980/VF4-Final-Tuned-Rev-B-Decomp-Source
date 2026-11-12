@@ -224,8 +224,8 @@ int sound_pack_load_lock(int slot, char *name, int size)
 }
 
 /* 0x0c077720  size 0x54  file by match with source
- * confidence: inferred
- * evidence: (slot, file name): as sound_pack_load_lock with dtpk_insert_fed_begin; fatal "packload_wait ERROR." (sound_cmn.c:384); callers sound_banks_default_load and sound_banks_alt_load; part of vf4lib/libsound/src/sound_cmn.c
+ * confidence: exercised
+ * evidence: (slot, file name): as sound_pack_load_lock with dtpk_insert_fed_begin; fatal "packload_wait ERROR." (sound_cmn.c:384); callers sound_banks_default_load and sound_banks_alt_load; part of vf4lib/libsound/src/sound_cmn.c; exercised 2026-11-12: called by the harness (irq) in one sandbox after dtpk_drop_compact(3): sound_pack_load(3, "se_system.bin") copied the name to sound_pack_name, opened it (sound_pack_open), called dtpk_insert_fed_begin(sound_pack_header, 3, 0x100), which returned 0, fed the pack (sound_pack_feed) and returned 0; a second call for slot 3 right after, when dtpk_insert_fed_begin returned -3, called fatal_at(".../sound_cmn.c", 384, "packload_wait ERROR.") and did not return
  * assert sound_cmn.c:384: fatal "packload_wait ERROR."
  * matched: source/vf4lib/libsound/src/sound_cmn.c (tools/match/match.py)
  */

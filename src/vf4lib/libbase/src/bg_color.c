@@ -21,8 +21,8 @@ void bg_color_set(uint *colors)
 }
 
 /* 0x0c047ea0  size 0x2c  file by match with source
- * confidence: inferred
- * evidence: (three colors): moves the stack top up one entry (at most 16 deep, bg_color_depth) and sets the colors there with bg_color_set; nothing in the image calls it; part of vf4lib/libbase/src/bg_color.c
+ * confidence: exercised
+ * evidence: (three colors): moves the stack top up one entry (at most 16 deep, bg_color_depth) and sets the colors there with bg_color_set; nothing in the image calls it; part of vf4lib/libbase/src/bg_color.c; exercised 2026-11-12: called by the harness with the colors 0xFF112233, 0xFF445566, 0xFF778899: at depth 0 (bg_color_top at bg_color_stack) it moved bg_color_top 12 bytes up, set bg_color_depth 1 and stored the colors in entry 1, entry 0 unchanged; at depth 15 with bg_color_top at entry 15 it left both as they were and overwrote entry 15
  * matched: source/vf4lib/libbase/src/bg_color.c (tools/match/match.py)
  */
 void bg_color_push(uint *colors)
@@ -38,8 +38,8 @@ void bg_color_push(uint *colors)
 }
 
 /* 0x0c047ee0  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: (no arguments): moves the stack top down one entry (not below 0) and sets the colors found there; nothing in the image calls it; part of vf4lib/libbase/src/bg_color.c
+ * confidence: exercised
+ * evidence: (no arguments): moves the stack top down one entry (not below 0) and sets the colors found there; nothing in the image calls it; part of vf4lib/libbase/src/bg_color.c; exercised 2026-11-12: called by the harness in one sandbox after bg_color_push at depth 0, it moved bg_color_top back to bg_color_stack, set bg_color_depth 0 and called bg_color_set with entry 0 (0xFF000010, 0xFF000010, 0xFF000000 kept); a second pop at depth 0 left bg_color_top and the depth as they were
  * matched: source/vf4lib/libbase/src/bg_color.c (tools/match/match.py)
  */
 void bg_color_pop(void)
@@ -53,8 +53,8 @@ void bg_color_pop(void)
 }
 
 /* 0x0c047f20  size 0x24  file by match with source
- * confidence: inferred
- * evidence: (seed): rand_int_table_fill and rand_unit_table_fill with the same seed; nothing in the image calls it; part of vf4lib/libbase/src/bg_color.c
+ * confidence: exercised
+ * evidence: (seed): rand_int_table_fill and rand_unit_table_fill with the same seed; nothing in the image calls it; part of vf4lib/libbase/src/bg_color.c; exercised 2026-11-12: called by the harness with seed 7, rand_int_table began 19564, 9806 and rand_unit_table 0.5970459, 0.2992554 (the same values over 32768), as the LCG x 0x41C64E6D + 0x3039, bits 16 to 30, gives from 7; it called rand_int_table_fill(7) and rand_unit_table_fill(7)
  * matched: source/vf4lib/libbase/src/bg_color.c (tools/match/match.py)
  */
 void rand_tables_fill(uint seed)
@@ -65,8 +65,8 @@ void rand_tables_fill(uint seed)
 }
 
 /* 0x0c047f60  size 0x44  file by match with source
- * confidence: inferred
- * evidence: (seed): lcg_seed_set, then 100 values of lcg_next15 into rand_int_table; only caller rand_tables_fill; part of vf4lib/libbase/src/bg_color.c
+ * confidence: exercised
+ * evidence: (seed): lcg_seed_set, then 100 values of lcg_next15 into rand_int_table; only caller rand_tables_fill; part of vf4lib/libbase/src/bg_color.c; exercised 2026-11-12: called by the harness with seed 12345, rand_int_table read 21468, 9988, 22117 at 0 to 2 and 16329, 5354 at 98 and 99, the first, second, third, 99th and 100th values of the LCG x 0x41C64E6D + 0x3039, bits 16 to 30, from 12345 (lcg_seed_set(12345), then lcg_next15)
  * matched: source/vf4lib/libbase/src/bg_color.c (tools/match/match.py)
  */
 void rand_int_table_fill(uint seed)
@@ -83,8 +83,8 @@ void rand_int_table_fill(uint seed)
 }
 
 /* 0x0c047fc0  size 0x44  file by match with source
- * confidence: inferred
- * evidence: (seed): lcg_seed_set, then 100 values of lcg_next_unit into rand_unit_table; only caller rand_tables_fill; part of vf4lib/libbase/src/bg_color.c
+ * confidence: exercised
+ * evidence: (seed): lcg_seed_set, then 100 values of lcg_next_unit into rand_unit_table; only caller rand_tables_fill; part of vf4lib/libbase/src/bg_color.c; exercised 2026-11-12: called by the harness with seed 12345, rand_unit_table read 0.6551514, 0.3048096 at 0 and 1 and 0.4983215, 0.1633911 at 98 and 99, the values 21468, 9988, 16329, 5354 of the LCG from 12345 over 32768 (lcg_seed_set(12345), then lcg_next_unit)
  * matched: source/vf4lib/libbase/src/bg_color.c (tools/match/match.py)
  */
 void rand_unit_table_fill(uint seed)
@@ -98,8 +98,8 @@ void rand_unit_table_fill(uint seed)
 }
 
 /* 0x0c048020  size 0x28  file by match with source
- * confidence: inferred
- * evidence: steps rand_int_table_pos through 0..99 and returns that entry of rand_int_table; nothing in the image calls it (uncalled code, made a function 2026-11-09); between rand_unit_table_fill and rand_unit_table_next, so by link order part of vf4lib/libbase/src/bg_color.c
+ * confidence: exercised
+ * evidence: steps rand_int_table_pos through 0..99 and returns that entry of rand_int_table; nothing in the image calls it (uncalled code, made a function 2026-11-09); between rand_unit_table_fill and rand_unit_table_next, so by link order part of vf4lib/libbase/src/bg_color.c; exercised 2026-11-12: called by the harness in one sandbox after rand_int_table_fill(12345), with rand_int_table_pos poked to 98 it returned 5354 (entry 99), then 21468 (entry 0, the position wrapping) and 9988, leaving the position 1
  * matched: source/vf4lib/libbase/src/bg_color.c (tools/match/match.py)
  */
 int rand_int_table_next(void)
@@ -112,8 +112,8 @@ int rand_int_table_next(void)
 }
 
 /* 0x0c048060  size 0x28  file by match with source
- * confidence: inferred
- * evidence: steps rand_unit_table_pos through 0..99 and returns that entry of rand_unit_table; nothing in the image calls it (uncalled code, made a function 2026-11-09); between rand_int_table_next and text_center_left_x, so by link order part of vf4lib/libbase/src/bg_color.c
+ * confidence: exercised
+ * evidence: steps rand_unit_table_pos through 0..99 and returns that entry of rand_unit_table; nothing in the image calls it (uncalled code, made a function 2026-11-09); between rand_int_table_next and text_center_left_x, so by link order part of vf4lib/libbase/src/bg_color.c; exercised 2026-11-12: called by the harness in one sandbox after rand_unit_table_fill(12345), with rand_unit_table_pos poked to 98 it returned 0.1633911 (entry 99) and then 0.6551514 (entry 0), leaving the position 0
  * matched: source/vf4lib/libbase/src/bg_color.c (tools/match/match.py)
  */
 float rand_unit_table_next(void)
@@ -126,9 +126,9 @@ float rand_unit_table_next(void)
 }
 
 /* 0x0c0480a0  size 0x4c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x66
- * evidence: (text, character width, width): (width - (strlen - 1) x character width) / 2, the left x that centers the text; nothing in the image calls it; part of vf4lib/libbase/src/bg_color.c
+ * evidence: (text, character width, width): (width - (strlen - 1) x character width) / 2, the left x that centers the text; nothing in the image calls it; part of vf4lib/libbase/src/bg_color.c; exercised 2026-11-12: called by the harness with ("hello", 12, 640.0) it returned 296 and with ("ab", 20, 100.0) it returned 40
  * matched: source/vf4lib/libbase/src/bg_color.c (tools/match/match.py)
  */
 float text_center_left_x(char *text, int char_width, float width)
@@ -140,8 +140,8 @@ float text_center_left_x(char *text, int char_width, float width)
 }
 
 /* 0x0c048120  size 0x74  file by match with source
- * confidence: inferred
- * evidence: (no arguments): builds three opaque colors from the nine bytes bg_color_custom_rgb into the block at bg_color_custom and sets them with bg_color_set; nothing in the image calls it (role unclear, probably a debug entry); part of vf4lib/libbase/src/bg_color.c
+ * confidence: exercised
+ * evidence: (no arguments): builds three opaque colors from the nine bytes bg_color_custom_rgb into the block at bg_color_custom and sets them with bg_color_set; nothing in the image calls it (role unclear, probably a debug entry); part of vf4lib/libbase/src/bg_color.c; exercised 2026-11-12: called by the harness with the nine bytes from bg_color_custom_rgb poked to 0x11, 0x22 ... 0x99, it stored 0xFF112233, 0xFF445566, 0xFF778899 at bg_color_custom and, through bg_color_set(bg_color_custom), in the top stack entry
  * matched: source/vf4lib/libbase/src/bg_color.c (tools/match/match.py)
  */
 void bg_color_custom_apply(void)

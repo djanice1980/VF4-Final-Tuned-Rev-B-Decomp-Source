@@ -3169,8 +3169,8 @@ void credit_display_frame(void)
 }
 
 /* 0x0c02a4e0  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: 1 when a file load is pending (load_pending_get: load_pending) or poly_queue_busy_get (poly_queue_busy) is set, else 0; the same test the sub-mode handlers write inline; nothing in the image calls it; part of vf4lib/libbase/src/mode.c
+ * confidence: exercised
+ * evidence: 1 when a file load is pending (load_pending_get: load_pending) or poly_queue_busy_get (poly_queue_busy) is set, else 0; the same test the sub-mode handlers write inline; nothing in the image calls it; part of vf4lib/libbase/src/mode.c; exercised 2026-11-12: called by the harness with load_pending and poly_queue_busy poked: 0 and 0 returned 0, 1 and 0 returned 1, 0 and 1 returned 1
  * matched: source/vf4lib/libbase/src/mode.c (tools/match/match.py)
  */
 int loads_busy(void)
@@ -3197,8 +3197,8 @@ int return_zero_0c02a520(void)
 }
 
 /* 0x0c02a540  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: a byte-identical second copy of loads_busy; nothing in the image calls it; part of vf4lib/libbase/src/mode.c
+ * confidence: exercised
+ * evidence: a byte-identical second copy of loads_busy; nothing in the image calls it; part of vf4lib/libbase/src/mode.c; exercised 2026-11-12: called by the harness with load_pending and poly_queue_busy poked: 0 and 0 returned 0, 1 and 0 returned 1, 0 and 1 returned 1, the same as loads_busy
  * matched: source/vf4lib/libbase/src/mode.c (tools/match/match.py)
  */
 int loads_busy_b(void)

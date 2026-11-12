@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c0586c0  size 0x4e  file by match with source
- * confidence: inferred
- * evidence: hand-written: (matrix): adds the 16 floats to the current matrix in the back bank registers; nothing in the image calls it (uncalled code, made a function 2026-11-09); between empty_asm_0c12cefc and mtx_xform_point_xyzw, so by link order part of sdk/naomi_library/matrix_asm.c
+ * confidence: exercised
+ * evidence: hand-written: (matrix): adds the 16 floats to the current matrix in the back bank registers; nothing in the image calls it (uncalled code, made a function 2026-11-09); between empty_asm_0c12cefc and mtx_xform_point_xyzw, so by link order part of sdk/naomi_library/matrix_asm.c; exercised 2026-11-12: through a harness driver (xmtrx_from_words, the routine, xmtrx_to_words, in one call), on the matrix with axes (1,2,3,4), (5,6,7,8), (9,10,11,12), (13,14,15,16) adding the 16 floats 100, 200, 300, 400, 0.5, 0.25, 0.125, 2, -1, -2, -3, -4, 7, 8, 9, 10 (address in r4) gave 101, 202, 303, 404, 5.5, 6.25, 7.125, 10, 8, 8, 8, 8, 20, 22, 24, 26
  * same code as main.bin 0c12cf00 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c12cf00.s (hand-written assembly, tools/match/match.py)
  */
@@ -23,8 +23,8 @@ void mtx_add(void);
 void mtx_xform_point_xyzw(float *param_1,float *param_2);
 
 /* 0x0c058730  size 0x16  file by match with source
- * confidence: inferred
- * evidence: hand-written: (in, out): transforms four floats by the current matrix (ftrv) into out; mtx_xform_point_xyzw with the fourth component read instead of 1; nothing in the image calls it (uncalled code, made a function 2026-11-09); between mtx_xform_point_xyzw and mtx_xform_point, so by link order part of sdk/naomi_library/matrix_asm.c
+ * confidence: exercised
+ * evidence: hand-written: (in, out): transforms four floats by the current matrix (ftrv) into out; mtx_xform_point_xyzw with the fourth component read instead of 1; nothing in the image calls it (uncalled code, made a function 2026-11-09); between mtx_xform_point_xyzw and mtx_xform_point, so by link order part of sdk/naomi_library/matrix_asm.c; exercised 2026-11-12: through a harness driver (xmtrx_from_words, the routine, xmtrx_to_words, in one call), on the matrix with axes (1,2,3,4), (5,6,7,8), (9,10,11,12), (13,14,15,16) the vector (1, 2, 3, 4) came out as (90, 100, 110, 120) in out, the word after it untouched and the matrix unchanged
  * same code as main.bin 0c12cf70 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c12cf70.s (hand-written assembly, tools/match/match.py)
  */
@@ -63,24 +63,24 @@ void mtx_invert_rigid(void);
 float * xmtrx_to_words(float *dst);
 
 /* 0x0c058820  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: stores the 3x3 rotation part of the current matrix (the back FPU bank, XMTRX) (fr0-2, fr4-6, fr8-10) as nine packed floats and returns the pointer; only caller mtx_store_3x3; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: stores the 3x3 rotation part of the current matrix (the back FPU bank, XMTRX) (fr0-2, fr4-6, fr8-10) as nine packed floats and returns the pointer; only caller mtx_store_3x3; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: through a harness driver (xmtrx_from_words, the routine, xmtrx_to_words, in one call), on the matrix with axes (1,2,3,4), (5,6,7,8), (9,10,11,12), (13,14,15,16) it stored 1, 2, 3, 5, 6, 7, 9, 10, 11 and left the next four words as planted
  * same code as main.bin 0c12d060 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c12d060.s (hand-written assembly, tools/match/match.py)
  */
 float * xmtrx_to_3x3_packed(float *dst);
 
 /* 0x0c058840  size 0x20  file by match with source
- * confidence: inferred
- * evidence: stores the 3x3 rotation part of the current matrix (the back FPU bank, XMTRX) into the first three rows of a 4x4 layout, skipping (not writing) each row's fourth float; returns the pointer; only caller mtx_store_3x3_stride4; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: stores the 3x3 rotation part of the current matrix (the back FPU bank, XMTRX) into the first three rows of a 4x4 layout, skipping (not writing) each row's fourth float; returns the pointer; only caller mtx_store_3x3_stride4; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: through a harness driver (xmtrx_from_words, the routine, xmtrx_to_words, in one call), on the matrix with axes (1,2,3,4), (5,6,7,8), (9,10,11,12), (13,14,15,16) it stored 1, 2, 3, 5, 6, 7, 9, 10, 11 at words 0-2, 4-6 and 8-10 and left the planted words 3, 7, 11 and 12 alone
  * same code as main.bin 0c12d080 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c12d080.s (hand-written assembly, tools/match/match.py)
  */
 float * xmtrx_to_3x3_in_4x4(float *dst);
 
 /* 0x0c058860  size 0x22  file by match with source
- * confidence: inferred
- * evidence: stores the current matrix (the back FPU bank, XMTRX) without its fourth column (twelve floats: three axes and the translation) and returns the pointer; only caller mtx_store_4x3; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: stores the current matrix (the back FPU bank, XMTRX) without its fourth column (twelve floats: three axes and the translation) and returns the pointer; only caller mtx_store_4x3; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: through a harness driver (xmtrx_from_words, the routine, xmtrx_to_words, in one call), on the matrix with axes (1,2,3,4), (5,6,7,8), (9,10,11,12), (13,14,15,16) it stored 1, 2, 3, 5, 6, 7, 9, 10, 11, 13, 14, 15 and left word 12 as planted
  * same code as main.bin 0c12d0a0 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c12d0a0.s (hand-written assembly, tools/match/match.py)
  */
@@ -103,8 +103,8 @@ float * xmtrx_to_pairs(float *dst);
 void mtx_store_translation(float *dst);
 
 /* 0x0c0588c0  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: (source in r4): loads nine packed floats into the 3x3 rotation part of the current matrix (the back FPU bank, XMTRX), zeroes the fourth float of the three axes and keeps the translation; only caller mtx_set_rot_3x3; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (source in r4): loads nine packed floats into the 3x3 rotation part of the current matrix (the back FPU bank, XMTRX), zeroes the fourth float of the three axes and keeps the translation; only caller mtx_set_rot_3x3; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: through a harness driver (xmtrx_from_words, the routine, xmtrx_to_words, in one call), on the matrix with axes (1,2,3,4), (5,6,7,8), (9,10,11,12), (13,14,15,16) loading 101 to 109 gave the axes (101,102,103,0), (104,105,106,0), (107,108,109,0) and kept the translation (13,14,15,16)
  * same code as main.bin 0c12d100 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c12d100.s (hand-written assembly, tools/match/match.py)
  */
@@ -119,8 +119,8 @@ void xmtrx_from_3x3_packed(float *src);
 void xmtrx_from_3x3_of_4x4(float *src);
 
 /* 0x0c058910  size 0x26  file by match with source
- * confidence: inferred
- * evidence: (source in r4): loads twelve floats (three axes and the translation) into the current matrix (the back FPU bank, XMTRX), zeroes the axes' fourth floats and sets the last to 1.0; only caller mtx_set_from_4x3; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (source in r4): loads twelve floats (three axes and the translation) into the current matrix (the back FPU bank, XMTRX), zeroes the axes' fourth floats and sets the last to 1.0; only caller mtx_set_from_4x3; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: through a harness driver (xmtrx_from_words, the routine, xmtrx_to_words, in one call), on the matrix with axes (1,2,3,4), (5,6,7,8), (9,10,11,12), (13,14,15,16) loading 101 to 112 gave (101,102,103,0), (104,105,106,0), (107,108,109,0), (110,111,112,1)
  * same code as main.bin 0c12d150 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c12d150.s (hand-written assembly, tools/match/match.py)
  */
@@ -167,16 +167,16 @@ void mtx_mul_by_pairs(float *mtx);
 void mtx_premul_by_pairs(float *mtx);
 
 /* 0x0c058a60  size 0x3e  file by match with source
- * confidence: inferred
- * evidence: as mtx_premul_by_pairs with 4-byte loads: the argument times the current matrix (the back FPU bank, XMTRX); only caller mtx_premul_view_top; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: as mtx_premul_by_pairs with 4-byte loads: the argument times the current matrix (the back FPU bank, XMTRX); only caller mtx_premul_view_top; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: through a harness driver (xmtrx_from_words, the routine, xmtrx_to_words, in one call), on the matrix with axes (1,2,3,4), (5,6,7,8), (9,10,11,12), (13,14,15,16) and the argument with axes (2,0,0,0), (0,3,0,0), (0,0,4,0), (100,200,300,1), the X axis became (402, 806, 1212, 4) and the translation (1626, 3242, 4860, 16): each old axis put through the argument, which is on the left (the other order would give (2, 4, 6, 8))
  * same code as main.bin 0c12d2a0 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c12d2a0.s (hand-written assembly, tools/match/match.py)
  */
 void mtx_premul_by(float *mtx);
 
 /* 0x0c058aa0  size 0x2c  file by match with source
- * confidence: inferred
- * evidence: (n, stack): the matrix stack bookkeeping without reloading anything: n below 1 counts as 1; depth (short at +0) minus n, not below 0; the top slot pointer (+8) becomes the base (+4) plus depth * 64 unless the depth is at or above the limit (short at +2); returns whether the depth was at least n; only caller mtx_stack_drop, which passes the stack at mtx_stack_records; mtx_pop is the same followed by a load of the slot; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (n, stack): the matrix stack bookkeeping without reloading anything: n below 1 counts as 1; depth (short at +0) minus n, not below 0; the top slot pointer (+8) becomes the base (+4) plus depth * 64 unless the depth is at or above the limit (short at +2); returns whether the depth was at least n; only caller mtx_stack_drop, which passes the stack at mtx_stack_records; mtx_pop is the same followed by a load of the slot; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on a planted record (base 0x0F00A000, limit 10, top 0xAAAAAAAA): (2, depth 5) returned 1, depth 3, top base + 0xC0; (3, depth 1) 0, depth 0, top base; (0, depth 5) and (-2, depth 5) 1, depth 4, top base + 0x100; (1, depth 12) 1, depth 11, top left at 0xAAAAAAAA
  * same code as main.bin 0c12d2e0 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c12d2e0.s (hand-written assembly, tools/match/match.py)
  */
@@ -200,32 +200,32 @@ bool mtx_pop(int param_1);
 bool mtx_push(float *mtx);
 
 /* 0x0c058bb0  size 0x38  file by match with source
- * confidence: inferred
- * evidence: hand-written: inverts the current matrix in place as a rigid transform: transposes the 3x3 part and replaces the translation by minus its product with the old rows; nothing in the image calls it (uncalled code, made a function 2026-11-09); between mtx_push and mtx_negate_yz_axes, so by link order part of sdk/naomi_library/matrix_asm.c
+ * confidence: exercised
+ * evidence: hand-written: inverts the current matrix in place as a rigid transform: transposes the 3x3 part and replaces the translation by minus its product with the old rows; nothing in the image calls it (uncalled code, made a function 2026-11-09); between mtx_push and mtx_negate_yz_axes, so by link order part of sdk/naomi_library/matrix_asm.c; exercised 2026-11-12: through a harness driver (xmtrx_from_words, the routine, xmtrx_to_words, in one call), on a rotation about z (cosine 0.8, sine 0.6, axes (0.8,0.6,0), (-0.6,0.8,0), (0,0,1)) with the translation (5, 6, 7), the result was the axes (0.8,-0.6,0), (0.6,0.8,0), (0,0,1) and the translation (-7.6, -1.8, -7)
  * same code as main.bin 0c12d3f0 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c12d3f0.s (hand-written assembly, tools/match/match.py)
  */
 void mtx_invert_rigid_regs(void);
 
 /* 0x0c058bf0  size 0x16  file by match with source
- * confidence: inferred
- * evidence: hand-written: negates the second and third rows of the current matrix; nothing in the image calls it (uncalled code, made a function 2026-11-09); between mtx_invert_rigid_regs and mtx_negate_z_axis, so by link order part of sdk/naomi_library/matrix_asm.c
+ * confidence: exercised
+ * evidence: hand-written: negates the second and third rows of the current matrix; nothing in the image calls it (uncalled code, made a function 2026-11-09); between mtx_invert_rigid_regs and mtx_negate_z_axis, so by link order part of sdk/naomi_library/matrix_asm.c; exercised 2026-11-12: through a harness driver (xmtrx_from_words, the routine, xmtrx_to_words, in one call), on the matrix with axes (1,2,3,4), (5,6,7,8), (9,10,11,12), (13,14,15,16) it gave (1,2,3,4), (-5,-6,-7,-8), (-9,-10,-11,-12), (13,14,15,16)
  * same code as main.bin 0c12d430 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c12d430.s (hand-written assembly, tools/match/match.py)
  */
 void mtx_negate_yz_axes(void);
 
 /* 0x0c058c10  size 0xe  file by match with source
- * confidence: inferred
- * evidence: hand-written: negates the third row of the current matrix; nothing in the image calls it (uncalled code, made a function 2026-11-09); between mtx_negate_yz_axes and mtx_negate_xz_axes, so by link order part of sdk/naomi_library/matrix_asm.c
+ * confidence: exercised
+ * evidence: hand-written: negates the third row of the current matrix; nothing in the image calls it (uncalled code, made a function 2026-11-09); between mtx_negate_yz_axes and mtx_negate_xz_axes, so by link order part of sdk/naomi_library/matrix_asm.c; exercised 2026-11-12: through a harness driver (xmtrx_from_words, the routine, xmtrx_to_words, in one call), on the matrix with axes (1,2,3,4), (5,6,7,8), (9,10,11,12), (13,14,15,16) it gave (1,2,3,4), (5,6,7,8), (-9,-10,-11,-12), (13,14,15,16)
  * same code as main.bin 0c12d450 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c12d450.s (hand-written assembly, tools/match/match.py)
  */
 void mtx_negate_z_axis(void);
 
 /* 0x0c058c20  size 0x16  file by match with source
- * confidence: inferred
- * evidence: hand-written: negates the first and third rows of the current matrix; nothing in the image calls it (uncalled code, made a function 2026-11-09); between mtx_negate_z_axis and mtx_negate_x_axis, so by link order part of sdk/naomi_library/matrix_asm.c
+ * confidence: exercised
+ * evidence: hand-written: negates the first and third rows of the current matrix; nothing in the image calls it (uncalled code, made a function 2026-11-09); between mtx_negate_z_axis and mtx_negate_x_axis, so by link order part of sdk/naomi_library/matrix_asm.c; exercised 2026-11-12: through a harness driver (xmtrx_from_words, the routine, xmtrx_to_words, in one call), on the matrix with axes (1,2,3,4), (5,6,7,8), (9,10,11,12), (13,14,15,16) it gave (-1,-2,-3,-4), (5,6,7,8), (-9,-10,-11,-12), (13,14,15,16)
  * same code as main.bin 0c12d460 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c12d460.s (hand-written assembly, tools/match/match.py)
  */
@@ -240,16 +240,16 @@ void mtx_negate_xz_axes(void);
 void mtx_negate_x_axis(void);
 
 /* 0x0c058c50  size 0x16  file by match with source
- * confidence: inferred
- * evidence: hand-written: negates the first and second rows of the current matrix; nothing in the image calls it (uncalled code, made a function 2026-11-09); between mtx_negate_x_axis and mtx_negate_y_axis, so by link order part of sdk/naomi_library/matrix_asm.c
+ * confidence: exercised
+ * evidence: hand-written: negates the first and second rows of the current matrix; nothing in the image calls it (uncalled code, made a function 2026-11-09); between mtx_negate_x_axis and mtx_negate_y_axis, so by link order part of sdk/naomi_library/matrix_asm.c; exercised 2026-11-12: through a harness driver (xmtrx_from_words, the routine, xmtrx_to_words, in one call), on the matrix with axes (1,2,3,4), (5,6,7,8), (9,10,11,12), (13,14,15,16) it gave (-1,-2,-3,-4), (-5,-6,-7,-8), (9,10,11,12), (13,14,15,16)
  * same code as main.bin 0c12d490 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c12d490.s (hand-written assembly, tools/match/match.py)
  */
 void mtx_negate_xy_axes(void);
 
 /* 0x0c058c70  size 0xe  file by match with source
- * confidence: inferred
- * evidence: hand-written: negates the second row of the current matrix; nothing in the image calls it (uncalled code, made a function 2026-11-09); between mtx_negate_xy_axes and mtx_rot_x_rad, so by link order part of sdk/naomi_library/matrix_asm.c
+ * confidence: exercised
+ * evidence: hand-written: negates the second row of the current matrix; nothing in the image calls it (uncalled code, made a function 2026-11-09); between mtx_negate_xy_axes and mtx_rot_x_rad, so by link order part of sdk/naomi_library/matrix_asm.c; exercised 2026-11-12: through a harness driver (xmtrx_from_words, the routine, xmtrx_to_words, in one call), on the matrix with axes (1,2,3,4), (5,6,7,8), (9,10,11,12), (13,14,15,16) it gave (1,2,3,4), (-5,-6,-7,-8), (9,10,11,12), (13,14,15,16)
  * same code as main.bin 0c12d4b0 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c12d4b0.s (hand-written assembly, tools/match/match.py)
  */
@@ -271,8 +271,8 @@ undefined8 mtx_rot_x_sincos(float param_1,float param_2);
 void mtx_rot_x_s16(undefined4 param_1);
 
 /* 0x0c058d20  size 0x22  file by match with source
- * confidence: inferred
- * evidence: (sin, cos): the rotation about X in the opposite sense, called only by mtx_rot_x_rad_reversed (radians through sin_radians / cos_radians); unlike its uncalled 16-bit-angle twin mtx_rot_x_s16_opposite, which builds (0, c, -s) and (0, s, c), it negates neither sine term and builds (0, c, s) and (0, s, c); part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (sin, cos): the rotation about X in the opposite sense, called only by mtx_rot_x_rad_reversed (radians through sin_radians / cos_radians); unlike its uncalled 16-bit-angle twin mtx_rot_x_s16_opposite, which builds (0, c, -s) and (0, s, c), it negates neither sine term and builds (0, c, s) and (0, s, c); part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: through a harness driver (xmtrx_from_words, the routine, xmtrx_to_words, in one call), with (0.6, 0.8) on the matrix with axes (1,2,3,4), (5,6,7,8), (9,10,11,12), (13,14,15,16) the Y axis became 0.8 Y + 0.6 Z = (9.4, 10.8, 12.2, 13.6) and the Z axis 0.6 Y + 0.8 Z = (10.2, 11.6, 13, 14.4): (0, c, s) and (0, s, c), neither sine negated, as described
  * same code as main.bin 0c12d560 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c12d560.s (hand-written assembly, tools/match/match.py)
  */
@@ -280,7 +280,7 @@ undefined8 mtx_rot_x_sincos_opposite(float param_1,float param_2);
 
 /* 0x0c058d50  size 0x28  file by match with source
  * confidence: inferred
- * evidence: hand-written: (16-bit angle): mtx_rot_x_sincos_opposite with the sine and cosine taken from the angle; nothing in the image calls it (uncalled code, made a function 2026-11-09); between mtx_rot_x_sincos_opposite and mtx_rot_y_sincos, so by link order part of sdk/naomi_library/matrix_asm.c
+ * evidence: hand-written: (16-bit angle): rotates the current matrix about X the other way from mtx_rot_x_s16, its Y axis becoming (0, c, -s) and its Z axis (0, s, c), with the sine and cosine taken from the angle by fsca; unlike mtx_rot_x_sincos_opposite, which negates neither sine, it is a true rotation; nothing in the image calls it (uncalled code, made a function 2026-11-09); between mtx_rot_x_sincos_opposite and mtx_rot_y_sincos, so by link order part of sdk/naomi_library/matrix_asm.c; corrected 2026-11-12 from harness calls: it is not mtx_rot_x_sincos_opposite with the angle's sine and cosine: through a harness driver (xmtrx_from_words, the routine, xmtrx_to_words, in one call), with 0x1000 (sine 0.382683, cosine 0.923880) on the matrix with axes (1,2,3,4), (5,6,7,8), (9,10,11,12), (13,14,15,16) the Y axis became c Y - s Z = (1.175, 1.716, 2.258, 2.799) and the Z axis s Y + c Z = (10.228, 11.535, 12.842, 14.148): the true rotation (0, c, -s), (0, s, c); the described (0, c, s) would give Y = (8.064, ...)
  * same code as main.bin 0c12d590 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c12d590.s (hand-written assembly, tools/match/match.py)
  */
@@ -302,16 +302,16 @@ undefined8 mtx_rot_y_sincos(float param_1,float param_2);
 void mtx_rot_y_s16(undefined4 param_1);
 
 /* 0x0c058de0  size 0x22  file by match with source
- * confidence: inferred
- * evidence: (sin, cos): the rotation about Y in the opposite sense, X axis (c, 0, s), Z axis (-s, 0, c); called only by mtx_rot_y_rad_reversed (radians through sin_radians / cos_radians); the uncalled 16-bit-angle twin is mtx_rot_y_s16_opposite; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (sin, cos): the rotation about Y in the opposite sense, X axis (c, 0, s), Z axis (-s, 0, c); called only by mtx_rot_y_rad_reversed (radians through sin_radians / cos_radians); the uncalled 16-bit-angle twin is mtx_rot_y_s16_opposite; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: through a harness driver (xmtrx_from_words, the routine, xmtrx_to_words, in one call), with (0.6, 0.8) on the matrix with axes (1,2,3,4), (5,6,7,8), (9,10,11,12), (13,14,15,16) the X axis became 0.8 X + 0.6 Z = (6.2, 7.6, 9, 10.4) and the Z axis -0.6 X + 0.8 Z = (6.6, 6.8, 7, 7.2), Y and the translation kept
  * same code as main.bin 0c12d620 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c12d620.s (hand-written assembly, tools/match/match.py)
  */
 undefined8 mtx_rot_y_sincos_opposite(float param_1,float param_2);
 
 /* 0x0c058e10  size 0x26  file by match with source
- * confidence: inferred
- * evidence: hand-written: (16-bit angle): mtx_rot_y_sincos_opposite with the sine and cosine taken from the angle; nothing in the image calls it (uncalled code, made a function 2026-11-09); between mtx_rot_y_sincos_opposite and mtx_rot_z_sincos, so by link order part of sdk/naomi_library/matrix_asm.c
+ * confidence: exercised
+ * evidence: hand-written: (16-bit angle): mtx_rot_y_sincos_opposite with the sine and cosine taken from the angle; nothing in the image calls it (uncalled code, made a function 2026-11-09); between mtx_rot_y_sincos_opposite and mtx_rot_z_sincos, so by link order part of sdk/naomi_library/matrix_asm.c; exercised 2026-11-12: through a harness driver (xmtrx_from_words, the routine, xmtrx_to_words, in one call), with 0x1000 (sine 0.382683, cosine 0.923880) on the matrix with axes (1,2,3,4), (5,6,7,8), (9,10,11,12), (13,14,15,16) the X axis became c X + s Z = (4.368, 5.675, 6.981, 8.288) and the Z axis -s X + c Z = (7.932, 8.473, 9.015, 9.556), as mtx_rot_y_sincos_opposite
  * same code as main.bin 0c12d650 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c12d650.s (hand-written assembly, tools/match/match.py)
  */
@@ -326,16 +326,16 @@ undefined8 mtx_rot_y_s16_opposite(ushort param_1);
 undefined8 mtx_rot_z_s16(ushort param_1);
 
 /* 0x0c058e90  size 0x20  file by match with source
- * confidence: inferred
- * evidence: (sin, cos): the rotation about Z in the opposite sense, X axis (c, -s, 0), Y axis (s, c, 0); called only by mtx_rot_z_rad_reversed (radians through sin_radians / cos_radians); the uncalled 16-bit-angle twin is mtx_rot_z_s16_opposite; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (sin, cos): the rotation about Z in the opposite sense, X axis (c, -s, 0), Y axis (s, c, 0); called only by mtx_rot_z_rad_reversed (radians through sin_radians / cos_radians); the uncalled 16-bit-angle twin is mtx_rot_z_s16_opposite; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: through a harness driver (xmtrx_from_words, the routine, xmtrx_to_words, in one call), with (0.6, 0.8) on the matrix with axes (1,2,3,4), (5,6,7,8), (9,10,11,12), (13,14,15,16) the X axis became 0.8 X - 0.6 Y = (-2.2, -2, -1.8, -1.6) and the Y axis 0.6 X + 0.8 Y = (4.6, 6, 7.4, 8.8), Z and the translation kept
  * same code as main.bin 0c12d6d0 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c12d6d0.s (hand-written assembly, tools/match/match.py)
  */
 undefined8 mtx_rot_z_sincos_opposite(float param_1,float param_2);
 
 /* 0x0c058eb0  size 0x24  file by match with source
- * confidence: inferred
- * evidence: hand-written: (16-bit angle): mtx_rot_z_sincos_opposite with the sine and cosine taken from the angle; nothing in the image calls it (uncalled code, made a function 2026-11-09); between mtx_rot_z_sincos_opposite and mtx_scale_xyz, so by link order part of sdk/naomi_library/matrix_asm.c
+ * confidence: exercised
+ * evidence: hand-written: (16-bit angle): mtx_rot_z_sincos_opposite with the sine and cosine taken from the angle; nothing in the image calls it (uncalled code, made a function 2026-11-09); between mtx_rot_z_sincos_opposite and mtx_scale_xyz, so by link order part of sdk/naomi_library/matrix_asm.c; exercised 2026-11-12: through a harness driver (xmtrx_from_words, the routine, xmtrx_to_words, in one call), with 0x1000 (sine 0.382683, cosine 0.923880) on the matrix with axes (1,2,3,4), (5,6,7,8), (9,10,11,12), (13,14,15,16) the X axis became c X - s Y = (-0.990, -0.448, 0.093, 0.634) and the Y axis s X + c Y = (5.002, 6.309, 7.615, 8.922), as mtx_rot_z_sincos_opposite
  * same code as main.bin 0c12d6f0 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c12d6f0.s (hand-written assembly, tools/match/match.py)
  */
@@ -366,8 +366,8 @@ void mtx_scale_by_vec3(float *param_1);
 void mtx_overwrite_translation(float *pos);
 
 /* 0x0c058f50  size 0x4e  file by match with source
- * confidence: inferred
- * evidence: hand-written: (matrix): subtracts the 16 floats from the current matrix in the back bank registers; nothing in the image calls it (uncalled code, made a function 2026-11-09); between mtx_overwrite_translation and mtx_transpose, so by link order part of sdk/naomi_library/matrix_asm.c
+ * confidence: exercised
+ * evidence: hand-written: (matrix): subtracts the 16 floats from the current matrix in the back bank registers; nothing in the image calls it (uncalled code, made a function 2026-11-09); between mtx_overwrite_translation and mtx_transpose, so by link order part of sdk/naomi_library/matrix_asm.c; exercised 2026-11-12: through a harness driver (xmtrx_from_words, the routine, xmtrx_to_words, in one call), on the matrix with axes (1,2,3,4), (5,6,7,8), (9,10,11,12), (13,14,15,16) subtracting 100, 200, 300, 400, 0.5, 0.25, 0.125, 2, -1, -2, -3, -4, 7, 8, 9, 10 (address in r4) gave -99, -198, -297, -396, 4.5, 5.75, 6.875, 6, 10, 12, 14, 16, 6, 6, 6, 6 (the current matrix minus the argument)
  * same code as main.bin 0c12d790 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c12d790.s (hand-written assembly, tools/match/match.py)
  */

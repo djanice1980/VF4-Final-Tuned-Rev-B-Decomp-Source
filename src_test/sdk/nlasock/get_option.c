@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c054520  size 0x38  file by match with source
- * confidence: inferred
- * evidence: (socket, level, option, value area, length word, slot record): writes a 0x20-byte request {operation, socket, level, option, the two DIMM addresses, 0, 0} by PIO; caller sock_option_get; part of NLASOCK
+ * confidence: exercised
+ * evidence: (socket, level, option, value area, length word, slot record): writes a 0x20-byte request {operation, socket, level, option, the two DIMM addresses, 0, 0} by PIO; caller sock_option_get; part of NLASOCK; exercised 2026-11-12: called by the harness on slot 7 (op poked 0xf) with (7, 0xffff, 0x1006, 0x0f807204, 0x0f807200): dimm_pio_write of the 0x20 bytes {0xf, 7, 0xffff, 0x1006, 0x0f807204, 0x0f807200, 0, 0} to 0x0f807000; inside sock_option_get(6, ...) it wrote {0xf, 6, 0xffff, 0x1006, 0x0f806204, 0x0f806200, 0, 0} to 0x0f806000
  * same code as main.bin 0c121d20 (ghidra/TransferFromMain.java)
  * matched: source/sdk/nlasock/get_option.c (tools/match/match.py)
  */
@@ -42,8 +42,8 @@ void getopt_len_write(uint board_addr, uint *len)
 }
 
 /* 0x0c0545a0  size 0x6c  file by match with source
- * confidence: inferred
- * evidence: (socket, value area, value buffer, length word, length pointer): when a buffer was given, reads the slot's 0x200-byte data area into xfer_recv_bounce, copies the length word to *length and that many bytes of option value into the buffer; caller sock_option_get; part of NLASOCK
+ * confidence: exercised
+ * evidence: (socket, value area, value buffer, length word, length pointer): when a buffer was given, reads the slot's 0x200-byte data area into xfer_recv_bounce, copies the length word to *length and that many bytes of option value into the buffer; caller sock_option_get; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on) with slot 5's data area (board 0x0f805200) filled by dimm_pio_write with the length word 6 and bytes 40..7b: with a buffer, value address 0x0f805210 and length address 0x0f805200 it read 0x200 bytes from 0x0f805200 into xfer_recv_bounce, set *length 6 and copied 4c 4d 4e 4f 50 51 (next byte untouched); with a null buffer it read nothing and left *length
  * same code as main.bin 0c121da0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/nlasock/get_option.c (tools/match/match.py)
  */

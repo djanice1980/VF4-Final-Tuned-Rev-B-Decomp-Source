@@ -534,8 +534,8 @@ int sock_close_all(void)
 }
 
 /* 0x0c0534c0  size 0x76  file by match with source
- * confidence: inferred
- * evidence: (out, 8 words): reads the 0x20-byte block at net_window_base + 0xff0000 by PIO (dimm_pio_read) into xfer_recv_bounce while holding dimm_busy_word, copies its first seven words to out and stores that DIMM address as the eighth; returns 0, or -1 when out is null or the busy word is held; nothing in the image calls it; part of NLASOCK
+ * confidence: exercised
+ * evidence: (out, 8 words): reads the 0x20-byte block at net_window_base + 0xff0000 by PIO (dimm_pio_read) into xfer_recv_bounce while holding dimm_busy_word, copies its first seven words to out and stores that DIMM address as the eighth; returns 0, or -1 when out is null or the busy word is held; nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_pio_write put the words 0x11111111 to 0x88888888 at DIMM 0xFF0000 (net_window_base 0): a null pointer returned -1, buf:6 returned 0 with 0x11111111 to 0x77777777 and then 0x00FF0000 as the eighth word, and with dimm_busy_word poked to 1 it returned -1
  * same code as main.bin 0c120cc0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/nlasock/slots.c (tools/match/match.py)
  */

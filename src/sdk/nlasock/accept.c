@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c120d60  size 0x34  file by match with source
- * confidence: inferred
- * evidence: (socket number, address area, length word, slot record): writes a 0x20-byte request {operation, socket, the two DIMM addresses, 0...} to the slot's request address (record +0xc) by PIO; callers sock_accept, sock_accept_start; part of NLASOCK
+ * confidence: exercised
+ * evidence: (socket number, address area, length word, slot record): writes a 0x20-byte request {operation, socket, the two DIMM addresses, 0...} to the slot's request address (record +0xc) by PIO; callers sock_accept, sock_accept_start; part of NLASOCK; exercised 2026-11-12: called by the harness with (9, 0x111, 0x222) and a record of operation 1, request address 0xC00300, read back with dimm_pio_read: 1, 9, 0x111, 0x222 and four 0 words, the following bytes left as planted (0xEE)
  * matched: source/sdk/nlasock/accept.c (tools/match/match.py)
  */
 void accept_request_write(uint sock, uint addr_board, uint addr_len_board, sock_slot_rec *slot)
@@ -26,8 +26,8 @@ void accept_request_write(uint sock, uint addr_board, uint addr_len_board, sock_
 }
 
 /* 0x0c120da0  size 0x26  file by match with source
- * confidence: inferred
- * evidence: (DIMM address, length pointer): writes the caller's length word to the slot's data area by PIO, so the board knows the room for the peer address; callers sock_accept, sock_accept_start; part of NLASOCK
+ * confidence: exercised
+ * evidence: (DIMM address, length pointer): writes the caller's length word to the slot's data area by PIO, so the board knows the room for the peer address; callers sock_accept, sock_accept_start; part of NLASOCK; exercised 2026-11-12: called by the harness with 0xC00340 and a pointer to 0x10, read back with dimm_pio_read: the word 0x10 at 0xC00340 and the planted 0xEE from 0xC00344 on
  * matched: source/sdk/nlasock/accept.c (tools/match/match.py)
  */
 void accept_len_write(uint board_addr, uint *addr_len)
@@ -40,8 +40,8 @@ void accept_len_write(uint board_addr, uint *addr_len)
 }
 
 /* 0x0c120de0  size 0x78  file by match with source
- * confidence: inferred
- * evidence: (socket number, address area, address buffer, length word, length pointer): when a buffer was given, reads the slot's 0x200-byte data area by PIO into xfer_recv_bounce, copies the length word to *length and then the larger of that length and 16 bytes of peer address into the buffer; callers sock_accept and sock_result_take (for a started accept); part of NLASOCK
+ * confidence: exercised
+ * evidence: (socket number, address area, address buffer, length word, length pointer): when a buffer was given, reads the slot's 0x200-byte data area by PIO into xfer_recv_bounce, copies the length word to *length and then the larger of that length and 16 bytes of peer address into the buffer; callers sock_accept and sock_result_take (for a started accept); part of NLASOCK; exercised 2026-11-12: called by the harness after sock_slots_prepare(0) (slot 3's data area at DIMM 0x803200) with a length word and a text planted there by dimm_pio_write: length 20 gave *length 20 and 20 bytes of the text in the buffer (0xCC after), length 8 gave 8 and 16 bytes; with no buffer (0) the length word was left 0xCCCCCCCC
  * matched: source/sdk/nlasock/accept.c (tools/match/match.py)
  */
 void accept_addr_copy_back(uint sock, int addr_board, int addr, int addr_len_board, uint *addr_len)
@@ -114,9 +114,9 @@ int sock_accept(uint sock, int addr, int addr_len)
 }
 
 /* 0x0c121020  size 0x108  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x138
- * evidence: (socket, address buffer, length pointer): socket operation 1 without waiting: the checks and request of sock_accept, but it keeps the copy-back arguments in the slot (+0x10-+0x1c) for sock_result_take, posts DIMM command 0x12 and returns 0 (or -2/-4); nothing in the image calls it; part of NLASOCK
+ * evidence: (socket, address buffer, length pointer): socket operation 1 without waiting: the checks and request of sock_accept, but it keeps the copy-back arguments in the slot (+0x10-+0x1c) for sock_result_take, posts DIMM command 0x12 and returns 0 (or -2/-4); nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): socket 64, a buffer without length pointer and a length pointer without buffer gave -2, dimm_busy_word poked 1 gave -4; (5, buffer, length pointer holding 16) wrote 16 to board 0x0f805200, left slot 5 at op 1 with copy-back words {0x0f805204, buffer, 0x0f805200, length pointer}, posted dimm_cmd_post(0x12, 5) and returned 0; (7, 0, 0) left slot 7's copy-back words 0
  * matched: source/sdk/nlasock/accept.c (tools/match/match.py)
  */
 int sock_accept_start(uint sock, int addr, int addr_len)

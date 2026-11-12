@@ -309,7 +309,7 @@ int inflateSync(z_streamp z)
 /* 0x0c1560c0  size 0x2a  file by match with source
  * confidence: named
  * extent: 0x30
- * evidence: zlib 1.1.4 inflate.c: calls inflate_blocks_sync_point
+ * evidence: zlib 1.1.4 inflate.c: calls inflate_blocks_sync_point; exercised 2026-11-12: called by the harness with a NULL stream it returned -2 (Z_STREAM_ERROR); in one sandbox right after inflateInit_ it returned 0, and after inflate had been given the three bytes 78 01 00 (a zlib header and a stored-block header whose length is not read yet) it returned 1, the blocks state's mode having become LENS (1)
  * matched: source/zlib/inflate.c (tools/match/match.py)
  */
 int inflateSyncPoint(z_streamp z)

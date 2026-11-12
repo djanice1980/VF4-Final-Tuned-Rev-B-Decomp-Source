@@ -168,8 +168,8 @@ void break_ab_clear(void)
 }
 
 /* 0x0c0eda60  size 0x20  file by match with source
- * confidence: inferred
- * evidence: (address, address mask): user break channel A on reads of the address (0xFF200000 address, 0xFF200004 mask, condition 0xFF200008 = 0x34), control register 0xFF200020 cleared; nothing in the image calls it (uncalled code, made a function 2026-11-09); between break_ab_clear and break_b_read_set, so by link order part of vf4lib/libdebug/src/debug_menu.c
+ * confidence: exercised
+ * evidence: (address, address mask): user break channel A on reads of the address (0xFF200000 address, 0xFF200004 mask, condition 0xFF200008 = 0x34), control register 0xFF200020 cleared; nothing in the image calls it (uncalled code, made a function 2026-11-09); between break_ab_clear and break_b_read_set, so by link order part of vf4lib/libdebug/src/debug_menu.c; exercised 2026-11-12: called by the harness with (0x0C123450, 3) it wrote 0xFF200000 = 0x0C123450, 0xFF200004 = 3, 0xFF200008 = 0x34 and 0xFF200020 = 0 (register writes in its record)
  * matched: source/vf4lib/libdebug/src/debug_menu.c (tools/match/match.py)
  */
 void break_a_read_set(uint address, int address_mask)
@@ -182,8 +182,8 @@ void break_a_read_set(uint address, int address_mask)
 }
 
 /* 0x0c0edaa0  size 0x20  file by match with source
- * confidence: inferred
- * evidence: (address, address mask): as break_a_read_set on channel B (0xFF20000C, mask 0xFF200010, condition 0xFF200014 = 0x34); nothing in the image calls it (uncalled code, made a function 2026-11-09); between break_a_read_set and break_a_access_set, so by link order part of vf4lib/libdebug/src/debug_menu.c
+ * confidence: exercised
+ * evidence: (address, address mask): as break_a_read_set on channel B (0xFF20000C, mask 0xFF200010, condition 0xFF200014 = 0x34); nothing in the image calls it (uncalled code, made a function 2026-11-09); between break_a_read_set and break_a_access_set, so by link order part of vf4lib/libdebug/src/debug_menu.c; exercised 2026-11-12: called by the harness with (0x0C123460, 2) it wrote 0xFF20000C = 0x0C123460, 0xFF200010 = 2, 0xFF200014 = 0x34 and 0xFF200020 = 0 (register writes in its record)
  * matched: source/vf4lib/libdebug/src/debug_menu.c (tools/match/match.py)
  */
 void break_b_read_set(uint address, int address_mask)
@@ -196,8 +196,8 @@ void break_b_read_set(uint address, int address_mask)
 }
 
 /* 0x0c0edae0  size 0x20  file by match with source
- * confidence: inferred
- * evidence: (address, address mask): channel A break on read or write (condition 0x3C); nothing in the image calls it (uncalled code, made a function 2026-11-09); between break_b_read_set and break_b_access_set, so by link order part of vf4lib/libdebug/src/debug_menu.c
+ * confidence: exercised
+ * evidence: (address, address mask): channel A break on read or write (condition 0x3C); nothing in the image calls it (uncalled code, made a function 2026-11-09); between break_b_read_set and break_b_access_set, so by link order part of vf4lib/libdebug/src/debug_menu.c; exercised 2026-11-12: called by the harness with (0x0C123470, 1) it wrote 0xFF200000 = 0x0C123470, 0xFF200004 = 1, 0xFF200008 = 0x3C and 0xFF200020 = 0 (register writes in its record)
  * matched: source/vf4lib/libdebug/src/debug_menu.c (tools/match/match.py)
  */
 void break_a_access_set(uint address, int address_mask)
@@ -210,8 +210,8 @@ void break_a_access_set(uint address, int address_mask)
 }
 
 /* 0x0c0edb20  size 0x20  file by match with source
- * confidence: inferred
- * evidence: (address, address mask): channel B break on read or write (condition 0x3C); nothing in the image calls it (uncalled code, made a function 2026-11-09); between break_a_access_set and break_a_write_set, so by link order part of vf4lib/libdebug/src/debug_menu.c
+ * confidence: exercised
+ * evidence: (address, address mask): channel B break on read or write (condition 0x3C); nothing in the image calls it (uncalled code, made a function 2026-11-09); between break_a_access_set and break_a_write_set, so by link order part of vf4lib/libdebug/src/debug_menu.c; exercised 2026-11-12: called by the harness with (0x0C123480, 4) it wrote 0xFF20000C = 0x0C123480, 0xFF200010 = 4, 0xFF200014 = 0x3C and 0xFF200020 = 0 (register writes in its record)
  * matched: source/vf4lib/libdebug/src/debug_menu.c (tools/match/match.py)
  */
 void break_b_access_set(uint address, int address_mask)
@@ -224,8 +224,8 @@ void break_b_access_set(uint address, int address_mask)
 }
 
 /* 0x0c0edb60  size 0x20  file by match with source
- * confidence: inferred
- * evidence: (address, address mask): channel A break on writes (condition 0x38); nothing in the image calls it (uncalled code, made a function 2026-11-09); between break_b_access_set and break_b_write_set, so by link order part of vf4lib/libdebug/src/debug_menu.c
+ * confidence: exercised
+ * evidence: (address, address mask): channel A break on writes (condition 0x38); nothing in the image calls it (uncalled code, made a function 2026-11-09); between break_b_access_set and break_b_write_set, so by link order part of vf4lib/libdebug/src/debug_menu.c; exercised 2026-11-12: called by the harness with (0x0C123490, 5) it wrote 0xFF200000 = 0x0C123490, 0xFF200004 = 5, 0xFF200008 = 0x38 and 0xFF200020 = 0 (register writes in its record)
  * matched: source/vf4lib/libdebug/src/debug_menu.c (tools/match/match.py)
  */
 void break_a_write_set(uint address, int address_mask)
@@ -238,8 +238,8 @@ void break_a_write_set(uint address, int address_mask)
 }
 
 /* 0x0c0edba0  size 0x20  file by match with source
- * confidence: inferred
- * evidence: (address, address mask): channel B break on writes (condition 0x38); nothing in the image calls it (uncalled code, made a function 2026-11-09); between break_a_write_set and break_b_write_value_set, so by link order part of vf4lib/libdebug/src/debug_menu.c
+ * confidence: exercised
+ * evidence: (address, address mask): channel B break on writes (condition 0x38); nothing in the image calls it (uncalled code, made a function 2026-11-09); between break_a_write_set and break_b_write_value_set, so by link order part of vf4lib/libdebug/src/debug_menu.c; exercised 2026-11-12: called by the harness with (0x0C1234A0, 6) it wrote 0xFF20000C = 0x0C1234A0, 0xFF200010 = 6, 0xFF200014 = 0x38 and 0xFF200020 = 0 (register writes in its record)
  * matched: source/vf4lib/libdebug/src/debug_menu.c (tools/match/match.py)
  */
 void break_b_write_set(uint address, int address_mask)
@@ -252,8 +252,8 @@ void break_b_write_set(uint address, int address_mask)
 }
 
 /* 0x0c0edbe0  size 0x38  file by match with source
- * confidence: inferred
- * evidence: (address, address mask, size code, value): channel B break on writes of a value: condition 0x38 | size, the value (doubled into the high byte for size 1) in the data register 0xFF200018, data mask 0xFF20001C = 0, control 0xFF200020 = 0x80; nothing in the image calls it (uncalled code, made a function 2026-11-09); between break_b_write_set and break_b_write_value_mask_set, so by link order part of vf4lib/libdebug/src/debug_menu.c
+ * confidence: exercised
+ * evidence: (address, address mask, size code, value): channel B break on writes of a value: condition 0x38 | size, the value (doubled into the high byte for size 1) in the data register 0xFF200018, data mask 0xFF20001C = 0, control 0xFF200020 = 0x80; nothing in the image calls it (uncalled code, made a function 2026-11-09); between break_b_write_set and break_b_write_value_mask_set, so by link order part of vf4lib/libdebug/src/debug_menu.c; exercised 2026-11-12: called by the harness with (0x0C200000, 2, size 1, 0x5A) it wrote 0xFF20000C = 0x0C200000, 0xFF200010 = 2, 0xFF200014 = 0x39, 0xFF200018 = 0x5A5A (doubled), 0xFF20001C = 0 and 0xFF200020 = 0x80; with (0x0C200010, 3, size 2, 0x1234) condition 0x3A and data 0x1234 (not doubled)
  * matched: source/vf4lib/libdebug/src/debug_menu.c (tools/match/match.py)
  */
 void break_b_write_value_set(uint address, int address_mask, ushort size, uint value)
@@ -271,8 +271,8 @@ void break_b_write_value_set(uint address, int address_mask, ushort size, uint v
 }
 
 /* 0x0c0edc40  size 0x38  file by match with source
- * confidence: inferred
- * evidence: (address, address mask, size code, value, value mask): break_b_write_value_set with the fifth (stack) argument as the data mask; nothing in the image calls it (uncalled code, made a function 2026-11-09); between break_b_write_value_set and stats_322804_clear, so by link order part of vf4lib/libdebug/src/debug_menu.c
+ * confidence: exercised
+ * evidence: (address, address mask, size code, value, value mask): break_b_write_value_set with the fifth (stack) argument as the data mask; nothing in the image calls it (uncalled code, made a function 2026-11-09); between break_b_write_value_set and stats_322804_clear, so by link order part of vf4lib/libdebug/src/debug_menu.c; exercised 2026-11-12: called by the harness with (0x0C200020, 1, size 1, 0x7F, mask 0xFF00 on the stack) it wrote condition 0xFF200014 = 0x39, data 0xFF200018 = 0x7F7F, data mask 0xFF20001C = 0xFF00 and 0xFF200020 = 0x80; with (0x0C200030, 0, size 0, 0x12345678, 0x0F) condition 0x38, data 0x12345678 and mask 0x0F
  * matched: source/vf4lib/libdebug/src/debug_menu.c (tools/match/match.py)
  */
 void break_b_write_value_mask_set(uint address, int address_mask, ushort size, uint value, uint value_mask)
@@ -290,8 +290,8 @@ void break_b_write_value_mask_set(uint address, int address_mask, ushort size, u
 }
 
 /* 0x0c0edca0  size 0x26  file by match with source
- * confidence: inferred
- * evidence: clears the two floats of stats_322804 and the float stats_32280c; role unclear, nothing reads them; nothing in the image calls it (uncalled code, made a function 2026-11-09); between break_b_write_value_mask_set and switch_29_latch, so by link order part of vf4lib/libdebug/src/debug_menu.c
+ * confidence: exercised
+ * evidence: clears the two floats of stats_322804 and the float stats_32280c; role unclear, nothing reads them; nothing in the image calls it (uncalled code, made a function 2026-11-09); between break_b_write_value_mask_set and switch_29_latch, so by link order part of vf4lib/libdebug/src/debug_menu.c; exercised 2026-11-12: called by the harness with 1.5, 2.5 and 3.5 poked into stats_322804[0], [1] and stats_32280c and markers either side (0x77 at 0x0C322800, 0x55 in switch_29_latched), it left the three floats 0 and both markers as they were
  * matched: source/vf4lib/libdebug/src/debug_menu.c (tools/match/match.py)
  */
 void stats_322804_clear(void)
@@ -306,8 +306,8 @@ void stats_322804_clear(void)
 }
 
 /* 0x0c0edce0  size 0x22  file by match with source
- * confidence: inferred
- * evidence: sets the byte switch_29_latched to 1 when input_merged_bit_held(29) (bit 29 of the word at input_merged) is set; role unclear; nothing in the image calls it; part of vf4lib/libdebug/src/debug_menu.c
+ * confidence: exercised
+ * evidence: sets the byte switch_29_latched to 1 when input_merged_bit_held(29) (bit 29 of the word at input_merged) is set; role unclear; nothing in the image calls it; part of vf4lib/libdebug/src/debug_menu.c; exercised 2026-11-12: called by the harness with input_merged poked 0x20000000 and switch_29_latched 0 it called input_merged_bit_held(29) and set the byte to 1; with input_merged 0xDFFFFFFF (every bit but 29) the byte stayed 0
  * matched: source/vf4lib/libdebug/src/debug_menu.c (tools/match/match.py)
  */
 void switch_29_latch(void)
@@ -383,8 +383,8 @@ void poly_test_init(void)
 }
 
 /* 0x0c0ede80  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: when bank_num differs from the bank last loaded (poly_test_bank_loaded): remembers it, objbank_free(15) and obj_tex_base_set(1500); the shape of poly_test_init's bank bookkeeping, role partly unclear; nothing in the image calls it; part of vf4lib/libdebug/src/debug_menu.c
+ * confidence: exercised
+ * evidence: when bank_num differs from the bank last loaded (poly_test_bank_loaded): remembers it, objbank_free(15) and obj_tex_base_set(1500); the shape of poly_test_init's bank bookkeeping, role partly unclear; nothing in the image calls it; part of vf4lib/libdebug/src/debug_menu.c; exercised 2026-11-12: called by the harness in one sandbox with bank_num poked 3 and poly_test_bank_loaded 0, it set poly_test_bank_loaded to 3 and called objbank_free(15) and obj_tex_base_set(1500); a second call (bank_num equal to it) called nothing
  * matched: source/vf4lib/libdebug/src/debug_menu.c (tools/match/match.py)
  */
 void poly_test_bank_reload(void)
@@ -578,8 +578,8 @@ void texture_test_draw(win_rec *win)
 }
 
 /* 0x0c0ee4c0  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: stage_load_apply(debug_stage_no): reloads the stage numbered by the word at debug_stage_no (stage_load loads its record and textures, stage_apply applies its lights and clear color); nothing in the image calls it; part of vf4lib/libdebug/src/debug_menu.c
+ * confidence: exercised
+ * evidence: stage_load_apply(debug_stage_no): reloads the stage numbered by the word at debug_stage_no (stage_load loads its record and textures, stage_apply applies its lights and clear color); nothing in the image calls it; part of vf4lib/libdebug/src/debug_menu.c; exercised 2026-11-12: called by the harness with debug_stage_no poked 3 it called stage_load_apply(3) (the load did not return within the 8-frame budget) and with 17, the stage in the snapshot, stage_load_apply(17), which returned
  * matched: source/vf4lib/libdebug/src/debug_menu.c (tools/match/match.py)
  */
 void stage_reload_selected(void)
@@ -589,8 +589,8 @@ void stage_reload_selected(void)
 }
 
 /* 0x0c0ee500  size 0x20  file by match with source
- * confidence: inferred
- * evidence: points debug_stage_entry_ptr at entry [debug_stage_no] of stage_table and copies that entry to debug_stage_entry; role unclear; nothing in the image calls it (uncalled code, made a function 2026-11-09); between stage_reload_selected and fog_menu_update, so by link order part of vf4lib/libdebug/src/debug_menu.c
+ * confidence: exercised
+ * evidence: points debug_stage_entry_ptr at entry [debug_stage_no] of stage_table and copies that entry to debug_stage_entry; role unclear; nothing in the image calls it (uncalled code, made a function 2026-11-09); between stage_reload_selected and fog_menu_update, so by link order part of vf4lib/libdebug/src/debug_menu.c; exercised 2026-11-12: called by the harness with debug_stage_no poked 2 it set debug_stage_entry_ptr to 0x0C306C90 (&stage_table[2]) and debug_stage_entry to 0x0C3067B8 (that entry), and with 5 to 0x0C306C9C and 0x0C3066D8
  * matched: source/vf4lib/libdebug/src/debug_menu.c (tools/match/match.py)
  */
 void stage_slot_select(void)
@@ -760,9 +760,9 @@ void window_trap(void)
 }
 
 /* 0x0c0ee8e0  size 0x2a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x34
- * evidence: (index): entry index (0-6) of the float table gravity_presets, or 0.003 for any other index, stored in both rope_cloth_gravity and world_gravity; nothing in the image calls it (uncalled code, made a function 2026-11-09); between window_trap and rob_pos_preset_apply, so by link order part of vf4lib/libdebug/src/debug_menu.c
+ * evidence: (index): entry index (0-6) of the float table gravity_presets, or 0.0029944447 (0x3B443E72, the value of entries 0 and 5) for any other index, stored in both rope_cloth_gravity and world_gravity; nothing in the image calls it (uncalled code, made a function 2026-11-09); between window_trap and rob_pos_preset_apply, so by link order part of vf4lib/libdebug/src/debug_menu.c; exercised 2026-11-12: called by the harness with rope_cloth_gravity and world_gravity poked 9.5, index 1 stored 0x3B85CD7C (gravity_presets[1], 0.00408) in both, index 6 0x3B326750 ([6]), and indexes 7 and -1 0x3B443E72 (0.0029944)
  * matched: source/vf4lib/libdebug/src/debug_menu.c (tools/match/match.py)
  */
 void gravity_preset_apply(char index)
@@ -781,8 +781,8 @@ void gravity_preset_apply(char index)
 }
 
 /* 0x0c0ee940  size 0xc2  file by match with source
- * confidence: inferred
- * evidence: puts both characters (rob_get(0), (1)) on entry rob_pos_preset_no of the preset table rob_pos_presets (0x18 bytes: x, z and facing angle for each side), at the stage floor height (stage record +0x54), and restarts each on its first motion (rob_move_set); nothing in the image calls it; part of vf4lib/libdebug/src/debug_menu.c
+ * confidence: exercised
+ * evidence: puts both characters (rob_get(0), (1)) on entry rob_pos_preset_no of the preset table rob_pos_presets (0x18 bytes: x, z and facing angle for each side), at the stage floor height (stage record +0x54), and restarts each on its first motion (rob_move_set); nothing in the image calls it; part of vf4lib/libdebug/src/debug_menu.c; exercised 2026-11-12: called by the harness with rob_pos_preset_no poked 2 it set fighter 0 place_pos to (-1, 4, 6.35), pos.x -1, pos.z 6.35, heading 0x4000 and fighter 1 to (0, 4, 6.35), heading 0xC000 (the entry's bytes; y 4 is stage +0x54), with 0 to x -6.5 and -5, z 0; each time rob_move_set(fighter, 0x13C9), the first entry of its move table
  * matched: source/vf4lib/libdebug/src/debug_menu.c (tools/match/match.py)
  */
 void rob_pos_preset_apply(void)
@@ -869,9 +869,9 @@ void mothead_sound_play(void)
 }
 
 /* 0x0c0eebc0  size 0xde  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x10e
- * evidence: places both characters at the stage record's start positions (stage +0x34, 16 bytes per side: angle at +2, x, y, z) by the mode byte rob_start_pos_mode: modes 2 and 3 move each side 4.0 further out along x, modes 1 and 3 set the +0x318 bits 0x18 (0 and 2 clear them); also clears +0x18 bit 3, sets +0x20 bit 4 and the camera record's +0x30 bit 0x40; callers rob_start_pos_reset and rob_start_pos_cycle; role of the 0x18 bits unclear; part of vf4lib/libdebug/src/debug_menu.c
+ * evidence: places both characters at the stage record's start positions (stage +0x34, 16 bytes per side: angle at +2, x, y, z) by the mode byte rob_start_pos_mode: modes 2 and 3 move each side 4.0 further out along x, modes 1 and 3 set the +0x318 bits 0x18 (0 and 2 clear them); also clears +0x18 bit 3, sets +0x20 bit 4 and the camera record's +0x30 bit 0x40; callers rob_start_pos_reset and rob_start_pos_cycle; role of the 0x18 bits unclear; part of vf4lib/libdebug/src/debug_menu.c; exercised 2026-11-12: called by the harness on stage 17 (start positions at 0x0C1E2330: x -1 and 1, y 4, z 0, angles 0x4000 and 0xC000): mode 0 put the fighters at x -1 / 1 with side_flags 0x58 / 0x40 becoming 0x40 / 0x40, mode 3 at x -5 / 5 with 0x58 / 0x58, mode 2 at -5 / 5 with 0x40, mode 1 at -1 / 1 with 0x58; each time flags 0x1000F became 0x10007, state 0x2000 became 0x2010 and camera +0x30 0x40
  * matched: source/vf4lib/libdebug/src/debug_menu.c (tools/match/match.py)
  */
 void rob_start_pos_apply(void)
@@ -927,8 +927,8 @@ void rob_start_pos_apply(void)
 }
 
 /* 0x0c0eed00  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: sets the start-position mode rob_start_pos_mode to 0 and calls rob_start_pos_apply; nothing in the image calls it; part of vf4lib/libdebug/src/debug_menu.c
+ * confidence: exercised
+ * evidence: sets the start-position mode rob_start_pos_mode to 0 and calls rob_start_pos_apply; nothing in the image calls it; part of vf4lib/libdebug/src/debug_menu.c; exercised 2026-11-12: called by the harness with rob_start_pos_mode poked 3 it left the mode 0 and called rob_start_pos_apply, which put the fighters at the mode-0 places (x -1 and 1, side_flags 0x40)
  * matched: source/vf4lib/libdebug/src/debug_menu.c (tools/match/match.py)
  */
 void rob_start_pos_reset(void)
@@ -939,8 +939,8 @@ void rob_start_pos_reset(void)
 }
 
 /* 0x0c0eed40  size 0x4c  file by match with source
- * confidence: inferred
- * evidence: while pad 0 holds bit 0 (+0x14) and pad 1 presses bit 0 (+0x0C), steps the start-position mode rob_start_pos_mode through 0-3 and calls rob_start_pos_apply; nothing in the image calls it; part of vf4lib/libdebug/src/debug_menu.c
+ * confidence: exercised
+ * evidence: while pad 0 holds bit 0 (+0x14) and pad 1 presses bit 0 (+0x0C), steps the start-position mode rob_start_pos_mode through 0-3 and calls rob_start_pos_apply; nothing in the image calls it; part of vf4lib/libdebug/src/debug_menu.c; exercised 2026-11-12: called by the harness with pad 0 now (+0x14) and pad 1 pressed (+0x0C) poked 1: mode 3 became 0 (fighters at x -1 / 1) and mode 1 became 2 (x -5 / 5, side_flags cleared); with pad 0 now 0 mode 1 stayed 1 and nothing moved
  * matched: source/vf4lib/libdebug/src/debug_menu.c (tools/match/match.py)
  */
 void rob_start_pos_cycle(void)
@@ -1313,8 +1313,8 @@ void empty_fn_0c0ef640(void)
 }
 
 /* 0x0c0ef660  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: sscanf (sscanf) of "12345" with "%d" into sscanf_test_value; a library check, nothing in the image calls it; part of vf4lib/libdebug/src/debug_menu.c
+ * confidence: exercised
+ * evidence: sscanf (sscanf) of "12345" with "%d" into sscanf_test_value; a library check, nothing in the image calls it; part of vf4lib/libdebug/src/debug_menu.c; exercised 2026-11-12: called by the harness with sscanf_test_value poked 0x77 it called sscanf("12345", "%d", &sscanf_test_value) and the value became 12345 (0x3039)
  * matched: source/vf4lib/libdebug/src/debug_menu.c (tools/match/match.py)
  */
 void sscanf_test(void)
@@ -1681,8 +1681,8 @@ void attack_active_flag(rob_rec *rob)
 }
 
 /* 0x0c0f0000  size 0xee  file by match with source
- * confidence: inferred
- * evidence: the open half of a frame-check tool with its own record (frame_check): saves both characters' motions (+8) and positions (+0x84), clears the counters (bytes 6-10), sets the step to 1.0, saves motion_blend_switch, deb_sw and the camera mode and sets the camera to MODE_ROB; no window record points at it and nothing in the image calls it; part of vf4lib/libdebug/src/debug_menu.c
+ * confidence: exercised
+ * evidence: the open half of a frame-check tool with its own record (frame_check): saves both characters' motions (+8) and positions (+0x84), clears the counters (bytes 6-10), sets the step to 1.0, saves motion_blend_switch, deb_sw and the camera mode and sets the camera to MODE_ROB; no window record points at it and nothing in the image calls it; part of vf4lib/libdebug/src/debug_menu.c; exercised 2026-11-12: called by the harness with 0x55 in frame_check bytes 4-11, deb_sw 0x5A and camera.mode poked 3, it stored flags 1, saved blend 1 / deb_sw 0x5A / mode 3 (bytes 4, 5, 11), bytes 6-10 0, step 1.0, motions 0xE1 / 0x13BE (fighters +8) and both positions (+0x84) twice, lengths and frames 1.0; motion_blend_switch became 0, deb_sw 1, mode 0
  * matched: source/vf4lib/libdebug/src/debug_menu.c (tools/match/match.py)
  */
 void frame_check_open(void)
@@ -1720,9 +1720,9 @@ void frame_check_open(void)
 }
 
 /* 0x0c0f0120  size 0x39c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x47a
- * evidence: the update of the frame-check tool: steps the attacker's motion like motion_test_step and, by mode (record byte 6, 0-5), replays it once or repeatedly through the guard/hit cases (byte 9, 0-3) and the 20 reaction rows (byte 7) with frame_advantage; when the attack's active frame (+0x2E6) is reached it starts the defender's reaction from the table guard_motion_tables; nothing in the image calls it; part of vf4lib/libdebug/src/debug_menu.c
+ * evidence: the update of the frame-check tool: steps the attacker's motion like motion_test_step and, by mode (record byte 6, 0-5), replays it once or repeatedly through the guard/hit cases (byte 9, 0-3) and the 20 reaction rows (byte 7) with frame_advantage; when the attack's active frame (+0x2E6) is reached it starts the defender's reaction from the table guard_motion_tables; nothing in the image calls it; part of vf4lib/libdebug/src/debug_menu.c; exercised 2026-11-12: called by the harness after frame_check_open: mode 0 with frame 3.0 of length 10 and step 0.5 gave frame 3.5 (fighter 0 frame_pos 3.5, frame 3) and defender frame 2.0 -> 2.5 (frame 2); at frame 10 of 10 mode 0 stayed at 10 while mode 1, with the defender frame poked 40 (past its length 32), called frame_advantage and restarted at 1.0
  * matched: source/vf4lib/libdebug/src/debug_menu.c (tools/match/match.py)
  */
 void frame_check_update(void)
@@ -1881,8 +1881,8 @@ void frame_check_update(void)
 }
 
 /* 0x0c0f05c0  size 0x8e  file by match with source
- * confidence: inferred
- * evidence: the close half of the frame-check tool: puts back both characters' positions, motion_blend_switch, deb_sw and the camera mode, and clears the record's flag bit 0; nothing in the image calls it; part of vf4lib/libdebug/src/debug_menu.c
+ * confidence: exercised
+ * evidence: the close half of the frame-check tool: puts back both characters' positions, motion_blend_switch, deb_sw and the camera mode, and clears the record's flag bit 0; nothing in the image calls it; part of vf4lib/libdebug/src/debug_menu.c; exercised 2026-11-12: called by the harness after frame_check_open with fighter positions poked 9.0, motion_blend_switch 0, deb_sw 7 and camera.mode 3 at open, it put both positions back, motion_blend_switch 1, deb_sw 0x5A, camera.mode 3, and cleared frame_check flag bit 0
  * matched: source/vf4lib/libdebug/src/debug_menu.c (tools/match/match.py)
  */
 void frame_check_close(void)
@@ -1905,9 +1905,9 @@ void frame_check_close(void)
 }
 
 /* 0x0c0f0680  size 0x23e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x296
- * evidence: the training display's frame data: the attacker's frame set to the first active one, then guard / hit / counter-hit advantage = stun (guard_stun / hit_stun, result flags 1 / 2, counter with half the damage again) - (the row's recovery end or +0x2EA - +0x2E6), stored at rob +0x838 / +0x83A / +0x83C
+ * evidence: the training display's frame data: the attacker's frame set to the first active one, then guard / hit / counter-hit advantage = stun (guard_stun / hit_stun, result flags 1 / 2, counter with half the damage again) - (the row's recovery end or +0x2EA - +0x2E6), stored at rob +0x838 / +0x83A / +0x83C; exercised 2026-11-12: called by the harness after frame_check_open with attack move 4 (rows -1, active 1, recovery end 30): guard_stun 10, hit_stun 8 and 8 gave +0x838 -19, +0x83A -21, +0x83C -21; with move 9 (active 12, end 27): 11, 18, 20 gave -4, 3, 5; defender pending damage 9 restored; defender move 0x1393 from frame_check_react_moves[0]
  * matched: source/vf4lib/libdebug/src/debug_menu.c (tools/match/match.py)
  */
 void frame_advantage(rob_rec *attacker, rob_rec *defender, char *atk_side, char *def_side)
@@ -1992,8 +1992,8 @@ void frame_advantage(rob_rec *attacker, rob_rec *defender, char *atk_side, char 
 }
 
 /* 0x0c0f0940  size 0x24  file by match with source
- * confidence: inferred
- * evidence: (move number): 0 for move 0, else the first word of move_record(number - 1), the move's flag word; caller attack_move_find; part of vf4lib/libdebug/src/debug_menu.c
+ * confidence: exercised
+ * evidence: (move number): 0 for move 0, else the first word of move_record(number - 1), the move's flag word; caller attack_move_find; part of vf4lib/libdebug/src/debug_menu.c; exercised 2026-11-12: called by the harness, 0 returned 0, 1 returned 0x20000009 (the word at move_record(0)), 5 returned 0x200101 (move_record(4)) and 100 returned 0x201 (move_record(99))
  * matched: source/vf4lib/libdebug/src/debug_menu.c (tools/match/match.py)
  */
 uint move_flags_get(short motion)
@@ -2004,7 +2004,7 @@ uint move_flags_get(short motion)
 
 /* 0x0c0f0980  size 0x6e  file by match with source
  * confidence: inferred
- * evidence: (from, to): steps from toward to (mot_id_skip_unloaded picks the next move) until a move whose flags (move_flags_get) have bit 0x4000, the attack bit attack_active_flag tests, and returns it; returns to when from equals it or the step gives 0, to or a number above 0x167B; recursive; caller frame_advantage; part of vf4lib/libdebug/src/debug_menu.c
+ * evidence: (motion, prev): steps from motion away from prev (up when motion > prev, else down; mot_id_skip_unloaded picks each move, motion itself first) until a move whose flags (move_flags_get) have bit 0x4000, the attack bit attack_active_flag tests, and returns it; returns prev when motion equals it or the step gives 0, prev or a number above 0x167B; recursive; caller frame_advantage; part of vf4lib/libdebug/src/debug_menu.c; corrected 2026-11-12 from harness calls: it steps away from the second argument, not toward it: called by the harness, (5, 20) returned 4 (5 checked first, then 4, flags 0xC001), (40, 20) returned 46 (41-45 checked, 46 flags 0x4001), (5, 8) returned 4, (5, 5) returned 5; toward the second argument the first attack moves are 9 and 37
  * matched: source/vf4lib/libdebug/src/debug_menu.c (tools/match/match.py)
  */
 int attack_move_find(short motion, short prev)

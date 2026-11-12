@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c141920  size 0x42  file by match with source
- * confidence: inferred
- * evidence: (value): clamps to 0-255, keeps it at +0xa0 of the state block and puts it, shifted left 15, in place of bits 16-23 (the alpha threshold field) of the kept FB_W_CTRL word (+0x2c4), then writes FB_W_CTRL (0x48) to both chips; returns 0; nothing calls it; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (value): clamps to 0-255, keeps it at +0xa0 of the state block and puts it, shifted left 15, in place of bits 16-23 (the alpha threshold field) of the kept FB_W_CTRL word (+0x2c4), then writes FB_W_CTRL (0x48) to both chips; returns 0; nothing calls it; part of KamuiTL; checked against reference material (not in this repo); record as the game has it: FB_W_CTRL's alpha threshold (bits 16-23) gets half the value, and an odd value leaves bit 15 set until the word is rebuilt; exercised 2026-11-12: called by the harness in one sandbox with the kept FB_W_CTRL 9: 0x40 kept 0x40 at +0xa0 and wrote 0x200009 to 0x48 (pvr_reg_write_both); 300 kept 0xff and wrote 0x7f8009; -5 kept 0 and wrote 0x8009 (bits 16-23 cleared, bit 15 left from before); with the kept word poked 0xffffffff, 0 wrote 0xff00ffff
  * matched: source/sdk/kamui/pvr_settings.c (tools/match/match.py)
  */
 int fb_w_ctrl_alpha_cutoff(int cutoff)
@@ -63,8 +63,8 @@ int pvr_fog_col_ram_put(uint color)
 }
 
 /* 0x0c141a20  size 0x18  file by match with source
- * confidence: inferred
- * evidence: writes its argument to FOG_COL_VERT (0xb4), the per-vertex fog color, both chips; returns 0; callers fog_col_vert_write_bytes and fog_col_vert_write_word; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: writes its argument to FOG_COL_VERT (0xb4), the per-vertex fog color, both chips; returns 0; callers fog_col_vert_write_bytes and fog_col_vert_write_word; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with 0x11223344 it called pvr_reg_write_both(0xb4, 0x11223344) and with 0x55667788 pvr_reg_write_both(0xb4, 0x55667788); returned 0
  * matched: source/sdk/kamui/pvr_settings.c (tools/match/match.py)
  */
 int pvr_fog_col_vert_put(uint color)
@@ -123,8 +123,8 @@ int pvr_pal_ram_ctrl_put(uint format)
 }
 
 /* 0x0c141b40  size 0x40  file by match with source
- * confidence: inferred
- * evidence: (words): writes 1024 words to the palette RAM (0xa05f9000 onward, both chips); returns 0; caller pal_shadow_flush; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (words): writes 1024 words to the palette RAM (0xa05f9000 onward, both chips); returns 0; caller pal_shadow_flush; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with a buffer of words 0xa0, 0xa1, ... and 0xbeef as word 1023, it called pvr_reg_write_both 1024 times, from (0x1000, 0xa0), (0x1004, 0xa1) to (0x1ffc, 0xbeef); returned 0
  * matched: source/sdk/kamui/pvr_settings.c (tools/match/match.py)
  */
 int pvr_pal_ram_load_all(uint *words)
@@ -138,7 +138,7 @@ int pvr_pal_ram_load_all(uint *words)
 
 /* 0x0c141ba0  size 0x52  file by match with source
  * confidence: inferred
- * evidence: (first entry, count, words): writes the palette RAM entries from first entry up to first + count (at most entry 0x3fe) from the same entries of the table; returns 0; nothing calls it; part of KamuiTL; checked against reference material (not in this repo)
+ * evidence: (first entry, count, words): writes the palette RAM entries from first entry up to first + count from the same entries of the table; a range running past the end (first + count above 0x400) stops at entry 0x3fe, one short of the last entry, while one ending exactly at 0x400 writes entry 0x3ff too; returns 0; nothing calls it; part of KamuiTL; checked against reference material (not in this repo); record as the game has it: the cut for an overlong range is one entry short; corrected 2026-11-12 from harness calls: called by the harness with a table of known words: (2, 3) wrote entries 2-4 (offsets 0x1008-0x1010) from words 2-4 and (0x3fc, 10) entries 0x3fc-0x3fe, as described, but (0x3fe, 2) wrote entries 0x3fe and 0x3ff and (0x3f0, 0x10) sixteen entries up to 0x3ff: the cut to entry 0x3fe applies only when first + count is above 0x400
  * matched: source/sdk/kamui/pvr_settings.c (tools/match/match.py)
  */
 int pvr_pal_ram_load_range(int first, int count, uint *words)
@@ -199,9 +199,9 @@ int bg_plane_vertices_by_type(void *vertex_ptrs, int type, int unused)
 }
 
 /* 0x0c141d20  size 0x2a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x2e
- * evidence: when its argument equals the per-tile pre-sort flag (+0x1c4 of the state block, the bit 29 the region array builder sets in every tile's control word) it flips the flag and marks both region arrays for rebuilding (+0x1c0 = 3); otherwise does nothing; caller presort_flag_flip_if_equal; part of KamuiTL; checked against reference material (not in this repo)
+ * evidence: when its argument equals the per-tile pre-sort flag (+0x1c4 of the state block, the bit 29 the region array builder sets in every tile's control word) it flips the flag and marks both region arrays for rebuilding (+0x1c0 = 3); otherwise does nothing; returns no defined value (the harness got 0x0c41e04c); caller presort_flag_flip_if_equal; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness in one sandbox with the flag at gfx_state+0x1c4 0 (the snapshot's): 1 changed nothing; 0 set the flag to 1 and +0x1c0 to 3; with +0x1c0 poked 0, 0 again changed nothing; 1 then set the flag to 0 and +0x1c0 to 3
  * matched: source/sdk/kamui/pvr_settings.c (tools/match/match.py)
  */
 int region_presort_flip_on_match(int flag)
@@ -221,8 +221,8 @@ int region_presort_flip_on_match(int flag)
 }
 
 /* 0x0c141d60  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: (x, y): turns gfx_state's tile limit on with the two values and asks for a region rebuild (3); returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between region_presort_flip_on_match and fb_clip_rect_store, so by link order part of sdk/kamui/pvr_settings.c
+ * confidence: exercised
+ * evidence: (x, y): turns gfx_state's tile limit on with the two values and asks for a region rebuild (3); returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between region_presort_flip_on_match and fb_clip_rect_store, so by link order part of sdk/kamui/pvr_settings.c; exercised 2026-11-12: called by the harness in one sandbox: (100, 200) left gfx_state+0x1c8 = 1, +0x1cc = 100, +0x1d0 = 200 and +0x1c0 = 3; (7, 9) then left 1, 7, 9 and 3; returned 0
  * matched: source/sdk/kamui/pvr_settings.c (tools/match/match.py)
  */
 int tile_limit_set(int x, int y)
@@ -263,9 +263,9 @@ int fb_clip_rect_store(uint x0, uint y0, uint x1, uint y1)
 }
 
 /* 0x0c141e00  size 0x11c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x14c
- * evidence: (mode, int *lines out): 1 hides the top 16 lines (8 in the low-resolution non-VGA modes) by moving both frame buffer read starts (+0x218/+0x21c of the state block) down that many lines and shortening FB_R_SIZE, 0 undoes it; rewrites FB_R_CTRL and FB_R_SIZE, keeps the mode at +0x38 and the count at +0x3c and returns the count through the pointer; nothing calls it; part of KamuiTL
+ * evidence: (mode, int *lines out): 1 hides the top 16 lines (8 in the low-resolution non-VGA modes) by moving both frame buffer read starts (+0x218/+0x21c of the state block) down that many lines and shortening FB_R_SIZE, 0 undoes it; rewrites FB_R_CTRL and FB_R_SIZE, keeps the mode at +0x38 and the count at +0x3c and returns the count through the pointer; nothing calls it; part of KamuiTL; exercised 2026-11-12: called by the harness in one sandbox in display mode 1 (line pitch 0x500, read starts 0 / 0x500, FB_R_SIZE 0x177d3f): 1 returned 16 through the pointer, moved the starts to 0x5000 / 0x5500, wrote FB_R_CTRL 0, FB_R_SIZE 0x173d3f, FB_R_CTRL 0x800005 and kept 1 / 16 at +0x38 / +0x3c; 0 then gave 0, starts 0 / 0x500, FB_R_SIZE 0x177d3f and 0 / 0; with the mode poked 0x10 (640x240), 1 gave 8 lines and starts 0x2800 / 0x2d00
  * matched: source/sdk/kamui/pvr_settings.c (tools/match/match.py)
  */
 int fb_top_lines_skip_set(int mode, int *lines_out)
@@ -335,9 +335,9 @@ int ta_isp_softreset_after_drain(void)
 }
 
 /* 0x0c141fe0  size 0x2e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x34
- * evidence: (mode): with bit 0 set keeps the mode at +0x1d8 and turns on +0x1d4 of the state block, so the region array builder points both modifier volume list words of every tile at one list (the opaque one for mode 1, the translucent one otherwise), and returns 0; with bit 0 clear turns it off and returns 0xb; either way marks both region arrays for rebuilding (+0x1c0 = 3); caller modvol_lists_merge_into_opaque; part of KamuiTL; checked against reference material (not in this repo)
+ * evidence: (mode): with bit 0 set keeps the mode at +0x1d8 and turns on +0x1d4 of the state block, so the region array builder points both modifier volume list words of every tile at one list (the opaque one for mode 1, the translucent one otherwise), and returns 0; with bit 0 clear turns it off and returns 0xb; either way marks both region arrays for rebuilding (+0x1c0 = 3); caller modvol_lists_merge_into_opaque; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness in one sandbox: 1 returned 0 and left gfx_state+0x1d4 = 1, +0x1d8 = 1, +0x1c0 = 3; 3 returned 0 and left mode 3; with +0x1c0 poked 0, 2 returned 0xb, cleared +0x1d4 and set +0x1c0 to 3 again
  * matched: source/sdk/kamui/pvr_settings.c (tools/match/match.py)
  */
 int region_modvol_lists_merge(uint mode)
@@ -384,8 +384,8 @@ int spg_latched_beam_xy_read(uint *x, uint *y)
 }
 
 /* 0x0c142080  size 0x2a  file by match with source
- * confidence: inferred
- * evidence: returns 0 when texture uploads are made by the CPU (+0x43c of the state block is 1) or when the last upload's DMA (its handle at +0x438) has finished (ticket_done_poll), else 0x11; nothing calls it; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: returns 0 when texture uploads are made by the CPU (+0x43c of the state block is 1) or when the last upload's DMA (its handle at +0x438) has finished (ticket_done_poll), else 0x11; nothing calls it; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the snapshot's +0x43c = 1 it returned 0 without polling; with +0x43c poked 0 and the ticket at +0x438 0x29f (below xfer_done_count 0x2a0) it returned 0, with 0x7fff0000 it returned 0x11; ticket_done_poll got the ticket each time
  * matched: source/sdk/kamui/pvr_settings.c (tools/match/match.py)
  */
 int vram_upload_dma_idle(void)
@@ -403,9 +403,9 @@ int vram_upload_dma_idle(void)
 }
 
 /* 0x0c1420c0  size 0x18  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x26
- * evidence: (ok): for 0 writes 0xff00ff to the border color register 0xA85F8040 and spins for ever; returns for anything else; nothing in the image calls it (uncalled code, made a function 2026-11-09); between vram_upload_dma_idle and pvr_text_ctrl_stride_put, so by link order part of sdk/kamui/pvr_settings.c
+ * evidence: (ok): for 0 writes 0xff00ff to the border color register 0xA85F8040 and spins for ever; returns for anything else; nothing in the image calls it (uncalled code, made a function 2026-11-09); between vram_upload_dma_idle and pvr_text_ctrl_stride_put, so by link order part of sdk/kamui/pvr_settings.c; exercised 2026-11-12: called by the harness with 1 it returned at once; with 0 it wrote 0xff00ff to 0xa85f8040 and was still spinning when its 1-frame budget ran out
  * matched: source/sdk/kamui/pvr_settings.c (tools/match/match.py)
  */
 void halt_magenta_unless(int ok)
@@ -418,8 +418,8 @@ void halt_magenta_unless(int ok)
 }
 
 /* 0x0c142100  size 0x38  file by match with source
- * confidence: inferred
- * evidence: (width in pixels): puts width / 32 in the stride field (bits 0-4) of TEXT_CONTROL (0xe4), read back from the first chip and written to both; returns 0; nothing calls it; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (width in pixels): puts width / 32 in the stride field (bits 0-4) of TEXT_CONTROL (0xe4), read back from the first chip and written to both; returns 0; nothing calls it; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with 640 it read TEXT_CONTROL (pvr_reg_read(0xe4)) and wrote it back through pvr_reg_write_both(0xe4, ...) with 20 in bits 0-4, with 96 it wrote 3; returned 0
  * matched: source/sdk/kamui/pvr_settings.c (tools/match/match.py)
  */
 int pvr_text_ctrl_stride_put(uint width)

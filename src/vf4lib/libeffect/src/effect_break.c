@@ -244,8 +244,8 @@ void rome_break_init(void)
 }
 
 /* 0x0c0b0ba0  size 0x7e  file by match with source
- * confidence: inferred
- * evidence: (object slot, source index): starts break object <slot> (0x30-byte record stage_anim_objs + slot x 0x30) from break source <index> (0x1C-byte record of rome_break_sources): copies the source's model id, piece list (+4) and position, flags word +0x14 = 0x43, frame time +0x18 = 1.0, frame count and turn 0, keeps the source index (+0x22), calls stage_anim_obj_bind and sets bit 0 (started) of the source's flags (+0x18); only caller rome_break_update; part of vf4lib/libeffect/src/effect_break.c
+ * confidence: exercised
+ * evidence: (object slot, source index): starts break object <slot> (0x30-byte record stage_anim_objs + slot x 0x30) from break source <index> (0x1C-byte record of rome_break_sources): copies the source's model id, piece list (+4) and position, flags word +0x14 = 0x43, frame time +0x18 = 1.0, frame count and turn 0, keeps the source index (+0x22), calls stage_anim_obj_bind and sets bit 0 (started) of the source's flags (+0x18); only caller rome_break_update; part of vf4lib/libeffect/src/effect_break.c; exercised 2026-11-12: called by the harness, (slot 1, source 2) set object 1 models 0x0C2A29E0, flags 0x43, turn 0, time 1.0, id 0x166D, count 0 (was 0x77), source 2, position (0, -4, 0), all from the source record, called stage_anim_obj_bind(0x0C382468) and set source 2 flags to 1; (0, 10) gave object 0 id 0x1663, models 0x0C2A2A68, position (60.4, 0, -3.2)
  * matched: source/vf4lib/libeffect/src/effect_break.c (tools/match/match.py)
  */
 void rome_break_obj_start(uint slot, uint source)
@@ -376,8 +376,8 @@ void rome_break_end(void)
 }
 
 /* 0x0c0b0f40  size 0x70  file by match with source
- * confidence: inferred
- * evidence: on stage 0 (ROME, stage_cur_no == 0) with the break buffer allocated: lays the buffer out again (stage_anim_buffers_carve), resets break objects 2-3 (flags word +0x14 = 8, frame time +0x18 = 1.0, offsets 0) and clears the started flag of the 11 break sources of rome_break_sources, as rome_break_init does without allocating; nothing in the image calls it or points at it; part of vf4lib/libeffect/src/effect_break.c
+ * confidence: exercised
+ * evidence: on stage 0 (ROME, stage_cur_no == 0) with the break buffer allocated: lays the buffer out again (stage_anim_buffers_carve), resets break objects 2-3 (flags word +0x14 = 8, frame time +0x18 = 1.0, offsets 0) and clears the started flag of the 11 break sources of rome_break_sources, as rome_break_init does without allocating; nothing in the image calls it or points at it; part of vf4lib/libeffect/src/effect_break.c; exercised 2026-11-12: called by the harness on stage 17 it changed nothing; with stage_cur_no poked 0 after rome_break_init, markers in objects 2-3 (flags 0x43, time 2.5, id 5, count 7, x 1.5, turn 0x1234) became 8, 1.0, 0, 0, 0, 0, sources 0 and 10 flags 0, and stage_anim_buffers_carve(break_buf) ran; with break_buf poked 0 nothing changed
  * matched: source/vf4lib/libeffect/src/effect_break.c (tools/match/match.py)
  */
 void rome_break_reset(void)

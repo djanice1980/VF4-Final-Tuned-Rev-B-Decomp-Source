@@ -1345,7 +1345,7 @@ void yam_fence_draw(void)
 
 /* 0x0c0b39a0  size 0x4a  file by match with source
  * confidence: inferred
- * evidence: (segment): when the segment's break object index (+0x1C) is not negative, puts that object (0x30-byte record at stage_anim_objs) in state 3 at the segment's position with its model (+0xC) and timer 0; callers fence_segment_break_update; part of vf4lib/libeffect/src/effect_etc.c
+ * evidence: (segment): when the segment's break object index (+0x1C) is not negative, puts that object (0x30-byte record at stage_anim_objs) in state 3 at the segment's position with its Y turn (+0xC, into the object's +0x16) and timer 0; callers fence_segment_break_update; part of vf4lib/libeffect/src/effect_etc.c; corrected 2026-11-12 from harness calls: the +0xC halfword is the segment's Y turn, not a model: called by the harness with a segment in a scratch buffer (position (1, 2, 3), +0xC 0x1234, model +0x10 0x5678, index +0x1C 1), object 1 got position (1, 2, 3), flags 3, time 0 and turn (+0x16) 0x1234, while its models word (+0x10) stayed 0; with index -1 nothing was written
  * matched: source/vf4lib/libeffect/src/effect_etc.c (tools/match/match.py)
  */
 void fence_break_obj_start(break_piece *seg)
@@ -1835,8 +1835,8 @@ void model_clump_frames_free(int *frame_models, int count)
 }
 
 /* 0x0c0b45e0  size 0x22  file by match with source
- * confidence: inferred
- * evidence: GHIDRA HAS NO FUNCTION HERE (code 0x0C0B45E0-0x0C0B45FF): sets the frame short of the record at loop64_model to -1 and its position (+4) to 0; with loop64_model_step (0x0C0B4620) and loop64_model_draw it forms an unused looping-model effect; nothing in the image calls it or points at it; role unclear; part of vf4lib/libeffect/src/effect_etc.c
+ * confidence: exercised
+ * evidence: GHIDRA HAS NO FUNCTION HERE (code 0x0C0B45E0-0x0C0B45FF): sets the frame short of the record at loop64_model to -1 and its position (+4) to 0; with loop64_model_step (0x0C0B4620) and loop64_model_draw it forms an unused looping-model effect; nothing in the image calls it or points at it; role unclear; part of vf4lib/libeffect/src/effect_etc.c; exercised 2026-11-12: called by the harness with the frame short of loop64_model poked 0x1234, the next short 0xABCD and x, y, z 1.5, it left the frame 0xFFFF (-1), 0xABCD as it was and the position 0
  * matched: source/vf4lib/libeffect/src/effect_etc.c (tools/match/match.py)
  */
 void loop64_model_init(void)
@@ -1849,8 +1849,8 @@ void loop64_model_init(void)
 }
 
 /* 0x0c0b4620  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: GHIDRA HAS NO FUNCTION HERE (code 0x0C0B4620-0x0C0B463B): steps the frame short of the record at loop64_model through 0..63; nothing in the image calls it or points at it; role unclear; part of vf4lib/libeffect/src/effect_etc.c
+ * confidence: exercised
+ * evidence: GHIDRA HAS NO FUNCTION HERE (code 0x0C0B4620-0x0C0B463B): steps the frame short of the record at loop64_model through 0..63; nothing in the image calls it or points at it; role unclear; part of vf4lib/libeffect/src/effect_etc.c; exercised 2026-11-12: called by the harness, frame 5 became 6, 63 became 0, and after loop64_model_init (-1) one step gave 0
  * matched: source/vf4lib/libeffect/src/effect_etc.c (tools/match/match.py)
  */
 void loop64_model_step(void)
@@ -1861,8 +1861,8 @@ void loop64_model_step(void)
 }
 
 /* 0x0c0b4660  size 0x50  file by match with source
- * confidence: inferred
- * evidence: unless in the advertise sub-mode 8, draws model 0x180264 + the frame of the record at loop64_model at the record's position (+4); nothing in the image calls it or points at it (see loop64_model_init, loop64_model_step); role unclear; part of vf4lib/libeffect/src/effect_etc.c
+ * confidence: exercised
+ * evidence: unless in the advertise sub-mode 8, draws model 0x180264 + the frame of the record at loop64_model at the record's position (+4); nothing in the image calls it or points at it (see loop64_model_init, loop64_model_step); role unclear; part of vf4lib/libeffect/src/effect_etc.c; exercised 2026-11-12: called by the harness in the fight (main mode 3), with the frame poked 0 it called mtx_translate_by_vec3(0x0C454A14, the record +4) and obj_draw(0x180264), and with 10 obj_draw(0x18026E)
  * matched: source/vf4lib/libeffect/src/effect_etc.c (tools/match/match.py)
  */
 void loop64_model_draw(void)
@@ -1999,8 +1999,8 @@ void aquarium_bubble_end(void)
 }
 
 /* 0x0c0b4ac0  size 0x46  file by match with source
- * confidence: inferred
- * evidence: GHIDRA HAS NO FUNCTION HERE (code 0x0C0B4AC0-0x0C0B4B0F): clears the 16 records of rob_fx_pool (flags, timer, scale 1.0, frame table null) and sets bit 0 of rob_fx_flags; nothing in the image calls it or points at it, so the flag stays 0 and rob_fx_slot_spawn never fires; part of vf4lib/libeffect/src/effect_etc.c
+ * confidence: exercised
+ * evidence: GHIDRA HAS NO FUNCTION HERE (code 0x0C0B4AC0-0x0C0B4B0F): clears the 16 records of rob_fx_pool (flags, timer, scale 1.0, frame table null) and sets bit 0 of rob_fx_flags; nothing in the image calls it or points at it, so the flag stays 0 and rob_fx_slot_spawn never fires; part of vf4lib/libeffect/src/effect_etc.c; exercised 2026-11-12: called by the harness with rob_fx_flags poked 0x80 and record 0 holding flags 0x55, wait 7, frame 9, time 5.5, speed 5.5, scale 3, frame table 0x1234 and model 0x1234, it set rob_fx_flags 0x81 and record 0 to 0, 0, 0, 0, 1.0, 1.0, 0 with the model kept; record 15 likewise
  * matched: source/vf4lib/libeffect/src/effect_etc.c (tools/match/match.py)
  */
 void rob_fx_enable(void)
@@ -2021,8 +2021,8 @@ void rob_fx_enable(void)
 }
 
 /* 0x0c0b4b20  size 0x14  file by match with source
- * confidence: inferred
- * evidence: GHIDRA HAS NO FUNCTION HERE (code 0x0C0B4B20-0x0C0B4B37): clears bit 0 of rob_fx_flags; nothing in the image calls it or points at it; part of vf4lib/libeffect/src/effect_etc.c
+ * confidence: exercised
+ * evidence: GHIDRA HAS NO FUNCTION HERE (code 0x0C0B4B20-0x0C0B4B37): clears bit 0 of rob_fx_flags; nothing in the image calls it or points at it; part of vf4lib/libeffect/src/effect_etc.c; exercised 2026-11-12: called by the harness, rob_fx_flags 0x83 became 0x82 and 0x02 stayed 0x02
  * matched: source/vf4lib/libeffect/src/effect_etc.c (tools/match/match.py)
  */
 void rob_fx_disable(void)
@@ -2034,7 +2034,7 @@ void rob_fx_disable(void)
 /* 0x0c0b4b40  size 0x1ba  file by match with source
  * confidence: inferred
  * extent: 0x1f2
- * evidence: outside the modes effect_play_allowed rejects: steps every live record of rob_fx_pool (fx_anim_step) and lets a waiting one (flag 8) start after rob_fx_wait_frames frames, taking its fighter's slot position (rob_slot_pos_get); then for each fighter whose state record (rob +0x3C) is active and whose kind (+0x94) is not 0 or 11-13 spawns impact effects (rob_fx_spawn): kind 10 one 32-frame effect, otherwise a 5-frame one facing the fighter and a 32-frame one, or at 30 or more damage (rob +0x2A0) 5-, 100-, 32- (scale 2) and 80-frame ones, the last aimed along the fighter matrix row +0x1F0; nothing in the image calls it or points at it; part of vf4lib/libeffect/src/effect_etc.c
+ * evidence: outside the modes effect_play_allowed rejects: steps every live record of rob_fx_pool (fx_anim_step) and lets a waiting one (flag 8) start after rob_fx_wait_frames frames, taking its fighter's slot position (rob_slot_pos_get); then for each fighter whose state record (rob +0x3C) is active (its word +0x20 nonzero) and whose kind (record +0x94) is not 0 or 11-13 spawns impact effects (rob_fx_spawn): kind 10 one 32-frame effect, otherwise a 5-frame one facing the fighter and a 32-frame one, or at 30 or more damage (rob +0x2A0) 5-, 100-, 32- (scale 2) and 80-frame ones, the last aimed along the opponent's +0x1F0 vector (rob->opp, normalized); nothing in the image calls it or points at it; part of vf4lib/libeffect/src/effect_etc.c; corrected 2026-11-12 from harness calls: the 80-frame effect is aimed along the OPPONENT's +0x1F0 vector, not the fighter's: called by the harness after rob_fx_enable with fighter 0's state record +0x20 poked 1, kind 5 and damage 40, it spawned (-1, 5), (-1, 100), (-1, 32, scale 2), (-1, 80, flags 0x18) and the last one's direction was (0.589, 0.757, -0.283), fighter 1's +0x1F0 normalized (fighter 0's is (-0.007, 0, 1.0)); the rest held (kind 10: one 32-frame, damage 10: 5 and 32, kinds 12 and 0: none; a waiting record started at the 2nd update)
  * matched: source/vf4lib/libeffect/src/effect_etc.c (tools/match/match.py)
  */
 void rob_fx_update(void)
@@ -2101,9 +2101,9 @@ void rob_fx_update(void)
 }
 
 /* 0x0c0b4d80  size 0xbc  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xdc
- * evidence: (model id, frames, fighter or 0): takes a free record of rob_fx_pool (the first when all 16 are busy), resets its frame (fx_anim_reset), stores the frames, model id, scale 1.0 and fighter; without a fighter it shows at once, with one it waits (flag 8) for the fighter's slot (rob +0x328; slots 3 and 12 take the position now through rob_slot_pos_get) and faces the fighter's way (rob +0x18 bit 5); returns the record; callers rob_fx_update and rob_fx_slot_spawn; part of vf4lib/libeffect/src/effect_etc.c
+ * evidence: (model id, frames, fighter or 0): takes a free record of rob_fx_pool (the first when all 16 are busy), resets its frame (fx_anim_reset), stores the frames, model id, scale 1.0 and fighter; without a fighter it shows at once, with one it waits (flag 8) for the fighter's slot (rob +0x328; slots 3 and 12 take the position now through rob_slot_pos_get) and faces the fighter's way (rob +0x18 bit 5); returns the record; callers rob_fx_update and rob_fx_slot_spawn; part of vf4lib/libeffect/src/effect_etc.c; exercised 2026-11-12: called by the harness after rob_fx_enable, (0x200, 20, 0) returned record 0 (0x0C454A24) with flags 3, frames 20, model 0x200, scale 1.0, turn 0 and (0x300, 30, 0) record 1; with all 16 busy it returned record 0; with fighter 1 (slot 9, flags bit 0x20) flags 8, slot 9, turn 0x8000; fighter 0 turn 0; fighter 0 with slot poked 3 called rob_slot_pos_get(fighter 0, record +0x24)
  * matched: source/vf4lib/libeffect/src/effect_etc.c (tools/match/match.py)
  */
 fx_rec * rob_fx_spawn(int model, int frames, rob_rec *rob)
@@ -2148,9 +2148,9 @@ fx_rec * rob_fx_spawn(int model, int frames, rob_rec *rob)
 }
 
 /* 0x0c0b4e80  size 0xd0  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xd2
- * evidence: from the saved matrix fx_saved_mtx draws each shown record of rob_fx_pool at its position (+0x24), scaled in X and Y above 1.0, aimed along its direction (+0x30, mtx_rot_vec_to_vec) when flag 0x10 is set or turned by +8 (with the rotation reset unless flag 0x20), as model id + frame; nothing in the image calls it or points at it; part of vf4lib/libeffect/src/effect_etc.c
+ * evidence: from the saved matrix fx_saved_mtx draws each shown record of rob_fx_pool at its position (+0x24), scaled in X and Y above 1.0, aimed along its direction (+0x30, mtx_rot_vec_to_vec) when flag 0x10 is set or turned by +8 (with the rotation reset unless flag 0x20), as model id + frame; nothing in the image calls it or points at it; part of vf4lib/libeffect/src/effect_etc.c; exercised 2026-11-12: called by the harness after rob_fx_enable and four rob_fx_spawn calls: it stored the matrix to fx_saved_mtx, record 0 (flags 0x13) translate(+0x24), mtx_rot_vec_to_vec to its +0x30, obj_draw(0x200); record 1 (0x23, scale 2, turn 0x4000) mtx_scale_xyz(2, 2, 1), mtx_rot_y_s16(0x4000) with no reset, obj_draw(0x300); record 2 (flags 1) nothing; record 3 (3) mtx_reset_3x3, rot 0, obj_draw(0x600)
  * matched: source/vf4lib/libeffect/src/effect_etc.c (tools/match/match.py)
  */
 void rob_fx_draw(void)
@@ -2220,8 +2220,8 @@ void rob_slot_pos_get(rob_rec *rob, float *pos)
 }
 
 /* 0x0c0b4fe0  size 0x3c  file by match with source
- * confidence: inferred
- * evidence: (from, to): computes the pitch from one point to another (atan2_s16 of the height difference over the horizontal distance) and drops the result; nothing in the image calls it; part of vf4lib/libeffect/src/effect_etc.c
+ * confidence: exercised
+ * evidence: (from, to): computes the pitch from one point to another (atan2_s16 of the height difference over the horizontal distance) and drops the result; nothing in the image calls it; part of vf4lib/libeffect/src/effect_etc.c; exercised 2026-11-12: called by the harness with points (1, 2, 3) and (4, 6, 7) it called atan2_s16(4.0, 5.0) (height difference, horizontal distance), and with (0, 0, 0) and (0, -3, 4) atan2_s16(-3.0, 4.0)
  * matched: source/vf4lib/libeffect/src/effect_etc.c (tools/match/match.py)
  */
 void pitch_to_point_unused(float *from,float *to)
@@ -3085,8 +3085,8 @@ void umi_anim_draw(void)
 }
 
 /* 0x0c0b6580  size 0x22  file by match with source
- * confidence: inferred
- * evidence: index djo_light_cycle_index = 0, djo_light_cycle_next, then sets the hold flag djo_light_cycle_hold; nothing in the image calls it or points at it; part of vf4lib/libeffect/src/effect_etc.c
+ * confidence: exercised
+ * evidence: index djo_light_cycle_index = 0, djo_light_cycle_next, then sets the hold flag djo_light_cycle_hold; nothing in the image calls it or points at it; part of vf4lib/libeffect/src/effect_etc.c; exercised 2026-11-12: called by the harness in a sandbox with djo_light_cycle_index poked 3: with djo_light_cycle_hold 0 it left index 1 (reset to 0, then stepped by djo_light_cycle_next) and hold 1; with hold poked 1 it left index 0 (djo_light_cycle_next only cleared the hold) and hold 1 again
  * matched: source/vf4lib/libeffect/src/effect_etc.c (tools/match/match.py)
  */
 void djo_light_cycle_init(void)
@@ -3120,8 +3120,8 @@ void mtx_push_pop_only(void)
 }
 
 /* 0x0c0b6620  size 0x12  file by match with source
- * confidence: inferred
- * evidence: GHIDRA HAS NO FUNCTION HERE (code 0x0C0B6620-0x0C0B6637): clears the hold flag djo_light_cycle_hold of djo_light_cycle_next; nothing in the image calls it or points at it; part of vf4lib/libeffect/src/effect_etc.c
+ * confidence: exercised
+ * evidence: GHIDRA HAS NO FUNCTION HERE (code 0x0C0B6620-0x0C0B6637): clears the hold flag djo_light_cycle_hold of djo_light_cycle_next; nothing in the image calls it or points at it; part of vf4lib/libeffect/src/effect_etc.c; exercised 2026-11-12: called by the harness with djo_light_cycle_hold poked 1 and the index byte after it poked 2 it left the hold 0 and the index 2; called on hold 0 it left 0 and 2
  * matched: source/vf4lib/libeffect/src/effect_etc.c (tools/match/match.py)
  */
 void djo_light_cycle_hold_clear(void)
@@ -4716,8 +4716,8 @@ void break_floor_variants_build(void)
 }
 
 /* 0x0c0b8dc0  size 0x10  file by match with source
- * confidence: inferred
- * evidence: returns break_floor_hit_frames; nothing in the image calls it (uncalled code, made a function 2026-11-09); between break_floor_variants_build and break_floor_draw_tail, so by link order part of vf4lib/libeffect/src/effect_etc.c
+ * confidence: exercised
+ * evidence: returns break_floor_hit_frames; nothing in the image calls it (uncalled code, made a function 2026-11-09); between break_floor_variants_build and break_floor_draw_tail, so by link order part of vf4lib/libeffect/src/effect_etc.c; exercised 2026-11-12: called by the harness with break_floor_hit_frames poked 5 it returned 5, and with 0x1234 it returned 0x1234
  * matched: source/vf4lib/libeffect/src/effect_etc.c (tools/match/match.py)
  */
 int break_floor_hit_frames_get(void)

@@ -241,8 +241,8 @@ aet_scene * aet_scene_get(uint scene_id)
 }
 
 /* 0x0c0e2200  size 0x38  file by match with source
- * confidence: inferred
- * evidence: (scene id): word 'scene' of the loaded file's third header table, without the state check aet_scene_get makes; role unclear; nothing in the image calls it; part of vf4lib/libsprite/src/aetset.c
+ * confidence: exercised
+ * evidence: (scene id): word 'scene' of the loaded file's third header table, without the state check aet_scene_get makes; role unclear; nothing in the image calls it; part of vf4lib/libsprite/src/aetset.c; exercised 2026-11-12: called by the harness after aet_set_load(27) (ftttl_aet.bin, loaded at 0x0DADAF60, whose third header word points at the list 0x0DADB064, 0x0DADB054, ...): scene 0x1B0000 returned 0x0DADB064 and scene 0x1B0001 returned 0x0DADB054
  * matched: source/vf4lib/libsprite/src/aetset.c (tools/match/match.py)
  */
 char * aet_scene_table2_get(uint scene_id)
@@ -298,8 +298,8 @@ int * aet_scene_tex_table_get(uint scene_id)
 }
 
 /* 0x0c0e2320  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: (row): the label string of that row of the AET file table ("NICK_SK_BASE" ...), read through aet_file_table_hdr[1]; nothing in the image calls it (uncalled code, made a function 2026-11-09); between aet_scene_tex_table_get and aet_set_scene_count, so by link order part of vf4lib/libsprite/src/aetset.c
+ * confidence: exercised
+ * evidence: (row): the label string of that row of the AET file table ("NICK_SK_BASE" ...), read through aet_file_table_hdr[1]; nothing in the image calls it (uncalled code, made a function 2026-11-09); between aet_scene_tex_table_get and aet_set_scene_count, so by link order part of vf4lib/libsprite/src/aetset.c; exercised 2026-11-12: called by the harness on the snapshot's aet_file_table_hdr (list at 0x0C1E2794): row 0 returned 0x0C23B4AC ("NICK_SK_BASE") and row 28 returned 0x0C23B77C ("FTDEMO"), the label words of those rows in work/main.bin
  * matched: source/vf4lib/libsprite/src/aetset.c (tools/match/match.py)
  */
 char * aet_file_label_get(int row)
@@ -311,8 +311,8 @@ char * aet_file_label_get(int row)
 }
 
 /* 0x0c0e2340  size 0x26  file by match with source
- * confidence: inferred
- * evidence: (set number): the scene count of a loaded AET file (the word its first header word points at); 0 for a bad set number; nothing in the image calls it; part of vf4lib/libsprite/src/aetset.c
+ * confidence: exercised
+ * evidence: (set number): the scene count of a loaded AET file (the word its first header word points at); 0 for a bad set number; nothing in the image calls it; part of vf4lib/libsprite/src/aetset.c; exercised 2026-11-12: called by the harness after aet_set_load of sets 27 and 28 in one sandbox: set 27 returned 5 and set 28 returned 2 (the words their files' first header words point at), and set 30 returned 0
  * matched: source/vf4lib/libsprite/src/aetset.c (tools/match/match.py)
  */
 int aet_set_scene_count(int set_no)
@@ -413,8 +413,8 @@ void aet_ptr_relocate(int *ptr, int base)
 }
 
 /* 0x0c0e2520  size 0x10  file by match with source
- * confidence: inferred
- * evidence: returns aet_tex_vram_free; nothing in the image calls it (uncalled code, made a function 2026-11-09); between aet_ptr_relocate and aet_stack_init, so by link order part of vf4lib/libsprite/src/aetset.c
+ * confidence: exercised
+ * evidence: returns aet_tex_vram_free; nothing in the image calls it (uncalled code, made a function 2026-11-09); between aet_ptr_relocate and aet_stack_init, so by link order part of vf4lib/libsprite/src/aetset.c; exercised 2026-11-12: called by the harness in one sandbox: with aet_tex_vram_free poked to 0x1234 it returned 0x1234, and with 0x55AA00 it returned 0x55AA00 (the snapshot has 0x899700)
  * matched: source/vf4lib/libsprite/src/aetset.c (tools/match/match.py)
  */
 int aet_tex_vram_free_get(void)

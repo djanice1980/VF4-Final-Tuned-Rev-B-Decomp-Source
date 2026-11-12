@@ -1197,7 +1197,7 @@ void control_ctx_ukemi(control_rec *ctrl)
 
 /* 0x0c05e480  size 0x3e  file by match with source
  * confidence: inferred
- * evidence: (control): context 7 (rob state 0x1b): when the rob's +0x220 byte is above 1, counts new button presses in rob +0x16c and requests move 0x1B020000. Ghidra did not make this a function; reached only through control_context_funcs; part of vf4lib/libaction/src/control.c (file name ours)
+ * evidence: (control): context 7 (rob state 0x1b): when the rob's +0x544 byte is above 1, counts new button presses in rob +0x16c and requests move 0x1B020000. Ghidra did not make this a function; reached only through control_context_funcs; part of vf4lib/libaction/src/control.c (file name ours); corrected 2026-11-12 from harness calls: the byte tested is rob +0x544, not +0x220: called by the harness on side 0's control (rob 0x0C37BA30) with input_presses 1: rob +0x544 poked 2 made rob +0x16C 0 to 1 and the request 0x1B020000 (with presses 0x10 the request only); +0x544 1 changed nothing; +0x220 poked 2 with +0x544 0 changed nothing
  * matched: source/vf4lib/libaction/src/control.c (tools/match/match.py)
  */
 void control_ctx_mash(control_rec *ctrl)
@@ -2203,9 +2203,9 @@ int script_op_24_switch_held_dir(control_rec *ctrl)
 }
 
 /* 0x0c05fe60  size 0x3e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x40
- * evidence: move_script_ops[25] (4 bytes, operands b1): the history position = the object's +0x10 or +0x12 (b1)
+ * evidence: move_script_ops[25] (4 bytes, operands b1): the scan limit (+0x0C) = the object's +0x10 when b1 is 0, else its +0x12; exercised 2026-11-12: called by the harness on side 0's control record (0x0C37B8F4, rob 0x0C37BA30) with script_pc poked to op bytes in a buffer at 0x0F002000: with the record's +0x10 poked 5 and +0x12 poked 9, b1 0 set its scan limit (+0x0C) to 5 and b1 1 set it to 9, both returning 0 with script_pc +4
  * matched: source/vf4lib/libaction/src/control.c (tools/match/match.py)
  */
 int script_op_25_history_mark(control_rec *ctrl)
@@ -2377,8 +2377,8 @@ int script_op_33_load_opp(control_rec *ctrl)
 }
 
 /* 0x0c060260  size 0x3a  file by match with source
- * confidence: inferred
- * evidence: move_script_ops[34] (8 bytes, operands b1 w4r): the opponent's field w4 = state
+ * confidence: exercised
+ * evidence: move_script_ops[34] (8 bytes, operands b1 w4r): the opponent's field w4 = state; exercised 2026-11-12: called by the harness on side 0's control record (0x0C37B8F4, rob 0x0C37BA30) with script_pc poked to op bytes in a buffer at 0x0F002000: with the control state (+0x54) poked 0x12345678, type 4 field 0x178 put the word 0x12345678 at the opponent's (rob 1) +0x178, type 2 field 0x17C the short 0x5678 (upper half kept), type 0 field 0x180 the byte 0x78; side 0's rob was untouched; script_pc +8
  * matched: source/vf4lib/libaction/src/control.c (tools/match/match.py)
  */
 int script_op_34_store_opp(control_rec *ctrl)
@@ -2407,9 +2407,9 @@ int script_op_35_if_distance_le(control_rec *ctrl)
 }
 
 /* 0x0c060340  size 0x3a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x54
- * evidence: move_script_ops[36] (8 bytes, operands w4f): distance >= float w4
+ * evidence: move_script_ops[36] (8 bytes, operands w4f): distance >= float w4; exercised 2026-11-12: called by the harness on side 0's control record (0x0C37B8F4, rob 0x0C37BA30) with script_pc poked to op bytes in a buffer at 0x0F002000: with the rob's distance (+0x1DC) 1.679 as the snapshot has it, threshold 1.5 passed (script_pc +8) and threshold 2.0 backtracked (script_pc to the pending choice's resume address 0x0D048BB0, choice depth 1 to 0)
  * matched: source/vf4lib/libaction/src/control.c (tools/match/match.py)
  */
 int script_op_36_if_distance_ge(control_rec *ctrl)
@@ -2423,9 +2423,9 @@ int script_op_36_if_distance_ge(control_rec *ctrl)
 }
 
 /* 0x0c0603c0  size 0x3c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x50
- * evidence: move_script_ops[37] (4 bytes, operands b1): rob +0x62 & b1
+ * evidence: move_script_ops[37] (4 bytes, operands b1): rob +0x62 & b1; exercised 2026-11-12: called by the harness on side 0's control record (0x0C37B8F4, rob 0x0C37BA30) with script_pc poked to op bytes in a buffer at 0x0F002000: with rob +0x62 poked 5, b1 4 passed (script_pc +4) and b1 8 backtracked (script_pc to the pending choice's resume address 0x0D048BB0, choice depth 1 to 0); with +0x62 0x80, b1 0x80 passed
  * matched: source/vf4lib/libaction/src/control.c (tools/match/match.py)
  */
 int script_op_37_if_rob62(control_rec *ctrl)
@@ -2594,8 +2594,8 @@ int script_cond(control_rec *ctrl, int cmp_le, int jump)
 }
 
 /* 0x0c0607e0  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: move_script_ops[43] (4 bytes, operands b1c h2): condition b1 (table input_conditions) counter >= h2, else backtrack
+ * confidence: exercised
+ * evidence: move_script_ops[43] (4 bytes, operands b1c h2): condition b1 (table input_conditions) counter in the scan entry >= h2 and not 0, else backtrack; the condition's mask must meet the control's state (+0x54), and conditions 8-15 also need the entry's counter 3 to equal the condition's direction; exercised 2026-11-12: called by the harness on side 0's control record (0x0C37B8F4, rob 0x0C37BA30) with script_pc poked to op bytes in a buffer at 0x0F002000: condition 8 (input_conditions: counter 2, mask 2, direction 0x80; control state 3) with the scan entry's counter 2 poked 5 and counter 3 0x80: h2 3 and 5 passed (script_pc +4), h2 7 backtracked (script_pc to the pending choice's resume address 0x0D048BB0, choice depth 1 to 0)
  * matched: source/vf4lib/libaction/src/control.c (tools/match/match.py)
  */
 int script_op_43_if_cond_ge(control_rec *ctrl)
@@ -2614,8 +2614,8 @@ int script_op_79_if_cond_le(control_rec *ctrl)
 }
 
 /* 0x0c060820  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: move_script_ops[44] (8 bytes, operands b1c h2 w4j): jumps to w4 if condition b1 counter >= h2
+ * confidence: exercised
+ * evidence: move_script_ops[44] (8 bytes, operands b1c h2 w4j): jumps to w4 if condition b1 counter >= h2 (tested as op 43: the mask against the control's state, the direction for conditions 8-15), else steps 8 bytes on; exercised 2026-11-12: called by the harness on side 0's control record (0x0C37B8F4, rob 0x0C37BA30) with script_pc poked to op bytes in a buffer at 0x0F002000: condition 8 (input_conditions: counter 2, mask 2, direction 0x80; control state 3) with the scan entry's counter 2 poked 5 and counter 3 0x80, w4 0x0F002100: h2 3 jumped (script_pc 0x0F002100), h2 7 stepped on (script_pc +8)
  * matched: source/vf4lib/libaction/src/control.c (tools/match/match.py)
  */
 int script_op_44_jump_cond_ge(control_rec *ctrl)
@@ -2739,8 +2739,8 @@ int script_op_48_if_free(control_rec *ctrl)
 }
 
 /* 0x0c060b20  size 0x38  file by match with source
- * confidence: inferred
- * evidence: move_script_ops[49] (8 bytes, operands w4x): rob +0x338 = w4, returns 1
+ * confidence: exercised
+ * evidence: move_script_ops[49] (8 bytes, operands w4x): rob +0x338 = w4, clears the control's wait (+0x48) and, unless rob +0x318 bit 8 is set, sets control flag 0x40; returns 1 and leaves script_pc; exercised 2026-11-12: called by the harness on side 0's control record (0x0C37B8F4, rob 0x0C37BA30) with script_pc poked to op bytes in a buffer at 0x0F002000: w4 0x12345678 set rob +0x338 to 0x12345678 and returned 1, w4 0x0BADF00D set 0x0BADF00D and returned 1; it also cleared the wait (+0x48, poked 5) and set control flag 0x40 (0x118 to 0x158), and left script_pc
  * matched: source/vf4lib/libaction/src/control.c (tools/match/match.py)
  */
 int script_op_49_set_rob338(control_rec *ctrl)
@@ -2754,9 +2754,9 @@ int script_op_49_set_rob338(control_rec *ctrl)
 }
 
 /* 0x0c060b60  size 0x46  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x50
- * evidence: move_script_ops[50] (4 bytes, operands none): the history entry's time (+0x14) is not before the rob frame
+ * evidence: move_script_ops[50] (4 bytes, operands none): the history entry's time (+0x14) is not before the rob frame; exercised 2026-11-12: called by the harness on side 0's control record (0x0C37B8F4, rob 0x0C37BA30) with script_pc poked to op bytes in a buffer at 0x0F002000: with the rob frame 9 as the snapshot has it and the scan entry's time (+0x14) poked 9 or 10 it passed (script_pc +4); poked 8 it backtracked (script_pc to the pending choice's resume address 0x0D048BB0, choice depth 1 to 0)
  * matched: source/vf4lib/libaction/src/control.c (tools/match/match.py)
  */
 int script_op_50_if_entry_current(control_rec *ctrl)
@@ -2853,8 +2853,8 @@ int script_wall_dist(control_rec *ctrl, char opp, char le)
 }
 
 /* 0x0c060d40  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: move_script_ops[54] (8 bytes, operands b1 w4f): the rob's wall distance b1 & 3 (rob +0x12C + 4 n, wall_dist) <= float w4, with its wall angle (rob +0x14C + 2 n, wall_angle) at most 0x1000 (script_wall_dist)
+ * confidence: exercised
+ * evidence: move_script_ops[54] (8 bytes, operands b1 w4f): the rob's wall distance b1 & 3 (rob +0x12C + 4 n, wall_dist) <= float w4, with its wall angle (rob +0x14C + 2 n, wall_angle) at most 0x1000 (script_wall_dist); exercised 2026-11-12: called by the harness on side 0's control record (0x0C37B8F4, rob 0x0C37BA30) with script_pc poked to op bytes in a buffer at 0x0F002000: with wall 1 (b1 5) poked distance 2.0 (rob +0x130) and angle 0x800 (+0x14E): threshold 3.0 passed (script_pc +8), 1.0 backtracked (script_pc to the pending choice's resume address 0x0D048BB0, choice depth 1 to 0); with angle 0x1001, 3.0 backtracked
  * matched: source/vf4lib/libaction/src/control.c (tools/match/match.py)
  */
 int script_op_54_if_wall_dist_le(control_rec *ctrl)
@@ -2869,8 +2869,8 @@ int script_op_54_if_wall_dist_le(control_rec *ctrl)
 }
 
 /* 0x0c060d80  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: move_script_ops[55] (8 bytes, operands b1 w4f): the rob's wall distance b1 & 3 (rob +0x12C + 4 n) >= float w4, with its wall angle (rob +0x14C + 2 n) at most 0x1000 (script_wall_dist)
+ * confidence: exercised
+ * evidence: move_script_ops[55] (8 bytes, operands b1 w4f): the rob's wall distance b1 & 3 (rob +0x12C + 4 n) >= float w4, with its wall angle (rob +0x14C + 2 n) at most 0x1000 (script_wall_dist); exercised 2026-11-12: called by the harness on side 0's control record (0x0C37B8F4, rob 0x0C37BA30) with script_pc poked to op bytes in a buffer at 0x0F002000: with wall 1 (b1 5) poked distance 2.0 (rob +0x130) and angle 0x800 (+0x14E): threshold 1.0 passed (script_pc +8), 3.0 backtracked (script_pc to the pending choice's resume address 0x0D048BB0, choice depth 1 to 0); with angle 0x1001, 1.0 backtracked
  * matched: source/vf4lib/libaction/src/control.c (tools/match/match.py)
  */
 int script_op_55_if_wall_dist_ge(control_rec *ctrl)
@@ -2901,8 +2901,8 @@ int script_op_56_if_opp_wall_dist_le(control_rec *ctrl)
 }
 
 /* 0x0c060e00  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: move_script_ops[57] (8 bytes, operands b1 w4f): the opponent's wall distance b1 & 3 (rob +0x12C + 4 n) >= float w4, with its wall angle (rob +0x14C + 2 n) at most 0x1000 (script_wall_dist)
+ * confidence: exercised
+ * evidence: move_script_ops[57] (8 bytes, operands b1 w4f): the opponent's wall distance b1 & 3 (rob +0x12C + 4 n) >= float w4, with its wall angle (rob +0x14C + 2 n) at most 0x1000 (script_wall_dist); exercised 2026-11-12: called by the harness on side 0's control record (0x0C37B8F4, rob 0x0C37BA30) with script_pc poked to op bytes in a buffer at 0x0F002000: with the opponent's (rob 1) wall 1 poked distance 2.0 and angle 0x800 (side 0's own: 20.0): threshold 1.0 passed (script_pc +8), 5.0 backtracked (script_pc to the pending choice's resume address 0x0D048BB0, choice depth 1 to 0); with the opponent's angle 0x1001, 1.0 backtracked
  * matched: source/vf4lib/libaction/src/control.c (tools/match/match.py)
  */
 int script_op_57_if_opp_wall_dist_ge(control_rec *ctrl)
@@ -2917,8 +2917,8 @@ int script_op_57_if_opp_wall_dist_ge(control_rec *ctrl)
 }
 
 /* 0x0c060e40  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: move_script_ops[58] (4 bytes, operands none): no operation
+ * confidence: exercised
+ * evidence: move_script_ops[58] (4 bytes, operands none): no operation; exercised 2026-11-12: called by the harness with script_pc poked 0x0F002000 it returned 0 and left script_pc 0x0F002004 (its 4 bytes), storing nothing else
  * matched: source/vf4lib/libaction/src/control.c (tools/match/match.py)
  */
 int script_op_58_nop(void)
@@ -2974,9 +2974,9 @@ int script_op_59_move_or_hold(control_rec *ctrl)
 }
 
 /* 0x0c060f80  size 0xa2  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xd8
- * evidence: ops 60-62: side or opponent test, then the move
+ * evidence: ops 60-62: side or opponent test, then the move; exercised 2026-11-12: called by the harness on side 0's control record (0x0C37B8F4, rob 0x0C37BA30) with script_pc poked to op bytes in a buffer at 0x0F002000: (other 0, chara 14) with the rob's own id 14 set the request (rob +0x64) to w4 0x01234567 and returned 1; chara 5 returned 0 with script_pc +8 and no request; (other 1, chara 14) also moved, the side flag being used only for a negative chara (ops 60 and 61)
  * matched: source/vf4lib/libaction/src/control.c (tools/match/match.py)
  */
 int script_move_if(control_rec *ctrl, char other_side, char chara)
@@ -3007,8 +3007,8 @@ int script_move_if(control_rec *ctrl, char other_side, char chara)
 }
 
 /* 0x0c061080  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: move_script_ops[60] (8 bytes, operands w4m): move w4 when the rob +0x18 bit 14 side matches
+ * confidence: exercised
+ * evidence: move_script_ops[60] (8 bytes, operands w4m): move w4 when bit 14 of rob +0x18 is set; exercised 2026-11-12: called by the harness on side 0's control record (0x0C37B8F4, rob 0x0C37BA30) with script_pc poked to op bytes in a buffer at 0x0F002000: with rob +0x18 poked 0x4000 (bit 14 set) it set the request (rob +0x64) to w4 0x01234567 and returned 1; with +0x18 0 it returned 0 with script_pc +8 and no request
  * matched: source/vf4lib/libaction/src/control.c (tools/match/match.py)
  */
 int script_op_60_move_if_side(control_rec *ctrl)
@@ -3017,8 +3017,8 @@ int script_op_60_move_if_side(control_rec *ctrl)
 }
 
 /* 0x0c0610a0  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: move_script_ops[61] (8 bytes, operands w4m): move w4 on the other side
+ * confidence: exercised
+ * evidence: move_script_ops[61] (8 bytes, operands w4m): move w4 when bit 14 of rob +0x18 is clear; exercised 2026-11-12: called by the harness on side 0's control record (0x0C37B8F4, rob 0x0C37BA30) with script_pc poked to op bytes in a buffer at 0x0F002000: the reverse of op 60: with rob +0x18 poked 0x4000 it returned 0 with script_pc +8 and no request; with +0x18 0 it set the request (rob +0x64) to w4 0x01234567 and returned 1
  * matched: source/vf4lib/libaction/src/control.c (tools/match/match.py)
  */
 int script_op_61_move_if_other_side(control_rec *ctrl)
@@ -3028,10 +3028,10 @@ int script_op_61_move_if_other_side(control_rec *ctrl)
 
 /* 0x0c0610c0  size 0x20  file by match with source
  * confidence: inferred
- * evidence: move_script_ops[62] (8 bytes, operands b1 w4m): move w4 when the opponent's character id (rob +1) is b1
+ * evidence: move_script_ops[62] (8 bytes, operands b1 w4m): move w4 when the rob's own character id (rob +1) is b1; corrected 2026-11-12 from harness calls: it tests the rob's own character id, not the opponent's: called by the harness on side 0's control (own id 14) with the opponent's id (rob 1 +1) poked 5, b1 5 did not move (script_pc +8, returned 0) and b1 14 set the request (rob +0x64) to w4 0x01234567 and returned 1
  * matched: source/vf4lib/libaction/src/control.c (tools/match/match.py)
  */
-int script_op_62_move_if_opponent(control_rec *ctrl)
+int script_op_62_move_if_chara(control_rec *ctrl)
 {
   return script_move_if(ctrl,0,(int)*(char *)(script_pc + 1));
 }
@@ -3109,9 +3109,9 @@ int script_op_64_hold(control_rec *ctrl)
 }
 
 /* 0x0c061300  size 0x38  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x54
- * evidence: move_script_ops[66] (4 bytes, operands b1): bit b1 of the rob +0x18 snapshot in the history entry (+0) set, else step back
+ * evidence: move_script_ops[66] (4 bytes, operands b1): bit b1 of the rob +0x18 snapshot in the history entry (+0) set, else step back; exercised 2026-11-12: called by the harness on side 0's control record (0x0C37B8F4, rob 0x0C37BA30) with script_pc poked to op bytes in a buffer at 0x0F002000: with input_rob_flags 0x31 as the snapshot has it, b1 0 passed (script_pc +4) and b1 1 stepped back (script_pc kept, scan position 37 to 36)
  * matched: source/vf4lib/libaction/src/control.c (tools/match/match.py)
  */
 int script_op_66_if_frame_flag(control_rec *ctrl)
@@ -3129,9 +3129,9 @@ int script_op_66_if_frame_flag(control_rec *ctrl)
 }
 
 /* 0x0c061380  size 0x38  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x54
- * evidence: move_script_ops[67] (4 bytes, operands b1): the same bit clear
+ * evidence: move_script_ops[67] (4 bytes, operands b1): the same bit clear; exercised 2026-11-12: called by the harness on side 0's control record (0x0C37B8F4, rob 0x0C37BA30) with script_pc poked to op bytes in a buffer at 0x0F002000: with input_rob_flags 0x31 as the snapshot has it, b1 1 passed (script_pc +4) and b1 0 stepped back (script_pc kept, scan position 37 to 36)
  * matched: source/vf4lib/libaction/src/control.c (tools/match/match.py)
  */
 int script_op_67_if_not_frame_flag(control_rec *ctrl)
@@ -3192,8 +3192,8 @@ test:
 }
 
 /* 0x0c061500  size 0x30  file by match with source
- * confidence: inferred
- * evidence: move_script_ops[70] (4 bytes, operands none): the input has the direction toward the opponent's special state (input_toward_mask: 0x10 / 0x20 / 0)
+ * confidence: exercised
+ * evidence: move_script_ops[70] (4 bytes, operands none): the input has the direction toward the opponent's special state (input_toward_mask: 0x10 / 0x20 / 0); exercised 2026-11-12: called by the harness on side 0's control record (0x0C37B8F4, rob 0x0C37BA30) with script_pc poked to op bytes in a buffer at 0x0F002000: input_toward_mask 0x10 with input_buttons 0x10 passed (script_pc +4) and with 0x20 backtracked (script_pc to the pending choice's resume address 0x0D048BB0, choice depth 1 to 0); mask 0x20 with buttons 0x20 passed; mask 0 with buttons 0x30 backtracked
  * matched: source/vf4lib/libaction/src/control.c (tools/match/match.py)
  */
 int script_op_70_input_toward(control_rec *ctrl)
@@ -3256,9 +3256,9 @@ int script_op_73_set_rob1e8(control_rec *ctrl)
 }
 
 /* 0x0c061620  size 0x44  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x56
- * evidence: move_script_ops[75] (4 bytes, operands b1): passes when rob_card_flag_test(side, b1) is not 0 (bit b1 + 7 of the rob's card flags +0x1C0 set: a card flag, not a mode as the name has it), else steps back (script_step_back)
+ * evidence: move_script_ops[75] (4 bytes, operands b1): passes when rob_card_flag_test(side, b1) is not 0 (bit b1 + 7 of the rob's card flags +0x1C0 set: a card flag, not a mode as the name has it), else steps back (script_step_back); exercised 2026-11-12: called by the harness on side 0's control record (0x0C37B8F4, rob 0x0C37BA30) with script_pc poked to op bytes in a buffer at 0x0F002000: with the rob's card flags (+0x1C0) poked 0x400, b1 3 (bit 10) passed (script_pc +4) and b1 4 stepped back (script_pc kept)
  * matched: source/vf4lib/libaction/src/control.c (tools/match/match.py)
  */
 int script_op_75_if_card_flag(control_rec *ctrl)
@@ -3272,9 +3272,9 @@ int script_op_75_if_card_flag(control_rec *ctrl)
 }
 
 /* 0x0c0616a0  size 0x44  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x56
- * evidence: move_script_ops[76] (4 bytes, operands b1): passes when rob_card_flag_test(side, b1) is not 1 (the card flag clear; not a mode as the name has it), else steps back (script_step_back)
+ * evidence: move_script_ops[76] (4 bytes, operands b1): passes when rob_card_flag_test(side, b1) is not 1 (the card flag clear; not a mode as the name has it), else steps back (script_step_back); exercised 2026-11-12: called by the harness on side 0's control record (0x0C37B8F4, rob 0x0C37BA30) with script_pc poked to op bytes in a buffer at 0x0F002000: with the rob's card flags (+0x1C0) poked 0x400, b1 4 (bit 11 clear) passed (script_pc +4) and b1 3 (bit 10 set) stepped back (script_pc kept)
  * matched: source/vf4lib/libaction/src/control.c (tools/match/match.py)
  */
 int script_op_76_if_not_card_flag(control_rec *ctrl)
@@ -3678,8 +3678,8 @@ int control_buffer_move(control_rec *ctrl, int as_continuation)
 }
 
 /* 0x0c061f00  size 0x32  file by match with source
- * confidence: inferred
- * evidence: (player): 1 when the player's move-script object (control_object_get) has no wait left (+0x48 below 1) and no continuation (+0x6C zero), else 0; nothing in the image calls it; part of vf4lib/libaction/src/control.c
+ * confidence: exercised
+ * evidence: (player): 1 when the player's move-script object (control_object_get) has no wait left (+0x48 below 1) and no continuation (+0x6C zero), else 0; nothing in the image calls it; part of vf4lib/libaction/src/control.c; exercised 2026-11-12: called by the harness with the control records' wait (+0x48) and continuation (+0x6C) poked: side 0 wait 0 and 0 returned 1, wait 1 returned 0, wait 0 with continuation 0x0C000000 returned 0, wait -1 returned 1; side 1 wait 3 returned 0 and wait 0 returned 1
  * matched: source/vf4lib/libaction/src/control.c (tools/match/match.py)
  */
 int script_idle_check(int side)

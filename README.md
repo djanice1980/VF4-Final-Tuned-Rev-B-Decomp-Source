@@ -7,6 +7,16 @@ the SH-4 program on its GD-ROM.
 Status page: https://djanice1980.github.io/VF4-Final-Tuned-Rev-B-Decomp-Source/
 (how much is found, placed, named and rebuilt from matching C).
 
+**Where the code is.** `src/` is the readable view: every one of the
+6,632 routines as C, each with its address, confidence and description
+in a comment; `src/vf4lib/` is the game's own code (fighters, effects,
+missions, network, menus, sound, cards; for example
+`src/vf4lib/libaction/src/rob_ctrl.c`), the rest the libraries it was
+linked with. `source/` is the same code as bare C (and `source/asm/`
+the hand-written assembly) that compiles back to the game's bytes;
+`tools/match/match.py` checks every routine against your dump.
+`src_test/` and `source_test/` are the same for the test-mode program.
+
 This repo contains **no Sega code or data files**: no binaries, assets,
 SDK files, SDK source or SDK identifiers. It holds the extraction tools,
 notes, Ghidra scripts and source reconstructed from your own dump. Names

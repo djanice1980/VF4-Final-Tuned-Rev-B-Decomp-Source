@@ -40,8 +40,8 @@ int cart_control_write(int flag_0x2000, int flag_0x1000)
 }
 
 /* 0x0c04bac0  size 0x3a  file by match with source
- * confidence: inferred
- * evidence: (cartridge offset, destination, bytes): sets the cartridge address (low word, then the high bits with the control bits and 0x8000) and reads bytes / 2 words from the data register; nothing in the image calls it (uncalled code, made a function 2026-11-09); between cart_control_write and cart_dma_read, so by link order part of sdk/libam/romread.c
+ * confidence: exercised
+ * evidence: (cartridge offset, destination, bytes): sets the cartridge address (low word, then the high bits with the control bits and 0x8000) and reads bytes / 2 words from the data register; nothing in the image calls it (uncalled code, made a function 2026-11-09); between cart_control_write and cart_dma_read, so by link order part of sdk/libam/romread.c; exercised 2026-11-12: called by the harness with cart_control_bits 0x2000 (snapshot): (0x12345678, buffer, 6) wrote 0x5678 to 0xA05F7004 and 0xB234 to 0xA05F7000 and made 3 halfword stores from the data register 0xA05F7008, leaving the buffer's bytes 6-7 as planted; (0x00AB0010, buffer, 3) wrote 0x10 and 0xA0AB and made 1 store (what the reads gave is the model's)
  * same code as main.bin 0c1169a0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/libam/romread.c (tools/match/match.py)
  */
@@ -56,8 +56,8 @@ void cart_pio_read(uint offset, ushort *dest, uint bytes)
 }
 
 /* 0x0c04bb20  size 0x9a  file by match with source
- * confidence: inferred
- * evidence: (cartridge offset, destination, bytes, no wait): rounds the offset down to 32 bytes (before the zero-bytes test), then for a non-zero byte count waits for the channel to be idle and starts a G1 DMA read of the cartridge (the count in 32-byte units, the low-address register = the rounded offset & 0xffff, control bits | 0xa000) with interrupts masked around the register writes, and waits for it to end unless the fourth argument is set; nothing more for 0 bytes; nothing in the image calls it (uncalled code, made a function 2026-11-09); between cart_pio_read and g1_dma_ack_if_idle, so by link order part of sdk/libam/romread.c
+ * confidence: exercised
+ * evidence: (cartridge offset, destination, bytes, no wait): rounds the offset down to 32 bytes (before the zero-bytes test), then for a non-zero byte count waits for the channel to be idle and starts a G1 DMA read of the cartridge (the count in 32-byte units, the low-address register = the rounded offset & 0xffff, control bits | 0xa000) with interrupts masked around the register writes, and waits for it to end unless the fourth argument is set; nothing more for 0 bytes; nothing in the image calls it (uncalled code, made a function 2026-11-09); between cart_pio_read and g1_dma_ack_if_idle, so by link order part of sdk/libam/romread.c; exercised 2026-11-12: called by the harness with cart_control_bits 0x2000: (0x12345678, 0x0C600000, 0x40, no wait 1) wrote 0 to 0xA05F7004, 0x2000 to 7000, 2 to 7014, 0x5660 (offset rounded down to 32) to 7010, 0xB234 to 700C, the destination to 7404, 0x40 to 7408 and 1 to 740C, 7414, 7418, and no 0xC000; (0x00AB001F, 0x0C600000, 0x20, 0) wrote 1 to 7014, 0 to 7010 and left 0xC000 in 700C after its wait; with 0 bytes it wrote no register
  * same code as main.bin 0c116a00 (ghidra/TransferFromMain.java)
  * matched: source/sdk/libam/romread.c (tools/match/match.py)
  */
@@ -123,8 +123,8 @@ bool g1_dma_ack_if_idle(void)
 }
 
 /* 0x0c04bc40  size 0x10  file by match with source
- * confidence: inferred
- * evidence: (state): stores the start value 0xdebdeb00; nothing in the image calls it (uncalled code, made a function 2026-11-09); between g1_dma_ack_if_idle and rom_crc_feed, so by link order part of sdk/libam/romread.c
+ * confidence: exercised
+ * evidence: (state): stores the start value 0xdebdeb00; nothing in the image calls it (uncalled code, made a function 2026-11-09); between g1_dma_ack_if_idle and rom_crc_feed, so by link order part of sdk/libam/romread.c; exercised 2026-11-12: called by the harness on a word holding 0x55555555 it stored 0xDEBDEB00; rom_crc_feed then gave from it exactly what a host model of the description seeded with 0xDEBDEB00 gives (0x5EF50000 for "123456789", 0xAC780000 for no bytes)
  * same code as main.bin 0c116b20 (ghidra/TransferFromMain.java)
  * matched: source/sdk/libam/romread.c (tools/match/match.py)
  */
@@ -136,7 +136,7 @@ void rom_crc_start(uint *state)
 
 /* 0x0c04bc60  size 0x68  file by match with source
  * confidence: inferred
- * evidence: (state, bytes, count): a 16-bit CRC (polynomial 0x1021) kept in the upper half of *state: each byte goes into the low byte and is shifted through 8 times, and 8 more shifts end the run; nothing in the image calls it (uncalled code, made a function 2026-11-09); between rom_crc_start and sram_save_zero, so by link order part of sdk/libam/romread.c
+ * evidence: (state, bytes, count): a 16-bit CRC (polynomial 0x1021) kept in the upper half of *state: each byte, read as a signed char, is added to the state (whose low byte is 0 there) and shifted through 8 times, so a byte of 0x80 or more also takes 0x100 off the upper bits (crc16_ccitt reads unsigned bytes), and 8 more shifts end the run; nothing in the image calls it (uncalled code, made a function 2026-11-09); between rom_crc_start and sram_save_zero, so by link order part of sdk/libam/romread.c; corrected 2026-11-12 from harness calls: a byte of 0x80 or more is not put in the low byte as it is: it is read as a signed char and added sign-extended, which takes 0x100 off the upper bits. Harness calls after rom_crc_start: "123456789" gave 0x5EF50000 and 0 bytes 0xAC780000, both as a host model of the description gives, and the state 0 with "123456789" 0xDFA60000, also as predicted; but the bytes 9E A5 01 FF gave 0xC5610000, which is the model with signed bytes (unsigned bytes give 0x22BB0000)
  * same code as main.bin 0c116b40 (ghidra/TransferFromMain.java)
  * matched: source/sdk/libam/romread.c (tools/match/match.py)
  */

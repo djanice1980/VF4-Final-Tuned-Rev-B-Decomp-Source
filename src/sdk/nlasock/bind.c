@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c121180  size 0x68  file by match with source
- * confidence: inferred
- * evidence: (socket, address, length, slot record): writes a request {operation, socket, request address + 0x20, length} with the address bytes (memcpy, at most 64) at +0x20, 0x20 + the length rounded up to 4 bytes long, by PIO; caller sock_bind; part of NLASOCK
+ * confidence: exercised
+ * evidence: (socket, address, length, slot record): writes a request {operation, socket, request address + 0x20, length} with the address bytes (memcpy, at most 64) at +0x20, 0x20 + the length rounded up to 4 bytes long, by PIO; caller sock_bind; part of NLASOCK; exercised 2026-11-12: called by the harness on slot 5 (op poked 2, request address 0x0f805000 from dimm_net_attach) with socket 5 and the bytes 10 11 12 ...: length 6 gave dimm_pio_write of 0x28 bytes {2, 5, 0x0f805020, 6, 0 x4, 10 11 12 13 14 15} to 0x0f805000, and length 13 a 0x30-byte write with the 13 bytes at +0x20
  * matched: source/sdk/nlasock/bind.c (tools/match/match.py)
  */
 void bind_request_write(uint sock, void *addr, int addr_len, sock_slot_rec *slot)
@@ -26,9 +26,9 @@ void bind_request_write(uint sock, void *addr, int addr_len, sock_slot_rec *slot
 }
 
 /* 0x0c121200  size 0xd0  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xe6
- * evidence: (socket, address, length): socket operation 2 (bind a local address), blocking: -2 for a socket above 63, no address or a length above 0x40, -4 when busy; bind_request_write, DIMM command 0x11, spins on sock_call_done and returns sock_result_take's result; nothing in the image calls it; part of NLASOCK
+ * evidence: (socket, address, length): socket operation 2 (bind a local address), blocking: -2 for a socket above 63, no address or a length above 0x40, -4 when busy; bind_request_write, DIMM command 0x11, spins on sock_call_done and returns sock_result_take's result; nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): socket 64 and length 0x41 gave -2, dimm_busy_word poked 1 gave -4, socket 0 with slot 0's lock poked 1 gave -4 and left dimm_busy_word 0; (5, bytes 10..15, 6) wrote {2, 5, 0x0f805020, 6} and the bytes to 0x0f805000, posted dimm_cmd_post(0x11, 5), waited and returned the board model's answer 0
  * matched: source/sdk/nlasock/bind.c (tools/match/match.py)
  */
 int sock_bind(uint sock, void *addr, int addr_len)

@@ -27,8 +27,8 @@ void fb_regs_reload_blanked(void)
 }
 
 /* 0x0c06b260  size 0x16  file by match with source
- * confidence: inferred
- * evidence: spins until the tick count at +0x36c of the library's state block (gfx_state) changes, i.e. until the next V-blank interrupt counts one; the same count measures the render and vertex time-outs; called by fb_rebuild_dither_aa and display_blank_and_quiesce; part of KamuiTL
+ * confidence: exercised
+ * evidence: spins until the tick count at +0x36c of the library's state block (gfx_state) changes, i.e. until the next V-blank interrupt counts one; the same count measures the render and vertex time-outs; called by fb_rebuild_dither_aa and display_blank_and_quiesce; part of KamuiTL; exercised 2026-11-12: called by the harness with interrupts allowed it returned and the tick count at gfx_state+0x36c had gone from 0 to 2 (vblank_irq counts it); with interrupts held off it had not returned after 2 frames
  * same code as main.bin 0c141220 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/display.c (tools/match/match.py)
  */
@@ -242,8 +242,8 @@ int fb_rebuild_dither_aa(int dither, int anti_alias)
 }
 
 /* 0x0c06b760  size 0x6a  file by match with source
- * confidence: inferred
- * evidence: turns the display off and blanks it (FB_R_CTRL without display enable, VO_CONTROL with the blank bit), waits for the render in flight (render_drain), soft-resets the TA and core (pvr_reset_pulse), blanks again, waits a V-blank and marks the tile set-up done (+0x2a0 = 1); returns 0; video_reconfigure runs it before changing the display; part of KamuiTL
+ * confidence: exercised
+ * evidence: turns the display off and blanks it (FB_R_CTRL without display enable, VO_CONTROL with the blank bit), waits for the render in flight (render_drain), soft-resets the TA and core (pvr_reset_pulse), blanks again, waits a V-blank and marks the tile set-up done (+0x2a0 = 1); returns 0; video_reconfigure runs it before changing the display; part of KamuiTL; exercised 2026-11-12: called by the harness (interrupts allowed) with the kept FB_R_CTRL 0x800005 and VO_CONTROL 0x160000 (the snapshot's) it wrote 0x800004 to 0x44 and 0x160008 to 0xe8 through pvr_reg_write_both, called render_drain and pvr_reset_pulse, wrote the same two again, waited in vblank_tick_await_next, left +0x2a0 = 1 and returned 0
  * same code as main.bin 0c141720 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/display.c (tools/match/match.py)
  */

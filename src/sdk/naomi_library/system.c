@@ -67,8 +67,8 @@ void draw_context_preset_apply(int preset)
 }
 
 /* 0x0c12f9c0  size 0x34  file by match with source
- * confidence: inferred
- * evidence: (index): copies the tex_offset_bits word of draw_context_presets[index] into the current draw context and rebuilds bits 24-25 of its second header word from it; nothing in the image calls it (uncalled code, made a function 2026-11-09); between draw_context_preset_apply and draw_ctx_filter_word_set_bit21, so by link order part of sdk/naomi_library/system.c
+ * confidence: exercised
+ * evidence: (index): copies the tex_offset_bits word of draw_context_presets[index] into the current draw context and rebuilds bits 24-25 of its second header word from it; nothing in the image calls it (uncalled code, made a function 2026-11-09); between draw_context_preset_apply and draw_ctx_filter_word_set_bit21, so by link order part of sdk/naomi_library/system.c; exercised 2026-11-12: called by the harness with the current draw context (strip_context_main) poked: second header word 0xFFFFFFFF and index 32 (tex_offset_bits 2 in draw_context_presets) left tex_offset_bits 2 and the word 0xFEFFFFFF; word 0 and index 16 (bits 3) left 3 and 0x03000000; word 0 and index 0 (bits 1) left 1 and 0x01000000
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void draw_ctx_tex_offset_from_preset(int index)
@@ -84,8 +84,8 @@ void draw_ctx_tex_offset_from_preset(int index)
 }
 
 /* 0x0c12fa00  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: (value): stores value in the current draw context's tex_filter word, then rebuilds bit 21 of its third header word from its gouraud word (+0x40); the stored word and the bit do not belong together: neither bit 21 nor bit 20 reads tex_filter (+0x54), and context_hw_words_compute builds bit 21 from colors_clamped (+0x64), not gouraud (the code is as described; role unclear); nothing in the image calls it (uncalled code, made a function 2026-11-09); between draw_ctx_tex_offset_from_preset and draw_ctx_filter_word_set_bit20, so by link order part of sdk/naomi_library/system.c
+ * confidence: exercised
+ * evidence: (value): stores value in the current draw context's tex_filter word, then rebuilds bit 21 of its third header word from its gouraud word (+0x40); the stored word and the bit do not belong together: neither bit 21 nor bit 20 reads tex_filter (+0x54), and context_hw_words_compute builds bit 21 from colors_clamped (+0x64), not gouraud (the code is as described; role unclear); nothing in the image calls it (uncalled code, made a function 2026-11-09); between draw_ctx_tex_offset_from_preset and draw_ctx_filter_word_set_bit20, so by link order part of sdk/naomi_library/system.c; exercised 2026-11-12: called by the harness with the draw context's gouraud word poked to 1 and its third header word to 0, value 0x77 left tex_filter 0x77 and the header word 0x00200000; with gouraud 0 and the header word 0xFFFFFFFF, value 5 left tex_filter 5 and the word 0xFFDFFFFF
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void draw_ctx_filter_word_set_bit21(uint value)
@@ -101,8 +101,8 @@ void draw_ctx_filter_word_set_bit21(uint value)
 }
 
 /* 0x0c12fa40  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: (value): stores value in the current draw context's tex_filter word, then rebuilds bit 20 of its third header word from its alpha_on word, as context_hw_words_compute does; the stored tex_filter word is not read by the bit, as in draw_ctx_filter_word_set_bit21; nothing in the image calls it (uncalled code, made a function 2026-11-09); between draw_ctx_filter_word_set_bit21 and draw_ctx_tex_filter_set, so by link order part of sdk/naomi_library/system.c
+ * confidence: exercised
+ * evidence: (value): stores value in the current draw context's tex_filter word, then rebuilds bit 20 of its third header word from its alpha_on word, as context_hw_words_compute does; the stored tex_filter word is not read by the bit, as in draw_ctx_filter_word_set_bit21; nothing in the image calls it (uncalled code, made a function 2026-11-09); between draw_ctx_filter_word_set_bit21 and draw_ctx_tex_filter_set, so by link order part of sdk/naomi_library/system.c; exercised 2026-11-12: called by the harness with the draw context's alpha_on word poked to 1 and its third header word to 0, value 0x66 left tex_filter 0x66 and the header word 0x00100000; with alpha_on 0 and the header word 0xFFFFFFFF, value 4 left tex_filter 4 and the word 0xFFEFFFFF
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void draw_ctx_filter_word_set_bit20(uint value)
@@ -118,8 +118,8 @@ void draw_ctx_filter_word_set_bit20(uint value)
 }
 
 /* 0x0c12fa80  size 0x36  file by match with source
- * confidence: inferred
- * evidence: (index): tex_filter = entry index of the table tex_filter_codes (0x0C212400), a hardware code, and bits 13-14 of the context's third header word rebuilt from it; context_hw_words_compute treats ctx->tex_filter as an index into its own filter_codes, so a later recompute would index with a code (as the game has it); nothing in the image calls it (uncalled code, made a function 2026-11-09); between draw_ctx_filter_word_set_bit20 and strip_context_defaults, so by link order part of sdk/naomi_library/system.c
+ * confidence: exercised
+ * evidence: (index): tex_filter = entry index of the table tex_filter_codes (0x0C212400), a hardware code, and bits 13-14 of the context's third header word rebuilt from it; context_hw_words_compute treats ctx->tex_filter as an index into its own filter_codes, so a later recompute would index with a code (as the game has it); nothing in the image calls it (uncalled code, made a function 2026-11-09); between draw_ctx_filter_word_set_bit20 and strip_context_defaults, so by link order part of sdk/naomi_library/system.c; exercised 2026-11-12: called by the harness with the draw context's third header word poked to 0xFFFFFFFF, index 1 set tex_filter to 2 (tex_filter_codes = 0, 2, 1, 3) and the word to 0xFFFFDFFF; with the word 0, index 2 gave 1 and 0x2000 and index 3 gave 3 and 0x6000
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void draw_ctx_tex_filter_set(int index)
@@ -245,8 +245,8 @@ void bg_plane_corner_colors(uint top_left, uint top_right, uint bottom_left)
 }
 
 /* 0x0c12fc20  size 0x76  file by match with source
- * confidence: inferred
- * evidence: (four list sizes): the path for graphics chip revisions below 8: has the 3D library build its vertex buffers (listbuf_lay_out_four on the descriptor at vertex_buffer_desc), makes the two frame surfaces frame_surface_0 / frame_surface_1 (fb_vram_alloc) and hands them over (fb_pair_install), and the first time loads the built-in texture (tex_builtin_8x8_upload, flag at builtin_texture_loaded); returns 1; chosen by ta_list_sizes_set_up; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (four list sizes): the path for graphics chip revisions below 8: has the 3D library build its vertex buffers (listbuf_lay_out_four on the descriptor at vertex_buffer_desc), makes the two frame surfaces frame_surface_0 / frame_surface_1 (fb_vram_alloc) and hands them over (fb_pair_install), and the first time loads the built-in texture (tex_builtin_8x8_upload, flag at builtin_texture_loaded); returns 1; chosen by ta_list_sizes_set_up; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness (irq) with sizes 0x60000, 0x20000, 0x40000, 0x10000 it called listbuf_lay_out_four(vertex_buffer_desc, the four sizes), fb_vram_alloc on frame_surface_0 and frame_surface_1, fb_pair_install(frame_surface_0, frame_surface_1, 0, 1) and returned 1 with no texture upload (builtin_texture_loaded 1 as the snapshot has it); with builtin_texture_loaded poked to 0 it also called tex_builtin_8x8_upload once and left the flag 1
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 int ta_list_sizes_set_up_old_holly(int size0, int size1, int size2, int size3)
@@ -353,8 +353,8 @@ void graphics_bring_up_entry(int mode, uint flags, int vblanks)
 }
 
 /* 0x0c12ff20  size 0x14  file by match with source
- * confidence: inferred
- * evidence: graphics_bring_up(mode, flags, count, 0): the twin of graphics_bring_up_entry with 0 as the argument graphics_bring_up ignores; nothing calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: graphics_bring_up(mode, flags, count, 0): the twin of graphics_bring_up_entry with 0 as the argument graphics_bring_up ignores; nothing calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness (irq) as (3, 0x8001, 2) it called graphics_bring_up(3, 0x8001, 2, 0) (r7 held 5 before the call) and as (0, 0x80, 1) graphics_bring_up(0, 0x80, 1, 0)
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void graphics_bring_up_entry_alt(int mode, uint flags, int vblanks)
@@ -364,8 +364,8 @@ void graphics_bring_up_entry_alt(int mode, uint flags, int vblanks)
 }
 
 /* 0x0c12ff40  size 0x16  file by match with source
- * confidence: inferred
- * evidence: keeps its argument at frame_pace_vblank_n and passes it to the 3D library's frame_vblank_quota_put, which stores it minus one as the number of V-blanks a frame waits; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: keeps its argument at frame_pace_vblank_n and passes it to the 3D library's frame_vblank_quota_put, which stores it minus one as the number of V-blanks a frame waits; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness in one sandbox, frame_pace_vblanks(3) left frame_pace_vblank_n 3 and the count at gfx_state+0x1E4 2 (through frame_vblank_quota_put); frame_pace_vblanks(6) left 6 and 5
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void frame_pace_vblanks(int vblanks)
@@ -376,8 +376,8 @@ void frame_pace_vblanks(int vblanks)
 }
 
 /* 0x0c12ff60  size 0x12  file by match with source
- * confidence: inferred
- * evidence: passes its argument to the 3D library's pvr_fog_col_ram_put, which writes the fog table color register (0xa05f80b0); nothing calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: passes its argument to the 3D library's pvr_fog_col_ram_put, which writes the fog table color register (0xa05f80b0); nothing calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with 0x112233 and with 0x778899 it passed each to pvr_fog_col_ram_put, and the record shows that value written to the fog color register at offset 0xB0 (0xA85F80B0); fog_col_vert_write_word's values went to 0xB4 instead
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void fog_col_ram_write_word(uint color)
@@ -387,8 +387,8 @@ void fog_col_ram_write_word(uint color)
 }
 
 /* 0x0c12ff80  size 0x12  file by match with source
- * confidence: inferred
- * evidence: passes its argument to the 3D library's pvr_fog_col_vert_put, which writes the per-vertex fog color register (0xa05f80b4); nothing calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: passes its argument to the 3D library's pvr_fog_col_vert_put, which writes the per-vertex fog color register (0xa05f80b4); nothing calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with 0x445566 and with 0xAABBCC it passed each to pvr_fog_col_vert_put, and the record shows that value written to the per-vertex fog color register at offset 0xB4 (0xA85F80B4); fog_col_ram_write_word's values went to 0xB0
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void fog_col_vert_write_word(uint color)
@@ -398,8 +398,8 @@ void fog_col_vert_write_word(uint color)
 }
 
 /* 0x0c12ffa0  size 0x12  file by match with source
- * confidence: inferred
- * evidence: passes a table of 128 floats to the 3D library's pvr_fog_entries_from_floats, which writes them as 8-bit pairs into the fog table registers (0xa05f8200 on); nothing calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: passes a table of 128 floats to the 3D library's pvr_fog_entries_from_floats, which writes them as 8-bit pairs into the fog table registers (0xa05f8200 on); nothing calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with a buffer of 128 floats repeating 0, 0.25, 0.5, 0.75 it called pvr_fog_entries_from_floats with the buffer, which wrote the fog table words from the last one down: offset 0x3FC 0xBFBF, 0x3F8 0x7FBF, 0x3F4 0x3F7F, 0x3F0 0x003F, 0x3EC 0xBF00 (the entries 0, 63, 127, 191 in pairs)
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void fog_table_regs_write_twin(float *table)
@@ -409,8 +409,8 @@ void fog_table_regs_write_twin(float *table)
 }
 
 /* 0x0c12ffc0  size 0x22  file by match with source
- * confidence: inferred
- * evidence: (index): replaces bits 27-28 of the current draw context's second header word with entry index of the table cull_mode_bits (0x0C212410); nothing in the image calls it (uncalled code, made a function 2026-11-09); between fog_table_regs_write_twin and cull_size_threshold_put, so by link order part of sdk/naomi_library/system.c
+ * confidence: exercised
+ * evidence: (index): replaces bits 27-28 of the current draw context's second header word with entry index of the table cull_mode_bits (0x0C212410); nothing in the image calls it (uncalled code, made a function 2026-11-09); between fog_table_regs_write_twin and cull_size_threshold_put, so by link order part of sdk/naomi_library/system.c; exercised 2026-11-12: called by the harness with the draw context's second header word poked to 0xFFFFFFFF, index 1 left 0xEFFFFFFF; with it 0, index 2 gave 0x10000000 and index 3 0x18000000 (cull_mode_bits = 0, 0x08000000, 0x10000000, 0x18000000)
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void draw_ctx_cull_bits_set(int index)
@@ -513,8 +513,8 @@ void clip_rect_per_list_bits(int x_min, int y_min, int x_max, int y_max, uint li
 }
 
 /* 0x0c130140  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: (value): poly_header_bits16 = value & 3, with 1 turned into 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between clip_rect_per_list_bits and pcw_user_clip_mode_put, so by link order part of sdk/naomi_library/system.c
+ * confidence: exercised
+ * evidence: (value): poly_header_bits16 = value & 3, with 1 turned into 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between clip_rect_per_list_bits and pcw_user_clip_mode_put, so by link order part of sdk/naomi_library/system.c; exercised 2026-11-12: called by the harness in one sandbox, 7 left poly_header_bits16 at 3, 5 at 0, 2 at 2, 1 at 0 and 6 at 2
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void poly_header_bits16_set(uint value)
@@ -537,8 +537,8 @@ void pcw_user_clip_mode_put(int unused, int mode)
 }
 
 /* 0x0c1301a0  size 0x66  file by match with source
- * confidence: inferred
- * evidence: (flags): sets the two display flags from bits 0x80 and 0x8000 (the halfwords at display_state+0x8 / display_state+0xa, the second doubling the background plane's width), passes them to the 3D library's fb_rebuild_dither_aa, repaints the background plane with the kept colors (bg_plane_corner_colors on the words at bg_plane_colors) and sets the window again from the kept window words; nothing calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (flags): sets the two display flags from bits 0x80 and 0x8000 (the halfwords at display_state+0x8 / display_state+0xa, the second doubling the background plane's width), passes them to the 3D library's fb_rebuild_dither_aa, repaints the background plane with the kept colors (bg_plane_corner_colors on the words at bg_plane_colors) and sets the window again from the kept window words; nothing calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness (irq) with 0x8080 it left display_state+0x8 and +0xA at 1 and 1 and called fb_rebuild_dither_aa(1, 1), bg_plane_corner_colors(0xFF000010, 0xFF000010, 0xFF000000) (the words at bg_plane_colors) and proj_map_to_rect(0, 0, 640, 480); with 0x80 it left 1 and 0 and called fb_rebuild_dither_aa(1, 0)
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void display_flag_bits_reapply(uint flags)
@@ -569,8 +569,8 @@ int beam_line_read(void)
 }
 
 /* 0x0c130260  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (function): render_done_hook_put(function, 0): puts the function, argument 0, in slot 0 of the 3D library's event callback table; nothing calls it; part of the NAOMI library
+ * confidence: exercised
+ * evidence: (function): render_done_hook_put(function, 0): puts the function, argument 0, in slot 0 of the 3D library's event callback table; nothing calls it; part of the NAOMI library; exercised 2026-11-12: called by the harness, event_hook_slot0_put(0x0C100000) left gfx_state+0x230 (slot 0 of the hook table) at 0x0C100000 and its argument word +0x234, poked to 0x99 before, at 0; in a sandbox where the six slot setters were called with 0x0C100000 to 0x0C100050, slot 0 alone held 0x0C100000
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void event_hook_slot0_put(uint handler)
@@ -580,8 +580,8 @@ void event_hook_slot0_put(uint handler)
 }
 
 /* 0x0c130280  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (function): slot5_hook_put(function, 0): slot 5 of the 3D library's event callback table; nothing calls it; part of the NAOMI library
+ * confidence: exercised
+ * evidence: (function): slot5_hook_put(function, 0): slot 5 of the 3D library's event callback table; nothing calls it; part of the NAOMI library; exercised 2026-11-12: called by the harness in one sandbox where the six slot setters were called with 0x0C100000 (slot 0) to 0x0C100050 (slot 5), event_hook_slot5_put's 0x0C100050 landed at gfx_state+0x258 (slot 5 of the table at +0x230, 8 bytes a slot) with argument 0, the other slots holding their own setters' values
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void event_hook_slot5_put(uint handler)
@@ -591,8 +591,8 @@ void event_hook_slot5_put(uint handler)
 }
 
 /* 0x0c1302a0  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (function): vblank_hook_put(function, 0): slot 1 of the 3D library's event callback table, the V-blank-in event (irq_hook_insert installs vblank_in_hooks_run there); nothing calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (function): vblank_hook_put(function, 0): slot 1 of the 3D library's event callback table, the V-blank-in event (irq_hook_insert installs vblank_in_hooks_run there); nothing calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness in one sandbox where the six slot setters were called with 0x0C100000 (slot 0) to 0x0C100050 (slot 5), event_hook_slot1_put's 0x0C100010 landed at gfx_state+0x238 (slot 1 of the table at +0x230, 8 bytes a slot) with argument 0, the other slots holding their own setters' values
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void event_hook_slot1_put(uint handler)
@@ -602,8 +602,8 @@ void event_hook_slot1_put(uint handler)
 }
 
 /* 0x0c1302c0  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (function): hblank_hook_put(function, 0): slot 2 of the 3D library's event callback table, the H-blank event (irq_hook_insert installs hblank_hooks_run there); nothing calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (function): hblank_hook_put(function, 0): slot 2 of the 3D library's event callback table, the H-blank event (irq_hook_insert installs hblank_hooks_run there); nothing calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness in one sandbox where the six slot setters were called with 0x0C100000 (slot 0) to 0x0C100050 (slot 5), event_hook_slot2_put's 0x0C100020 landed at gfx_state+0x240 (slot 2 of the table at +0x230, 8 bytes a slot) with argument 0, the other slots holding their own setters' values
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void event_hook_slot2_put(uint handler)
@@ -613,8 +613,8 @@ void event_hook_slot2_put(uint handler)
 }
 
 /* 0x0c1302e0  size 0x12  file by match with source
- * confidence: inferred
- * evidence: (line): passes the line to the 3D library's spg_hblank_line_write, which offsets and clamps it for the display mode and writes it to the H-blank interrupt line register (0xa05f80c8); nothing calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (line): passes the line to the 3D library's spg_hblank_line_write, which offsets and clamps it for the display mode and writes it to the H-blank interrupt line register (0xa05f80c8); nothing calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with gfx_state's display mode 1, vertical start 0x24 + 0, line count 0x211 and kept word 0x3430024 as the snapshot has them, line 10 left 0x343002E (10 + 0x24) in the kept copy and in the register at 0xC8 (0xA85F80C8), line 1000 0x3430211 (clamped) and line -100 0x34301D1 (-64 wrapped by 0x211)
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void hblank_int_reg_write(int line)
@@ -624,8 +624,8 @@ void hblank_int_reg_write(int line)
 }
 
 /* 0x0c130300  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (function): surface_alloc_fail_hook_put(function, 0): slot 3 of the 3D library's event callback table, the slot fired when its texture memory allocator (surface_vram_alloc) returns 3; nothing calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (function): surface_alloc_fail_hook_put(function, 0): slot 3 of the 3D library's event callback table, the slot fired when its texture memory allocator (surface_vram_alloc) returns 3; nothing calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness in one sandbox where the six slot setters were called with 0x0C100000 (slot 0) to 0x0C100050 (slot 5), event_hook_slot3_put's 0x0C100030 landed at gfx_state+0x248 (slot 3 of the table at +0x230, 8 bytes a slot) with argument 0, the other slots holding their own setters' values
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void event_hook_slot3_put(uint handler)
@@ -635,8 +635,8 @@ void event_hook_slot3_put(uint handler)
 }
 
 /* 0x0c130320  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (function): strip_hazard_hook_put(function, 0): slot 4 of the 3D library's event callback table; nothing calls it; part of the NAOMI library
+ * confidence: exercised
+ * evidence: (function): strip_hazard_hook_put(function, 0): slot 4 of the 3D library's event callback table; nothing calls it; part of the NAOMI library; exercised 2026-11-12: called by the harness in one sandbox where the six slot setters were called with 0x0C100000 (slot 0) to 0x0C100050 (slot 5), event_hook_slot4_put's 0x0C100040 landed at gfx_state+0x250 (slot 4 of the table at +0x230, 8 bytes a slot) with argument 0, the other slots holding their own setters' values
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void event_hook_slot4_put(uint handler)
@@ -687,9 +687,9 @@ void render_config_texmem_size_put(uint texmem_size)
 }
 
 /* 0x0c130400  size 0x36  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x50
- * evidence: graphics chip revision 8 or later: sets the configuration block's bypass list word (+0x5c) to 0x20, its flag bit 0x10 and render_frames_in_flight = 2; older chips: the 3D library's render_pipeline_choose(1, 0x20) instead; nothing calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * evidence: graphics chip revision 8 or later: sets the configuration block's bypass list word (+0x5c) to 0x20, its flag bit 0x10 and render_frames_in_flight = 2; older chips: the 3D library's render_pipeline_choose(1, 0x20) instead; nothing calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness, with holly_rev8_or_later 1 as the snapshot has it it set render_config+0x5C to 0x20 (from 0), the flags from 1 to 0x11 and render_frames_in_flight from 3 to 2; with holly_rev8_or_later poked to 0 it called render_pipeline_choose(1, 0x20) and left those three as they were
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void render_pipeline_two_frames(void)
@@ -725,9 +725,9 @@ void render_pipeline_three_frames(void)
 }
 
 /* 0x0c1304c0  size 0x4a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xae
- * evidence: (list 0, 2 or 4): sets the bypass list word to 0x20, 0x22 or 0x24 (older chips through render_pipeline_choose(1, word)); ta_list_sizes_apply then gives that list no share of the vertex area; nothing calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * evidence: (list 0, 2 or 4; any other value counts as 0, a harness call with 3 set 0x20): sets the bypass list word to 0x20, 0x22 or 0x24 (older chips through render_pipeline_choose(1, word)); ta_list_sizes_apply then gives that list no share of the vertex area; nothing calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with holly_rev8_or_later 1 as the snapshot has it, list 2 set the bypass word render_config+0x5C to 0x22, list 4 to 0x24, list 0 to 0x20 and list 3 to 0x20; with holly_rev8_or_later poked to 0, list 4 called render_pipeline_choose(1, 0x24) and left the word 0
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void render_pipeline_list_bypass(int list)
@@ -748,8 +748,8 @@ void render_pipeline_list_bypass(int list)
 }
 
 /* 0x0c130580  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: (value): sets bit 1 of render_config.flags and stores 0x280, value and frame_pixel_format in its words +0x10, +0x14 and +0x18; nothing in the image calls it (uncalled code, made a function 2026-11-09); between render_pipeline_list_bypass and render_config_flag2_off, so by link order part of sdk/naomi_library/system.c
+ * confidence: exercised
+ * evidence: (value): sets bit 1 of render_config.flags and stores 0x280, value and frame_pixel_format in its words +0x10, +0x14 and +0x18; nothing in the image calls it (uncalled code, made a function 2026-11-09); between render_pipeline_list_bypass and render_config_flag2_off, so by link order part of sdk/naomi_library/system.c; exercised 2026-11-12: called by the harness with render_config+0x10 and +0x14 poked to 0 and frame_pixel_format to 5, render_config_flag2_on(9) left the flags 3 (from 1), +0x10 0x280, +0x14 9 and +0x18 5
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void render_config_flag2_on(int value)
@@ -762,8 +762,8 @@ void render_config_flag2_on(int value)
 }
 
 /* 0x0c1305c0  size 0x14  file by match with source
- * confidence: inferred
- * evidence: clears bit 1 of render_config.flags; nothing in the image calls it (uncalled code, made a function 2026-11-09); between render_config_flag2_on and stall_limits_vertex_only, so by link order part of sdk/naomi_library/system.c
+ * confidence: exercised
+ * evidence: clears bit 1 of render_config.flags; nothing in the image calls it (uncalled code, made a function 2026-11-09); between render_config_flag2_on and stall_limits_vertex_only, so by link order part of sdk/naomi_library/system.c; exercised 2026-11-12: called by the harness in one sandbox after render_config_flag2_on, render_config_flag2_off left render_config.flags 1 (from 3); with the flags poked to 0xFFFFFFFF it left 0xFFFFFFFD
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void render_config_flag2_off(void)
@@ -795,8 +795,8 @@ void stall_limits_vertex_and_render(void)
 }
 
 /* 0x0c130620  size 0xe  file by match with source
- * confidence: inferred
- * evidence: (value): stores punch_list_share; nothing in the image calls it (uncalled code, made a function 2026-11-09); between stall_limits_vertex_and_render and ta_param_base_put, so by link order part of sdk/naomi_library/system.c
+ * confidence: exercised
+ * evidence: (value): stores punch_list_share; nothing in the image calls it (uncalled code, made a function 2026-11-09); between stall_limits_vertex_and_render and ta_param_base_put, so by link order part of sdk/naomi_library/system.c; exercised 2026-11-12: called by the harness in one sandbox, punch_list_share_set(7) left punch_list_share at 7 and punch_list_share_set(0x1234) at 0x1234
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void punch_list_share_set(int share)
@@ -823,9 +823,9 @@ void ta_param_base_put(uint addr)
 }
 
 /* 0x0c1306a0  size 0x18e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x200
- * evidence: (four list sizes): totals the four sizes and the punch-through share (punch_list_share), leaving out the bypass list, doubled when three frames are in flight; stores the total and each list's percentage of it in the configuration block render_config, hands the block to the 3D library (render_buffers_lay_out, trapa #0x41 on failure), resets the clip mode word to 0x800000 and the first time loads the built-in texture (tex_builtin_8x8_upload); returns the 3D library's status; chosen by ta_list_sizes_set_up; part of the NAOMI library; checked against reference material (not in this repo)
+ * evidence: (four list sizes): totals the four sizes and the punch-through share (punch_list_share), leaving out the bypass list, doubled when three frames are in flight; stores the total and each list's percentage of it in the configuration block render_config, hands the block to the 3D library (render_buffers_lay_out, trapa #0x41 on failure), resets the clip mode word to 0x800000 and the first time loads the built-in texture (tex_builtin_8x8_upload); returns the 3D library's status; chosen by ta_list_sizes_set_up; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness (irq) with punch_list_share poked to 0x10000, three frames in flight (snapshot) and sizes 0x60000, 0x20000, 0x40000, 0x10000, it stored a vertex area 0x1C0000 (2 x 0xE0000), shares 42.857, 14.286, 28.571, 7.143, 7.143, called render_buffers_lay_out(render_config), stored 0x800000 at strip_header_words (poked 0), returned 0; with two frames in flight and the bypass word poked to 0x22 it stored 0xA0000 and 60, 20, 0, 10, 10; with builtin_texture_loaded poked to 0 it called tex_builtin_8x8_upload once
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 int ta_list_sizes_apply(int size0, int size1, int size2, int size3)
@@ -892,18 +892,19 @@ int ta_list_sizes_apply(int size0, int size1, int size2, int size3)
 }
 
 /* 0x0c1308e0  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: passes its arguments on to ta_list_sizes_apply on graphics chip revision 8 or later (holly_rev8_or_later), else to ta_list_sizes_set_up_old_holly; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: passes its arguments on to ta_list_sizes_apply on graphics chip revision 8 or later (holly_rev8_or_later), else to ta_list_sizes_set_up_old_holly; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with the sizes 0x60000, 0x20000, 0x40000, 0x10000 in r4-r7 (its header declares no arguments) and holly_rev8_or_later 1, it called ta_list_sizes_apply with them (vertex area 0x1C0000) and r0 came back 0; with holly_rev8_or_later poked to 0 and sizes 0x11000, 0x22000, 0x33000, 0x44000 it called ta_list_sizes_set_up_old_holly with those and r0 came back 1
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
-void ta_list_sizes_set_up(void)
+int ta_list_sizes_set_up(int size0, int size1, int size2, int size3)
 {
-  if (holly_rev8_or_later == 1) ((int(*)())ta_list_sizes_apply)(); else ((int(*)())ta_list_sizes_set_up_old_holly)();
+  if (holly_rev8_or_later == 1) return ta_list_sizes_apply(size0,size1,size2,size3);
+  return ta_list_sizes_set_up_old_holly(size0,size1,size2,size3);
 }
 
 /* 0x0c130920  size 0x14  file by match with source
- * confidence: inferred
- * evidence: clears bit 20 of render_config.flags; nothing in the image calls it (uncalled code, made a function 2026-11-09); between ta_list_sizes_set_up and render_config_flag20_on, so by link order part of sdk/naomi_library/system.c
+ * confidence: exercised
+ * evidence: clears bit 20 of render_config.flags; nothing in the image calls it (uncalled code, made a function 2026-11-09); between ta_list_sizes_set_up and render_config_flag20_on, so by link order part of sdk/naomi_library/system.c; exercised 2026-11-12: called by the harness in one sandbox after render_config_flag20_on, render_config_flag20_off left render_config.flags 1 (from 0x100001); with the flags poked to 0xFFFFFFFF (bit 1 then cleared) it left 0xFFEFFFFD
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void render_config_flag20_off(void)
@@ -913,8 +914,8 @@ void render_config_flag20_off(void)
 }
 
 /* 0x0c130940  size 0x14  file by match with source
- * confidence: inferred
- * evidence: sets bit 20 of render_config.flags; nothing in the image calls it (uncalled code, made a function 2026-11-09); between render_config_flag20_off and tmu0_restart_usec_scale, so by link order part of sdk/naomi_library/system.c
+ * confidence: exercised
+ * evidence: sets bit 20 of render_config.flags; nothing in the image calls it (uncalled code, made a function 2026-11-09); between render_config_flag20_off and tmu0_restart_usec_scale, so by link order part of sdk/naomi_library/system.c; exercised 2026-11-12: called by the harness in one sandbox, with render_config.flags 1 it left 0x100001, and render_config_flag20_off then put it back to 1
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void render_config_flag20_on(void)
@@ -951,7 +952,7 @@ void tmu0_restart_usec_scale(void)
 
 /* 0x0c1309c0  size 0x4c  file by match with source
  * confidence: inferred
- * evidence: (rate 0-4, anything above becomes 2): with interrupts masked around the timer writes (SR's mask bits set to 0xe0 before, cleared after) stops TMU0, sets its control word to the rate, reloads 0xffffffff into its constant and count, restarts it and takes tmu0_usec_per_tick from the table tmu_usec_per_tick (0x0C32A5A4); nothing in the image calls it (uncalled code, made a function 2026-11-09); between tmu0_restart_usec_scale and frame_stats_capture, so by link order part of sdk/naomi_library/system.c
+ * evidence: (rate 0-4, anything above becomes 2): with interrupts masked around the timer writes (SR's mask bits set to 0xe0 before, cleared after) writes 1 to the timer output control register (TOCR 0xffd80000), sets TMU0's control word (TCR0 0xffd80010) to the rate, reloads 0xffffffff into its constant and count (TCOR0, TCNT0), sets its start bit (TSTR 0xffd80004 bit 0, the other bits kept; the timer is never stopped) and takes tmu0_usec_per_tick from the table tmu_usec_per_tick (0x0C32A5A4); nothing in the image calls it (uncalled code, made a function 2026-11-09); between tmu0_restart_usec_scale and frame_stats_capture, so by link order part of sdk/naomi_library/system.c; corrected 2026-11-12 from harness calls: it does not stop TMU0: the harness calls with rate 4 and rate 7 wrote 1 to 0xffd80000 (TOCR, the timer output control register, as tmu0_restart_usec_scale's row says) and set TSTR 0xffd80004 to its value read (1) with bit 0 set, never clearing bit 0; the rest fit: TCR0 0xffd80010 got 4, then 2 for rate 7, TCOR0 and TCNT0 0xffffffff, and tmu0_usec_per_tick 20.48, then 1.28 (poked to 0 before)
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void tmu0_restart_at_rate(uint rate)
@@ -1035,9 +1036,9 @@ int frame_stats_ta_param_area_size(void)
 }
 
 /* 0x0c130b40  size 0x7c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x9a
- * evidence: (out): copies the displayed frame buffer (frame_stats' buffer address through 0xA5000000, the display width x bytes per pixel / 4 words a line, for every display line) to out; hangs for a pixel format above 5; nothing in the image calls it (uncalled code, made a function 2026-11-09); between frame_stats_ta_param_area_size and frame_buffer_read_fifth, so by link order part of sdk/naomi_library/system.c
+ * evidence: (out): copies the displayed frame buffer (frame_stats' buffer address through 0xA5000000, the display width x bytes per pixel / 4 words a line, for every display line) to out; hangs for a pixel format above 5; nothing in the image calls it (uncalled code, made a function 2026-11-09); between frame_stats_ta_param_area_size and frame_buffer_read_fifth, so by link order part of sdk/naomi_library/system.c; exercised 2026-11-12: called by the harness with display_state's width and height poked to 8 and 3 and the shown buffer's words (frame_stats+0x30 = 0xC00000, read at 0xA5C00000) poked to 0x1000 + k, pixel format 0 copied 12 words (0x1000-0x100B) to the buffer and nothing past them, pixel format 5 (poked) 24 words (0x1000-0x1017); with format 6 it did not return
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void frame_buffer_read_words(uint *out)
@@ -1071,9 +1072,9 @@ void frame_buffer_read_words(uint *out)
 }
 
 /* 0x0c130c00  size 0x88  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xa6
- * evidence: (out): copies every fifth 16-bit unit of every fifth line of the frame buffer to out +0x1000: the count it steps to is width x bytes per pixel / 2 (16-bit units a line), and after each line read it skips 0xa00 units (four 640-pixel lines of 16-bit pixels), which only suits a 640-wide 16-bit buffer; hangs for a pixel format above 5; nothing in the image calls it (uncalled code, made a function 2026-11-09); between frame_buffer_read_words and tmu0_count_now, so by link order part of sdk/naomi_library/system.c
+ * evidence: (out): copies every fifth 16-bit unit of every fifth line of the frame buffer to out +0x1000: the count it steps to is width x bytes per pixel / 2 (16-bit units a line), and after each line read it skips 0xa00 units (four 640-pixel lines of 16-bit pixels), which only suits a 640-wide 16-bit buffer; hangs for a pixel format above 5; nothing in the image calls it (uncalled code, made a function 2026-11-09); between frame_buffer_read_words and tmu0_count_now, so by link order part of sdk/naomi_library/system.c; exercised 2026-11-12: called by the harness with display_state's width and height poked to 8 and 10, pixel format 0 and the shown buffer's 16-bit units poked to their own numbers, it stored units 0, 5, 2570, 2575 at out + 0x1000 and nothing more; with width 16 and height 6, units 0, 5, 10, 15, 2580, 2585 and two more 5 apart
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void frame_buffer_read_fifth(int out)
@@ -1206,9 +1207,9 @@ void blend_factor_pair_keep(uint factor_a, uint factor_b)
 }
 
 /* 0x0c130e20  size 0x34  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x8c
- * evidence: (error code 1-4): sets the border color (pvr_vo_border_col_put) to blue, red, green or magenta by the code and loops forever; the error handler error_handler_pick installs for mode 0; part of the NAOMI library; checked against reference material (not in this repo)
+ * evidence: (error code 1-4): sets the border color (pvr_vo_border_col_put) to blue, red, green or magenta by the code and loops forever; the error handler error_handler_pick installs for mode 0; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness, with code 2 it called pvr_vo_border_col_put(0xFFFF0000) (red; the record shows it written at offset 0x40) and did not return within a frame; with code 4 it called pvr_vo_border_col_put(0xFFFF00FF) (magenta) and did not return
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void error_border_and_hang(int code)
@@ -1267,8 +1268,8 @@ void modvol_lists_merge_into_opaque(void)
 }
 
 /* 0x0c130f40  size 0xe  file by match with source
- * confidence: inferred
- * evidence: (value): writes the PVR register 0xA05F811C; nothing in the image calls it (uncalled code, made a function 2026-11-09); between modvol_lists_merge_into_opaque and vertex_area_bytes_get, so by link order part of sdk/naomi_library/system.c
+ * confidence: exercised
+ * evidence: (value): writes the PVR register 0xA05F811C; nothing in the image calls it (uncalled code, made a function 2026-11-09); between modvol_lists_merge_into_opaque and vertex_area_bytes_get, so by link order part of sdk/naomi_library/system.c; exercised 2026-11-12: called by the harness with 0x13579 and with 0x2468A, the record shows each written by the routine itself to 0xA05F811C
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void pvr_reg_811c_put(uint value)
@@ -1278,8 +1279,8 @@ void pvr_reg_811c_put(uint value)
 }
 
 /* 0x0c130f60  size 0x10  file by match with source
- * confidence: inferred
- * evidence: returns render_config.vertex_area_size x 4; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pvr_reg_811c_put and frame_stats_render_stalls_get, so by link order part of sdk/naomi_library/system.c
+ * confidence: exercised
+ * evidence: returns render_config.vertex_area_size x 4; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pvr_reg_811c_put and frame_stats_render_stalls_get, so by link order part of sdk/naomi_library/system.c; exercised 2026-11-12: called by the harness, with render_config.vertex_area_size 0x1A0000 as the snapshot has it it returned 0x680000, and with it poked to 0x1234 it returned 0x48D0
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 int vertex_area_bytes_get(void)
@@ -1288,8 +1289,8 @@ int vertex_area_bytes_get(void)
 }
 
 /* 0x0c130f80  size 0xe  file by match with source
- * confidence: inferred
- * evidence: returns frame_stats.render_stalls (+0x48); nothing in the image calls it (uncalled code, made a function 2026-11-09); between vertex_area_bytes_get and frame_stats_vertex_stalls_get, so by link order part of sdk/naomi_library/system.c
+ * confidence: exercised
+ * evidence: returns frame_stats.render_stalls (+0x48); nothing in the image calls it (uncalled code, made a function 2026-11-09); between vertex_area_bytes_get and frame_stats_vertex_stalls_get, so by link order part of sdk/naomi_library/system.c; exercised 2026-11-12: called by the harness, with frame_stats as the snapshot has it it returned 0 (frame_stats_vertex_stalls_get returned 1); with +0x48 poked to 0x111 and +0x4C to 0x222 it returned 0x111
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 uint frame_stats_render_stalls_get(void)
@@ -1298,8 +1299,8 @@ uint frame_stats_render_stalls_get(void)
 }
 
 /* 0x0c130fa0  size 0xe  file by match with source
- * confidence: inferred
- * evidence: returns frame_stats.vertex_stalls (+0x4C); nothing in the image calls it (uncalled code, made a function 2026-11-09); between frame_stats_render_stalls_get and stall_limits_set, so by link order part of sdk/naomi_library/system.c
+ * confidence: exercised
+ * evidence: returns frame_stats.vertex_stalls (+0x4C); nothing in the image calls it (uncalled code, made a function 2026-11-09); between frame_stats_render_stalls_get and stall_limits_set, so by link order part of sdk/naomi_library/system.c; exercised 2026-11-12: called by the harness, with frame_stats as the snapshot has it it returned 1 (frame_stats_render_stalls_get returned 0); with +0x48 poked to 0x111 and +0x4C to 0x222 it returned 0x222
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 uint frame_stats_vertex_stalls_get(void)
@@ -1370,8 +1371,8 @@ void bg_plane_corner_colors_z(uint top_left, uint top_right, uint bottom_left, f
 }
 
 /* 0x0c1310e0  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (value): passes it to region_presort_flip_on_match, which flips the per-tile pre-sort flag when it equals the value; part of the NAOMI library
+ * confidence: exercised
+ * evidence: (value): passes it to region_presort_flip_on_match, which flips the per-tile pre-sort flag when it equals the value; part of the NAOMI library; exercised 2026-11-12: called by the harness in one sandbox with the pre-sort flag gfx_state+0x1C4 at 0 as the snapshot has it: value 1 changed nothing; value 0 set the flag to 1 and +0x1C0 to 3; then value 1 set it back to 0; value 0x100 (passed as the byte 0) set it to 1 again
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 void presort_flag_flip_if_equal(unsigned char value)
@@ -1380,8 +1381,8 @@ void presort_flag_flip_if_equal(unsigned char value)
 }
 
 /* 0x0c131100  size 0xf0  file by match with source
- * confidence: inferred
- * evidence: (video mode, frame flags): the display half of graphics_bring_up again at run time: notes mode 0 and modes 0x18-0x1b, stops the display (display_blank_and_quiesce), takes the flag bits and pixel format, sets the display mode from the mode table, hands the configuration block to the 3D library (render_buffers_lay_out), reloads the built-in texture, repaints the background plane and resets the window; returns the 3D library's status; nothing calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (video mode, frame flags): the display half of graphics_bring_up again at run time: notes mode 0 and modes 0x18-0x1b, stops the display (display_blank_and_quiesce), takes the flag bits and pixel format, sets the display mode from the mode table, hands the configuration block to the 3D library (render_buffers_lay_out), reloads the built-in texture, repaints the background plane and resets the window; returns the 3D library's status; nothing calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness (irq) as (3, 0x8001) it cleared video_mode_is_0, called display_blank_and_quiesce and display_timing_and_fb_program(16, 1, 0, 1) (video_mode_table[3]'s timing, pixel_format_by_mode[1], dither 0, anti-alias 1), set the screen to 640 x 240, called render_buffers_lay_out(render_config), tex_builtin_8x8_upload and proj_map_to_rect(0, 0, 640, 240) and returned 0; as (0x19, 0x80) it set clip_stretch_on 1 and called hook_request_ignored(clip_stretch_step_report, 0)
  * matched: source/sdk/naomi_library/system.c (tools/match/match.py)
  */
 int video_reconfigure(int mode, uint flags)

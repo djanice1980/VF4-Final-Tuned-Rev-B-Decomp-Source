@@ -152,8 +152,8 @@ void sock_sendto_pack_args(uint sock, uint addr, int len, uint flags, uint to_bo
 }
 
 /* 0x0c056360  size 0x3a  file by match with source
- * confidence: inferred
- * evidence: (board address, address): copies 16 bytes of the destination socket address into a zeroed local block and writes it to the board with dimm_pio_write; callers sock_sendto, sock_sendto_from_area_async; part of NLASOCK
+ * confidence: exercised
+ * evidence: (board address, address): copies 16 bytes of the destination socket address into a zeroed local block and writes it to the board with dimm_pio_write; callers sock_sendto, sock_sendto_from_area_async; part of NLASOCK; exercised 2026-11-12: called by the harness with (0x0f806200, the bytes 10 11 ... 4f) it copied 16 bytes and called dimm_pio_write of 10..1f (0x10 bytes) to 0x0f806200; inside sock_sendto the address c0 a8 00 01 0b 0a ... went to 0x0f803200
  * same code as main.bin 0c123b60 (ghidra/TransferFromMain.java)
  * matched: source/sdk/nlasock/send.c (tools/match/match.py)
  */

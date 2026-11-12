@@ -348,8 +348,8 @@ int * rob_card_item_obj_list(char side, int chara, int costume, int slot_no)
 }
 
 /* 0x0c0cf060  size 0x74  file by match with source
- * confidence: inferred
- * evidence: (rob): when item 101 (0x65; entry 0x4B0 = 100 x 12 of the character's chara_item_table row) exists for the rob's costume, makes it slot 0's card item (flags bit 1 on, bit 0 off, id 0x65, kind and data from the entry); nothing in the image points at it; Ghidra did not make this a function; part of vf4lib/librobdisp/src/rob_item.c; the rob record as a byte pointer, as rob_items_update takes it
+ * confidence: exercised
+ * evidence: (rob): when item 101 (0x65; entry 0x4B0 = 100 x 12 of the character's chara_item_table row) exists for the rob's costume, makes it slot 0's card item (flags bit 1 on, bit 0 off, id 0x65, kind and data from the entry); nothing in the image points at it; Ghidra did not make this a function; part of vf4lib/librobdisp/src/rob_item.c; the rob record as a byte pointer, as rob_items_update takes it; exercised 2026-11-12: called by the harness with robs[0] (character 14, costume 0) its slot 0 went from flags 0x01 to 0x02 with card item 0x65, card kind 0 and card data 0x0C2D98D4, entry 100 of the character's chara_item_table row (kind 0, data 0x0C2D98D4 / 0x0C2D914C in work/main.bin); with robs[1] (costume 1) card data 0x0C2D914C
  * matched: source/vf4lib/librobdisp/src/rob_item.c (tools/match/match.py)
  */
 void rob_item101_head_set(rob_rec *rob)
@@ -614,9 +614,9 @@ void item_anims_setup(rob_rec *rob, int chara_arg, int costume_arg)
 }
 
 /* 0x0c0cf700  size 0x98  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xb6
- * evidence: (vector, out pitch, out yaw): normalizes the vector; yaw = asin_ang16(x / horizontal length), mirrored (-0x8000 - yaw) when z < 0; pitch = -asin_ang16(y); only caller item_anim_aim; part of vf4lib/librobdisp/src/rob_item.c
+ * evidence: (vector, out pitch, out yaw): normalizes the vector; yaw = asin_ang16(x / horizontal length), mirrored (-0x8000 - yaw) when z < 0; pitch = -asin_ang16(y); only caller item_anim_aim; part of vf4lib/librobdisp/src/rob_item.c; exercised 2026-11-12: called by the harness (1,0,1) gave pitch 0 and yaw 0x2000, (1,0,-1) yaw 0x6000 (-0x8000 - 0x2000), (0,1,1) pitch -0x2000 and yaw 0, (-3,4,0) pitch -0x25C8 (-asin 0.8) and yaw -0x4000
  * matched: source/vf4lib/librobdisp/src/rob_item.c (tools/match/match.py)
  */
 void item_dir_to_pitch_yaw(float *dir, short *pitch, short *yaw)
@@ -649,9 +649,9 @@ void item_dir_to_pitch_yaw(float *dir, short *pitch, short *yaw)
 }
 
 /* 0x0c0cf7e0  size 0xce  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xd2
- * evidence: (item anim record, definition, direction, snap): turns the record's pitch / yaw (+0x5C / +0x5E) toward the direction (item_dir_to_pitch_yaw), at once when snapping, else by at most definition +0x38 a frame; callers item_anim_aim_ahead, item_anim_aim_opponent; part of vf4lib/librobdisp/src/rob_item.c
+ * evidence: (item anim record, definition, direction, snap): turns the record's pitch / yaw (+0x5C / +0x5E) toward the direction (item_dir_to_pitch_yaw), at once when snapping, else by at most definition +0x38 a frame; callers item_anim_aim_ahead, item_anim_aim_opponent; part of vf4lib/librobdisp/src/rob_item.c; exercised 2026-11-12: called by the harness with a record and definition in scratch buffers: direction (1, -1.414, 1) with snap 1 set pitch / yaw (+0x5C / +0x5E) from 0 / 0 to 0x2000 / 0x2000; with snap 0 and step 0x100 (definition +0x38) to 0x100 / 0x100, and from 0x1F80 / 0x2100 (within a step) to 0x2000 / 0x2000; direction (0, 0, -1) with snap 1 gave 0 / 0x8000
  * matched: source/vf4lib/librobdisp/src/rob_item.c (tools/match/match.py)
  */
 void item_anim_aim(item_anim_rec *anim, item_anim_def *def, float *dir, uchar snap)
@@ -678,8 +678,8 @@ void item_anim_aim(item_anim_rec *anim, item_anim_def *def, float *dir, uchar sn
 }
 
 /* 0x0c0cf8c0  size 0x80  file by match with source
- * confidence: inferred
- * evidence: (rob, record, definition, snap): aims the item at the point 1.0 along x of the rob's head matrix (rob +0x54 +0xC0); only caller item_anim_follow (main mode 3 sub 7 / 15, 5 sub 1 / 3, or 6); part of vf4lib/librobdisp/src/rob_item.c
+ * confidence: exercised
+ * evidence: (rob, record, definition, snap): aims the item at the point 1.0 along x of the rob's head matrix (rob +0x54 +0xC0); only caller item_anim_follow (main mode 3 sub 7 / 15, 5 sub 1 / 3, or 6); part of vf4lib/librobdisp/src/rob_item.c; exercised 2026-11-12: called by the harness with robs (head matrix rob +0x54 +0xC0: origin (0.5427, 4.8811, 0.5578), x axis (-0.0824, -0.8082, 0.5831)) and snap 1: it aimed at the head origin plus 1.0 along x, (0.4603, 4.0729, 1.1409); with the item 1 short of that point in x and z the record got pitch / yaw 0 / 0x2000, and with the item 1 above and 1 beyond in z 0x2000 / 0x8000
  * matched: source/vf4lib/librobdisp/src/rob_item.c (tools/match/match.py)
  */
 void item_anim_aim_ahead(rob_rec *rob, item_anim_rec *anim, item_anim_def *def, uchar snap)
@@ -702,8 +702,8 @@ void item_anim_aim_ahead(rob_rec *rob, item_anim_rec *anim, item_anim_def *def, 
 }
 
 /* 0x0c0cf960  size 0x64  file by match with source
- * confidence: inferred
- * evidence: (rob, record, definition, snap): aims the item at the head matrix of the rob at rob +0x34; only caller item_anim_follow (other modes); part of vf4lib/librobdisp/src/rob_item.c
+ * confidence: exercised
+ * evidence: (rob, record, definition, snap): aims the item at the head matrix of the rob at rob +0x34; only caller item_anim_follow (other modes); part of vf4lib/librobdisp/src/rob_item.c; exercised 2026-11-12: called by the harness with robs (whose +0x34 is robs[1], head origin (0.6996, 5.0052, -0.5406)) and snap 1: with the item at that point minus (1, 0, 1) the record got pitch / yaw 0 / 0x2000, and at that point plus (0, 1, 1) 0x2000 / 0x8000
  * matched: source/vf4lib/librobdisp/src/rob_item.c (tools/match/match.py)
  */
 void item_anim_aim_opponent(rob_rec *rob, item_anim_rec *anim, item_anim_def *def, uchar snap)
@@ -719,8 +719,8 @@ void item_anim_aim_opponent(rob_rec *rob, item_anim_rec *anim, item_anim_def *de
 }
 
 /* 0x0c0cf9e0  size 0x8c  file by match with source
- * confidence: inferred
- * evidence: (rob, record): advances a phase by 0x30, turns the record's angle by amplitude +0x2C x sin + bias +0x2E of the definition and writes matrix definition +4 of the rob as matrix +8 turned by it about y; only caller rob_item_anims_update (definitions with bit 0 set); part of vf4lib/librobdisp/src/rob_item.c
+ * confidence: exercised
+ * evidence: (rob, record): advances a phase by 0x30, turns the record's angle by amplitude +0x2C x sin + bias +0x2E of the definition and writes matrix definition +4 of the rob as matrix +8 turned by it about y; only caller rob_item_anims_update (definitions with bit 0 set); part of vf4lib/librobdisp/src/rob_item.c; exercised 2026-11-12: called by the harness with robs and a planted record (yaw 0x1000) whose definition has +4 = 2, +8 = 3, amplitude 0x100, bias 0x10: with phase 0x3FD0 the phase became 0x4000 and the yaw 0x1110, with phase 0xBFD0 0xC000 and 0x0F10; each time it pushed rob matrix 3, turned it by the new yaw (mtx_rot_y_s16) and stored it as rob matrix 2
  * matched: source/vf4lib/librobdisp/src/rob_item.c (tools/match/match.py)
  */
 void item_anim_sway(rob_rec *rob, item_anim_rec *anim)
@@ -747,9 +747,9 @@ void item_anim_sway(rob_rec *rob, item_anim_rec *anim)
 }
 
 /* 0x0c0cfa80  size 0x2f0  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x324
- * evidence: (rob, record): a moving item that follows matrix definition +8 of the rob: kept at least definition +0x24 above the stage floor (stage_cur +0x54), circling (+0x18, phases +6 / +8) and eased (+0x10 / +0x14), snapping while item_anim_snap runs; aims it (item_anim_aim_ahead or item_anim_aim_opponent by the mode), sways it, turns it to face its aim or by its own phase (+0x2C), scales it by +0x28 and stores it as matrix definition +4 of the rob; only caller rob_item_anims_update; part of vf4lib/librobdisp/src/rob_item.c
+ * evidence: (rob, record): a moving item that follows matrix definition +8 of the rob: kept at least definition +0x24 above the stage floor (stage_cur +0x54), circling (+0x18, phases +6 / +8) and eased (+0x10 / +0x14), snapping while item_anim_snap runs; aims it (item_anim_aim_ahead or item_anim_aim_opponent by the mode), sways it, turns it to face its aim or by its own phase (+0x2C), scales it by +0x28 and stores it as matrix definition +4 of the rob; only caller rob_item_anims_update; part of vf4lib/librobdisp/src/rob_item.c; exercised 2026-11-12: called by the harness with robs and a planted definition (+8 = 3, the head at (0.5427, 4.8811, 0.5578); +4 = 2; height +0x20 0.5; floor +0x24 0.1; scale 1.5): with item_anim_snap 5 the item went to (0.5427, 5.3811, 0.5578), was turned by aim yaw 0x1000 + 0x8000, scaled 1.5 and stored as rob matrix 2; with height -2.0 its y was 4.1 (floor 4.0 + 0.1); unsnapped with circle step 0x4000 it eased to (0.2714, 1.3453, 1.2789); with an aim step it aimed at the opponent in mode 3.10, ahead in main mode 6
  * matched: source/vf4lib/librobdisp/src/rob_item.c (tools/match/match.py)
  */
 void item_anim_follow(rob_rec *rob, item_anim_rec *anim)

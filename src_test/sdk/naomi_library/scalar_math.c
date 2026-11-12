@@ -180,8 +180,8 @@ uint atan2_ang16(float y, float x)
 }
 
 /* 0x0c05bd20  size 0x16  file by match with source
- * confidence: inferred
- * evidence: smallest whole number not below x, as -float_floor(-x); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: smallest whole number not below x, as -float_floor(-x); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness, float_ceil(2.5) returned 3, (-2.5) -2, (3.0) 3, (-3.0) -3 and (0.25) 1
  * same code as main.bin 0c1315a0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi_library/scalar_math.c (tools/match/match.py)
  */
@@ -211,8 +211,8 @@ float cos_ang16(uint angle)
 }
 
 /* 0x0c05bd80  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: cosecant of a 16-bit angle: 1 / sin_ang16, the largest float at 0 and 0x8000; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: cosecant of a 16-bit angle: 1 / sin_ang16, the largest float at 0 and 0x8000; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with 0x2000 it returned 1.41421, with 0x1000 2.61313 and with 0x4000 1 (1 over the sine of 45, 22.5 and 90 degrees), and with 0 and 0x8000 the largest float 0x7f7fffff
  * same code as main.bin 0c131600 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi_library/scalar_math.c (tools/match/match.py)
  */
@@ -238,8 +238,8 @@ float cos_radians(float angle)
 }
 
 /* 0x0c05be00  size 0x30  file by match with source
- * confidence: inferred
- * evidence: hyperbolic cosine of a 16-bit angle taken as radians (a * 2pi / 0x10000): (e + 1/e) / 2 with e = exp_float of it; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: hyperbolic cosine of a 16-bit angle taken as radians (a * 2pi / 0x10000): (e + 1/e) / 2 with e = exp_float of it; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with 0x4000 it returned 2.50918 = cosh(pi/2), with 0x2000 1.32461 = cosh(pi/4) and with 0 it returned 1
  * same code as main.bin 0c131680 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi_library/scalar_math.c (tools/match/match.py)
  */
@@ -252,8 +252,8 @@ float cosh_ang16(uint angle)
 }
 
 /* 0x0c05be40  size 0x3e  file by match with source
- * confidence: inferred
- * evidence: cotangent of a 16-bit angle: 1 / tan_ang16, the largest float at 0 and 0x8000 and 0 at 0x4000 and 0xc000; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: cotangent of a 16-bit angle: 1 / tan_ang16, the largest float at 0 and 0x8000 and 0 at 0x4000 and 0xc000; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with 0x1000 it returned 2.41421 and with 0x2000 1.0000001 (cot of 22.5 and 45 degrees), with 0x4000 and 0xc000 it returned 0, and with 0 and 0x8000 the largest float 0x7f7fffff
  * same code as main.bin 0c1316c0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi_library/scalar_math.c (tools/match/match.py)
  */
@@ -322,8 +322,8 @@ float float_floor(float x)
 }
 
 /* 0x0c05bf60  size 0x2a  file by match with source
- * confidence: inferred
- * evidence: (x): the fractional part of x with x's sign; 0 for |x| of 2^23 or more; nothing in the image calls it (uncalled code, made a function 2026-11-09); between float_floor and rsqrt_signed, so by link order part of sdk/naomi_library/scalar_math.c
+ * confidence: exercised
+ * evidence: (x): the fractional part of x with x's sign; 0 for |x| of 2^23 or more; nothing in the image calls it (uncalled code, made a function 2026-11-09); between float_floor and rsqrt_signed, so by link order part of sdk/naomi_library/scalar_math.c; exercised 2026-11-12: called by the harness with 2.75 it returned 0.75, with -2.75 -0.75, with 3.0 0, and with 1e8 (above 2^23) 0
  * same code as main.bin 0c1317e0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi_library/scalar_math.c (tools/match/match.py)
  */
@@ -340,8 +340,8 @@ float float_fraction(float x)
 }
 
 /* 0x0c05bfa0  size 0x24  file by match with source
- * confidence: inferred
- * evidence: 1 / signed_sqrt(x), the largest float for 0; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: 1 / signed_sqrt(x), the largest float for 0; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with 4.0 it returned 0.5, with -4.0 -0.5, with 0.25 2.0, and with 0 the largest float 0x7f7fffff
  * same code as main.bin 0c131820 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi_library/scalar_math.c (tools/match/match.py)
  */
@@ -523,8 +523,8 @@ float lcg_next_unit(void)
 }
 
 /* 0x0c05c2c0  size 0x36  file by match with source
- * confidence: inferred
- * evidence: (x): x rounded toward zero; x itself for |x| of 2^23 or more or with no fraction; nothing in the image calls it (uncalled code, made a function 2026-11-09); between lcg_seed_set and float_round_away, so by link order part of sdk/naomi_library/scalar_math.c
+ * confidence: exercised
+ * evidence: (x): x rounded toward zero; x itself for |x| of 2^23 or more or with no fraction; nothing in the image calls it (uncalled code, made a function 2026-11-09); between lcg_seed_set and float_round_away, so by link order part of sdk/naomi_library/scalar_math.c; exercised 2026-11-12: called by the harness with 2.7 it returned 2, with -2.7 -2, with 0.4 0, with 2.0 2.0 and with 1e8 1e8 unchanged
  * same code as main.bin 0c131b40 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi_library/scalar_math.c (tools/match/match.py)
  */
@@ -545,8 +545,8 @@ float float_trunc(float x)
 }
 
 /* 0x0c05c300  size 0x38  file by match with source
- * confidence: inferred
- * evidence: (x): x rounded away from zero to the next integer; x itself for |x| of 2^23 or more or with no fraction; nothing in the image calls it (uncalled code, made a function 2026-11-09); between float_trunc and sec_ang16, so by link order part of sdk/naomi_library/scalar_math.c
+ * confidence: exercised
+ * evidence: (x): x rounded away from zero to the next integer; x itself for |x| of 2^23 or more or with no fraction; nothing in the image calls it (uncalled code, made a function 2026-11-09); between float_trunc and sec_ang16, so by link order part of sdk/naomi_library/scalar_math.c; exercised 2026-11-12: called by the harness with 2.3 it returned 3, with -2.3 -3, with 0.4 1, with -0.4 -1 and with 2.0 2.0
  * same code as main.bin 0c131b80 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi_library/scalar_math.c (tools/match/match.py)
  */
@@ -564,8 +564,8 @@ float float_round_away(float x)
 }
 
 /* 0x0c05c340  size 0x30  file by match with source
- * confidence: inferred
- * evidence: secant of a 16-bit angle: 1 / cos_ang16, the largest float at 0x4000 and 0xc000; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: secant of a 16-bit angle: 1 / cos_ang16, the largest float at 0x4000 and 0xc000; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with 0 it returned 1, with 0x2aab 2.00011 and with 0x1555 1.15468 (1 over the cosine of 60 and 30 degrees), and with 0x4000 and 0xc000 the largest float 0x7f7fffff
  * same code as main.bin 0c131bc0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi_library/scalar_math.c (tools/match/match.py)
  */
@@ -667,8 +667,8 @@ float sin_radians_core(int *quadrant, float x)
 }
 
 /* 0x0c05c560  size 0x32  file by match with source
- * confidence: inferred
- * evidence: tangent of an angle in radians: tan_radians_core, then -1/t for an odd quadrant count (the largest float when t is 0); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: tangent of an angle in radians: tan_radians_core, then -1/t for an odd quadrant count (the largest float when t is 0); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with 0.5 it returned 0.546302, with 1.0 1.557408, with 2.0 -2.18504 (an odd quadrant count, -1/t), with -1.0 -1.557408 and with 3.0 -0.142547, the tangents
  * same code as main.bin 0c131de0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi_library/scalar_math.c (tools/match/match.py)
  */

@@ -189,9 +189,9 @@ int fb_surface_alloc_paired(int size, surface_rec *surface)
 }
 
 /* 0x0c144920  size 0x8a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x9e
- * evidence: (size, surface A, surface B): one first-fit block of twice the rounded size (vram_take_first_fit_buffer, kind 8, half chosen as in fb_surface_alloc_paired); A gets the 32-bit-area address of the block (vram64_to_32_offset), B that of block + 4, the two interleaved halves; nothing in the image calls it; part of KamuiTL
+ * evidence: (size, surface A, surface B): one first-fit block of twice the rounded size (vram_take_first_fit_buffer, kind 8, half chosen as in fb_surface_alloc_paired); A gets the 32-bit-area address of the block (vram64_to_32_offset), B that of block + 4, the two interleaved halves, and both get the rounded size at +0x14; nothing in the image calls it; part of KamuiTL; exercised 2026-11-12: called by the harness with size 0x1010 on the snapshot's texture memory (state flags 0x8F, half 0 with less free space): it took a 0x2040-byte block marked 8 at 0xE10800 in half 1 and gave A 0xB08400 and B 0xF08400 (vram64_to_32_offset of the block and of block + 4); with the flags poked to 0x8B it took 0x611800 in half 0 and gave 0x308C00 and 0x708C00
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
 int fb_surfaces_alloc_together(uint size, surface_rec *surface_a, surface_rec *surface_b)
@@ -259,8 +259,8 @@ out:
 }
 
 /* 0x0c144ac0  size 0x78  file by match with source
- * confidence: inferred
- * evidence: (size, surface A, surface B): finds an offset free in half 0 whose mirror (offset + the half size at vram_half0_size) is free in half 1 (vram_find_mirrored_offset_for_surface), takes it for A and the mirror for B (vram_take_range_at, linked and live), and frees A's block again when B's fails; 3 when no such offset; nothing in the image calls it; part of KamuiTL
+ * confidence: exercised
+ * evidence: (size, surface A, surface B): finds an offset free in half 0 whose mirror (offset + the half size at vram_half0_size) is free in half 1 (vram_find_mirrored_offset_for_surface), takes it for A and the mirror for B (vram_take_range_at, linked and live), and frees A's block again when B's fails; 3 when no such offset; nothing in the image calls it; part of KamuiTL; exercised 2026-11-12: called by the harness with size 0x100 on the snapshot's texture memory: A got 0x611800 in half 0 and B its mirror 0xE11800 in half 1, both blocks linked and live (0x87, 0x107); size 0x1EF000 (more than any free block of half 0) returned 3
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
 int surface_alloc_both_halves(uint size, surface_rec *surface_a, surface_rec *surface_b)
@@ -279,9 +279,9 @@ int surface_alloc_both_halves(uint size, surface_rec *surface_a, surface_rec *su
 }
 
 /* 0x0c144b60  size 0x3e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x5c
- * evidence: (size, surface): takes exactly the range at the address already in the surface's +0x1c (vram_take_range_at, live, not linked) in the half that holds that address (below vram_half1_start: half 0); used by surface_array_one_block, which takes one block for several surfaces, frees it and hands each surface its piece; part of KamuiTL
+ * evidence: (size, surface): takes exactly the range at the address already in the surface's +0x1c (vram_take_range_at, live, not linked) in the half that holds that address (below vram_half1_start: half 0); used by surface_array_one_block, which takes one block for several surfaces, frees it and hands each surface its piece; part of KamuiTL; exercised 2026-11-12: called by the harness with size 0x100 and +0x1c = 0x611900 it took 0x611900 to 0x611A00 in half 0, live and not linked (0x85), splitting the free block around it; with 0xE20000 the same in half 1 (0x105); with 0x610800, inside a used block, it returned 3
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
 int surface_vram_take_at_addr(uint size, surface_rec *surface)
@@ -298,9 +298,9 @@ int surface_vram_take_at_addr(uint size, surface_rec *surface)
 }
 
 /* 0x0c144be0  size 0xae  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xb6
- * evidence: (size, surface): first reuses a reserved block in either half (vram_find_shadow_for: linked, not live, its mirror owned by a surface with the same +0x18 word) and marks it live; otherwise finds an offset free in both halves (vram_find_mirrored_offset_for_surface), takes it in half 0 for the surface (linked, live) and its mirror in half 1 as a linked reservation owned by a stack dummy; nothing in the image calls it; part of KamuiTL
+ * evidence: (size, surface): first reuses a reserved block in either half (vram_find_shadow_for: linked, not live, its mirror owned by a surface with the same +0x18 word) and marks it live; otherwise finds an offset free in both halves (vram_find_mirrored_offset_for_surface), takes it in half 0 for the surface (linked, live) and its mirror in half 1 as a linked reservation owned by a stack dummy; nothing in the image calls it; part of KamuiTL; exercised 2026-11-12: called by the harness with S1 (+0x18 = 5, size 0x100) it took 0x611800 (linked, live) and reserved 0xE11800 in half 1 (linked, not live, 0x103); S2 with the same word (size 0xF0) then got 0xE11800, made live (0x107), and S3 with word 6 a new pair at 0x611900 / 0xE11900
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
 int surface_alloc_with_shadow(uint size, surface_rec *surface)
@@ -330,9 +330,9 @@ int surface_alloc_with_shadow(uint size, surface_rec *surface)
 }
 
 /* 0x0c144cc0  size 0x10c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x110
- * evidence: (surface): places a small texture (surface type 3) in a shared chunk: gets its size class from packed_tex_class, looks for a chunk of that class with a free slot in the chunk list packed_chunk_list, else takes a new chunk record (packed_chunk_record_take), links it and gives it texture memory (packed_chunk_vram_take, in half 0 when bit 2 of the state flags is set and half 0's largest free block is at least half 1's, else half 1); stores chunk base + slot * stride at +0x1c of the surface and the surface in the slot; 3 when out of records or memory; callers surface_set_up_and_place and surface_pair_set_up_and_place; part of KamuiTL; checked against reference material (not in this repo)
+ * evidence: (surface): places a small texture (surface type 3) in a shared chunk: gets its size class from packed_tex_class, looks for a chunk of that class with a free slot in the chunk list packed_chunk_list, else takes a new chunk record (packed_chunk_record_take), links it and gives it texture memory (packed_chunk_vram_take, in half 0 when bit 2 of the state flags is set and half 0's largest free block is at least half 1's, else half 1); stores chunk base + slot * stride at +0x1c of the surface and the surface in the slot; 3 when out of records or memory; callers surface_set_up_and_place and surface_pair_set_up_and_place; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on three type-3 surfaces (8x8, 8x8, 16x16, flags 0): the first took a record from packed_chunk_pool (flags 0x1003 after) and 0xFA0 bytes at 0xE10800 in half 1 (half 0's largest free block the smaller) and got 0xE10800; the second the same chunk's slot 1, 0xE10880 (stride 0x80); the third a new chunk (class 0x3000) at 0xE11800, now at the head of packed_chunk_list
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
 int packed_tex_alloc(surface_rec *surface)
@@ -420,8 +420,8 @@ int vram_free_at(int addr)
 }
 
 /* 0x0c144ee0  size 0x32  file by match with source
- * confidence: inferred
- * evidence: (address A, address B): converts a 32-bit-area address back to its 64-bit-area offset (vram32_to_64_offset) and frees the block starting there (vram_free_at); when none starts there tries B the same way; frees a buffer pair from vram32_buffer_pair_alloc by either half; only caller ta_param_area_release; part of KamuiTL
+ * confidence: exercised
+ * evidence: (address A, address B): converts a 32-bit-area address back to its 64-bit-area offset (vram32_to_64_offset) and frees the block starting there (vram_free_at); when none starts there tries B the same way; frees a buffer pair from vram32_buffer_pair_alloc by either half; only caller ta_param_area_release; part of KamuiTL; exercised 2026-11-12: called by the harness after fb_surfaces_alloc_together had taken 0x611800 in half 0: (0x708C00, 0x308C00) found no block at the first (0x611804), freed 0x611800 by the second and returned 0; after it had taken 0xE10800, (0xB08400, 0xF08400) freed it by the first; (0x123400, 0x123404) returned 7
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
 int vram32_pair_free(uint addr_a, uint addr_b)
@@ -439,9 +439,9 @@ int vram32_pair_free(uint addr_a, uint addr_b)
 }
 
 /* 0x0c144f20  size 0xe8  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xf8
- * evidence: (surface): finds the chunk slot holding the surface's address (+0x1c) among the chunks of its size class (packed_tex_class, chunk list packed_chunk_list), empties it, and when the chunk has no texture left frees its memory (vram_free_at), unlinks it (chunk_list_remove) and returns the record; 7 when not found; callers surface_memory_return_by_kind and surface_pair_set_up_and_place; part of KamuiTL; checked against reference material (not in this repo)
+ * evidence: (surface): finds the chunk slot holding the surface's address (+0x1c) among the chunks of its size class (packed_tex_class, chunk list packed_chunk_list), empties it, and when the chunk has no texture left frees its memory (vram_free_at), unlinks it (chunk_list_remove) and returns the record; 7 when not found; callers surface_memory_return_by_kind and surface_pair_set_up_and_place; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness after packed_tex_alloc had put two 8x8 surfaces in one chunk: freeing the first returned 0 and emptied its slot only, freeing it again returned 7, freeing the second returned 0, gave the 0xFA0 bytes at 0xE10800 back, unlinked the chunk from packed_chunk_list and cleared its record's in-use bit
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
 int packed_tex_free(surface_rec *surface)
@@ -592,8 +592,8 @@ int vram_largest_free_per_half(int *largest0, int *largest1)
 }
 
 /* 0x0c145280  size 0x42  file by match with source
- * confidence: inferred
- * evidence: sorts the used and free lists of both halves (the record vram_halves) by start address with node_list_sort_by_start; with vram_compact_halves, the two steps of vram_pool_sort_and_compact (texture memory compaction); part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: sorts the used and free lists of both halves (the record vram_halves) by start address with node_list_sort_by_start; with vram_compact_halves, the two steps of vram_pool_sort_and_compact (texture memory compaction); part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on the snapshot's lists (half 0 used in descending order, the other three unsorted: 60, 11, 332 and 38 nodes) it left all four in ascending order of start address and returned 0
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
 int vram_lists_sort(void)
@@ -606,8 +606,8 @@ int vram_lists_sort(void)
 }
 
 /* 0x0c1452e0  size 0x36  file by match with source
- * confidence: inferred
- * evidence: runs vram_half_compact on half 0's free and used lists, then on half 1's; returns the first failure; called by vram_pool_sort_and_compact after vram_lists_sort; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: runs vram_half_compact on half 0's free and used lists, then on half 1's; returns the first failure; called by vram_pool_sort_and_compact after vram_lists_sort; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness after vram_lists_sort on the snapshot's lists: it returned 0 and left one free block in each half, 0x60F9A0 to 0x800000 (0x1F0660 bytes) and 0xE07C00 to 0x1000000 (0x1F8400), the buffers (marks 0x2000 at 0 and 0x4D4000, 8 at 0x800000) where they were
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
 int vram_compact_halves(void)
@@ -622,7 +622,7 @@ int vram_compact_halves(void)
 /* 0x0c145340  size 0x6a  file by match with source
  * confidence: inferred
  * extent: 0x70
- * evidence: (free block, size, surface): a start inside a free block that suits the 2 KB pages of texture memory: for a size up to 0x2b0 the block's start when the data ends before the next 2 KB boundary, else that boundary; for a larger size a start 0x2b0 bytes before a 2 KB boundary (so the data from +0x2b0 on is page aligned); -1 when the block is too small; only caller vram_find_mirrored_offset_for_surface; part of KamuiTL
+ * evidence: (free block, size, surface): a start inside a free block that suits the 2 KB pages of texture memory: for a size up to 0x2b0 the block's start when the data ends before the next 2 KB boundary, else that boundary; for a larger size a start 0x2b0 bytes before the first 2 KB boundary at least 0x2b0 bytes past the block's start (so the data from +0x2b0 on is page aligned); -1 only for a size up to 0x2b0 that fits neither before nor after the boundary: for a larger size the room check compares the bytes needed from the block's start with the block's end address, so it does not fail for a block above that address (as the game has it; the caller tries only starts up to the block's last fitting offset); only caller vram_find_mirrored_offset_for_surface; part of KamuiTL; as the game has it: vram_page_fit_start never reports a too-small block for sizes over 0x2b0; harmless, since vram_find_mirrored_offset_for_surface tries only starts up to the block's last fitting offset; corrected 2026-11-12 from harness calls: called by the harness on blocks in a buffer: (start 0x1000, 0x1000 bytes) with size 0x100 gave 0x1000, (0x1700, 0x1000) with 0x200 the boundary 0x1800, (0x1700, 0x180) with 0x200 -1, (0x1000, 0x4000) with 0x1000 0x1550, (0x1700, 0x4000) with 0x1000 0x1D50; but (0x100000, 0x800), too small for 0x1000, gave 0x100550, not -1: for a size over 0x2B0 the room check compares the bytes needed with the block's end address
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
 uint vram_page_fit_start(vram_node *node, uint size, surface_rec *surface)
@@ -651,8 +651,8 @@ uint vram_page_fit_start(vram_node *node, uint size, surface_rec *surface)
 }
 
 /* 0x0c1453c0  size 0x112  file by match with source
- * confidence: inferred
- * evidence: (size, surface): walks half 0's free blocks for an offset whose mirror (offset + the half size at vram_half0_size) is a free range in half 1 (vram_range_is_free): for a surface whose +0x18 flags give (flags & 0x29) == 1 it tries the starts vram_page_fit_start proposes, 2 KB apart, falling back to any 32-byte step; other surfaces any 32-byte step; -1 when none; callers surface_alloc_both_halves and surface_alloc_with_shadow (both uncalled); part of KamuiTL
+ * confidence: exercised
+ * evidence: (size, surface): walks half 0's free blocks for an offset whose mirror (offset + the half size at vram_half0_size) is a free range in half 1 (vram_range_is_free): for a surface whose +0x18 flags give (flags & 0x29) == 1 it tries the starts vram_page_fit_start proposes, 2 KB apart, falling back to any 32-byte step; other surfaces any 32-byte step; -1 when none; callers surface_alloc_both_halves and surface_alloc_with_shadow (both uncalled); part of KamuiTL; exercised 2026-11-12: called by the harness after vram_take_range_at took 0xE11800 to 0xE11840 in half 1: with size 0x20 a surface with +0x18 = 0 or 9 got 0x611840 (32-byte steps), one with +0x18 = 1 got 0x612000 (the 2 KB step after 0x611800); size 0x1EF000 returned -1
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
 int vram_find_mirrored_offset_for_surface(uint size, surface_rec *surface)
@@ -706,9 +706,9 @@ int vram_find_mirrored_offset_for_surface(uint size, surface_rec *surface)
 }
 
 /* 0x0c145500  size 0x4c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x54
- * evidence: (half, address, size): 0 when one free block of that half covers the whole range, else 3; callers vram_find_mirrored_offset_for_surface and vram_find_mirrored_offset; part of KamuiTL
+ * evidence: (half, address, size): 0 when one free block of that half covers the whole range, else 3; callers vram_find_mirrored_offset_for_surface and vram_find_mirrored_offset; part of KamuiTL; exercised 2026-11-12: called by the harness on the snapshot's lists: (0, 0x611800, 0x1000) returned 0, (0, 0x611700, 0x40) 3 (inside a used block), (1, 0xE10800, 0x100) 0, (1, 0xFFFFF0, 0x20) 3 (past the end), (0, 0x5AB560, 0x2A0) 0 (a whole free block) and (0, 0x5AB560, 0x2C0) 3
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
 int vram_range_is_free(int half, int addr, int size)
@@ -902,9 +902,9 @@ int vram_take_first_fit_buffer(short half,int size,void *owner,short kind)
 }
 
 /* 0x0c145a80  size 0x13e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x172
- * evidence: (half, size, surface): first-fit allocation of a 32-byte-rounded size in one half for a texture surface (address to +0x1c, node marked 0x20 in half 0 or 0x40 in half 1, live), splitting the block when larger; nothing in the image calls it; part of KamuiTL
+ * evidence: (half, size, surface): first-fit allocation of a 32-byte-rounded size in one half for a texture surface (address to +0x1c, node marked 0x20 in half 0 or 0x40 in half 1, live), splitting the block when larger; nothing in the image calls it; part of KamuiTL; exercised 2026-11-12: called by the harness on the snapshot's lists: (0, 0x30) took 0x40 bytes at 0x611800, the first free block's start (node 0x25, the free block now from 0x611840), and put 0x611800 at the surface's +0x1c; (1, 0x400) took 0xE10800 (0x45); (1, 0x1EF801) returned 3
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
 int vram_take_first_fit(int half_no, uint size, surface_rec *surface)
@@ -1070,9 +1070,9 @@ int vram_take_page_aligned_fit(int half_no, uint size, surface_rec *surface)
 }
 
 /* 0x0c145e80  size 0x1b6  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x256
- * evidence: (half, size, chunk record): the same 2 KB preference as vram_take_page_aligned_fit for a packed-texture chunk: the address goes to +8 of the chunk record, the node is marked 0x200 in half 0 or 0x400 in half 1 and live, a start inside a block through packed_chunk_take_range_at; only caller packed_tex_alloc; part of KamuiTL; prototype: returns 0 or +-1 in r0 (round L 210); three parameters: the body writes r7 before any read (0x0C145EE2, the aligned address it passes packed_chunk_take_range_at), and its one caller packed_tex_alloc never sets r7 (the decompiler's fourth argument there is r7's stale value); header pass 5: with this prototype every matched file still matches (trial 6007/6007) and packed_tex_alloc matches without a cast (w644)
+ * evidence: (half, size, chunk record): the same 2 KB preference as vram_take_page_aligned_fit for a packed-texture chunk: the address goes to +8 of the chunk record, the node is marked 0x200 in half 0 or 0x400 in half 1 and live, a start inside a block through packed_chunk_take_range_at; only caller packed_tex_alloc; part of KamuiTL; prototype: returns 0 or +-1 in r0 (round L 210); three parameters: the body writes r7 before any read (0x0C145EE2, the aligned address it passes packed_chunk_take_range_at), and its one caller packed_tex_alloc never sets r7 (the decompiler's fourth argument there is r7's stale value); header pass 5: with this prototype every matched file still matches (trial 6007/6007) and packed_tex_alloc matches without a cast (w644); exercised 2026-11-12: called by the harness after vram_take_first_fit took 0x611800 to 0x611900: (0, 0x400) put 0x611900 at the chunk's +8 (0x205: it ends before 0x612000), (0, 0x800) 0x612000 through packed_chunk_take_range_at (0x805), the 0x300 bytes before it left free; (1, 0x800) 0xE10800 (0x405)
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
 int packed_chunk_vram_take(int half_no, uint size, packed_chunk_rec *chunk)
@@ -1173,9 +1173,9 @@ int packed_chunk_vram_take(int half_no, uint size, packed_chunk_rec *chunk)
 }
 
 /* 0x0c1460e0  size 0x96  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x9e
- * evidence: (half, size, surface): the smallest used block of that half that is linked but not live (a reservation, marked 0x80 or 0x100), at least the size and below the half size (vram_half_size), whose mirror in the other half is owned by a surface with the same +0x18 word as this one; 0 when none; only caller surface_alloc_with_shadow; part of KamuiTL
+ * evidence: (half, size, surface): the smallest used block of that half that is linked but not live (a reservation, marked 0x80 or 0x100), at least the size and below the half size (vram_half_size), whose mirror in the other half is owned by a surface with the same +0x18 word as this one; 0 when none; only caller surface_alloc_with_shadow; part of KamuiTL; exercised 2026-11-12: called by the harness after surface_alloc_with_shadow(0x100, S1 with +0x18 = 5) reserved 0xE11800: (1, 0x100, S2 with +0x18 = 5) returned that node; with S3 (+0x18 = 6) 0, with size 0x120 0, in half 0 0
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
 vram_node * vram_find_shadow_for(int half_no, int size, surface_rec *surface)
@@ -1398,8 +1398,8 @@ void node_list_unlink(vram_node **head, vram_node **tail, vram_node *node)
 }
 
 /* 0x0c1464e0  size 0xae  file by match with source
- * confidence: inferred
- * evidence: (destination, source, bytes): copies texture memory to texture memory in 2 KB pieces through a stack buffer: reads with vram64_read (from the uncached 0xa4000000 window), writes back each 32-byte line of the buffer from the operand cache (ocbwb, ocbwb_line) and writes with vram64_write; only caller vram_half_compact; part of KamuiTL
+ * confidence: exercised
+ * evidence: (destination, source, bytes): copies texture memory to texture memory in 2 KB pieces through a stack buffer: reads with vram64_read (from the uncached 0xa4000000 window), writes back each 32-byte line of the buffer from the operand cache (ocbwb, ocbwb_line) and writes with vram64_write; only caller vram_half_compact; part of KamuiTL; exercised 2026-11-12: called by the harness with texture memory at 0x700000 filled with 0x5a, +0 poked 0x01010101, +0x8FC 0x03030303 and +0x900 0x04040404: copying 0x900 bytes to 0x702000 gave 0x01010101, 0x5a bytes across the 2 KB piece boundary, 0x03030303 at +0x8FC and left +0x900 0
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
 void vram_block_copy(int dst, int src, uint n)
@@ -1428,8 +1428,8 @@ void vram_block_copy(int dst, int src, uint n)
 }
 
 /* 0x0c1465c0  size 0xb4  file by match with source
- * confidence: inferred
- * evidence: (int *head, int *tail): selection sort of a node list by start address (+0xc): repeatedly moves the node with the highest start among those not yet placed to the end; only caller vram_lists_sort; part of KamuiTL
+ * confidence: exercised
+ * evidence: (int *head, int *tail): selection sort of a node list by start address (+0xc): repeatedly moves the node with the highest start among those not yet placed to the end; only caller vram_lists_sort; part of KamuiTL; exercised 2026-11-12: called by the harness on half 0's free list as the snapshot has it (vram_halves +8 / +0xC, 11 nodes unsorted): it left the list in ascending order of start address (0x5AB560 first, 0x611800 last) and the other lists as they were
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
 void node_list_sort_by_start(vram_node **head, vram_node **tail)
@@ -1467,9 +1467,9 @@ void node_list_sort_by_start(vram_node **head, vram_node **tail)
 }
 
 /* 0x0c146680  size 0x1c6  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x218
- * evidence: (free head, free tail, used head, used tail): compacts one half of texture memory: wherever a movable used block lies right after a free block, rounds the free block's start up to 32 bytes (splitting off the remainder), copies the data down (vram_block_copy), swaps the two, updates the owner (a surface's +0x1c, or a packed chunk's base +8 and each packed surface's +0x1c by the distance moved) and merges the free block with the next one when they touch; movable are textures and chunks not linked to a mirror (marks 0x20/0x40, 0x80/0x100, 0x200/0x400, 0x800/0x1000), never the buffers (8, 0x2000); called twice by vram_compact_halves; part of KamuiTL
+ * evidence: (free head, free tail, used head, used tail): compacts one half of texture memory: wherever a movable used block lies right after a free block, rounds the free block's start up to 32 bytes (splitting off the remainder), copies the data down (vram_block_copy), swaps the two, updates the owner (a surface's +0x1c, or a packed chunk's base +8 and each packed surface's +0x1c by the distance moved) and merges the free block with the next one when they touch; movable are textures and chunks not linked to a mirror (marks 0x20/0x40, 0x80/0x100, 0x200/0x400, 0x800/0x1000), never the buffers (8, 0x2000); called twice by vram_compact_halves; part of KamuiTL; exercised 2026-11-12: called by the harness with half 0's lists after vram_lists_sort: the block at 0x5AB800 (0x1D60 bytes) moved down to the free block's start 0x5AB560 with its data (a word poked at 0x5AB800 read back there) and its surface's +0x1c went from 0x5AB800 to 0x5AB560; half 0 ended with one free block, 0x60F9A0 to 0x800000, the buffers where they were; half 1 unchanged
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
 int vram_half_compact(vram_node **free_head, vram_node **free_tail, vram_node **used_head, vram_node **used_tail)
@@ -1599,9 +1599,9 @@ out:
 }
 
 /* 0x0c1468a0  size 0x25a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x2ec
- * evidence: (half, address, size, chunk record, linked, live): vram_take_range_at for a packed-texture chunk: the address goes to +8 of the chunk record and the node is marked 0x800 in half 0 or 0x1000 in half 1, plus 2 and 4 as asked; callers packed_chunk_vram_take and packed_chunk_alloc_with_shadow; part of KamuiTL
+ * evidence: (half, address, size, chunk record, linked, live): vram_take_range_at for a packed-texture chunk: the address goes to +8 of the chunk record and the node is marked 0x800 in half 0 or 0x1000 in half 1, plus 2 and 4 as asked; callers packed_chunk_vram_take and packed_chunk_alloc_with_shadow; part of KamuiTL; exercised 2026-11-12: called by the harness (0, 0x611800, 0x800, chunk, 0, 1) put 0x611800 at the chunk's +8 and marked the node 0x805; (1, 0xE10800, 0x800, chunk 2, 1, 0) put 0xE10800 and marked it 0x1003; the free blocks then started at 0x612000 and 0xE11000
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
 int packed_chunk_take_range_at(half, addr, size, chunk, linked, live) short half; int addr; uint size; packed_chunk_rec *chunk; int linked; int live;
@@ -1689,9 +1689,9 @@ int packed_chunk_take_range_at(half, addr, size, chunk, linked, live) short half
 }
 
 /* 0x0c146ba0  size 0xac  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xb4
- * evidence: (size, chunk record): the chunk counterpart of surface_alloc_with_shadow: reuses a reserved block found by packed_chunk_find_shadow in either half, else takes an offset free in both halves (vram_find_mirrored_offset) for the chunk in half 0 and its mirror in half 1 as a reservation (packed_chunk_take_range_at); nothing in the image calls it; part of KamuiTL
+ * evidence: (size, chunk record): the chunk counterpart of surface_alloc_with_shadow: reuses a reserved block found by packed_chunk_find_shadow in either half, else takes an offset free in both halves (vram_find_mirrored_offset) for the chunk in half 0 and its mirror in half 1 as a reservation (packed_chunk_take_range_at); nothing in the image calls it; part of KamuiTL; exercised 2026-11-12: called by the harness with chunk C1 (flags 0x1000, size 0x800) it took 0x611800 (0x807) and reserved 0xE11800 (0x1003); C2 (0x1000) then got 0xE11800, made live (0x1007), and C3 (0x2000) a new pair at 0x612000 / 0xE12000
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
 int packed_chunk_alloc_with_shadow(uint size, packed_chunk_rec *chunk)
@@ -1722,9 +1722,9 @@ int packed_chunk_alloc_with_shadow(uint size, packed_chunk_rec *chunk)
 }
 
 /* 0x0c146c80  size 0xe6  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x144
- * evidence: (int info[5], surface): the packing class of a small texture from the surface's +0xc word (8, 16, 32 or 64) and bit 0 of its +0x18 flags: the class mark (0x1000 to 0x8000, kept in the chunk record's flags), the slot stride (0x80 to 0x800), a second size, the chunk's memory size and the number of slots (0x800 / stride); 0 for any other size; callers packed_tex_alloc and packed_tex_free; part of KamuiTL
+ * evidence: (int info[5], surface): the packing class of a small texture from the surface's +0xc word (8, 16, 32 or 64) and bit 0 of its +0x18 flags: the class mark (0x1000 to 0x8000, kept in the chunk record's flags), the slot stride (0x80 to 0x800), a second size, the chunk's memory size and the number of slots (0x800 / stride); returns 1, or 0 for any other size (the record left as it was); callers packed_tex_alloc and packed_tex_free; part of KamuiTL; exercised 2026-11-12: called by the harness width 8 flags 0 gave class 0x1000, stride 0x80, 16 slots, chunk 0xF90; width 8 flags 1 0x2000 (chunk 0xFA0); width 16 0x3000; width 64 flags 1 0x8000, stride 0x800, 1 slot; each returned 1; width 12 returned 0 and left the record as it was
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
 int packed_tex_class(packed_class_rec *info, surface_rec *surface)
@@ -1794,9 +1794,9 @@ int packed_tex_class(packed_class_rec *info, surface_rec *surface)
 }
 
 /* 0x0c146e00  size 0x34  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x4e
- * evidence: returns the first record of the 1024-entry chunk record pool at packed_chunk_pool (0x4c bytes each: flags, next, base, 16 slots) whose in-use bit is clear, after setting it; 0 when all are taken; only caller packed_tex_alloc; part of KamuiTL
+ * evidence: returns the first record of the 1024-entry chunk record pool at packed_chunk_pool (0x4c bytes each: flags, next, base, 16 slots) whose in-use bit is clear, after setting it; 0 when all are taken; only caller packed_tex_alloc; part of KamuiTL; exercised 2026-11-12: called by the harness on the snapshot's pool (all records free): it returned packed_chunk_pool (0x0C5EDD24) and set its bit 0, then 0x0C5EDD70 (+0x4C); after packed_chunk_record_return of the first it returned the first again
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
 packed_chunk_rec * packed_chunk_record_take(void)
@@ -1817,8 +1817,8 @@ packed_chunk_rec * packed_chunk_record_take(void)
 }
 
 /* 0x0c146e60  size 0x2c  file by match with source
- * confidence: inferred
- * evidence: clears the in-use bit of a chunk record of the pool at packed_chunk_pool (scans all 1024 for the pointer); callers vram_lists_clear, packed_tex_alloc, packed_tex_free; part of KamuiTL
+ * confidence: exercised
+ * evidence: clears the in-use bit of a chunk record of the pool at packed_chunk_pool (scans all 1024 for the pointer); callers vram_lists_clear, packed_tex_alloc, packed_tex_free; part of KamuiTL; exercised 2026-11-12: called by the harness after two packed_chunk_record_take calls: returning 0x0C5EDD24 cleared that record's bit 0 (the next take returned it again), returning 0x0C5EDD70 cleared its bit
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
 void packed_chunk_record_return(packed_chunk_rec *chunk)
@@ -1834,8 +1834,8 @@ void packed_chunk_record_return(packed_chunk_rec *chunk)
 }
 
 /* 0x0c146ea0  size 0x16  file by match with source
- * confidence: inferred
- * evidence: (int *head, record): puts a record at the head of a singly linked list (next at +4); only caller packed_tex_alloc, on the chunk list packed_chunk_list; part of KamuiTL
+ * confidence: exercised
+ * evidence: (int *head, record): puts a record at the head of a singly linked list (next at +4); only caller packed_tex_alloc, on the chunk list packed_chunk_list; part of KamuiTL; exercised 2026-11-12: called by the harness with a head word 0 in a buffer: pushing A left head A and A's +4 0; pushing B and then C left head C, C's +4 B and B's +4 A
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
 void chunk_list_push(packed_chunk_rec **head, packed_chunk_rec *chunk)
@@ -1846,9 +1846,9 @@ void chunk_list_push(packed_chunk_rec **head, packed_chunk_rec *chunk)
 }
 
 /* 0x0c146ec0  size 0x32  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x48
- * evidence: (int *head, record): unlinks a record from a singly linked list (next at +4); only caller packed_tex_free, on the chunk list packed_chunk_list; part of KamuiTL
+ * evidence: (int *head, record): unlinks a record from a singly linked list (next at +4); only caller packed_tex_free, on the chunk list packed_chunk_list; part of KamuiTL; exercised 2026-11-12: called by the harness on the list C, B, A built by chunk_list_push: removing B (the middle) left C's +4 A, removing C (the head) left head A, removing A left head 0
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
 void chunk_list_remove(packed_chunk_rec **head, packed_chunk_rec *chunk)
@@ -1876,9 +1876,9 @@ void chunk_list_remove(packed_chunk_rec **head, packed_chunk_rec *chunk)
 }
 
 /* 0x0c146f20  size 0xa0  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xa8
- * evidence: (half, size, chunk record): vram_find_shadow_for for chunks: the smallest linked, not live block marked 0x800 or 0x1000 in that half, at least the size and below the half size, whose mirror's owner chunk has the same class bits (0xf000) as this one; only caller packed_chunk_alloc_with_shadow; part of KamuiTL
+ * evidence: (half, size, chunk record): vram_find_shadow_for for chunks: the smallest linked, not live block marked 0x800 or 0x1000 in that half, at least the size and below the half size, whose mirror's owner chunk has the same class bits (0xf000) as this one; only caller packed_chunk_alloc_with_shadow; part of KamuiTL; exercised 2026-11-12: called by the harness after packed_chunk_alloc_with_shadow(0x800, a chunk with flags 0x1000) reserved 0xE11800: (1, 0x800, a chunk with 0x1000) returned that node, with a chunk of class 0x2000 0, in half 0 0
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
 vram_node * packed_chunk_find_shadow(int half_no, int size, packed_chunk_rec *chunk)
@@ -1907,8 +1907,8 @@ vram_node * packed_chunk_find_shadow(int half_no, int size, packed_chunk_rec *ch
 }
 
 /* 0x0c146fe0  size 0x82  file by match with source
- * confidence: inferred
- * evidence: (size): the first offset, in 32-byte steps through half 0's free blocks, whose mirror (offset + the half size at vram_half0_size) is a free range in half 1 (vram_range_is_free); -1 when none; only caller packed_chunk_alloc_with_shadow; part of KamuiTL
+ * confidence: exercised
+ * evidence: (size): the first offset, in 32-byte steps through half 0's free blocks, whose mirror (offset + the half size at vram_half0_size) is a free range in half 1 (vram_range_is_free); -1 when none; only caller packed_chunk_alloc_with_shadow; part of KamuiTL; exercised 2026-11-12: called by the harness on the snapshot's lists: size 0x20 returned 0x611800 and 0x1EF000 -1; after vram_take_range_at took 0xE11800 to 0xE11840 in half 1, size 0x20 returned 0x611840 (two 32-byte steps on)
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
 int vram_find_mirrored_offset(int size)
@@ -1954,9 +1954,9 @@ int vram64_to_32_offset(uint addr)
 }
 
 /* 0x0c1470c0  size 0x54  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x68
- * evidence: the inverse of vram64_to_32_offset: a 32-bit-view offset (below 8 MB, or 8-16 MB with 0x800000 taken off at the end) becomes the 64-bit interleaved offset, the second 4 MB bank giving +4; caller vram32_pair_free; part of KamuiTL
+ * evidence: the inverse of vram64_to_32_offset: a 32-bit-view offset (below 8 MB, or 8-16 MB with 0x800000 taken off at the end) becomes the 64-bit interleaved offset, the second 4 MB bank giving +4; caller vram32_pair_free; part of KamuiTL; exercised 2026-11-12: called by the harness 0x26A000 returned 0x4D4000, 0x66A000 0x4D4004, 0x26A002 0x4D4002, 0x800000 0x800000, 0xC00000 0x800004, 0x308C00 0x611800 and 0x708C00 0x611804, the inverses of what vram64_to_32_offset gave (0x4D4000 to 0x26A000, 0x4D4004 to 0x66A000, 0x800004 to 0xC00000)
  * matched: source/sdk/kamui/vram_alloc.c (tools/match/match.py)
  */
 uint vram32_to_64_offset(uint addr32)

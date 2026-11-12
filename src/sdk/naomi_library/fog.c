@@ -39,8 +39,8 @@ void fog_col_ram_write_bytes(uint color)
 }
 
 /* 0x0c132780  size 0x46  file by match with source
- * confidence: inferred
- * evidence: as fog_col_ram_write_bytes, for the color per-vertex fog blends towards (0xa05f80b4, pvr_fog_col_vert_put); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: as fog_col_ram_write_bytes, for the color per-vertex fog blends towards (register offset 0xb4, written to both chips at 0xa85f80b4 by pvr_fog_col_vert_put through pvr_reg_write_both); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with 0x80123456 and with 0x11223344 it passed each to pvr_fog_col_vert_put, and the record's register write (by pvr_reg_write_both) was 0x80123456, then 0x11223344, at 0xa85f80b4, the both-chips window of the fog vertex color register
  * matched: source/sdk/naomi_library/fog.c (tools/match/match.py)
  */
 void fog_col_vert_write_bytes(uint color)
@@ -55,8 +55,8 @@ void fog_col_vert_write_bytes(uint color)
 }
 
 /* 0x0c1327e0  size 0x12  file by match with source
- * confidence: inferred
- * evidence: writes its argument unchanged to the fog density register (0xa05f80b8, pvr_fog_coeff_put); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: writes its argument unchanged to the fog density register (register offset 0xb8, written to both chips at 0xa85f80b8 by pvr_fog_coeff_put through pvr_reg_write_both); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with 0x1234 and with 0xff07 it passed each to pvr_fog_coeff_put, and the record's register write (by pvr_reg_write_both) was 0x1234, then 0xff07, at 0xa85f80b8, the both-chips window of the fog density register
  * matched: source/sdk/naomi_library/fog.c (tools/match/match.py)
  */
 void fog_density_reg_write(uint density)

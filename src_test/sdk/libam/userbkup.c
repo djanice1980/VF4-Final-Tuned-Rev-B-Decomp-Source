@@ -107,8 +107,8 @@ void sram_save_write_header_b(void)
 }
 
 /* 0x0c04be00  size 0x50  file by match with source
- * confidence: inferred
- * evidence: writes the save buffer (sram_save_padded_size bytes, by words) to both SRAM copies, at 0xa0200218 and after it; nothing in the image calls it (uncalled code, made a function 2026-11-09); between sram_save_write_header_b and sram_save_write_copy_a, so by link order part of sdk/libam/userbkup.c
+ * confidence: exercised
+ * evidence: writes the save buffer (sram_save_padded_size bytes, by words) to both SRAM copies, at 0xa0200218 and after it; nothing in the image calls it (uncalled code, made a function 2026-11-09); between sram_save_write_header_b and sram_save_write_copy_a, so by link order part of sdk/libam/userbkup.c; exercised 2026-11-12: called by the harness after sram_save_load(16, buffer) in the same sandbox (it returned 3 and zeroed both 16-byte copies) and the buffer filled with 01 to 10, it wrote 01 to 10 to SRAM 0xA0200218 and again at 0xA0200228 (right after the 16-byte padded copy), leaving the headers and 0xA0200238 unchanged
  * same code as main.bin 0c116ce0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/libam/userbkup.c (tools/match/match.py)
  */
@@ -191,8 +191,8 @@ void sram_save_write_copy_b(void)
 }
 
 /* 0x0c04bee0  size 0x58  file by match with source
- * confidence: inferred
- * evidence: (offset, bytes): writes that range of the save buffer to both SRAM copies by bytes; nothing in the image calls it (uncalled code, made a function 2026-11-09); between sram_save_write_copy_b and sram_save_write_range_a, so by link order part of sdk/libam/userbkup.c
+ * confidence: exercised
+ * evidence: (offset, bytes): writes that range of the save buffer to both SRAM copies by bytes; nothing in the image calls it (uncalled code, made a function 2026-11-09); between sram_save_write_copy_b and sram_save_write_range_a, so by link order part of sdk/libam/userbkup.c; exercised 2026-11-12: called by the harness with (4, 3) after sram_save_load(16, buffer) and with the buffer holding 'A' to 'P' and both SRAM copies 01 to 10, it changed bytes 4-6 of both copies (0xA0200218 and 0xA0200228) to 45 46 47 and nothing else (byte 7 stayed 08)
  * same code as main.bin 0c116dc0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/libam/userbkup.c (tools/match/match.py)
  */
@@ -225,8 +225,8 @@ void sram_save_write_range(int offset, int bytes)
 }
 
 /* 0x0c04bf60  size 0x2c  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file userbkup.c: copies bytes [offset, offset + len) of the game's buffer into the first copy
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file userbkup.c: copies bytes [offset, offset + len) of the game's buffer into the first copy; exercised 2026-11-12: called by the harness with (8, 2) in the same state as sram_save_write_range's test (buffer 'A' to 'P', copies 01 to 10), it changed bytes 8-9 of the first copy (0xA0200218) to 49 4A and left the second copy's 09 0A as they were
  * same code as main.bin 0c116e40 (ghidra/TransferFromMain.java)
  * matched: source/sdk/libam/userbkup.c (tools/match/match.py)
  */
@@ -248,8 +248,8 @@ void sram_save_write_range_a(int offset, int n)
 }
 
 /* 0x0c04bfa0  size 0x32  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file userbkup.c: the same range into the second copy
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file userbkup.c: the same range into the second copy; exercised 2026-11-12: called by the harness with (10, 3) in the same state (buffer 'A' to 'P', padded size 16), it changed bytes 10-12 of the second copy (0xA0200228, 16 bytes after the first) to 4B 4C 4D and left the first copy's 0B 0C 0D as they were
  * same code as main.bin 0c116e80 (ghidra/TransferFromMain.java)
  * matched: source/sdk/libam/userbkup.c (tools/match/match.py)
  */
@@ -296,8 +296,8 @@ void sram_save_store(void)
 }
 
 /* 0x0c04c060  size 0x6a  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file userbkup.c: as sram_save_store but writes only one byte range of the two copies
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file userbkup.c: as sram_save_store but writes only one byte range of the two copies; exercised 2026-11-12: called by the harness with (0, 2) after sram_save_load(16, buffer) and with the buffer holding 'A' to 'P', it wrote the headers 0x0C61, 16, 16, 0 to both SRAM header slots (0x0C61 = crc16_ccitt of those 16 bytes, called in the same sandbox) and changed only bytes 0-1 of each copy to 41 42
  * same code as main.bin 0c116f40 (ghidra/TransferFromMain.java)
  * matched: source/sdk/libam/userbkup.c (tools/match/match.py)
  */
@@ -346,8 +346,8 @@ void sram_save_read_copy_b(uint size, uint *dst)
 }
 
 /* 0x0c04c180  size 0x18  file by match with source
- * confidence: inferred
- * evidence: 1 when sram_save_ready is set, else 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between sram_save_read_copy_b and sram_save_max_size, so by link order part of sdk/libam/userbkup.c
+ * confidence: exercised
+ * evidence: 1 when sram_save_ready is set, else 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between sram_save_read_copy_b and sram_save_max_size, so by link order part of sdk/libam/userbkup.c; exercised 2026-11-12: called by the harness it returned 1 with sram_save_ready 1 (snapshot), 0 after sram_save_ready was poked to 0, and 1 after it was poked to 5 and to 0x80000000
  * same code as main.bin 0c117060 (ghidra/TransferFromMain.java)
  * matched: source/sdk/libam/userbkup.c (tools/match/match.py)
  */

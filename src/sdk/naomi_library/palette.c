@@ -33,8 +33,8 @@ void pal_groups_setup(pal_group_rec *groups, int count)
 }
 
 /* 0x0c12f4c0  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: pal_groups_setup again with the table and count it kept; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: pal_groups_setup again with the table and count it kept; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness in one sandbox with graphics_work.pal_group_count poked to 4, groups 3 and 5 of poly_pal_groups poked in use and pal_block_bitmap to 0xC000, 3, it called pal_groups_setup(poly_pal_groups, 4), which left groups 0-3 free (first block -1, use 0), group 5 as poked and the bitmap at 0
  * matched: source/sdk/naomi_library/palette.c (tools/match/match.py)
  */
 void pal_groups_reset(void)
@@ -44,9 +44,9 @@ void pal_groups_reset(void)
 }
 
 /* 0x0c12f500  size 0x86  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xa2
- * evidence: drops one use of palette group n; at the last use clears its blocks in pal_block_bitmap and marks the group free; six callers (model_tex_unload_walk, obj_textures_release_step, sprite_record_drop, sprite_record_pal_group_replace, strip_pal_group_unref, and from graphics_bring_up+0x1b8); part of the NAOMI library; checked against reference material (not in this repo)
+ * evidence: drops one use of palette group n; at the last use clears its blocks in pal_block_bitmap and marks the group free; six callers (model_tex_unload_walk, obj_textures_release_step, sprite_record_drop, sprite_record_pal_group_replace, strip_pal_group_unref, and from graphics_bring_up+0x1b8); part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness in one sandbox with group 3 poked to first block 14, 4 blocks, use count 2 and its blocks marked by pal_mark_blocks_used(14, 64) (bitmap 0xC000, 0x0003): the first pal_group_unref(3) left the use count 1 and the bitmap as it was, the second cleared the four bits (bitmap 0, 0) and left the record free (first block -1, byte +2 -1, use 0, +6 -1, block count 4 kept)
  * matched: source/sdk/naomi_library/palette.c (tools/match/match.py)
  */
 void pal_group_unref(int group)
@@ -83,8 +83,8 @@ void pal_group_unref(int group)
 }
 
 /* 0x0c12f5c0  size 0x16  file by match with source
- * confidence: inferred
- * evidence: (group): the first short of the group's 8-byte record in the palette group table; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pal_group_unref and pal_group_store_colors, so by link order part of sdk/naomi_library/palette.c
+ * confidence: exercised
+ * evidence: (group): the first short of the group's 8-byte record in the palette group table; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pal_group_unref and pal_group_store_colors, so by link order part of sdk/naomi_library/palette.c; exercised 2026-11-12: called by the harness, for group 0 as the snapshot has it (free) it returned -1; with the first short of group 5 poked to 0x1234 it returned 0x1234 and with that of group 6 poked to 0xFFFD it returned -3
  * matched: source/sdk/naomi_library/palette.c (tools/match/match.py)
  */
 int pal_group_word0_get(int group)
@@ -93,8 +93,8 @@ int pal_group_word0_get(int group)
 }
 
 /* 0x0c12f5e0  size 0x38  file by match with source
- * confidence: inferred
- * evidence: when palette group n is in use, copies its colors (blocks * 16 entries) from the caller's array into pal_shadow at its first block, through the hand-written palette_shadow_write (16- or 32-bit entries by pal_entry_format; it marks the shadow for upload); part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: when palette group n is in use, copies its colors (blocks * 16 entries) from the caller's array into pal_shadow at its first block, through the hand-written palette_shadow_write (16- or 32-bit entries by pal_entry_format; it marks the shadow for upload); part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with group 2 poked to first block 3, 1 block, use 1 and pal_entry_format poked to 3, it copied the 16 words of a buffer (0x11111111, 0x22222222, 0xA5A5A5A5 ..., 0xFFFF0000) to pal_shadow entries 48-63, left entries 47 and 64 at 0 and set pal_shadow_changed to 1; with the use count 0 it wrote nothing and the flag stayed 0
  * matched: source/sdk/naomi_library/palette.c (tools/match/match.py)
  */
 void pal_group_store_colors(int group, uint *colors)
@@ -110,8 +110,8 @@ void pal_group_store_colors(int group, uint *colors)
 }
 
 /* 0x0c12f620  size 0x12  file by match with source
- * confidence: inferred
- * evidence: calls pal_group_store_colors with its arguments (the entry point for 32-bit color arrays); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: calls pal_group_store_colors with its arguments (by its name the entry point for 32-bit color arrays, but it selects nothing: halfwords or words are copied by pal_entry_format, as in pal_group_store_colors); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with group 2 poked to first block 3, 2 blocks, use 1 and pal_entry_format 0 as the snapshot has it, it copied the buffer's 32 halfwords (0x1111, 0x2222, 0x5A5A ..., 0x3333, 0x4444) into the low halves of pal_shadow entries 48-79 and set pal_shadow_changed, through pal_group_store_colors
  * matched: source/sdk/naomi_library/palette.c (tools/match/match.py)
  */
 void pal_group_store_colors_wide(int group,uint *colors)
@@ -123,7 +123,7 @@ void pal_group_store_colors_wide(int group,uint *colors)
 /* 0x0c12f640  size 0xaa  file by match with source
  * confidence: inferred
  * extent: 0xdc
- * evidence: (kind, colors): finds room in pal_block_bitmap for (colors + 15) / 16 blocks: for kind 16 the first run of free blocks anywhere, otherwise a free run at the start of a 256-entry bank; returns the first block or -1; called by the four texture loaders and sprite_record_pal_group_replace; part of the NAOMI library; checked against reference material (not in this repo)
+ * evidence: (kind, colors): looks in pal_block_bitmap for (colors + 15) / 16 free blocks: for kind 16 it counts free blocks through the four 16-block words, but once the count is high enough it only leaves the word it is in and goes on counting through the later words, where a used block drops the count and a later free block starts a new run; so it returns the start of the last run still counting at the end, not the first (bitmap {0, 1, 0, 0} and 2 blocks gives 17, not 0), and -1 when a later word ends in used blocks even though an earlier run was long enough ({0, 1, 0xffff, 0xffff} gives -1); otherwise a free run at the start of a 256-entry bank; returns the first block or -1; called by the four texture loaders and sprite_record_pal_group_replace; part of the NAOMI library; checked against reference material (not in this repo); record as the game has it: kind-16 palette allocations can fail or land later than the first free run when the block bitmap is fragmented; corrected 2026-11-12 from harness calls: for kind 16 it does not return the first free run: the harness calls with pal_block_bitmap poked to {0, 1, 0, 0} and (16, 32) (2 blocks) returned 17, not 0, and with {0, 1, 0xFFFF, 0xFFFF} returned -1 although blocks 0-1 are free (the scan only leaves the 16-block word where the run is long enough and goes on counting through the later words); the rest fit: empty bitmap (16, 40) 0, {7} (16, 40) 3, {0x7FFF} (16, 32) 15, all used -1, kind 0 {1} (0, 32) 16, {1, 0xFFFF, 4} (0, 48) 48
  * matched: source/sdk/naomi_library/palette.c (tools/match/match.py)
  */
 int pal_find_free_blocks(int kind, int color_count)
@@ -171,8 +171,8 @@ int pal_find_free_blocks(int kind, int color_count)
 }
 
 /* 0x0c12f720  size 0x48  file by match with source
- * confidence: inferred
- * evidence: (first block, colors): sets the bits of (colors + 15) / 16 blocks in pal_block_bitmap; same five callers as pal_find_free_blocks; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (first block, colors): sets the bits of (colors + 15) / 16 blocks in pal_block_bitmap; same five callers as pal_find_free_blocks; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness, on an empty bitmap pal_mark_blocks_used(14, 64) set blocks 14-17 (pal_block_bitmap 0xC000, 0x0003), and then (5, 17) set blocks 5 and 6 (first word 0xC060)
  * matched: source/sdk/naomi_library/palette.c (tools/match/match.py)
  */
 void pal_mark_blocks_used(uint first_block, int color_count)
@@ -195,8 +195,8 @@ void pal_mark_blocks_used(uint first_block, int color_count)
 }
 
 /* 0x0c12f780  size 0x20  file by match with source
- * confidence: inferred
- * evidence: when the shadow is marked changed (byte graphics_work.pal_shadow_changed), clears the mark and sends pal_shadow to palette RAM through the 3D library (pvr_pal_ram_load_all); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: when the shadow is marked changed (byte graphics_work.pal_shadow_changed), clears the mark and sends pal_shadow to palette RAM through the 3D library (pvr_pal_ram_load_all); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness, with pal_shadow_changed 0 as the snapshot has it it called nothing; with it poked to 1 it called pvr_pal_ram_load_all(pal_shadow) (1,024 register writes) and left the flag 0
  * matched: source/sdk/naomi_library/palette.c (tools/match/match.py)
  */
 void pal_shadow_flush(void)

@@ -475,8 +475,8 @@ void card_body_quest_limit_minute_set(card_body_rec *body, int value)
 }
 
 /* 0x0c086040  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: (card body, n): the n-th 5-bit field of the 1P color word (body +8); nothing in the image calls it (uncalled code, made a function 2026-11-09); between card_body_quest_limit_minute_set and card_body_color_2p_part_get, so by link order part of vf4lib/libcard/src/card.c
+ * confidence: exercised
+ * evidence: (card body, n): the n-th 5-bit field of the 1P color word (body +8); nothing in the image calls it (uncalled code, made a function 2026-11-09); between card_body_quest_limit_minute_set and card_body_color_2p_part_get, so by link order part of vf4lib/libcard/src/card.c; exercised 2026-11-12: called by the harness with 0x12345678 at body +8 (body +0xC 0x87654321): n 0 returned 24, n 1 returned 19, n 5 returned 9 (0x12345678 >> 25 & 31)
  * matched: source/vf4lib/libcard/src/card.c (tools/match/match.py)
  */
 uint card_body_color_1p_part_get(card_body_rec *body, uchar part)
@@ -485,8 +485,8 @@ uint card_body_color_1p_part_get(card_body_rec *body, uchar part)
 }
 
 /* 0x0c086060  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: (card body, n): the n-th 5-bit field of the 2P color word (body +0xC); nothing in the image calls it (uncalled code, made a function 2026-11-09); between card_body_color_1p_part_get and card_body_tenpo_pnt_set, so by link order part of vf4lib/libcard/src/card.c
+ * confidence: exercised
+ * evidence: (card body, n): the n-th 5-bit field of the 2P color word (body +0xC); nothing in the image calls it (uncalled code, made a function 2026-11-09); between card_body_color_1p_part_get and card_body_tenpo_pnt_set, so by link order part of vf4lib/libcard/src/card.c; exercised 2026-11-12: called by the harness with 0x87654321 at body +0xC (body +8 0x12345678): n 0 returned 1, n 2 returned 16, n 4 returned 22 (0x87654321 >> 20 & 31)
  * matched: source/vf4lib/libcard/src/card.c (tools/match/match.py)
  */
 uint card_body_color_2p_part_get(card_body_rec *body, uchar part)
@@ -495,8 +495,8 @@ uint card_body_color_2p_part_get(card_body_rec *body, uchar part)
 }
 
 /* 0x0c086080  size 0x10  file by match with source
- * confidence: inferred
- * evidence: (card body, value): writes the short body +0x46, the debug card's TENPO_PNT (sent as "my_tenpo_point_%s"); caller net_ranking_points_to_card; part of vf4lib/libcard/src/card.c
+ * confidence: exercised
+ * evidence: (card body, value): writes the short body +0x46, the debug card's TENPO_PNT (sent as "my_tenpo_point_%s"); caller net_ranking_points_to_card; part of vf4lib/libcard/src/card.c; exercised 2026-11-12: called by the harness on a body of 0x11 bytes with 0x12345 it wrote 0x2345 to the short +0x46 and left +0x40 to +0x44 and +0x48 to +0x4A 0x1111
  * matched: source/vf4lib/libcard/src/card.c (tools/match/match.py)
  */
 void card_body_tenpo_pnt_set(card_body_rec *body, int points)
@@ -506,8 +506,8 @@ void card_body_tenpo_pnt_set(card_body_rec *body, int points)
 }
 
 /* 0x0c0860a0  size 0x10  file by match with source
- * confidence: inferred
- * evidence: (card body, value): writes the short body +0x44, the debug card's RANK_PNT (sent as "ranking_point_%s"); caller net_ranking_points_to_card; part of vf4lib/libcard/src/card.c
+ * confidence: exercised
+ * evidence: (card body, value): writes the short body +0x44, the debug card's RANK_PNT (sent as "ranking_point_%s"); caller net_ranking_points_to_card; part of vf4lib/libcard/src/card.c; exercised 2026-11-12: called by the harness on a body of 0x11 bytes (+0x46 already 0x2345) with 0xBEEF it wrote 0xBEEF to the short +0x44 and left +0x42 0x1111 and +0x46 0x2345
  * matched: source/vf4lib/libcard/src/card.c (tools/match/match.py)
  */
 void card_body_rank_pnt_set(card_body_rec *body, int points)
@@ -593,8 +593,8 @@ void card_hdr_nickname_set(card_header_rec *header, int nickname)
 }
 
 /* 0x0c0861e0  size 0x16  file by match with source
- * confidence: inferred
- * evidence: (card header): bits 3-4 of the short header +0x1A, the debug card's FTF_TICKET; caller msnm_item_award; part of vf4lib/libcard/src/card.c
+ * confidence: exercised
+ * evidence: (card header): bits 3-4 of the short header +0x1A, the debug card's FTF_TICKET; caller msnm_item_award; part of vf4lib/libcard/src/card.c; exercised 2026-11-12: called by the harness with the header short +0x1A 0x0018 it returned 3, with 0x0008 1, with 0xFFE7 0
  * matched: source/vf4lib/libcard/src/card.c (tools/match/match.py)
  */
 uint card_hdr_ftf_ticket_get(card_header_rec *header)
@@ -603,8 +603,8 @@ uint card_hdr_ftf_ticket_get(card_header_rec *header)
 }
 
 /* 0x0c086200  size 0x20  file by match with source
- * confidence: inferred
- * evidence: (card header, value): writes bits 3-4 (FTF_TICKET) of header +0x1A; caller msnm_item_award; part of vf4lib/libcard/src/card.c
+ * confidence: exercised
+ * evidence: (card header, value): writes bits 3-4 (FTF_TICKET) of header +0x1A; caller msnm_item_award; part of vf4lib/libcard/src/card.c; exercised 2026-11-12: called by the harness with the header short +0x1A 0xFFFF and the value 1 it left 0xFFEF, with 0x0000 and the value 2 it left 0x0010
  * matched: source/vf4lib/libcard/src/card.c (tools/match/match.py)
  */
 void card_hdr_ftf_ticket_set(card_header_rec *header, int ticket)
@@ -662,8 +662,8 @@ void card_hdr_recover_set(card_header_rec *header)
 }
 
 /* 0x0c0862e0  size 0x16  file by match with source
- * confidence: inferred
- * evidence: (card header): clears FTF_RECOVER (bit 7 of header +0x1A); caller net_ranking_points_to_card; part of vf4lib/libcard/src/card.c
+ * confidence: exercised
+ * evidence: (card header): clears FTF_RECOVER (bit 7 of header +0x1A); caller net_ranking_points_to_card; part of vf4lib/libcard/src/card.c; exercised 2026-11-12: called by the harness with the header short +0x1A 0xFFFF it left 0xFF7F (bit 7 alone cleared)
  * matched: source/vf4lib/libcard/src/card.c (tools/match/match.py)
  */
 void card_hdr_recover_clear(card_header_rec *header)
@@ -729,9 +729,9 @@ void card_hdr_item_put(card_header_rec *header, uint item, int on)
 }
 
 /* 0x0c086420  size 0x50  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xda
- * evidence: (attack level number): 0 for 1 / 7, 1 for 2 / 4, 2 for 3 / 5 / 6 / 13, 3 for 0 / 8-12 / 14 (the high / mid / low split move_cmd_03_attack's level byte uses); others, 15 included, assert "bad ENattack_point_no %d" (card.c line 1030); caller attack_height_count; part of vf4lib/libcard/src/card.c
+ * evidence: (attack level number): 0 for 1 / 7, 1 for 2 / 4, 2 for 3 / 5 / 6 / 13, 3 for 0 / 8-12 / 14 (the high / mid / low split move_cmd_03_attack's level byte uses); others, 15 included, assert "bad ENattack_point_no %d" (card.c line 1030); caller attack_height_count; part of vf4lib/libcard/src/card.c; exercised 2026-11-12: called by the harness with 1 and 7 it returned 0, with 2 and 4 1, with 3 and 13 2, with 0, 9 and 14 3; with 15 it called fatal_at(card.c, 1030, "bad ENattack_point_no %d")
  * assert card.c:1030: fatal "bad ENattack_point_no %d"
  * matched: source/vf4lib/libcard/src/card.c (tools/match/match.py)
  */
@@ -773,8 +773,8 @@ uint attack_point_height_class(int attack_point)
 }
 
 /* 0x0c086520  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: (three shorts): zeroes the three counters attack_height_count adds to; nothing in the image calls it (uncalled code, made a function 2026-11-09); between attack_point_height_class and attack_height_count, so by link order part of vf4lib/libcard/src/card.c
+ * confidence: exercised
+ * evidence: (three shorts): zeroes the three counters attack_height_count adds to; nothing in the image calls it (uncalled code, made a function 2026-11-09); between attack_point_height_class and attack_height_count, so by link order part of vf4lib/libcard/src/card.c; exercised 2026-11-12: called by the harness on four shorts of 0x3434 it left 0, 0, 0, 0x3434
  * matched: source/vf4lib/libcard/src/card.c (tools/match/match.py)
  */
 void attack_height_counts_clear(short *counts)
@@ -786,9 +786,9 @@ void attack_height_counts_clear(short *counts)
 }
 
 /* 0x0c086540  size 0x60  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xa0
- * evidence: (three shorts, attack level number): adds 1 (stopping at 0xFFFF) to the short picked by attack_point_height_class: [0] high, [1] mid, [2] low; class 3 counts nothing; nothing in the image calls it; part of vf4lib/libcard/src/card.c
+ * evidence: (three shorts, attack level number): adds 1 (stopping at 0xFFFF) to the short picked by attack_point_height_class: [0] high, [1] mid, [2] low; class 3 counts nothing; nothing in the image calls it; part of vf4lib/libcard/src/card.c; exercised 2026-11-12: called by the harness in one sandbox on shorts 5, 0xFFFF, 7: levels 1, 2, 3 and 0 in turn left 6, 0xFFFF, 8 (high counted, mid held at 0xFFFF, low counted, class 3 nothing)
  * matched: source/vf4lib/libcard/src/card.c (tools/match/match.py)
  */
 void attack_height_count(short *counts, int attack_point)
@@ -1774,8 +1774,8 @@ void level_result_0_9(uint side_in, int lost, uint level_in, uint other_in)
 }
 
 /* 0x0c087fe0  size 0x20  file by match with source
- * confidence: inferred
- * evidence: (side, streak byte, point): writes back bytes +0x20 and +0x21 of the side's card image (level_result_20_up's saved values); caller level_result_20_up; part of vf4lib/libcard/src/card.c (by code order after the last card.c assert, before nickname.c; called from card.c's level code and sharing its .data run 0x0C2A01FC-0x0C2A0227; see notes)
+ * confidence: exercised
+ * evidence: (side, streak byte, point): writes back bytes +0x20 and +0x21 of the side's card image (level_result_20_up's saved values); caller level_result_20_up; part of vf4lib/libcard/src/card.c (by code order after the last card.c assert, before nickname.c; called from card.c's level code and sharing its .data run 0x0C2A01FC-0x0C2A0227; see notes); exercised 2026-11-12: called by the harness with (1, 0x55, 0x66) side 1's card image +0x20 / +0x21 became 0x55 / 0x66 and side 0's stayed 0 / 0; then (0, 0x1AB, -3) made side 0's 0xAB / 0xFD
  * matched: source/vf4lib/libcard/src/card.c (tools/match/match.py)
  */
 void card_image_streak_restore(int side, int exp, int point)
@@ -1821,8 +1821,8 @@ void jisaku_flag_update(void)
 }
 
 /* 0x0c0880c0  size 0x142  file by match with source
- * confidence: inferred
- * evidence: prints the JISAKU state with text_draw_formatted at cell 20, 30: "NOT_TOUCH_1 %d" ... "NOT_G_2" (the per-side counters), "JISAKU_0 %d" ... (jisaku_marks), "PTR %d" (jisaku_slot), "JISAKU_FLAG %d" and its names "NOT_TOUCH", "NOT_LEVER", "NOT_G_BUTTON", then each side's card image "RENSHO %d", "RENPAI %d", "POINT  %d"; nothing in the image calls it; part of vf4lib/libcard/src/card.c (by code order after the last card.c assert, before nickname.c; called from card.c's level code and sharing its .data run 0x0C2A01FC-0x0C2A0227; see notes)
+ * confidence: exercised
+ * evidence: prints the JISAKU state with text_draw_formatted at cell 20, 30: "NOT_TOUCH_1 %d" ... "NOT_G_2" (the per-side counters), "JISAKU_0 %d" ... (jisaku_marks), "PTR %d" (jisaku_slot), "JISAKU_FLAG %d" and its names "NOT_TOUCH", "NOT_LEVER", "NOT_G_BUTTON", then each side's card image "RENSHO %d", "RENPAI %d", "POINT  %d"; nothing in the image calls it; part of vf4lib/libcard/src/card.c (by code order after the last card.c assert, before nickname.c; called from card.c's level code and sharing its .data run 0x0C2A01FC-0x0C2A0227; see notes); exercised 2026-11-12: called by the harness with jisaku_idle_frames 21 / 22, jisaku_lever_frames 31 / 32, jisaku_guard_frames 41 / 42, jisaku_marks 10-15, jisaku_slot 1, jisaku_flag 5 and the cards' RENSHO / RENPAI / point 3 / 2 / 7 and 4 / 1 / -2 (set with card_body_rensho_set, card_body_renpai_set and pokes): text_cursor_to_cell(20, 30), then text_draw_formatted with those values in order, "NOT_TOUCH" and "NOT_G_BUTTON" but not "NOT_LEVER"
  * matched: source/vf4lib/libcard/src/card.c (tools/match/match.py)
  */
 void jisaku_debug_print(void)
@@ -2655,8 +2655,8 @@ uchar * card_service_state_get(void)
 }
 
 /* 0x0c089420  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: (source): copies 6 bytes into card_block_e4ec, the bytes just before card_records; nothing else in the image reads or writes them and nothing calls this; role unclear; part of vf4lib/libcard/src/card.c
+ * confidence: exercised
+ * evidence: (source): copies 6 bytes into card_block_e4ec, the bytes just before card_records; nothing else in the image reads or writes them and nothing calls this; role unclear; part of vf4lib/libcard/src/card.c; exercised 2026-11-12: called by the harness with bytes 1 to 8 in a buffer: card_block_e4ec (0x0C37E4EC) became 1, 2, 3, 4, 5, 6 and the next two bytes and card_records stayed 0
  * matched: source/vf4lib/libcard/src/card.c (tools/match/match.py)
  */
 void card_block_e4ec_set(void *src)
@@ -2738,8 +2738,8 @@ void card_record_release(int side)
 }
 
 /* 0x0c089560  size 0x18  file by match with source
- * confidence: inferred
- * evidence: (side): sets bit 8 of level_change_flags[side] (the level rose); nothing in the image calls it (uncalled code, made a function 2026-11-09); between card_record_release and level_change_fell_mark, so by link order part of vf4lib/libcard/src/card.c
+ * confidence: exercised
+ * evidence: (side): sets bit 0x08 of level_change_flags[side] (the level rose); nothing in the image calls it (uncalled code, made a function 2026-11-09); between card_record_release and level_change_fell_mark, so by link order part of vf4lib/libcard/src/card.c; exercised 2026-11-12: called by the harness with level_change_flags 1 / 1 and side 1: the flags became 1 / 9 (bit 0x08 set; notes row)
  * matched: source/vf4lib/libcard/src/card.c (tools/match/match.py)
  */
 void level_change_rose_mark(uchar side)
@@ -2749,8 +2749,8 @@ void level_change_rose_mark(uchar side)
 }
 
 /* 0x0c089580  size 0x18  file by match with source
- * confidence: inferred
- * evidence: (side): sets bit 0x10 of level_change_flags[side] (the level fell); nothing in the image calls it (uncalled code, made a function 2026-11-09); between level_change_rose_mark and card_record_char_get, so by link order part of vf4lib/libcard/src/card.c
+ * confidence: exercised
+ * evidence: (side): sets bit 0x10 of level_change_flags[side] (the level fell); nothing in the image calls it (uncalled code, made a function 2026-11-09); between level_change_rose_mark and card_record_char_get, so by link order part of vf4lib/libcard/src/card.c; exercised 2026-11-12: called by the harness in one sandbox with level_change_flags 1 / 9: side 0 made them 0x11 / 9, then side 1 0x11 / 0x19
  * matched: source/vf4lib/libcard/src/card.c (tools/match/match.py)
  */
 void level_change_fell_mark(uchar side)
@@ -2914,8 +2914,8 @@ int card_service_mode_get(void)
 }
 
 /* 0x0c0898a0  size 0x70  file by match with source
- * confidence: inferred
- * evidence: copies values for the debug display: card_dbg_secret = the JISAKU flags jisaku_flag (debug label "SECRET"), and for each side the card image's point +0x21, RENSHO and RENPAI nibbles into card_dbg_point / card_dbg_rensho / card_dbg_renpai (labels "1P_POINT", "1P_RENSHO", "1P_RENPAI", "2P_..."); nothing in the image calls it; part of vf4lib/libcard/src/card.c
+ * confidence: exercised
+ * evidence: copies values for the debug display: card_dbg_secret = the JISAKU flags jisaku_flag (debug label "SECRET"), and for each side the card image's point +0x21, RENSHO and RENPAI nibbles into card_dbg_point / card_dbg_rensho / card_dbg_renpai (labels "1P_POINT", "1P_RENSHO", "1P_RENPAI", "2P_..."); nothing in the image calls it; part of vf4lib/libcard/src/card.c; exercised 2026-11-12: called by the harness with jisaku_flag 5 and the cards' RENSHO / RENPAI 3 / 2 and 4 / 1 (card_body_rensho_set / card_body_renpai_set) and point (+0x21) 7 and -2: card_dbg_secret became 5, card_dbg_point 7 / 0xFE, card_dbg_rensho 3 / 4, card_dbg_renpai 2 / 1
  * matched: source/vf4lib/libcard/src/card.c (tools/match/match.py)
  */
 void card_dbg_points_copy(void)

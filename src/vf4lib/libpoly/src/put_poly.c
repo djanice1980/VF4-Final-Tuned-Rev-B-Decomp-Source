@@ -134,9 +134,9 @@ void obj_volume_draw_trans(uint obj_id)
 }
 
 /* 0x0c0e7b80  size 0x36  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x52
- * evidence: (object id): model_draw of the node's second model copy (+0x2C) on odd frames (frame_parity) when the node's type +0x3C is above 0, else of its model (+0x28); the typed nodes keep two copies so one can be rebuilt while the other is drawn; only caller cloth_draw; part of vf4lib/libpoly/src/put_poly.c
+ * evidence: (object id): model_draw of the node's second model copy (+0x2C) on odd frames (frame_parity) when the node's type +0x3C is above 0, else of its model (+0x28); the typed nodes keep two copies so one can be rebuilt while the other is drawn; only caller cloth_draw; part of vf4lib/libpoly/src/put_poly.c; exercised 2026-11-12: called by the harness with object 0xe0000 of the fight (node 0x0CD21120, model 0xAB1B65A0, type 0, frame_parity 1): model_draw(0xAB1B65A0); with the node's type +0x3C poked to 1 and +0x2C to 0xAB1A7C60: model_draw(0xAB1A7C60); with frame_parity then poked to 0: model_draw(0xAB1B65A0); id 0x20000 (no node): no draw
  * matched: source/vf4lib/libpoly/src/put_poly.c (tools/match/match.py)
  */
 void obj_draw_buffered(uint obj_id)
@@ -158,9 +158,9 @@ void obj_draw_buffered(uint obj_id)
 }
 
 /* 0x0c0e7be0  size 0x40  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x5c
- * evidence: (object id): obj_draw_buffered's copy choice drawn as obj_volume_draw does (model_volumes_draw while obj_volumes_on, else model_draw); nothing in the image calls it; part of vf4lib/libpoly/src/put_poly.c
+ * evidence: (object id): obj_draw_buffered's copy choice drawn as obj_volume_draw does (model_volumes_draw while obj_volumes_on, else model_draw); nothing in the image calls it; part of vf4lib/libpoly/src/put_poly.c; exercised 2026-11-12: called by the harness with object 0xe0000 of the fight (model 0xAB1B65A0, type 0, frame_parity 1, obj_volumes_on 1): model_volumes_draw(0xAB1B65A0); with type +0x3C poked to 1 and +0x2C to 0xAB1A7C60: model_volumes_draw(0xAB1A7C60), and model_draw(0xAB1A7C60) with obj_volumes_on poked to 0; with frame_parity 0: model_volumes_draw(0xAB1B65A0); id 0x20000: no draw
  * matched: source/vf4lib/libpoly/src/put_poly.c (tools/match/match.py)
  */
 void obj_volume_draw_buffered(uint obj_id)
@@ -195,8 +195,8 @@ void node_draw(obj_node *node)
 }
 
 /* 0x0c0e7c80  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: (node): node_draw only when the model passes obj_sphere_visible; nothing in the image calls it; part of vf4lib/libpoly/src/put_poly.c
+ * confidence: exercised
+ * evidence: (node): node_draw only when the model passes obj_sphere_visible; nothing in the image calls it; part of vf4lib/libpoly/src/put_poly.c; exercised 2026-11-12: called by the harness with the fight's node 0x0CD21120: obj_sphere_visible(0xAB1B65A0) returned 1 and model_draw(0xAB1B65A0) followed; with node 0x0CD10AB8: obj_sphere_visible(0xAB1A7C60) returned 0 and nothing was drawn; with 0: no call
  * matched: source/vf4lib/libpoly/src/put_poly.c (tools/match/match.py)
  */
 void node_draw_culled(obj_node *node)
@@ -210,8 +210,8 @@ void node_draw_culled(obj_node *node)
 }
 
 /* 0x0c0e7cc0  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: (node): the node's model through model_draw_all_as_translucent; nothing in the image calls it; part of vf4lib/libpoly/src/put_poly.c
+ * confidence: exercised
+ * evidence: (node): the node's model through model_draw_all_as_translucent; nothing in the image calls it; part of vf4lib/libpoly/src/put_poly.c; exercised 2026-11-12: called by the harness with the fight's node 0x0CD21120 it called model_draw_all_as_translucent(0xAB1B65A0), with 0x0CD10AB8 model_draw_all_as_translucent(0xAB1A7C60) (each node's +0x28), and with 0 nothing
  * matched: source/vf4lib/libpoly/src/put_poly.c (tools/match/match.py)
  */
 void node_draw_translucent(obj_node *node)
@@ -223,9 +223,9 @@ void node_draw_translucent(obj_node *node)
 }
 
 /* 0x0c0e7ce0  size 0x2c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x32
- * evidence: (node): the node's model through model_volumes_draw while obj_volumes_on is set, else model_draw; nothing in the image calls it; part of vf4lib/libpoly/src/put_poly.c
+ * evidence: (node): the node's model through model_volumes_draw while obj_volumes_on is set, else model_draw; nothing in the image calls it; part of vf4lib/libpoly/src/put_poly.c; exercised 2026-11-12: called by the harness with the fight's node 0x0CD10AB8 (model 0xAB1A7C60): model_volumes_draw(0xAB1A7C60) with obj_volumes_on 1 as the snapshot has it, and model_draw(0xAB1A7C60) with obj_volumes_on poked to 0
  * matched: source/vf4lib/libpoly/src/put_poly.c (tools/match/match.py)
  */
 void node_volume_draw(obj_node *node)
@@ -270,9 +270,9 @@ void node_draw_buffered(obj_node *node)
 }
 
 /* 0x0c0e7d60  size 0x52  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x5c
- * evidence: (bank): draws every node of the bank: model_draw for a model in the compiled form (word 0 == 0x100), else obj_put_typed; nothing in the image calls it; part of vf4lib/libpoly/src/put_poly.c
+ * evidence: (bank): draws every node of the bank: model_draw for a model in the compiled form (word 0 == 0x100), else obj_put_typed; nothing in the image calls it; part of vf4lib/libpoly/src/put_poly.c; exercised 2026-11-12: called by the harness with bank 3 of the fight (14 nodes from 0x0CD20134): model_draw for the twelve models whose word 0 is 0x100, in list order (0xAB1B65A0, 0xAB267D80, then 0xAB319560 to 0xAB3CE180), and obj_put_typed(0) for the third and fourth nodes, whose model is 0
  * matched: source/vf4lib/libpoly/src/put_poly.c (tools/match/match.py)
  */
 void objbank_draw_all(int bank)
@@ -296,7 +296,7 @@ void objbank_draw_all(int bank)
 
 /* 0x0c0e7de0  size 0x30  file by match with source
  * confidence: inferred
- * evidence: (object, value): stores the float in word +0x1C of every polygon record of the object (records from +0x18, each 0x50 bytes plus its word +0x4C rounded up to 4, a zero word ends them); nothing in the image calls it (uncalled code, made a function 2026-11-09); between objbank_draw_all and obj_material_color_set, so by link order part of vf4lib/libpoly/src/put_poly.c
+ * evidence: (object, value): stores the float in word +0x1C of every polygon record of the object (records from +0x18, each 0x50 bytes plus its word +0x4C rounded down to a multiple of 4, a zero word ends them); nothing in the image calls it (uncalled code, made a function 2026-11-09); between objbank_draw_all and obj_material_color_set, so by link order part of vf4lib/libpoly/src/put_poly.c; corrected 2026-11-12 from harness calls: the size word is rounded down, not up: called by the harness with 2.5 on a buffer with records at +0x18 (size word 8) and +0x70 (size 4) and a zero word at +0xC4 it stored 2.5 at +0x34 and +0x8C only, as described; but with size 6 at +0x18 + 0x4C, 1 at +0x6C and 0 at +0x70 it stored 2.5 at +0x34 and +0x88: the next record was taken at +0x6C (0x50 + 4, size / 4 x 4), where rounding up would have ended at +0x70
  * matched: source/vf4lib/libpoly/src/put_poly.c (tools/match/match.py)
  */
 void obj_polys_float_1c_set(int *obj, float value)
@@ -314,9 +314,9 @@ void obj_polys_float_1c_set(int *obj, float value)
 }
 
 /* 0x0c0e7e20  size 0x8e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x94
- * evidence: (object id, color): walks the commands of the id's model (model_cmd_iter_init / model_cmd_iter_next, counting them) and writes the color into words +0xC and +0x14 of each command the iterator reports as kind 1; a model not in the compiled form is fatal (put_poly.c line 309); nothing in the image calls it; part of vf4lib/libpoly/src/put_poly.c
+ * evidence: (object id, color): walks the commands of the first display list (list 0, the opaque one) of the id's model, until the iterator reports that list's end (0x40000000) (model_cmd_iter_init / model_cmd_iter_next, counting them) and writes the color into words +0xC and +0x14 of each command the iterator reports as kind 1; a model not in the compiled form, or a compiled one with no list 0 block (slot +0x40 empty, as the model of object 0x10000 in a fight), is fatal (put_poly.c line 309); nothing in the image calls it; part of vf4lib/libpoly/src/put_poly.c; exercised 2026-11-12: called by the harness with id 0xe0004 of the fight (model 0xAB319560) and 0x12345678: it made 56 iterator calls (obj_material_cmd_count 56); the iterator reported kind 1 once, for 0xAB3195C0, and the color went to its +0xC and +0x14 only (two strips and 52 vertices, then 0x40000000 ended the walk); id 0x20000 (no model) wrote nothing
  * assert put_poly.c:309: 0
  * matched: source/vf4lib/libpoly/src/put_poly.c (tools/match/match.py)
  */
@@ -552,8 +552,8 @@ float * envelope_skin(float *src, int slot_mtx, compiled_model_rec *dst)
 }
 
 /* 0x0c0e83c0  size 0x2c  file by match with source
- * confidence: inferred
- * evidence: (matrix a, matrix b, out, t): out = a x (1 - t) + b x t for all 16 floats; mtx_lerp_normalized without the normalizing; nothing in the image calls it (uncalled code, made a function 2026-11-09); between envelope_skin and mtx_lerp_normalized, so by link order part of vf4lib/libpoly/src/put_poly.c
+ * confidence: exercised
+ * evidence: (matrix a, matrix b, out, t): out = a x (1 - t) + b x t for all 16 floats; mtx_lerp_normalized without the normalizing; nothing in the image calls it (uncalled code, made a function 2026-11-09); between envelope_skin and mtx_lerp_normalized, so by link order part of vf4lib/libpoly/src/put_poly.c; exercised 2026-11-12: called by the harness with a = 1 to 16 and b = (2, -1, 0.5, 7, 0, 3, -4, 1, 1, 1, 1, 1, -2, 6, 8, 0): t 0.25 stored 0.75 a + 0.25 b (1.25 1.25 2.375 4.75 3.75 5.25 ... 9.25 12 13.25 12) and t 1 stored b, the word after out untouched
  * matched: source/vf4lib/libpoly/src/put_poly.c (tools/match/match.py)
  */
 void mtx_lerp(float *a, float *b, float *out, float t)
@@ -567,8 +567,8 @@ void mtx_lerp(float *a, float *b, float *out, float t)
 }
 
 /* 0x0c0e8400  size 0x52  file by match with source
- * confidence: inferred
- * evidence: (matrix a, matrix b, out, t): out = a x (1 - t) + b x t for all 16 floats, then vec3_normalize on its first three rows; nothing in the image calls it; part of vf4lib/libpoly/src/put_poly.c
+ * confidence: exercised
+ * evidence: (matrix a, matrix b, out, t): out = a x (1 - t) + b x t for all 16 floats, then vec3_normalize on its first three rows; nothing in the image calls it; part of vf4lib/libpoly/src/put_poly.c; exercised 2026-11-12: called by the harness with a = 1 to 16 and b = (2, -1, 0.5, 7, 0, 3, -4, 1, 1, 1, 1, 1, -2, 6, 8, 0): t 0.25 stored the blend 0.75 a + 0.25 b with the first three floats of rows 0-2 scaled to length 1, (0.42220, 0.42220, 0.80218), (0.48539, 0.67954, 0.55011), (0.51986, 0.57556, 0.63126), the fourth floats (4.75, 6.25, 9.25) and the last row as blended; t 1 gave (0.87287, -0.43644, 0.21822), (0, 0.6, -0.8), (0.57735 x 3)
  * matched: source/vf4lib/libpoly/src/put_poly.c (tools/match/match.py)
  */
 void mtx_lerp_normalized(float *a, float *b, float *out, float t)
@@ -585,8 +585,8 @@ void mtx_lerp_normalized(float *a, float *b, float *out, float t)
 }
 
 /* 0x0c0e8460  size 0x48  file by match with source
- * confidence: inferred
- * evidence: (point, direction): a green (0xFF00) 3D line from the point along the direction scaled by normal_line_length (line3d_quads_opaque); a debug helper; nothing in the image calls it; part of vf4lib/libpoly/src/put_poly.c
+ * confidence: exercised
+ * evidence: (point, direction): a green (0xFF00) 3D line from the point along the direction scaled by normal_line_length (line3d_quads_opaque); a debug helper; nothing in the image calls it; part of vf4lib/libpoly/src/put_poly.c; exercised 2026-11-12: called by the harness with point (1, 2, 3), direction (0.5, -1, 2) and normal_line_length 0.1 as the snapshot has it: line3d_quads_opaque(point, end, 0xFF00) with end = (1.05, 1.9, 3.2), the direction untouched
  * matched: source/vf4lib/libpoly/src/put_poly.c (tools/match/match.py)
  */
 void normal_line_draw(float *point, float *dir)

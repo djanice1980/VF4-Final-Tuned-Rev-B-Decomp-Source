@@ -220,7 +220,7 @@ void fatal_at(const char *file, int line, const char *format, ...); /* 0x0c029be
 void fatal_at_va(const char *file, int line, const char *format, va_list ap); /* 0x0c029c60 */
 void fatal_record_store(const char *file, int line, char *text); /* 0x0c029ce0 */
 tm * get_now_tm(tm *t); /* 0x0c029d00 */
-void now_seconds_get(int *out); /* 0x0c029dc0 */
+int now_seconds_get(int *out); /* 0x0c029dc0 */
 int string_hash_x5(char *str); /* 0x0c029e00 */
 void spin_delay(int count); /* 0x0c029e40 */
 void g1_bus_hold(void); /* 0x0c029e80 */
@@ -1445,7 +1445,7 @@ void stall_limits_vertex_only(void); /* 0x0c05ad60 */
 void stall_limits_vertex_and_render(void); /* 0x0c05ad80 */
 void ta_param_base_put(uint addr); /* 0x0c05adc0 */
 int ta_list_sizes_apply(int size0, int size1, int size2, int size3); /* 0x0c05ae20 */
-void ta_list_sizes_set_up(void); /* 0x0c05b060 */
+int ta_list_sizes_set_up(int size0, int size1, int size2, int size3); /* 0x0c05b060 */
 void render_config_flag20_off(void); /* 0x0c05b0a0 */
 void render_config_flag20_on(void); /* 0x0c05b0c0 */
 void tmu0_restart_usec_scale(void); /* 0x0c05b0e0 */
@@ -1568,7 +1568,7 @@ void mtx_xform_points(float (*src)[3], float (*dst)[3], int count); /* 0x0c05d62
 void mtx_xform_dirs(float (*src)[3], float (*dst)[3], int count); /* 0x0c05d680 */
 void mtx_pop_all(void); /* 0x0c05d6e0 */
 void mtx_copy_or_current(float *dst, float *src); /* 0x0c05d720 */
-void mtx_determinant(float *mtx); /* 0x0c05d780 */
+float mtx_determinant(float *mtx); /* 0x0c05d780 */
 float * mtx_store_wordwise(float *mtx); /* 0x0c05d7c0 */
 float * mtx_store_3x3(float *dst); /* 0x0c05d800 */
 float * mtx_store_3x3_stride4(float *dst); /* 0x0c05d820 */
@@ -1596,7 +1596,7 @@ void mtx_push_view_times_current(void); /* 0x0c05e260 */
 void mtx_push_then_view(void); /* 0x0c05e2a0 */
 void mtx_mul_plane_flatten(float *plane); /* 0x0c05e2c0 */
 void mtx_mul_plane_flatten_along(float *plane, float *from, float *to); /* 0x0c05e380 */
-void mtx_stack_drop(int count); /* 0x0c05e4c0 */
+bool mtx_stack_drop(int count); /* 0x0c05e4c0 */
 bool mtx_push_identity(void); /* 0x0c05e4e0 */
 void mtx_rot_axis_s16(float *axis, uint angle); /* 0x0c05e520 */
 void mtx_rot_unit_axis_s16(float *axis, uint angle); /* 0x0c05e580 */
@@ -1604,7 +1604,7 @@ void mtx_rot_unit_axis_sincos(float *axis, float sine, float cosine); /* 0x0c05e
 void mtx_rot_x_rad_reversed(float angle); /* 0x0c05e680 */
 void mtx_rot_y_rad_reversed(float angle); /* 0x0c05e6c0 */
 void mtx_rot_z_rad_reversed(float angle); /* 0x0c05e700 */
-void mtx_rot_vec_to_vec(uint *from, float *to); /* 0x0c05e740 */
+void mtx_rot_vec_to_vec(float *from, float *to); /* 0x0c05e740 */
 void mtx_translate_by_minus_v(float *v); /* 0x0c05e7e0 */
 void mtx_translate_by_vec3(float *v); /* 0x0c05e820 */
 void proj_from_near_rect(float left, float right, float bottom, float top, float near_z, float far_z); /* 0x0c05e860 */
@@ -1658,7 +1658,7 @@ void tmu2_rate_set(ushort rate); /* 0x0c060160 */
 #endif
 void tmu2_count_set(int ticks); /* 0x0c0601a0 */
 int usec_to_ticks_at_rate(int usec, uint rate); /* 0x0c0602e0 */
-void tmu2_ticks_between(int first, int second); /* 0x0c060400 */
+uint tmu2_ticks_between(int first, int second); /* 0x0c060400 */
 void caches_reset_to_mode(uint mode); /* 0x0c060420 */
 void cache_turn_off(void); /* 0x0c060480 */
 void caches_switch_mode(uint mode); /* 0x0c060500 */
@@ -2218,7 +2218,7 @@ void heap_stats_get(heap *h, struct mallinfo *info); /* 0x0c082600 */
 void main_heap_init(void); /* 0x0c0826a0 */
 void * malloc(size_t size); /* 0x0c0826e0 */
 void free(void *p); /* 0x0c082760 */
-void realloc(void *p, int size); /* 0x0c0827e0 */
+void *realloc(void *p, int size); /* 0x0c0827e0 */
 void * calloc(size_t n, size_t size); /* 0x0c082860 */
 void main_heap_stats_get(struct mallinfo *info); /* 0x0c0828e0 */
 struct mallinfo main_heap_mallinfo(void); /* 0x0c082940 */

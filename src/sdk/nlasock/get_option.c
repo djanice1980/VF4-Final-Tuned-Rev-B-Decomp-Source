@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c121d20  size 0x38  file by match with source
- * confidence: inferred
- * evidence: (socket, level, option, value area, length word, slot record): writes a 0x20-byte request {operation, socket, level, option, the two DIMM addresses, 0, 0} by PIO; caller sock_option_get; part of NLASOCK
+ * confidence: exercised
+ * evidence: (socket, level, option, value area, length word, slot record): writes a 0x20-byte request {operation, socket, level, option, the two DIMM addresses, 0, 0} by PIO; caller sock_option_get; part of NLASOCK; exercised 2026-11-12: called by the harness on slot 7 (op poked 0xf) with (7, 0xffff, 0x1006, 0x0f807204, 0x0f807200): dimm_pio_write of the 0x20 bytes {0xf, 7, 0xffff, 0x1006, 0x0f807204, 0x0f807200, 0, 0} to 0x0f807000; inside sock_option_get(6, ...) it wrote {0xf, 6, 0xffff, 0x1006, 0x0f806204, 0x0f806200, 0, 0} to 0x0f806000
  * matched: source/sdk/nlasock/get_option.c (tools/match/match.py)
  */
 void getopt_request_write(uint sock, uint level, uint option, uint value_board, uint len_board, sock_slot_rec *slot)
@@ -27,8 +27,8 @@ void getopt_request_write(uint sock, uint level, uint option, uint value_board, 
 }
 
 /* 0x0c121d60  size 0x26  file by match with source
- * confidence: inferred
- * evidence: (DIMM address, length pointer): writes the caller's length word to the slot's data area by PIO (same bytes as accept_len_write); caller sock_option_get; part of NLASOCK
+ * confidence: exercised
+ * evidence: (DIMM address, length pointer): writes the caller's length word to the slot's data area by PIO (same bytes as accept_len_write); caller sock_option_get; part of NLASOCK; exercised 2026-11-12: called by the harness with (0x0f807200, pointer to 0x11223344) it called dimm_pio_write of the 4 bytes of 0x11223344 to 0x0f807200; inside sock_option_get with a length word of 16 it wrote 16 to 0x0f806200
  * matched: source/sdk/nlasock/get_option.c (tools/match/match.py)
  */
 void getopt_len_write(uint board_addr, uint *len)
@@ -41,8 +41,8 @@ void getopt_len_write(uint board_addr, uint *len)
 }
 
 /* 0x0c121da0  size 0x6c  file by match with source
- * confidence: inferred
- * evidence: (socket, value area, value buffer, length word, length pointer): when a buffer was given, reads the slot's 0x200-byte data area into xfer_recv_bounce, copies the length word to *length and that many bytes of option value into the buffer; caller sock_option_get; part of NLASOCK
+ * confidence: exercised
+ * evidence: (socket, value area, value buffer, length word, length pointer): when a buffer was given, reads the slot's 0x200-byte data area into xfer_recv_bounce, copies the length word to *length and that many bytes of option value into the buffer; caller sock_option_get; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on) with slot 5's data area (board 0x0f805200) filled by dimm_pio_write with the length word 6 and bytes 40..7b: with a buffer, value address 0x0f805210 and length address 0x0f805200 it read 0x200 bytes from 0x0f805200 into xfer_recv_bounce, set *length 6 and copied 4c 4d 4e 4f 50 51 (next byte untouched); with a null buffer it read nothing and left *length
  * matched: source/sdk/nlasock/get_option.c (tools/match/match.py)
  */
 void getopt_value_copy_back(uint sock, int value_board, void *value, int len_board, uint *len)
@@ -59,9 +59,9 @@ void getopt_value_copy_back(uint sock, int value_board, void *value, int len_boa
 }
 
 /* 0x0c121e20  size 0x140  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x16a
- * evidence: (socket, level, option, value buffer, length pointer): socket operation 0xf (read a socket option), blocking: -2 above 63 or when only one of buffer and length is given, -4 when busy; writes the length and the request, posts DIMM command 0x11, waits, takes the result and copies value and length back (getopt_value_copy_back); nothing in the image calls it; part of NLASOCK
+ * evidence: (socket, level, option, value buffer, length pointer): socket operation 0xf (read a socket option), blocking: -2 above 63 or when only one of buffer and length is given, -4 when busy; writes the length and the request, posts DIMM command 0x11, waits, takes the result and copies value and length back (getopt_value_copy_back); nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): socket 64, a buffer without length pointer and a length pointer without buffer gave -2, dimm_busy_word 1 gave -4; (6, 0xffff, 0x1006, buffer, length 16) wrote 16 to 0x0f806200 and {0xf, 6, 0xffff, 0x1006, 0x0f806204, 0x0f806200} to 0x0f806000, posted dimm_cmd_post(0x11, 6), returned the board model's 0 and copied back its length 4 and value 0
  * matched: source/sdk/nlasock/get_option.c (tools/match/match.py)
  */
 int sock_option_get(uint sock, uint level, uint option, void *value, uint *len)

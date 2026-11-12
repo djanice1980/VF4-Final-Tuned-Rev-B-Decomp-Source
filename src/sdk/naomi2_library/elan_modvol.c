@@ -7,112 +7,112 @@
 #include "vf4ft.h"
 
 /* 0x0c107de0  size 0x858  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xa30
- * evidence: (object in r4, header block obj_send_header in r5 filled by obj_modvol_send with the volume header words, cull mode in r6: 0 none, -1 from the strip flags, volume grouping in r7 = modvol_sign): the true start; saves the registers, computes 1 / the sphere scale into fr1 where nothing reads it (0x0C107DEE), takes |the sphere scale graphics_work+0x28| (resetting it to 1), the target rectangle (proj_x_factor_px, proj_y_factor_px, proj_rect_px_width/height/left/top), the header words +0, +4, +8, the near limit +0xc and near reciprocal +0x20, and writes through the store queue at the opaque list's write pointer (record list_write_ptrs +4); for each group of the object (from word +0x18) skips it when its bounding sphere is wholly on the near side of the near limit or off the rectangle, sets r12 bit 0 when it straddles; writes a 32-byte volume header (cull field from the strip flags flipped by bit 31 of poly_header_or_words in mode -1); turns every strip (and triangle list) into 64-byte modifier volume triangles (each a vertex parameter with end-of-strip, the two older vertices alternating between slots A and C, the newest in B), on the clipped paths through the modvol_* slot helpers (in their texts "older kept" and "newer kept" are loose: fr4-fr7 and fr8-fr11 are simply the two vertices before the one just loaded, and either may be cut off); r8 and r2 change meaning on the way: r8 enters as the cull mode and in mode 0 the first near-plane cut point of a volume is saved as an anchor (r8 = the bits of its Y, r2 of its X), after which every cut triangle also sends (anchor, cut point, cut point), a fan closing the hole in the near plane (each clipping state exists twice in mode 0, with and without an anchor); a group's first run is a triangle list when its bit 3 is set, later runs are strips when bit 4 is set, else triangle lists, bit 7 = the same kind as the run before; when a triangle's first two vertices are both cut off the strip path writes the control word and the triangle-list path does not (0x0C108682-0x0C108698, as the game has it); closes each volume by going back over its last triangle and re-sending it after a header carrying the volume instruction (header +8; two headers are written there, 0x0C107F38): r7 = 1 makes the whole object one volume, -1 one volume per group; drops a header with no triangle; stores the write pointer back; only caller obj_modvol_send; part of the ELAN renderers (hand-written assembly); declared (object, header block, cull mode, grouping): obj_modvol_send passes its third argument in r6 (an integer, not fr4) and matches only so
+ * evidence: (object in r4, header block obj_send_header in r5 filled by obj_modvol_send with the volume header words, cull mode in r6: 0 none, -1 from the strip flags, volume grouping in r7 = modvol_sign): the true start; saves the registers, computes 1 / the sphere scale into fr1 where nothing reads it (0x0C107DEE), takes |the sphere scale graphics_work+0x28| (resetting it to 1), the target rectangle (proj_x_factor_px, proj_y_factor_px, proj_rect_px_width/height/left/top), the header words +0, +4, +8, the near limit +0xc and near reciprocal +0x20, and writes through the store queue at the opaque list's write pointer (record list_write_ptrs +4); for each group of the object (from word +0x18) skips it when its bounding sphere is wholly on the near side of the near limit or off the rectangle, sets r12 bit 0 when it straddles; writes a 32-byte volume header (cull field from the strip flags flipped by bit 31 of poly_header_or_words in mode -1); turns every strip (and triangle list) into 64-byte modifier volume triangles (each a vertex parameter with end-of-strip, the two older vertices alternating between slots A and C, the newest in B), on the clipped paths through the modvol_* slot helpers (in their texts "older kept" and "newer kept" are loose: fr4-fr7 and fr8-fr11 are simply the two vertices before the one just loaded, and either may be cut off); r8 and r2 change meaning on the way: r8 enters as the cull mode and in mode 0 the first near-plane cut point of a volume is saved as an anchor (r8 = the bits of its Y, r2 of its X), after which every cut triangle also sends (anchor, cut point, cut point), a fan closing the hole in the near plane (each clipping state exists twice in mode 0, with and without an anchor); a group's first run is a triangle list when its bit 3 is set, later runs are strips when bit 4 is set, else triangle lists, bit 7 = the same kind as the run before; when a triangle's first two vertices are both cut off the strip path writes the control word and the triangle-list path does not (0x0C108682-0x0C108698, as the game has it); closes each volume by going back over its last triangle and re-sending it after a header carrying the volume instruction (header +8; two headers are written there, 0x0C107F38): r7 = 1 makes the whole object one volume, -1 one volume per group; drops a header with no triangle; stores the write pointer back; only caller obj_modvol_send; part of the ELAN renderers (hand-written assembly); declared (object, header block, cull mode, grouping): obj_modvol_send passes its third argument in r6 (an integer, not fr4) and matches only so; exercised 2026-11-12: called through a register driver that sets every register, T and XMTRX, list_write_ptrs on scratch lists, XMTRX (z+.5, 100x, 100y, -(z+.5)), QACR set first by sq_copy_by_32 (left to the caller), cull 0, grouping 1, header 0x40000111, 0x222, 0x333: one triangle went to list 1 as the header (0x40000111, 0), the triangle, two closing headers over it (the second 0x40000151, 0x333) and the triangle again with A (350, 200, 1), B (150, 125, .5), C (300, 200, 1); a strip of four gave (v2, v3, v1), (v2, v4, v3); pointer +0xa0, +0xe0
  * matched: source/asm/0c107de0.s (hand-written assembly, tools/match/match.py)
  */
 void modvol_strips_send(int *obj, obj_send_header_rec *header, int cull_mode, int sign);
 
 /* 0x0c108840  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: (clipped modifier-volume path): counts r3 down, takes the vertex whose data r14 points at into fr12-fr15 (x, y, z, 1) through ftrv, moves r4/r14 on to the following entry (inline or back reference, pref ahead), leaves 1/w in fr15 and minus w in fr12 and returns T = the vertex is kept: it lies beyond the near plane (fcmp/gt fr15,fr1 at 0x0C10885E: the near limit in fr1, which is minus the near distance, is above minus w, so w is above near; the callers' bf after the call goes to the cutting code); 12 calls from modvol_strips_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: (clipped modifier-volume path): counts r3 down, takes the vertex whose data r14 points at into fr12-fr15 (x, y, z, 1) through ftrv, moves r4/r14 on to the following entry (inline or back reference, pref ahead), leaves 1/w in fr15 and minus w in fr12 and returns T = the vertex is kept: it lies beyond the near plane (fcmp/gt fr15,fr1 at 0x0C10885E: the near limit in fr1, which is minus the near distance, is above minus w, so w is above near; the callers' bf after the call goes to the cutting code); 12 calls from modvol_strips_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: called through a register driver that sets every register, T and XMTRX (SZ 1) with XMTRX (x, y, z, 1) -> (z+.5, 2x, y, -(z+.5)), fr1 -1.0, fpul 1, r3 2: vertex (1, 2, 3) gave N = (-3.5, 2, 2, .285714), T 1 (kept), r3 1, r14 = the inline record after it, r4 past that; vertex (1, 2, .25) gave N = (-.75, 2, 2, 1.3333), T 0, and with an 8-byte reference after it r14 = the vertex it points at, r4 past the 8 bytes; fpul 1 after
  * convention: __keeps_r1_r2_r5_r6_r7_fr1_fr2_fr3_fr4_fr5_fr6_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c107de0.s (hand-written assembly, tools/match/match.py)
  */
 void modvol_clip_vertex_load(void);
 
 /* 0x0c108870  size 0x3c  file by match with source
- * confidence: inferred
- * evidence: writes the point where the edge from the older kept vertex (fr8-fr11) to the newer (fr4-fr7) meets the near limit (t from the depths, 1/w = r7) as X, Y, 1/w into slot A (words 1-3) or C (words 7-9) of the current 64-byte triangle by bit 0 of r9; 8 calls from modvol_strips_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: writes the point where the edge from the older kept vertex (fr8-fr11) to the newer (fr4-fr7) meets the near limit (t from the depths, 1/w = r7) as X, Y, 1/w into slot A (words 1-3) or C (words 7-9) of the current 64-byte triangle by bit 0 of r9; 8 calls from modvol_strips_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: called through a register driver that sets every register, T and XMTRX with P (-3, 4, 6, .25), Q (-.5, 1, 2, 2), fr1 -1.0, r7 = 0.5, triangle: a scratch 64-byte block at r6: t 0.2 put X .8, Y 1.4, 1/w .5 in words 1-3 for r9 0 and in words 7-9 for r9 1, nothing else written; fr13-fr15 the same point, fpul 1
  * convention: __keeps_r1_r2_r3_r4_r5_r6_r7_fr1_fr4_fr5_fr6_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c107de0.s (hand-written assembly, tools/match/match.py)
  */
 void modvol_cut_pq_to_side(void);
 
 /* 0x0c1088ac  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: writes the just-loaded vertex (fr12-fr15, scaled by its 1/w) into slot B (words 4-6) of the current triangle, makes it the newer kept vertex (fr4-fr7) and closes the triangle (r6 += 32, r5 += 64, pref); 6 calls from modvol_strips_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: writes the just-loaded vertex (fr12-fr15, scaled by its 1/w) into slot B (words 4-6) of the current triangle, makes it the newer kept vertex (fr4-fr7) and closes the triangle (r6 += 32, r5 += 64, pref); 6 calls from modvol_strips_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: called through a register driver that sets every register, T and XMTRX (SZ 1 on entry) with N (-4, 2, 6, .25), r6 = the triangle + 32, r5 0x100: words 4-6 = (.5, 1.5, .25), nothing else written, P = N, r6 = the triangle + 64, r5 0x140
  * convention: __keeps_r1_r2_r3_r4_r7_fr1_fr2_fr3_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c107de0.s (hand-written assembly, tools/match/match.py)
  */
 void modvol_n_to_newest(void);
 
 /* 0x0c1088cc  size 0x14  file by match with source
- * confidence: inferred
- * evidence: writes whatever point is in fr13-fr15 (the just-loaded vertex, or in most of its calls a cut point that a cut helper left there) into slot C or A of the current triangle by bit 0 of r0 (the opposite choice to modvol_cut_pq_to_side); 17 calls from modvol_strips_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: writes whatever point is in fr13-fr15 (the just-loaded vertex, or in most of its calls a cut point that a cut helper left there) into slot C or A of the current triangle by bit 0 of r0 (the opposite choice to modvol_cut_pq_to_side); 17 calls from modvol_strips_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: called through a register driver that sets every register, T and XMTRX with fr13-fr15 (7, 8, 9), triangle: a scratch 64-byte block at r6: r0 0 wrote them to words 7-9 (slot C), r0 1 to words 1-3 (slot A)
  * convention: __keeps_r1_r2_r3_r4_r5_r6_r7_fr1_fr2_fr3_fr4_fr5_fr6_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c107de0.s (hand-written assembly, tools/match/match.py)
  */
 void modvol_n_to_side(void);
 
 /* 0x0c1088e0  size 0xc  file by match with source
- * confidence: inferred
- * evidence: swaps the two vertices held in fr4-fr7 and fr8-fr11 (through fr12-fr15) in five pair moves (it needs FPSCR.SZ = 1: every caller has fschg in the call's delay slot); the sixth move of the swap, fr14 / fr15 to fr10 / fr11, is the fmov fr14,fr10 each of the ten callers has in the delay slot of the bra after the call; 10 calls from modvol_strips_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: swaps the two vertices held in fr4-fr7 and fr8-fr11 (through fr12-fr15) in five pair moves (it needs FPSCR.SZ = 1: every caller has fschg in the call's delay slot); the sixth move of the swap, fr14 / fr15 to fr10 / fr11, is the fmov fr14,fr10 each of the ten callers has in the delay slot of the bra after the call; 10 calls from modvol_strips_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: called through a register driver that sets every register, T and XMTRX with SZ 1, P (1, 2, 3, 4), Q (5, 6, 7, 8), N (9, 10, 11, 12): P became (5, 6, 7, 8), fr8, fr9 (1, 2), fr10, fr11 stayed (7, 8), N (1, 2, 3, 4); a second set (P (3, 7, -2, .5), Q (-1.5, .25, 100, -8)) swapped the same way
  * convention: __keeps_r1_r2_r3_r4_r5_r6_r7_fr1_fr2_fr3_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c107de0.s (hand-written assembly, tools/match/match.py)
  */
 void modvol_kept_swap(void);
 
 /* 0x0c1088ec  size 0x3e  file by match with source
- * confidence: inferred
- * evidence: opens the next 32-byte half, writes the point where the edge from the newer kept vertex (fr4-fr7) to the just-loaded one (fr12-fr15) meets the near limit into slot B, copies the loaded vertex into fr4-fr7 whether it is kept or cut off, and closes the triangle; 8 calls from modvol_strips_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: opens the next 32-byte half, writes the point where the edge from the newer kept vertex (fr4-fr7) to the just-loaded one (fr12-fr15) meets the near limit into slot B, copies the loaded vertex into fr4-fr7 whether it is kept or cut off, and closes the triangle; 8 calls from modvol_strips_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: called through a register driver that sets every register, T and XMTRX with P (-3, 4, 6, .333), N (-.5, 1, 2, 2), fr1 -1.0, r7 = 0.5, r6 = the triangle, r5 0x100: words 4-6 = (.8, 1.4, .5) (t 0.2 from N), nothing else written, P = (-.5, 1, 2, 2), r6 = the triangle + 64, r5 0x140
  * convention: __keeps_r1_r2_r3_r4_r7_fr1_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c107de0.s (hand-written assembly, tools/match/match.py)
  */
 void modvol_cut_np_to_newest(void);
 
 /* 0x0c10892c  size 0x3a  file by match with source
- * confidence: inferred
- * evidence: as modvol_cut_pq_to_side but writes the near point into slot B and closes the triangle (r6 += 32, r5 += 64); 8 calls from modvol_strips_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: as modvol_cut_pq_to_side but writes the near point into slot B and closes the triangle (r6 += 32, r5 += 64); 8 calls from modvol_strips_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: called through a register driver that sets every register, T and XMTRX with P (-3, 4, 6, .25), Q (-.5, 1, 2, 2), fr1 -1.0, r7 = 0.5, r6 = the triangle + 32, r5 0x100: words 4-6 = (.8, 1.4, .5), nothing else written, r6 = the triangle + 64, r5 0x140
  * convention: __keeps_r1_r2_r3_r4_r7_fr1_fr4_fr5_fr6_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c107de0.s (hand-written assembly, tools/match/match.py)
  */
 void modvol_cut_pq_to_newest(void);
 
 /* 0x0c108968  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: (r0 bit 0 picks A or C): writes the saved near point (X in r2, Y in r8, 1/w = r7) into slot A or C and closes the triangle; 10 calls from modvol_strips_send, every one skipped in cull mode -1 (each sits behind mov r8,r0 / cmp/eq #-1,r0 / bt); takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: (r0 bit 0 picks A or C): writes the saved near point (X in r2, Y in r8, 1/w = r7) into slot A or C and closes the triangle; 10 calls from modvol_strips_send, every one skipped in cull mode -1 (each sits behind mov r8,r0 / cmp/eq #-1,r0 / bt); takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: called through a register driver that sets every register, T and XMTRX with r2 0xA1, r8 0xB2, r7 0xC3, triangle: a scratch 64-byte block at r6, r5 0x100: r0 0 wrote (0xA1, 0xB2, 0xC3) to words 1-3, r0 1 to words 7-9; r6 +64 and r5 0x140 each time
  * convention: __keeps_r1_r2_r3_r4_r7_fr1_fr2_fr3_fr4_fr5_fr6_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c107de0.s (hand-written assembly, tools/match/match.py)
  */
 void modvol_saved_to_side_close(void);
 
 /* 0x0c108984  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: (r0 bit 0 picks A or C): writes the older kept vertex (fr8-fr11, X and Y times its 1/w) into slot A or C; 4 calls from modvol_strips_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: (r0 bit 0 picks A or C): writes the older kept vertex (fr8-fr11, X and Y times its 1/w) into slot A or C; 4 calls from modvol_strips_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: called through a register driver that sets every register, T and XMTRX with Q (-9, 3, 5, .5), triangle: a scratch 64-byte block at r6: r0 0 wrote (1.5, 2.5, .5) to words 1-3, r0 1 to words 7-9; fr13-fr15 the same
  * convention: __keeps_r1_r2_r3_r4_r5_r6_r7_fr1_fr2_fr3_fr4_fr5_fr6_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c107de0.s (hand-written assembly, tools/match/match.py)
  */
 void modvol_q_to_side(void);
 
 /* 0x0c1089a0  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: writes the newer kept vertex (fr4-fr7, X and Y times its 1/w) into slot B and closes the triangle; 6 calls from modvol_strips_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: writes the newer kept vertex (fr4-fr7, X and Y times its 1/w) into slot B and closes the triangle; 6 calls from modvol_strips_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: called through a register driver that sets every register, T and XMTRX with P (-3, 4, 6, .25), r6 = the triangle + 32, r5 0x100: words 4-6 = (1, 1.5, .25), nothing else written, r6 = the triangle + 64, r5 0x140
  * convention: __keeps_r1_r2_r3_r4_r7_fr1_fr2_fr3_fr4_fr5_fr6_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c107de0.s (hand-written assembly, tools/match/match.py)
  */
 void modvol_p_to_newest(void);
 
 /* 0x0c1089c0  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: (not in index.tsv: Ghidra folded it into the entry at 0c1089a0, whose 0x1e bytes end at 0c1089be): writes the newer kept vertex (fr4-fr7) into slot C or A by bit 0 of r0 (C for even); called by bsr from 0c10841e in modvol_strips_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: (not in index.tsv: Ghidra folded it into the entry at 0c1089a0, whose 0x1e bytes end at 0c1089be): writes the newer kept vertex (fr4-fr7) into slot C or A by bit 0 of r0 (C for even); called by bsr from 0c10841e in modvol_strips_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: called through a register driver that sets every register, T and XMTRX with P (-3, 4, 6, .25), triangle: a scratch 64-byte block at r6: r0 0 wrote (1, 1.5, .25) to words 7-9 (slot C), r0 1 to words 1-3 (slot A)
  * convention: __keeps_r1_r2_r3_r4_r5_r6_r7_fr1_fr2_fr3_fr4_fr5_fr6_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c107de0.s (hand-written assembly, tools/match/match.py)
  */
 void modvol_p_to_side(void);
 
 /* 0x0c1089dc  size 0x3c  file by match with source
- * confidence: inferred
- * evidence: writes the point where the edge from the newer kept vertex (fr4-fr7) to the just-loaded one (fr12-fr15) meets the near limit into slot C or A by bit 0 of r9, and copies the loaded vertex into fr4-fr7 whether it is kept or cut off; 4 calls from modvol_strips_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: writes the point where the edge from the newer kept vertex (fr4-fr7) to the just-loaded one (fr12-fr15) meets the near limit into slot C or A by bit 0 of r9, and copies the loaded vertex into fr4-fr7 whether it is kept or cut off; 4 calls from modvol_strips_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: called through a register driver that sets every register, T and XMTRX with P (-3, 4, 6, .333), N (-.5, 1, 2, 2), fr1 -1.0, r7 = 0.5, triangle: a scratch 64-byte block at r6: r9 0 wrote (.8, 1.4, .5) to words 7-9, r9 1 to words 1-3; P = (-.5, 1, 2, 2) both times, nothing sent (r6 unchanged)
  * convention: __keeps_r1_r2_r3_r4_r5_r6_r7_fr1_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c107de0.s (hand-written assembly, tools/match/match.py)
  */
 void modvol_cut_np_to_side(void);
 
 /* 0x0c108a18  size 0x14  file by match with source
- * confidence: inferred
- * evidence: writes the saved near point (r2, r8, r7) into slot B and closes the triangle; 2 calls from modvol_strips_send, both skipped in cull mode -1; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: writes the saved near point (r2, r8, r7) into slot B and closes the triangle; 2 calls from modvol_strips_send, both skipped in cull mode -1; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: called through a register driver that sets every register, T and XMTRX with r2 0xA1, r8 0xB2, r7 0xC3, r6 = the triangle + 32, r5 0x100: words 4-6 = (0xA1, 0xB2, 0xC3), nothing else written, r6 = the triangle + 64, r5 0x140
  * convention: __keeps_r1_r2_r3_r4_r7_fr1_fr2_fr3_fr4_fr5_fr6_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c107de0.s (hand-written assembly, tools/match/match.py)
  */

@@ -80,8 +80,8 @@ int peer_get_transfer_mode(int which, int *out)
 }
 
 /* 0x0c056ee0  size 0x18  file by match with source
- * confidence: inferred
- * evidence: returns the peer request's result word when its done word is 1, else -2; nothing in the image calls it (uncalled code, made a function 2026-11-09); between peer_get_transfer_mode and peer_request_done_get, so by link order part of sdk/nlasock/peer.c
+ * confidence: exercised
+ * evidence: returns the peer request's result word when its done word is 1, else -2; nothing in the image calls it (uncalled code, made a function 2026-11-09); between peer_get_transfer_mode and peer_request_done_get, so by link order part of sdk/nlasock/peer.c; exercised 2026-11-12: called by the harness with peer_request_state poked to done 1, result 0x1234 it returned 0x1234; with done poked 0 it returned -2
  * same code as main.bin 0c1246e0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/nlasock/peer.c (tools/match/match.py)
  */
@@ -94,8 +94,8 @@ int peer_request_result_get(void)
 }
 
 /* 0x0c056f20  size 0x20  file by match with source
- * confidence: inferred
- * evidence: (offset, length): returns -1 when offset is above 0xffff or offset + length passes 0x10000 (the 64 KiB peer area), else 0; callers peer_area_read_chunk, peer_area_write_chunk, peer_area_send, peer_area_send_async; part of NLASOCK
+ * confidence: exercised
+ * evidence: (offset, length): returns -1 when offset is above 0xffff or offset + length passes 0x10000 (the 64 KiB peer area), else 0; callers peer_area_read_chunk, peer_area_write_chunk, peer_area_send, peer_area_send_async; part of NLASOCK; exercised 2026-11-12: called by the harness: (0xffff, 1) returned 0, (0x10000, 0) -1, (0xff00, 0x100) 0 and (0xff00, 0x101) -1
  * same code as main.bin 0c124720 (ghidra/TransferFromMain.java)
  * matched: source/sdk/nlasock/peer.c (tools/match/match.py)
  */
@@ -275,7 +275,7 @@ int peer_area_write(void *src, uint offset, int len)
 
 /* 0x0c0573a0  size 0x5c  file by match with source
  * confidence: inferred
- * evidence: (peer request state, first value, port, count, word list, out address): sets out to the peer area address (peer request state +8) + 0xff000, i.e. board base +0xdff000, puts the first value at the block at peer_start_table +0, the port at +8 and count 32-bit words from the list at +0x10, and writes the block, rounded up to 32 bytes, to that board address (dimm_pio_write); only caller peer_start; part of NLASOCK
+ * evidence: (peer request state, first value, port, count, word list, out address): sets out to the peer area address (peer request state +8) + 0xff000, i.e. board base +0xdff000, puts the first value at the block at peer_start_table +0, the port at +8 and count 32-bit words from the list at +0x10, and writes (count * 4 + 0x23) & ~0x1f bytes of the block to that board address (dimm_pio_write): the block rounded up to 32 bytes for counts 1-4, 8-12 and 16, but 32 bytes short of it for counts 5-7 and 13-15, whose last one to three list words never reach the board (as the game has it); only caller peer_start; part of NLASOCK; as the game has it: peer_start_put_table leaves the last one to three host words out of the board table for counts 5-7 and 13-15; corrected 2026-11-12 from harness calls: the block is not written rounded up to 32 bytes: called by the harness after dimm_net_attach(0) with (peer_request_state, 0x123, 0x5c11, count, list 0xc0000201...) it set out to 0x0fdff000 and put 0x123 at peer_start_table +0, 0x5c11 at +8 and the words at +0x10, and wrote 0x20 bytes for count 3 and 0x40 for count 8 as described, but for count 5 (a 0x24-byte block) only 0x20 bytes, so the fifth word 0xc0000205 never reached the board: the length is (count * 4 + 0x23) & ~0x1f
  * same code as main.bin 0c124ba0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/nlasock/peer.c (tools/match/match.py)
  */
@@ -327,8 +327,8 @@ ok:
 }
 
 /* 0x0c057560  size 0x8c  file by match with source
- * confidence: inferred
- * evidence: (32-bit value, 16-bit value, channel below 8): needs bit 0x200000 of board information word +0x1c (-3), the request state done and channel below 8 (-2), the board lock (-2); clears the request state, sends board command 0x35 with sub-code channel*2, offset = low half of the value, parameters high half and the 16-bit value (dimm_cmd_post), spins until done and returns the result; meaning not known; nothing in the image calls it; part of NLASOCK
+ * confidence: exercised
+ * evidence: (32-bit value, 16-bit value, channel below 8): needs bit 0x200000 of board information word +0x1c (-3), the request state done and channel below 8 (-2), the board lock (-2); clears the request state, sends board command 0x35 with sub-code channel*2, offset = low half of the value, parameters high half and the 16-bit value (dimm_cmd_post), spins until done and returns the result; meaning not known; nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): with dimm_board_word_24 0 it returned -3; with 0x200000, channel 8, done poked 0 and the lock taken each gave -2; (0x12345678, 0xbeef, 3) posted dimm_cmd_post(0x35, 6, 0x5678, 0x1234, 0xbeef), waited and returned the board model's 0 with done back at 1
  * same code as main.bin 0c124d60 (ghidra/TransferFromMain.java)
  * matched: source/sdk/nlasock/peer.c (tools/match/match.py)
  */
@@ -351,8 +351,8 @@ int peer_cmd35_post_wait(uint value, ushort param, ushort channel)
 }
 
 /* 0x0c057620  size 0x84  file by match with source
- * confidence: inferred
- * evidence: (32-bit value, 16-bit value, channel below 8): peer_cmd35_post_wait without the wait: same checks and board command 0x35, returns 0 after sending; nothing in the image calls it; part of NLASOCK
+ * confidence: exercised
+ * evidence: (32-bit value, 16-bit value, channel below 8): peer_cmd35_post_wait without the wait: same checks and board command 0x35, returns 0 after sending; nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): with dimm_board_word_24 0 it returned -3; with 0x200000, channel 8, done poked 0 and the lock taken each gave -2; (0xa0b0c0d0, 0x7777, 7) posted dimm_cmd_post(0x35, 14, 0xc0d0, 0xa0b0, 0x7777) and returned 0 at once, leaving done 0 and dimm_busy_word 0
  * same code as main.bin 0c124e20 (ghidra/TransferFromMain.java)
  * matched: source/sdk/nlasock/peer.c (tools/match/match.py)
  */
@@ -374,8 +374,8 @@ int peer_cmd35_post(uint value, ushort param, ushort channel)
 }
 
 /* 0x0c0576e0  size 0x68  file by match with source
- * confidence: inferred
- * evidence: (): needs bit 0x20000 of board information word +0x1c (-3), the request state done and the board lock (-2); clears the request state, sends board command 0x31 with sub-code 0 and no parameters, spins until done and returns the result; meaning not known; nothing in the image calls it; part of NLASOCK
+ * confidence: exercised
+ * evidence: (): needs bit 0x20000 of board information word +0x1c (-3), the request state done and the board lock (-2); clears the request state, sends board command 0x31 with sub-code 0 and no parameters, spins until done and returns the result; meaning not known; nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): with dimm_board_word_24 0 it returned -3; with 0x20000 poked, done poked 0 and the lock taken gave -2; then it posted dimm_cmd_post(0x31, 0, 0, 0, 0), waited and returned the board model's 0
  * same code as main.bin 0c124ee0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/nlasock/peer.c (tools/match/match.py)
  */
@@ -407,8 +407,8 @@ int peer_cmd31_query0(void)
 }
 
 /* 0x0c057780  size 0x68  file by match with source
- * confidence: inferred
- * evidence: (): peer_cmd31_query0 with sub-code 1 (same feature bit 0x20000, checks, wait and result); nothing in the image calls it; part of NLASOCK
+ * confidence: exercised
+ * evidence: (): peer_cmd31_query0 with sub-code 1 (same feature bit 0x20000, checks, wait and result); nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): with dimm_board_word_24 0 it returned -3; with 0x20000 poked, done poked 0 and the lock taken gave -2; then it posted dimm_cmd_post(0x31, 1, 0, 0, 0), waited and returned the board model's 0
  * same code as main.bin 0c124f80 (ghidra/TransferFromMain.java)
  * matched: source/sdk/nlasock/peer.c (tools/match/match.py)
  */
@@ -430,8 +430,8 @@ int peer_cmd31_query1(void)
 }
 
 /* 0x0c057820  size 0x84  file by match with source
- * confidence: inferred
- * evidence: (length, mode): needs bit 0x100000 of board information word +0x1c (-3), the request state done (-2), a length that fits the 64 KiB peer area from offset 0 (peer_area_range_check, -2) and the board lock (-2); clears the request state, sends board command 0x34 with sub-code mode and the length as offset (dimm_cmd_post), spins until done and returns the result; reads as handing the first length bytes of the peer area to the board (not proven); nothing in the image calls it; part of NLASOCK
+ * confidence: exercised
+ * evidence: (length, mode): needs bit 0x100000 of board information word +0x1c (-3), the request state done (-2), a length that fits the 64 KiB peer area from offset 0 (peer_area_range_check, -2) and the board lock (-2); clears the request state, sends board command 0x34 with sub-code mode and the length as offset (dimm_cmd_post), spins until done and returns the result; reads as handing the first length bytes of the peer area to the board (not proven); nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): with dimm_board_word_24 0 it returned -3; with 0x100000 poked, length 0x10001, done poked 0 and the lock taken gave -2; (0x800, 2) posted dimm_cmd_post(0x34, 2, 0x800, 0, 0), waited and returned the board model's 0; (0x10000, 3) without interrupts posted (0x34, 3, 0x10000, 0, 0) and did not return within its budget
  * same code as main.bin 0c125020 (ghidra/TransferFromMain.java)
  * matched: source/sdk/nlasock/peer.c (tools/match/match.py)
  */
@@ -456,8 +456,8 @@ int peer_area_send(int len, uint mode)
 }
 
 /* 0x0c0578e0  size 0x7c  file by match with source
- * confidence: inferred
- * evidence: (length, mode): peer_area_send without the wait: same checks and board command 0x34, returns 0 after sending; nothing in the image calls it; part of NLASOCK
+ * confidence: exercised
+ * evidence: (length, mode): peer_area_send without the wait: same checks and board command 0x34, returns 0 after sending; nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): with dimm_board_word_24 0 it returned -3; with 0x100000 poked, length 0x10001, done poked 0 and the lock taken gave -2; (0x1234, 5) posted dimm_cmd_post(0x34, 5, 0x1234, 0, 0) and returned 0 at once, leaving done 0 and dimm_busy_word 0
  * same code as main.bin 0c1250e0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/nlasock/peer.c (tools/match/match.py)
  */
@@ -477,8 +477,8 @@ int peer_area_send_async(int len, uint mode)
 }
 
 /* 0x0c057980  size 0x68  file by match with source
- * confidence: inferred
- * evidence: (): needs bit 0x80000 of board information word +0x1c (-3), the request state done and the board lock (-2); clears the request state, sends board command 0x33 with sub-code 0 (peer_start uses an odd sub-code) and no parameters, spins until done and returns the result; nothing in the image calls it; last routine of the peer group code; part of NLASOCK
+ * confidence: exercised
+ * evidence: (): needs bit 0x80000 of board information word +0x1c (-3), the request state done and the board lock (-2); clears the request state, sends board command 0x33 with sub-code 0 (peer_start uses an odd sub-code) and no parameters, spins until done and returns the result; nothing in the image calls it; last routine of the peer group code; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): with dimm_board_word_24 0 it returned -3; with 0x80000 poked, done poked 0 and the lock taken gave -2; then it posted dimm_cmd_post(0x33, 0, 0, 0, 0), waited and returned the board model's 0
  * same code as main.bin 0c125180 (ghidra/TransferFromMain.java)
  * matched: source/sdk/nlasock/peer.c (tools/match/match.py)
  */

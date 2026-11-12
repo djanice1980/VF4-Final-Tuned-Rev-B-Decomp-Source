@@ -18,8 +18,8 @@ void text_glyphs_set_source(void *bitmap)
 }
 
 /* 0x0c132020  size 0x12  file by match with source
- * confidence: inferred
- * evidence: (z): text_depth = 1 / z; nothing in the image calls it (uncalled code, made a function 2026-11-09); between text_glyphs_set_source and text_sprite_ctrl_bits16_set, so by link order part of sdk/naomi_library/print.c
+ * confidence: exercised
+ * evidence: (z): text_depth = 1 / z; nothing in the image calls it (uncalled code, made a function 2026-11-09); between text_glyphs_set_source and text_sprite_ctrl_bits16_set, so by link order part of sdk/naomi_library/print.c; exercised 2026-11-12: called by the harness in one sandbox: with 4.0 text_depth became 0.25 and with 0.5 it became 2.0
  * matched: source/sdk/naomi_library/print.c (tools/match/match.py)
  */
 void text_depth_set(float z)
@@ -29,8 +29,8 @@ void text_depth_set(float z)
 }
 
 /* 0x0c132040  size 0x18  file by match with source
- * confidence: inferred
- * evidence: (value): bits 16-17 of the text sprite header's control word; nothing in the image calls it (uncalled code, made a function 2026-11-09); between text_depth_set and text_overlay_setup, so by link order part of sdk/naomi_library/print.c
+ * confidence: exercised
+ * evidence: (value): clears bits 16-17 of the text sprite header's control word and ORs in value << 16, not masked (a value above 3 also sets higher bits); nothing in the image calls it (uncalled code, made a function 2026-11-09); between text_depth_set and text_overlay_setup, so by link order part of sdk/naomi_library/print.c; exercised 2026-11-12: called by the harness in one sandbox on the snapshot's control word 0xa2000009 at text_sprite_header: value 2 made it 0xa2020009, then 1 made it 0xa2010009 (bit 17 cleared), then 0 made it 0xa2000009
  * matched: source/sdk/naomi_library/print.c (tools/match/match.py)
  */
 void text_sprite_ctrl_bits16_set(int value)
@@ -71,8 +71,8 @@ void text_overlay_setup(void)
 }
 
 /* 0x0c132140  size 0xe  file by match with source
- * confidence: inferred
- * evidence: (value): stores text_rotated; nothing in the image calls it (uncalled code, made a function 2026-11-09); between text_overlay_setup and text_list_choice_set, so by link order part of sdk/naomi_library/print.c
+ * confidence: exercised
+ * evidence: (value): stores text_rotated; nothing in the image calls it (uncalled code, made a function 2026-11-09); between text_overlay_setup and text_list_choice_set, so by link order part of sdk/naomi_library/print.c; exercised 2026-11-12: called by the harness in one sandbox: with 1 text_rotated became 1 and with 0x55 it became 0x55
  * matched: source/sdk/naomi_library/print.c (tools/match/match.py)
  */
 void text_rotated_set(int rotated)
@@ -82,8 +82,8 @@ void text_rotated_set(int rotated)
 }
 
 /* 0x0c132160  size 0x36  file by match with source
- * confidence: inferred
- * evidence: (list): stores the low byte as the text sprite header's list choice and rebuilds its control word bits 24-26 and its blend bits: list 0 gets control bit 25 and blend bits 0x94000000, any other 0x20000000; nothing in the image calls it (uncalled code, made a function 2026-11-09); between text_rotated_set and text_sprite_tex_word, so by link order part of sdk/naomi_library/print.c
+ * confidence: exercised
+ * evidence: (list): stores the low byte as the text sprite header's list choice and rebuilds its control word bits 24-26 and its blend bits: list 0 gets control bit 25 and blend bits 0x94000000, any other 0x20000000; nothing in the image calls it (uncalled code, made a function 2026-11-09); between text_rotated_set and text_sprite_tex_word, so by link order part of sdk/naomi_library/print.c; exercised 2026-11-12: called by the harness in one sandbox on the snapshot's header (control 0xa2000009, blend word 0x949004c7): list 3 made them 0xa0000009 and 0x209004c7 with list_choice 3, then list 0 made them 0xa2000009 and 0x949004c7 with list_choice 0
  * matched: source/sdk/naomi_library/print.c (tools/match/match.py)
  */
 void text_list_choice_set(uchar list)
@@ -228,8 +228,8 @@ void text_newline_keeps_margin(void)
 }
 
 /* 0x0c1323e0  size 0x14  file by match with source
- * confidence: inferred
- * evidence: clears bit 0 of text_flags; nothing in the image calls it (uncalled code, made a function 2026-11-09); between text_newline_keeps_margin and text_cell_size_set, so by link order part of sdk/naomi_library/print.c
+ * confidence: exercised
+ * evidence: clears bit 0 of text_flags; nothing in the image calls it (uncalled code, made a function 2026-11-09); between text_newline_keeps_margin and text_cell_size_set, so by link order part of sdk/naomi_library/print.c; exercised 2026-11-12: called by the harness in one sandbox: with text_flags poked to 0xf it left 0xe, and called again on 0xe it left 0xe
  * matched: source/sdk/naomi_library/print.c (tools/match/match.py)
  */
 void text_flag_bit0_clear(void)

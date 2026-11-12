@@ -203,8 +203,8 @@ void gz_inflate_end(void)
 }
 
 /* 0x0c0f6000  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: (dst, value): stores value as 4 little-endian bytes; called by gzip_compress for the trailer; part of vf4lib/libcore/src/gz.c
+ * confidence: exercised
+ * evidence: (dst, value): stores value as 4 little-endian bytes; called by gzip_compress for the trailer; part of vf4lib/libcore/src/gz.c; exercised 2026-11-12: called by the harness, (buf, 0x12345678) stored 78 56 34 12 and (buf + 5, 0xA1B2C3D4) stored D4 C3 B2 A1, the bytes at +4 and +9 untouched
  * matched: source/vf4lib/libcore/src/gz.c (tools/match/match.py)
  */
 void put_le32(Bytef *dst, uint value)
@@ -224,7 +224,7 @@ void put_le32(Bytef *dst, uint value)
 /* 0x0c0f6020  size 0xe0  file by match with source
  * confidence: inferred
  * extent: 0xee
- * evidence: (dst, &dstlen, src, srclen): writes a 10-byte gzip header with sprintf("%c%c%c%c%c%c%c%c%c%c"), raw deflate level 9 (version "1.1.4") with Z_FINISH, then a CRC word that is always 0 and the input length; returns the deflate result and the total size in *dstlen; the deflate output starts at dst too, over the header (see notes); nothing in the image calls it; part of vf4lib/libcore/src/gz.c
+ * evidence: (dst, &dstlen, src, srclen): writes a 10-byte gzip header with sprintf("%c%c%c%c%c%c%c%c%c%c"), raw deflate (windowBits -15) at the default level (-1, which deflateInit2_ makes 6) with memLevel 9 (version "1.1.4") and Z_FINISH, then a CRC word that is always 0 and the input length; returns the deflate result and the total size in *dstlen; the deflate output starts at dst too, over the header (see notes); nothing in the image calls it; part of vf4lib/libcore/src/gz.c; corrected 2026-11-12 from harness calls: the deflate level is not 9: called by the harness it passed deflateInit2_ level -1 (Z_DEFAULT_COMPRESSION, which the image's deflateInit2_ makes 6: a direct call left the state's level word 6 and max chain 128), method 8, windowBits -15, memLevel 9; the rest fit: for "hello hello hello hello world" (29 bytes) dst held the 15 raw deflate bytes CB 48 CD C9 ... 52 00 from its start, then 00000000 and 1D000000, *dstlen 33 and r0 0
  * matched: source/vf4lib/libcore/src/gz.c (tools/match/match.py)
  */
 int gzip_compress(Bytef *dst, uInt *dst_len, Bytef *src, uInt src_len)

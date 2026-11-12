@@ -37,8 +37,8 @@ void sq_windows_map(void)
 }
 
 /* 0x0c138f60  size 0x64  file by match with source
- * confidence: inferred
- * evidence: removes the 25 UTLB entries sq_windows_map kept (utlb_uninstall); called by sys_wind_down; part of sySq; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: removes the 25 UTLB entries sq_windows_map kept (utlb_uninstall); called by sys_wind_down; part of sySq; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with sq_ram_entries poked 40 to 55, sq_ta_entries 20 to 27 and sq_ta_yuv_entries 63, it made 25 calls of utlb_uninstall with 40 to 55, 20 to 27 and 63, in that order
  * matched: source/sdk/sy/sysq.c (tools/match/match.py)
  */
 void sq_windows_unmap(void)
@@ -57,9 +57,9 @@ void sq_windows_unmap(void)
 }
 
 /* 0x0c138fe0  size 0x2c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x30
- * evidence: (address): the store queue address for it: 0xE0000000, or 0xE1000000 when bits 24-28 are 13 or more, with the low 24 bits; nothing in the image calls it (uncalled code, made a function 2026-11-09); between sq_windows_unmap and sq_window_to_memory, so by link order part of sdk/sy/sysq.c
+ * evidence: (address): the store queue address for it: 0xE0000000, or 0xE1000000 when bits 24-28 are 13 or more, with the low 24 bits; nothing in the image calls it (uncalled code, made a function 2026-11-09); between sq_windows_unmap and sq_window_to_memory, so by link order part of sdk/sy/sysq.c; exercised 2026-11-12: called by the harness, 0x0c123456 returned 0xe0123456, 0x0cfffffc 0xe0fffffc (bits 24-28 12), 0x0d000004 0xe1000004 (13) and 0x10800010 0xe1800010 (16)
  * matched: source/sdk/sy/sysq.c (tools/match/match.py)
  */
 uint sq_window_address(uint address)
@@ -77,9 +77,9 @@ uint sq_window_address(uint address)
 }
 
 /* 0x0c139020  size 0x22  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x2e
- * evidence: (store queue address): back to memory: 0x8C000000 below 0xE1000000, else 0x10000000, with the low 24 bits; nothing in the image calls it (uncalled code, made a function 2026-11-09); between sq_window_address and aica_fifo_spin_until_idle, so by link order part of sdk/sy/sysq.c
+ * evidence: (store queue address): back to memory: 0x8C000000 below 0xE1000000, else 0x10000000, with the low 24 bits; nothing in the image calls it (uncalled code, made a function 2026-11-09); between sq_window_address and aica_fifo_spin_until_idle, so by link order part of sdk/sy/sysq.c; exercised 2026-11-12: called by the harness, 0xe0123456 returned 0x8c123456, 0xe0fffffc 0x8cfffffc and 0xe1800010 0x10800010
  * matched: source/sdk/sy/sysq.c (tools/match/match.py)
  */
 uint sq_window_to_memory(uint address)

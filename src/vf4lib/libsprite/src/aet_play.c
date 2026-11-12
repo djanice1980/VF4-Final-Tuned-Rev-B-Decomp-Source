@@ -459,8 +459,8 @@ void aet_param_tex_table_set(aet_obj_param *param, int *tex_table)
 }
 
 /* 0x0c0e31e0  size 0x16  file by match with source
- * confidence: inferred
- * evidence: (start block, angle): stores the rotation float at +0x18; nothing in the image calls it (uncalled code, made a function 2026-11-09); between aet_param_tex_table_set and aet_param_flags_set, so by link order part of vf4lib/libsprite/src/aet_play.c
+ * confidence: exercised
+ * evidence: (start block, angle): stores the rotation float at +0x18; nothing in the image calls it (uncalled code, made a function 2026-11-09); between aet_param_tex_table_set and aet_param_flags_set, so by link order part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: called by the harness on a zeroed 0x44-byte buffer: 12.5 was stored at +0x18 (0x41480000) and then -90.0 (0xC2B40000), with nothing else written
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 void aet_param_rotation_set(aet_obj_param *param, float rotation)
@@ -498,8 +498,8 @@ void aet_param_layer_set(aet_obj_param *param, char *layer_name)
 }
 
 /* 0x0c0e3240  size 0x12  file by match with source
- * confidence: inferred
- * evidence: (start block, marker name): stores the start marker name at +0x20; nothing in the image calls it (uncalled code, made a function 2026-11-09); between aet_param_layer_set and aet_param_end_marker_set, so by link order part of vf4lib/libsprite/src/aet_play.c
+ * confidence: exercised
+ * evidence: (start block, marker name): stores the start marker name at +0x20; nothing in the image calls it (uncalled code, made a function 2026-11-09); between aet_param_layer_set and aet_param_end_marker_set, so by link order part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: called by the harness on a zeroed buffer with 0x11111111 and then 0x44: the word at +0x20 became 0x11111111 and then 0x44, while the end and loop marker setters in the same sandbox wrote +0x24 and +0x28
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 void aet_param_start_marker_set(aet_obj_param *param, char *marker_name)
@@ -511,8 +511,8 @@ void aet_param_start_marker_set(aet_obj_param *param, char *marker_name)
 }
 
 /* 0x0c0e3260  size 0x12  file by match with source
- * confidence: inferred
- * evidence: (start block, marker name): stores the end marker name at +0x24; nothing in the image calls it (uncalled code, made a function 2026-11-09); between aet_param_start_marker_set and aet_param_loop_marker_set, so by link order part of vf4lib/libsprite/src/aet_play.c
+ * confidence: exercised
+ * evidence: (start block, marker name): stores the end marker name at +0x24; nothing in the image calls it (uncalled code, made a function 2026-11-09); between aet_param_start_marker_set and aet_param_loop_marker_set, so by link order part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: called by the harness on a zeroed buffer between the start and loop marker setters: 0x22222222 was stored at +0x24, with +0x20 (0x11111111) and +0x28 (0x33333333) holding the other two
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 void aet_param_end_marker_set(aet_obj_param *param, char *marker_name)
@@ -524,8 +524,8 @@ void aet_param_end_marker_set(aet_obj_param *param, char *marker_name)
 }
 
 /* 0x0c0e3280  size 0x12  file by match with source
- * confidence: inferred
- * evidence: (start block, marker name): stores the loop marker name at +0x28; nothing in the image calls it (uncalled code, made a function 2026-11-09); between aet_param_end_marker_set and aet_obj_frame_get, so by link order part of vf4lib/libsprite/src/aet_play.c
+ * confidence: exercised
+ * evidence: (start block, marker name): stores the loop marker name at +0x28; nothing in the image calls it (uncalled code, made a function 2026-11-09); between aet_param_end_marker_set and aet_obj_frame_get, so by link order part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: called by the harness on a zeroed buffer after the start and end marker setters: 0x33333333 was stored at +0x28, with +0x20 (0x11111111) and +0x24 (0x22222222) holding the other two
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 void aet_param_loop_marker_set(aet_obj_param *param, char *marker_name)
@@ -553,8 +553,8 @@ int aet_obj_frame_get(int handle)
 }
 
 /* 0x0c0e32e0  size 0x24  file by match with source
- * confidence: inferred
- * evidence: (handle): the object's start frame (+0x5C), 0 for an unknown handle; nothing in the image calls it; part of vf4lib/libsprite/src/aet_play.c
+ * confidence: exercised
+ * evidence: (handle): the object's start frame (+0x5C), 0 for an unknown handle; nothing in the image calls it; part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: called by the harness after aet_set_load(27) and aet_obj_start of scene 0x1B0001 twice (handle 0x1E on the main composition, frames 0-574; handle 0x1F with layer "LOGO_ANIME_RENBAN", frames 199-276): 0x1F returned 199, 0x1E returned 0 and the unknown handle 0x999 returned 0
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 int aet_obj_start_frame_get(int handle)
@@ -601,8 +601,8 @@ int aet_obj_end_reached(int handle)
 }
 
 /* 0x0c0e33a0  size 0x7a  file by match with source
- * confidence: inferred
- * evidence: (handle, out[6]): draws the object once in measuring mode (aet_draw_state byte 0 set, bounds started at 2024, 2024 / 0, 0; aet_cur_obj_set, aet_obj_draw) so that its type-2 layers widen the box (aet_bounds_layer_add), then copies the six bound words out; nothing in the image calls it; part of vf4lib/libsprite/src/aet_play.c
+ * confidence: exercised
+ * evidence: (handle, out[6]): draws the object once in measuring mode (aet_draw_state byte 0 set, bounds started at 2024, 2024 / 0, 0; aet_cur_obj_set, aet_obj_draw) so that its type-2 layers widen the box (aet_bounds_layer_add), then copies the six bound words out; nothing in the image calls it; part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: called by the harness after aet_set_load(6) and aet_obj_start of scene 0x60000 (two image layers): it wrote the box 2024, 2024, 0 / 0, 0, 0 (no type-2 layer) while the last quad it drew, layer 0 (94 x 104), had corners 273..367 by 188..292; with that layer's type byte poked to 2 it wrote min 273, 188 / max 367, 292, and aet_draw_state byte 0 was 0 afterwards
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 void aet_obj_bounds_measure(int handle, aet_box *box)
@@ -627,9 +627,9 @@ void aet_obj_bounds_measure(int handle, aet_box *box)
 }
 
 /* 0x0c0e3440  size 0xa2  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xa4
- * evidence: (handle, start marker name, end marker name): moves the object's start and end frames to the named markers (aet_obj_marker_frame; a name not found is skipped and 0 keeps the old frame), puts the frame back to the start (the end with the reverse flag) when either moved, clears end-reached; nothing in the image calls it; part of vf4lib/libsprite/src/aet_play.c
+ * evidence: (handle, start marker name, end marker name): moves the object's start and end frames to the named markers (aet_obj_marker_frame; a name not found is skipped and 0 keeps the old frame), puts the frame back to the start (the end with the reverse flag) when either moved, clears end-reached; nothing in the image calls it; part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: called by the harness after aet_set_load(27) with markers planted in buffers (main layer of scene 0x1B0001: IN 300, OUT 400, DUP 250; first layer of its child composition: CHILD 220, DUP 230): object 0x1E (reverse flag 0x10, end-reached poked 1) with "IN", "OUT" got start 300, end 400, frame 400, end-reached 0; object 0x1F (layer, frames 199-276) with "CHILD", 0 got start 220, end 276, frame 220, and with "NONE", "NONE" kept 220, 276 and its frame 250
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 void aet_obj_markers_set(int handle, char *start_marker, char *end_marker)
@@ -671,8 +671,8 @@ void aet_obj_markers_set(int handle, char *start_marker, char *end_marker)
 }
 
 /* 0x0c0e3500  size 0x2c  file by match with source
- * confidence: inferred
- * evidence: (handle, depth): sets the object's current depth (start block +0x30) to depth + 0.05; nothing in the image calls it; part of vf4lib/libsprite/src/aet_play.c
+ * confidence: exercised
+ * evidence: (handle, depth): sets the object's current depth (start block +0x30) to depth + 0.05; nothing in the image calls it; part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: called by the harness on objects started on scene 0x1B0001 after aet_set_load(27) (depth 0.15): aet_obj_depth_set(0x1E, 0.25) stored 0.3 (0x3E99999A) at +0x34 (start block +0x30), object 0x1F kept 0.15, and the unknown handle 0x999 changed nothing
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 void aet_obj_depth_set(int handle, float depth)
@@ -687,8 +687,8 @@ void aet_obj_depth_set(int handle, float depth)
 }
 
 /* 0x0c0e3540  size 0x22  file by match with source
- * confidence: inferred
- * evidence: (handle): zeroes the object's play flags (+8); nothing in the image calls it; part of vf4lib/libsprite/src/aet_play.c
+ * confidence: exercised
+ * evidence: (handle): zeroes the object's play flags (+8); nothing in the image calls it; part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: called by the harness on objects 0x1E (flags 0x11) and 0x1F (flags 3) started on scene 0x1B0001 after aet_set_load(27): aet_obj_flags_clear(0x1F) set the halfword at +8 of 0x1F to 0 and left 0x1E's 0x11
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 void aet_obj_flags_clear(int handle)
@@ -720,8 +720,8 @@ void aet_obj_flag_put(int handle, int flag, char on)
 }
 
 /* 0x0c0e35c0  size 0x42  file by match with source
- * confidence: inferred
- * evidence: (handle, frames): adds to the object's current frame, kept between its start frame and end frame - 1; nothing in the image calls it; part of vf4lib/libsprite/src/aet_play.c
+ * confidence: exercised
+ * evidence: (handle, frames): adds to the object's current frame, kept between its start frame and end frame - 1; nothing in the image calls it; part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: called by the harness on object 0x1F (layer LOGO_ANIME_RENBAN of scene 0x1B0001, frames 199-276, frame 199): +10 gave frame 209, +1000 gave 275 (end - 1) and -1000 gave 199 (the start)
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 void aet_obj_frame_add(int handle, int delta)
@@ -781,8 +781,8 @@ void aet_obj_hide_set(int handle, unsigned char hide)
 }
 
 /* 0x0c0e36c0  size 0x1b8  file by match with source
- * confidence: inferred
- * evidence: (column, first row, handle): debug listing of the object's main composition on the text screen, rows 0-59 only: each layer name in magenta (text_color_set 0xFF00FFFF, text_cursor_to_cell, text_draw_formatted "%s"), its markers "%s %3.2f\n" (name, frame), and for a composition layer its child layers "  %s\n" and their markers "   %s, %3.2f\n"; nothing in the image calls it; part of vf4lib/libsprite/src/aet_play.c
+ * confidence: exercised
+ * evidence: (column, first row, handle): debug listing of the object's main composition on the text screen, rows 0-59 only: each layer name in magenta (text_color_set 0xFF00FFFF, text_cursor_to_cell, text_draw_formatted "%s"), its markers "%s %3.2f\n" (name, frame), and for a composition layer its child layers "  %s\n" and their markers "   %s, %3.2f\n"; nothing in the image calls it; part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: called by the harness as (2, -2, 0x1E) after aet_set_load(27) with planted markers (main layer IN 300, OUT 400, DUP 250; child layer 0 CHILD 220, DUP 230): it drew 60 lines at column 2, rows 0-59 only (the layer name and IN, rows -2 and -1, skipped): "OUT 400.00", "DUP 250.00", " ROGOR_PARTS_HALFSIZE_FALF_42.PI", " CHILD, 220.00" and " DUP, 230.00" (the last two in 0xFF00FFFF), then the other child layer names
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 void aet_obj_markers_print(int column, int row, int handle)
@@ -866,9 +866,9 @@ void aet_obj_markers_print(int column, int row, int handle)
 }
 
 /* 0x0c0e38a0  size 0x94  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xac
- * evidence: (layer, name): the marker { frame, name } of the layer with that name, searching first the child composition of a composition layer (type byte +0x3A 1, aet_comp_marker_find) and then the layer's own markers (+0x84 count, +0x88 list, strcmp); 0 when not found; only caller aet_obj_marker_frame; part of vf4lib/libsprite/src/aet_play.c
+ * evidence: (layer, name): the marker { frame, name } of the layer with that name, searching first the child composition of a composition layer (type byte +0x3A 1, aet_comp_marker_find) and then the layer's own markers (+0x84 count, +0x88 list, strcmp); 0 when not found; only caller aet_obj_marker_frame; part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: called by the harness on the main layer of scene 0x1B0001 after aet_set_load(27), with planted markers (own list in a buffer: IN 300, OUT 400, DUP 250; first layer of its child composition: CHILD 220, DUP 230): "DUP" returned the child's marker (0x0F00A088), "IN" the layer's own (0x0F00A000) and "NONE" 0
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 aet_marker * aet_layer_marker_find(aet_layer *layer, char *name)
@@ -894,8 +894,8 @@ aet_marker * aet_layer_marker_find(aet_layer *layer, char *name)
 }
 
 /* 0x0c0e3960  size 0x64  file by match with source
- * confidence: inferred
- * evidence: (handle, marker name): the frame of the named marker, in the object's layer when it plays one (aet_layer_marker_find), else in its composition (aet_comp_marker_find); -1.0 for no name, an unknown handle or a marker not found; callers aet_obj_start, aet_obj_markers_set; part of vf4lib/libsprite/src/aet_play.c
+ * confidence: exercised
+ * evidence: (handle, marker name): the frame of the named marker, in the object's layer when it plays one (aet_layer_marker_find), else in its composition (aet_comp_marker_find); -1.0 for no name, an unknown handle or a marker not found; callers aet_obj_start, aet_obj_markers_set; part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: called by the harness after aet_set_load(27) with planted markers (main layer of scene 0x1B0001: IN 300, OUT 400, DUP 250; its child's first layer: CHILD 220, DUP 230): object 0x1E (no layer) "OUT" returned 400.0 and "DUP" 250.0, object 0x1F (layer LOGO_ANIME_RENBAN) "DUP" returned 230.0 (the child's), and an unknown handle, a null name and "NONE" each returned -1.0
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 float aet_obj_marker_frame(int handle, char *name)
@@ -931,8 +931,8 @@ int aet_obj_is_playing(int handle)
 }
 
 /* 0x0c0e3a20  size 0x46  file by match with source
- * confidence: inferred
- * evidence: (set number): how many playing objects play a scene of that AET set (scene id >> 16); nothing in the image calls it; part of vf4lib/libsprite/src/aet_play.c
+ * confidence: exercised
+ * evidence: (set number): how many playing objects play a scene of that AET set (scene id >> 16); nothing in the image calls it; part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: called by the harness after aet_set_load of sets 27, 28, 6 and aet_obj_start of scenes 0x1B0001 (twice), 0x1C0000 and 0x60000: set 27 returned 2, set 28 returned 1, set 6 returned 1 and set 5 returned 0
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 int aet_objs_count_by_set(uint set_id)
@@ -951,8 +951,8 @@ int aet_objs_count_by_set(uint set_id)
 }
 
 /* 0x0c0e3a80  size 0x40  file by match with source
- * confidence: inferred
- * evidence: (scene id): how many playing objects play that scene; nothing in the image calls it; part of vf4lib/libsprite/src/aet_play.c
+ * confidence: exercised
+ * evidence: (scene id): how many playing objects play that scene; nothing in the image calls it; part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: called by the harness after aet_set_load of sets 27, 28, 6 and aet_obj_start of scenes 0x1B0001 (twice), 0x1C0000 and 0x60000: 0x1B0001 returned 2, 0x1C0000 returned 1 and 0x1B0000 returned 0
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 int aet_objs_count_by_scene(int scene_id)
@@ -996,8 +996,8 @@ int aet_objs_stop_by_set(uint set_id)
 }
 
 /* 0x0c0e3b60  size 0x28  file by match with source
- * confidence: inferred
- * evidence: (handle): the object's scene id, -1 when the record is not playing, 0 for an unknown handle; nothing in the image calls it; part of vf4lib/libsprite/src/aet_play.c
+ * confidence: exercised
+ * evidence: (handle): the object's scene id, -1 when the record is not playing, 0 for an unknown handle; nothing in the image calls it; part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: called by the harness after aet_set_load of sets 27, 28 and aet_obj_start of scenes 0x1B0001 (handle 0x1E) and 0x1C0000 (handle 0x20): 0x1E returned 0x1B0001, 0x20 returned 0x1C0000, the unknown handle 0x999 returned 0, and handle -1 (it matches a free, cleared record) returned -1
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 int aet_obj_scene_get(int handle)
@@ -1146,8 +1146,8 @@ void aet_last_alpha_put(float alpha)
 }
 
 /* 0x0c0e3da0  size 0x82  file by match with source
- * confidence: inferred
- * evidence: (out[4][3], width, height): the corners (0, 0), (w, 0), (w, h), (0, h) at z 0 through the current matrix (mtx_xform_point); only caller aet_bounds_layer_add; part of vf4lib/libsprite/src/aet_play.c
+ * confidence: exercised
+ * evidence: (out[4][3], width, height): the corners (0, 0), (w, 0), (w, h), (0, h) at z 0 through the current matrix (mtx_xform_point); only caller aet_bounds_layer_add; part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: called by the harness with width 30, height 40: the four corners it wrote were exactly what mtx_xform_point gives for (0,0,0), (30,0,0), (30,40,0), (0,40,0), in that order, under the same current matrix (-0.0961, -5, -3.9447 / 5.9537, -5, 25.439 / 5.9537, 35, 25.439 / -0.0961, 35, -3.9447); 8 x 2 gave the matching smaller rectangle
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 void aet_rect_corners_xform(vec3 *corners, int width, int height)
@@ -1247,8 +1247,8 @@ void aet_blend_select(char blend)
 }
 
 /* 0x0c0e4040  size 0x80  file by match with source
- * confidence: inferred
- * evidence: (corners[4][3], min out, max out): the smallest and largest x and y of four points (min and max start as a copy of the first); only caller aet_bounds_layer_add; part of vf4lib/libsprite/src/aet_play.c
+ * confidence: exercised
+ * evidence: (corners[4][3], min out, max out): the smallest and largest x and y of four points (min and max start as a copy of the first); only caller aet_bounds_layer_add; part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: called by the harness with the corners (5, 9, 1), (-3, 4, 2), (7, -2, 3), (0, 12, 4) in a buffer: min came back (-3, -2, 1) and max (7, 12, 1), z from the first corner
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 void aet_corners_bounds(vec3 *corners, vec3 *min, vec3 *max)
@@ -1274,8 +1274,8 @@ void aet_corners_bounds(vec3 *corners, vec3 *min, vec3 *max)
 }
 
 /* 0x0c0e40c0  size 0x90  file by match with source
- * confidence: inferred
- * evidence: (layer, item { width, height }, alpha): the type-2 layer case of aet_layer_draw: transforms the item's rectangle (aet_rect_corners_xform) and, in measuring mode only (aet_draw_state byte 0 = 1), widens the box at aet_draw_state +0x94 (min x, min y) and +0xA0 (max x, max y) with its corners (aet_corners_bounds); callers aet_layer_draw; part of vf4lib/libsprite/src/aet_play.c
+ * confidence: exercised
+ * evidence: (layer, item { width, height }, alpha): the type-2 layer case of aet_layer_draw: transforms the item's rectangle (aet_rect_corners_xform) and, in measuring mode only (aet_draw_state byte 0 = 1), widens the box at aet_draw_state +0x94 (min x, min y) and +0xA0 (max x, max y) with its corners (aet_corners_bounds); callers aet_layer_draw; part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: called by the harness with a zeroed layer and the item {50, 60}, the box poked to min 100, 100 / max 0, 0: with aet_draw_state byte 0 at 0 the box stayed; with it poked to 1 the box became min -0.0961, -5 / max 9.987, 55 (the item's corners under the current matrix, as mtx_xform_point gives them), and an item {5, 5} then left it as it was
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 void aet_bounds_layer_add(aet_layer *layer, aet_image *image, float alpha)
@@ -1753,9 +1753,9 @@ aet_still_rec * aet_cur_still_get(void)
 }
 
 /* 0x0c0e4cc0  size 0x56  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x78
- * evidence: (handle): the aet_still_caches cache with that handle, 0 when none; only caller aet_still_color_set; part of vf4lib/libsprite/src/aet_play.c
+ * evidence: (handle): the aet_still_caches cache with that handle, 0 when none; only caller aet_still_color_set; part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: called by the harness after aet_set_load(6) and two aet_still_start calls (handles 0x10, 0x11): 0x10 returned 0x0C4F1A94 (aet_still_caches[0]), 0x11 returned 0x0C4F21CC ([1]) and 0x999 returned 0
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 aet_still_cache_rec * aet_still_cache_get(int handle)
@@ -1981,8 +1981,8 @@ void aet_still_param_pos_set(aet_still_param *param, float x, float y)
 }
 
 /* 0x0c0e51c0  size 0x16  file by match with source
- * confidence: inferred
- * evidence: (start block, angle): stores the rotation float at +0x18 of a still's block; nothing in the image calls it (uncalled code, made a function 2026-11-09); between aet_still_param_pos_set and aet_still_param_scale_set, so by link order part of vf4lib/libsprite/src/aet_play.c
+ * confidence: exercised
+ * evidence: (start block, angle): stores the rotation float at +0x18 of a still's block; nothing in the image calls it (uncalled code, made a function 2026-11-09); between aet_still_param_pos_set and aet_still_param_scale_set, so by link order part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: called by the harness on a zeroed 0x4C-byte buffer with 45.0: 0x42340000 was stored at +0x18 and nothing else was written
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 void aet_still_param_rotation_set(aet_still_param *param, float rotation)
@@ -1994,8 +1994,8 @@ void aet_still_param_rotation_set(aet_still_param *param, float rotation)
 }
 
 /* 0x0c0e51e0  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: (start block, x word, y word): stores the two words as given (integer arguments) at +0x20 / +0x24 of a still's block, its x and y scale; nothing in the image calls it (uncalled code, made a function 2026-11-09); between aet_still_param_rotation_set and aet_still_param_depth_range_set, so by link order part of vf4lib/libsprite/src/aet_play.c
+ * confidence: exercised
+ * evidence: (start block, x word, y word): stores the two words as given (integer arguments) at +0x20 / +0x24 of a still's block, its x and y scale; nothing in the image calls it (uncalled code, made a function 2026-11-09); between aet_still_param_rotation_set and aet_still_param_depth_range_set, so by link order part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: called by the harness on a zeroed buffer with the words 0x3F800000, 0x40000000: they were stored at +0x20 and +0x24, and then 7, 9 were stored there as given
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 void aet_still_param_scale_set(aet_still_param *param, int scale_x_bits, int scale_y_bits)
@@ -2101,8 +2101,8 @@ void aet_still_move_to(float x, float y, int handle)
 }
 
 /* 0x0c0e53c0  size 0x3e  file by match with source
- * confidence: inferred
- * evidence: (handle, angle in degrees): when the whole-number angle changes stores it and sets the rotate flag 4; nothing in the image calls it; part of vf4lib/libsprite/src/aet_play.c
+ * confidence: exercised
+ * evidence: (handle, angle in degrees): when the whole-number angle changes stores it and sets the rotate flag 4; nothing in the image calls it; part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: called by the harness on still 0x10 (scene 0x60000 after aet_set_load(6), rotation -1, flags 0): 30.7 was stored at +0x1C with flag 4 set, 30.2 left 30.7 (same whole number) and 180.0 was stored
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 void aet_still_rotation_set(int handle, float rotation)
@@ -2118,8 +2118,8 @@ void aet_still_rotation_set(int handle, float rotation)
 }
 
 /* 0x0c0e5420  size 0x74  file by match with source
- * confidence: inferred
- * evidence: (handle, x scale, y scale): when either scale changes at a precision of 1/100 stores both and sets the scale flag 8; nothing in the image calls it; part of vf4lib/libsprite/src/aet_play.c
+ * confidence: exercised
+ * evidence: (handle, x scale, y scale): when either scale changes at a precision of 1/100 stores both and sets the scale flag 8; nothing in the image calls it; part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: called by the harness on still 0x10 (scene 0x60000 after aet_set_load(6), scales 1, 1, flags 4): the words of 1.004 and 1.0 changed nothing (equal at 1/100), and the words of 2.0 and 3.0 were stored at +0x24, +0x28 with the flags becoming 0xC
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 void aet_still_scale_set(int handle, int scale_x_bits, int scale_y_bits)
@@ -2143,8 +2143,8 @@ void aet_still_scale_set(int handle, int scale_x_bits, int scale_y_bits)
 }
 
 /* 0x0c0e54a0  size 0x4c  file by match with source
- * confidence: inferred
- * evidence: (handle, top, bottom): aet_still_param_depth_range_set on a started still, without the aet_depth_levels lookup; nothing in the image calls it; part of vf4lib/libsprite/src/aet_play.c
+ * confidence: exercised
+ * evidence: (handle, top, bottom): aet_still_param_depth_range_set on a started still, without the aet_depth_levels lookup; nothing in the image calls it; part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: called by the harness on still 0x11 (scene 0x60001 after aet_set_load(6)): top 0.5, bottom 0.1 gave depth 0.15, top 0.55, bottom 0.15, step 0.0004; top = bottom = 0.3 gave 0.35, 0.35, 0.35 and step 0 (no level lookup)
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 void aet_still_depth_range_set(int handle, float top, float bottom)
@@ -2159,8 +2159,8 @@ void aet_still_depth_range_set(int handle, float top, float bottom)
 }
 
 /* 0x0c0e5500  size 0x52  file by match with source
- * confidence: inferred
- * evidence: (handle, color): sets the still's color (the low byte of its first cached quad's word +0x84 shifted to the top, OR the color) and the color flag 0x10; nothing in the image calls it; part of vf4lib/libsprite/src/aet_play.c
+ * confidence: exercised
+ * evidence: (handle, color): sets the still's color (the low byte of its first cached quad's word +0x84 shifted to the top, OR the color) and the color flag 0x10; nothing in the image calls it; part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: called by the harness on still 0x10 (scene 0x60000 after aet_set_load(6) and one aet_stills_draw) whose cache's first quad word +0x84 was 0: color 0x123456 gave the still color 0x00123456 and set flag 0x10; with that word poked to 0xAB, 0x654321 gave 0xAB654321
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 void aet_still_color_set(int handle, uint color)
@@ -2271,8 +2271,8 @@ void aet_still_quad_cache_store(aet_quad *quad, aet_still_rec *still)
 }
 
 /* 0x0c0e57c0  size 0x58  file by match with source
- * confidence: inferred
- * evidence: (still record): translates the current matrix to the still's position and rotates it by its angle in degrees (mtx_rot_z_s16), clears the rotate flag 4; only caller aet_still_update_draw; part of vf4lib/libsprite/src/aet_play.c
+ * confidence: exercised
+ * evidence: (still record): translates the current matrix to the still's position and rotates it by its angle in degrees (mtx_rot_z_s16), clears the rotate flag 4; only caller aet_still_update_draw; part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: judged from its record in a harness call of aet_stills_draw (the current matrix does not carry between harness calls): still 0x10 of scene 0x60000 at 100, 50 (item 94 x 104, quad built at 100..194 by 50..154), rotation 180, scale 2, 3: it called mtx_translate(100, 50, 0) and mtx_rot_z_s16(0x8000) and cleared flag 4 (0x1C to 0x18), and the retransform after it put the quad at 194,154 / 100,154 / 194,50 / 100,50, the rectangle turned half round
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 void aet_still_rotate_matrix(aet_still_rec *still)
@@ -2318,8 +2318,8 @@ void aet_still_move_apply(aet_still_rec *still)
 }
 
 /* 0x0c0e5940  size 0xda  file by match with source
- * confidence: inferred
- * evidence: (still record, quad): scales the current matrix by the still's scales (mtx_scale_by_vec3 of +0x24) and clears the scale flag 8; it also fills two local corner arrays from the cache's position table that nothing reads (see notes); only caller aet_still_update_draw; part of vf4lib/libsprite/src/aet_play.c
+ * confidence: exercised
+ * evidence: (still record, quad): scales the current matrix by the still's scales (mtx_scale_by_vec3 of +0x24) and clears the scale flag 8; it also fills two local corner arrays from the cache's position table that nothing reads (see notes); only caller aet_still_update_draw; part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: judged from its record in a harness call of aet_stills_draw (the current matrix does not carry between harness calls): still 0x10 of scene 0x60000 at 100, 50 (item 94 x 104, quad built at 100..194 by 50..154), rotation 180, scale 2, 3: it called mtx_scale_by_vec3 with still +0x24 (2, 3, 1) and cleared flag 8 (0x18 to 0x10), and the retransform after it made the quad 188 x 312 about its old center: 53,-54 / 241,-54 / 53,258 / 241,258
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 void aet_still_scale_matrix(aet_still_rec *still, int quad_index)
@@ -2351,9 +2351,9 @@ void aet_still_scale_matrix(aet_still_rec *still, int quad_index)
 }
 
 /* 0x0c0e5a40  size 0x2a8  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x2dc
- * evidence: (still record, quad): puts a cached quad's corners back through the current matrix: the layer item's rectangle (width, height from the item) through mtx_xform_point at the quad's depth, then shifts it so that its center (vec3_add_to, vec3_scale 0.25) is the center of the corners the quad had when it was built (the cache's position table); only caller aet_still_update_draw; part of vf4lib/libsprite/src/aet_play.c
+ * evidence: (still record, quad): puts a cached quad's corners back through the current matrix: the layer item's rectangle (width, height from the item) through mtx_xform_point at the quad's depth, then shifts it so that its center (vec3_add_to, vec3_scale 0.25) is the center of the corners the quad had when it was built (the cache's position table); only caller aet_still_update_draw; part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: judged from its record in a harness call of aet_stills_draw (the current matrix does not carry between harness calls): still 0x10 of scene 0x60000 at 100, 50 (item 94 x 104, quad built at 100..194 by 50..154), rotation 180, scale 2, 3: after the rotation it wrote 194,154 / 100,154 / 194,50 / 100,50 and after the scale 53,-54 / 241,-54 / 53,258 / 241,258, both centered on 147, 102 (the built corners' center), z 0.15
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 void aet_still_quad_retransform(aet_still_rec *still, int quad_index)
@@ -2417,8 +2417,8 @@ void aet_still_quad_retransform(aet_still_rec *still, int quad_index)
 }
 
 /* 0x0c0e5d40  size 0x6c  file by match with source
- * confidence: inferred
- * evidence: (still record, quad): writes alpha byte << 24 | color (+0x4D, +0x40) into the four cached vertex colors of the quad and clears the color flag 0x10; only caller aet_still_update_draw; part of vf4lib/libsprite/src/aet_play.c
+ * confidence: exercised
+ * evidence: (still record, quad): writes alpha byte << 24 | color (+0x4D, +0x40) into the four cached vertex colors of the quad and clears the color flag 0x10; only caller aet_still_update_draw; part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: judged from its record inside a harness call of aet_stills_draw after aet_set_load(6), aet_still_start of scene 0x60000 (layer SEL_CHA_ICON_AKI_1P), aet_still_color_set 0x123456 and the alpha byte +0x4D poked to 0x80: it wrote 0x80123456 into the four vertex colors of quad 0 and cleared flag 0x10 (0x10 to 0)
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 void aet_still_color_apply(aet_still_rec *still, int quad_index)
@@ -2580,8 +2580,8 @@ void aet_still_depth_step(void)
 }
 
 /* 0x0c0e60e0  size 0x16  file by match with source
- * confidence: inferred
- * evidence: (a, b): passes the blend factor pair to blend_pair_bits_put_inverted; callers aet_blend_normal, aet_blend_additive; part of vf4lib/libsprite/src/aet_play.c
+ * confidence: exercised
+ * evidence: (a, b): passes the blend factor pair to blend_pair_bits_put_inverted; callers aet_blend_normal, aet_blend_additive; part of vf4lib/libsprite/src/aet_play.c; exercised 2026-11-12: called by the harness with (4, 5) blend_pair_bits became 0x68 and with (1, 6) 0xC4, so blend_pair_bits_put_inverted got the pair in that order
  * matched: source/vf4lib/libsprite/src/aet_play.c (tools/match/match.py)
  */
 void aet_blend_pair_put(uint src_factor, uint dst_factor)

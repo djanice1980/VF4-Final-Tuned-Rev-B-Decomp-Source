@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c065940  size 0x66  file by match with source
- * confidence: inferred
- * evidence: copies the 128-byte block at far_triangle_block (a polygon header for the opaque list and one triangle at depth 1e-10, far behind everything) through the store queue (QACR0/1 0xff000038/3c) to the opaque list's write pointer (list 0 of the pointer array at list_write_ptrs) and advances it by 0x80; scene_lists_close calls it when bit 0x40 of the state flags (0c41e018) and three state words are set; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: copies the 128-byte block at far_triangle_block (a polygon header for the opaque list and one triangle at depth 1e-10, far behind everything) through the store queue (QACR0/1 0xff000038/3c) to the opaque list's write pointer (list 0 of the pointer array at list_write_ptrs) and advances it by 0x80; scene_lists_close calls it when bit 0x40 of the state flags (0c41e018) and three state words are set; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with list 0's write pointer (the record list_write_ptrs points at) poked to a scratch buffer: the buffer received the 32 words of far_triangle_block through the store queue and the pointer moved on 0x80; with the snapshot's pointer the four 32-byte copies went to its store-queue address and it moved on 0x80
  * same code as main.bin 0c13b900 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/scene_render.c (tools/match/match.py)
  */
@@ -89,7 +89,7 @@ int fb_pair_install(surface_rec *front, surface_rec *back, int mode, uint pair_w
 
 /* 0x0c065b20  size 0xa8  file by match with source
  * confidence: inferred
- * evidence: (list to skip or 0xff): for each of the five TA lists with a non-zero size in the current buffer (sizes at 0c41e3dc, addresses at 0c41e38c, ring slot 0c41e364) except the skipped one, queues the list for transfer to the tile accelerator with list_seg_append_padded (when the state at 0c41e44c is 1, lists 1 and 3 first get their list-type bits patched and a second block queued), then starts the queued transfers with bank_close_and_submit; callers frame_lists_send_and_rearm, close_lists_and_draw_to_surface and the NAOMI library (ring_slot_send_all, capture_send_via_slot); part of KamuiTL
+ * evidence: (list to skip or 0xff): for each of the five TA lists with a non-zero size in the current buffer (sizes at 0c41e3dc, addresses at 0c41e38c, ring slot 0c41e364) except the skipped one, queues the list for transfer to the tile accelerator with list_seg_append_padded (when the word at 0c41e450, gfx_state.mv_hdr_on, is 1, lists 1 and 3 are each preceded by the block at gfx_state.mv_hdr (0c41e454, its size at 0c41e458), its list-type bits 24-27 first set to the list's number), then starts the queued transfers with bank_close_and_submit; callers frame_lists_send_and_rearm, close_lists_and_draw_to_surface and the NAOMI library (ring_slot_send_all, capture_send_via_slot); part of KamuiTL; corrected 2026-11-12 from harness calls: the switch for the extra block is the word at 0c41e450 (gfx_state.mv_hdr_on), not 0c41e44c: called by the harness with the snapshot (0c41e44c = 1, 0c41e450 = 0) and 0xff it queued only the five lists (sizes 0x140, 0x140, 0x1d60, 0x140, 0x140 of slot 3) and called bank_close_and_submit(0x3ff, 0xff); skip 1 left list 1 out; with 0c41e450 poked 1 and mv_hdr a buffer, lists 1 and 3 were each preceded by that block, its bits 24-27 set to the list
  * same code as main.bin 0c13bae0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/scene_render.c (tools/match/match.py)
  */
@@ -479,8 +479,8 @@ int scene_lists_close(void)
 }
 
 /* 0x0c0667c0  size 0x18  file by match with source
- * confidence: inferred
- * evidence: sets gfx_state.frame_pending and list_send_skip to 1 and clears gfx_state.stall_scan_hold; nothing in the image calls it (uncalled code, made a function 2026-11-09); between scene_lists_close and close_lists_and_draw_to_surface, so by link order part of sdk/kamui/scene_render.c
+ * confidence: exercised
+ * evidence: sets gfx_state.frame_pending and list_send_skip to 1 and clears gfx_state.stall_scan_hold; nothing in the image calls it (uncalled code, made a function 2026-11-09); between scene_lists_close and close_lists_and_draw_to_surface, so by link order part of sdk/kamui/scene_render.c; exercised 2026-11-12: called by the harness after gfx_state.frame_pending was poked 0, stall_scan_hold 5 and list_send_skip 7: they became 1, 0 and 1, the words around them unchanged
  * same code as main.bin 0c13c780 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/scene_render.c (tools/match/match.py)
  */
@@ -807,8 +807,8 @@ int fb_front_as_surface_desc(surface_rec *desc)
 }
 
 /* 0x0c067200  size 0xa0  file by match with source
- * confidence: inferred
- * evidence: in the stored-list mode (state +0x33c == 1): waits for the list DMA to be idle (xfer_wait_idle), resets the TA (0xa05f8008), writes the list bases and limits, TA_NEXT_OPB_INIT and TA_LIST_INIT for the current half; then reopens the list buffers (listbuf_bank_select); nothing in the image calls it; part of KamuiTL
+ * confidence: exercised
+ * evidence: in the stored-list mode (state +0x33c == 1): waits for the list DMA to be idle (xfer_wait_idle), resets the TA (0xa05f8008), writes the list bases and limits, TA_NEXT_OPB_INIT and TA_LIST_INIT for the current half; then reopens the list buffers (listbuf_bank_select); nothing in the image calls it; part of KamuiTL; exercised 2026-11-12: called by the harness: with state +0x33c 0 (the snapshot) it only called listbuf_bank_select(1); poked 1 it called xfer_wait_idle, pvr_reg_write_both 0x08 = 1 then 0, 0x124, 0x12c, 0x128, 0x130, 0x164 with the words of the current half's buffer record, 0x144 = 0x80000000, then listbuf_bank_select(1)
  * same code as main.bin 0c13d1c0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/scene_render.c (tools/match/match.py)
  */

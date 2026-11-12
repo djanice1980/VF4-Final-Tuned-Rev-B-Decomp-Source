@@ -214,8 +214,8 @@ void sky_objs_draw_layers(void)
 }
 
 /* 0x0c0be560  size 0x7a  file by match with source
- * confidence: inferred
- * evidence: sets up sky_flash (flags 3, object 0x1B05C0, a 60-119 frame wait, the variant at sky_flash_variants[4]); nothing in the image calls it; part of vf4lib/libeffect/src/effect_sky.c
+ * confidence: exercised
+ * evidence: sets up sky_flash (flags 3, object 0x1B05C0, a 60-119 frame wait, the variant at sky_flash_variants[4]); nothing in the image calls it; part of vf4lib/libeffect/src/effect_sky.c; exercised 2026-11-12: called by the harness with sky_flash filled with 0x55 bytes it left flags 3, pieces 0, frame 0, delay 0, model 0x1B05C0, both times 0, the variant 0x0C2AA964 (sky_flash_variants[4]) and the list word untouched, and frames 114: its one lcg_next15 call returned 31134, and 31134 % 60 + 60 = 114
  * matched: source/vf4lib/libeffect/src/effect_sky.c (tools/match/match.py)
  */
 void sky_flash_init(void)
@@ -232,9 +232,9 @@ void sky_flash_init(void)
 }
 
 /* 0x0c0be600  size 0x196  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x1a4
- * evidence: nothing in the image calls it: every 60-119 frames picks one of the 8 sky_flash_variants (lcg_next15), shows its object from frame 1 and the idle object 0x1B05C0 again from frame 4; for a variant with byte +4 zero sets flag 3 at frame 2 and starts the delay sky_flash_sound_delay, at whose end it plays sound 0x38D (sound_play_id, sound flag bit 13); steps a list pointer; ends at its wait; looks like lightning with delayed thunder, role inferred; part of vf4lib/libeffect/src/effect_sky.c
+ * evidence: nothing in the image calls it: every 60-119 frames picks one of the 8 sky_flash_variants (lcg_next15), shows its object from frame 1 and the idle object 0x1B05C0 again from frame 4; for a variant with byte +4 zero sets flag 3 at frame 2 and starts the delay sky_flash_sound_delay, at whose end it plays sound 0x38D (sound_play_id, sound flag bit 13); steps a list pointer; ends at its wait; looks like lightning with delayed thunder, role inferred; part of vf4lib/libeffect/src/effect_sky.c; exercised 2026-11-12: called by the harness in one sandbox after sky_flash_init (variant 4: object 0x1B05C2, byte +4 0): call 2 (frame 1) set the object 0x1B05C2, call 3 (frame 2) set flag bit 3 and the delay 30 (29 after its own step), call 5 (frame 4) put back 0x1B05C0, call 6 cleared bit 3; with only flags 1 it picked variant 6 (lcg 31134 % 8) and frames 88 (26128 % 60 + 60); a delay of 1 ended with sound_play_id(0x38D, 0); frames 2 ended it at frame 2 (flags 1)
  * matched: source/vf4lib/libeffect/src/effect_sky.c (tools/match/match.py)
  */
 void sky_flash_exec(void)
@@ -291,8 +291,8 @@ void sky_flash_exec(void)
 }
 
 /* 0x0c0be7e0  size 0x166  file by match with source
- * confidence: inferred
- * evidence: nothing in the image calls it: draws sky_flash's object between light_set_send(sky_flash_ambient_color, 0) and (.., 3) after copying three words from 0x0C293DC4 to 0x0C458C88, draws stored matrices' objects, and with flag 3 the variant's placed pieces (translate, rotate, scale), storing their matrices (sky_flash_piece_mtx) on the first frame; part of vf4lib/libeffect/src/effect_sky.c
+ * confidence: exercised
+ * evidence: nothing in the image calls it: draws sky_flash's object between light_set_send(sky_flash_ambient_color, 0) and (.., 3) after copying three words from 0x0C293DC4 to 0x0C458C88, draws stored matrices' objects, and with flag 3 the variant's placed pieces (translate, rotate, scale), storing their matrices (sky_flash_piece_mtx) on the first frame; part of vf4lib/libeffect/src/effect_sky.c; exercised 2026-11-12: called by the harness after sky_flash_init it copied light set 0's ambient (0.19 x3) to 0x0C458C88 and drew 0x1B05C0 between light_set_send(0x0C2AA69C, 0) and (.., 3); after four sky_flash_exec calls (frame 4, flag bit 3) it also drew variant 4's three pieces (0x1B05B9, translate, rotate, scale 1.2), stored their matrices in sky_flash_piece_mtx, set pieces 3, flag 0x10 and the list sky_model_seq; a second draw drew 0x1B05BA at the three stored matrices
  * matched: source/vf4lib/libeffect/src/effect_sky.c (tools/match/match.py)
  */
 void sky_flash_draw(void)
@@ -341,8 +341,8 @@ void sky_flash_draw(void)
 }
 
 /* 0x0c0be9a0  size 0x18e  file by match with source
- * confidence: inferred
- * evidence: nothing in the image calls it: while sky_flash runs advances its time (light_anim_play, track 5) and fills light records 2.. of light_sets (0x44 bytes, copied from the templates at light_anim_lights) at the variant's positions; for the first running sky object adds four more lights at its positions (track 7); clears the short at +0xCC0 of records 48-63 and turns the remaining records off; part of vf4lib/libeffect/src/effect_sky.c
+ * confidence: exercised
+ * evidence: nothing in the image calls it: while sky_flash runs advances its time (light_anim_play, track 5) and fills light records 2.. of light_sets (0x44 bytes, copied from the templates at light_anim_lights) at the variant's positions; for the first running sky object adds four more lights at its positions (track 7); clears the short at +0xCC0 of records 48-63 and turns the remaining records off; part of vf4lib/libeffect/src/effect_sky.c; exercised 2026-11-12: called by the harness after sky_flash_init (variant 4: template 0, three positions) with the type shorts of light_sets records 0-15 and 48-63 poked 7: time became light_anim_play(0, 5) = 0.0167 (time_prev 0), records 2-4 became light_anim_lights[0] with positions (-4.2, 57.8, 126.4), (-126.4, 57.8, -4.2), (4.2, 57.8, -126.4), records 0-1 kept 7, records 5-15 and 48-63 got type 0 (no sky object running)
  * matched: source/vf4lib/libeffect/src/effect_sky.c (tools/match/match.py)
  */
 void sky_flash_lights_set(void)

@@ -23,8 +23,8 @@ int ctl_channel_prepare(int window_base)
 }
 
 /* 0x0c0524c0  size 0x58  file by match with source
- * confidence: inferred
- * evidence: (text, value, state record): builds a 0x60-byte request: +0 the record's operation, +4 the request address + 0x20, +8 the value, the text (strncpy, up to 64 bytes) at +0x20; writes it to the request address (record +0xc) with the DIMM PIO write dimm_pio_write; caller ctl_call_text; part of NLASOCK
+ * confidence: exercised
+ * evidence: (text, value, state record): builds a 0x60-byte request: +0 the record's operation, +4 the request address + 0x20, +8 the value, the text (strncpy, up to 64 bytes) at +0x20; writes it to the request address (record +0xc) with the DIMM PIO write dimm_pio_write; caller ctl_call_text; part of NLASOCK; exercised 2026-11-12: called by the harness with a record of operation 1, request address 0xC00000, "hello" and 0x1234, read back with dimm_pio_read: 1, 0xC00020, 0x1234, five 0 words, "hello" zero-padded at +0x20, the bytes from +0x60 left as planted (0xEE); with operation 9 at 0xC00100, a 70-character text and 0xDEADBEEF only the first 64 characters reached +0x20
  * same code as main.bin 0c11fcc0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/nlasock/control.c (tools/match/match.py)
  */

@@ -117,9 +117,9 @@ int snd_flag_raise_wait_clear(void)
 }
 
 /* 0x0c111300  size 0x70  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x8a
- * evidence: (source, destination, size): writes the source and destination converted to the sound CPU's addresses (+0x5f800000, so 0xa0800000 becomes 0) and the size to the mailbox words 0xa0800090/94/98 (aica_word_store), waits for the size word to read back non-zero, then posts driver command 0x2000a0 (aica_ring_push) until accepted; each wait up to 0x400000 tries, -0x100 on time-out; returns 0; callers dtpk_insert_copy, dtpk_insert_copy_sized, dtpk_job_step, dtpk_drop_compact; part of libsnd; checked against reference material (not in this repo)
+ * evidence: (source, destination, size): writes the source and destination converted to the sound CPU's addresses (+0x5f800000, so 0xa0800000 becomes 0) and the size to the mailbox words 0xa0800090/94/98 (aica_word_store), waits for the size word to read back non-zero, then posts driver command 0x2000a0 (aica_ring_push) until accepted; each wait up to 0x400000 tries, -0x100 on time-out; returns 0; callers dtpk_insert_copy, dtpk_insert_copy_sized, dtpk_job_step, dtpk_drop_compact; part of libsnd; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with (0xA0900000, 0xA0A00000, 0x100) it stored 0x100000 at 0xa0800090, 0x200000 at 0xa0800094 and 0x100 at 0xa0800098 (aica_word_store), read the size word back and pushed 0x2000A0, returning 0; with (0xA0800000, 0xA0812340, 8) it stored 0, 0x12340 and 8
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int snd_ram_copy_request(int src, int dst, uint size)
@@ -251,8 +251,8 @@ int dtpk_slot_insert(int slot, uint bank_no, int size, int *move_bytes)
 }
 
 /* 0x0c111600  size 0x30  file by match with source
- * confidence: inferred
- * evidence: (slot): the checks before a bank is dropped: -1 for slot 8 or above, -2 when the slot is empty, -3 while a background job runs; 0 otherwise; callers dtpk_drop_compact and dtpk_drop_compact_bg_begin; checked against reference material (not in this repo); part of libsnd
+ * confidence: exercised
+ * evidence: (slot): the checks before a bank is dropped: -1 for slot 8 or above, -2 when the slot is empty, -3 while a background job runs; 0 otherwise; callers dtpk_drop_compact and dtpk_drop_compact_bg_begin; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness in one sandbox (all eight slots used in the snapshot): slot 8 gave -1 and slot 0 gave 0; after dtpk_slot_delete(7, 0x150000) slot 7 gave -2; after dtpk_drop_compact_bg_begin(5) started a job slot 0 gave -3
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int dtpk_drop_check(uint slot)
@@ -264,8 +264,8 @@ int dtpk_drop_check(uint slot)
 }
 
 /* 0x0c111640  size 0x8e  file by match with source
- * confidence: inferred
- * evidence: (slot, size, out bytes to move): marks dtpk_slot_table[slot] empty (bank number -1, also written to the driver's slot table at 0x00800060 + slot * 4), takes the size off dtpk_bytes_used and moves every used slot above down by it; returns the address of the first used slot above (the block-move source) and the sum of their sizes in *out; callers dtpk_drop_compact and dtpk_drop_compact_bg_begin; checked against reference material (not in this repo); part of libsnd
+ * confidence: exercised
+ * evidence: (slot, size, out bytes to move): marks dtpk_slot_table[slot] empty (bank number -1, also written to the driver's slot table at 0x00800060 + slot * 4), takes the size off dtpk_bytes_used and moves every used slot above down by it; returns the address of the first used slot above (the block-move source) and the sum of their sizes in *out; callers dtpk_drop_compact and dtpk_drop_compact_bg_begin; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness on the snapshot's table (slots 5, 6, 7 at 0xA0CE8000 / 0xA0D2D000 / 0xA0E40000, sizes 0x45000 / 0x113000 / 0x150000) with (5, 0x45000): it returned 0xA0D2D000, put 0x263000 in *out, set slot 5's bank to -1 and wrote -1 to 0xa0800074, moved slots 6 and 7 to 0xA0CE8000 / 0xA0DFB000 and took dtpk_bytes_used from 0x780000 to 0x73B000; then (7, 0x150000) returned 0 with *out 0
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int dtpk_slot_delete(int slot, int size, int *move_bytes)
@@ -367,8 +367,8 @@ int aica_driver_boot(int image, int board_type)
 }
 
 /* 0x0c111900  size 0x32  file by match with source
- * confidence: inferred
- * evidence: posts request 0x100a0 and then 0x400a0 to the driver (snd_cmd_a0_post; the first is all sound off), then lets the DMA queue go (snd_dma_channel_give_back); returns 0, or -0x80 when the channel cannot be given back; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd
+ * confidence: exercised
+ * evidence: posts request 0x100a0 and then 0x400a0 to the driver (snd_cmd_a0_post; the first is all sound off), then lets the DMA queue go (snd_dma_channel_give_back); returns 0, or -0x80 when the channel cannot be given back; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness in one sandbox: it posted snd_cmd_a0_post(0, 0x100A0, 0) and (0, 0x400A0, 0), gave the snapshot's DMA channel back and returned 0; a second call posted the same and returned -0x80, the channel being already given back
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int sound_off_dma_release(void)
@@ -385,8 +385,8 @@ int sound_off_dma_release(void)
 }
 
 /* 0x0c111960  size 0x90  file by match with source
- * confidence: inferred
- * evidence: (bank image, slot): inserts a bank and waits for it: dtpk_insert_check, dtpk_slot_insert, then the handshake with the driver (snd_cmd_18a0_post_retry posts request 0x18a0, snd_ack_word_wait_nonzero waits for the ARM7 flag 0x008000b4); when banks above must move, has the ARM7 block-move them up (snd_ram_copy_request) and waits (snd_ram_copy_wait_done); copies the image to its address with g2_cpu_copy_to_bus and ends the handshake (snd_flag_raise_wait_clear); returns 0 or the first error; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd
+ * confidence: exercised
+ * evidence: (bank image, slot): inserts a bank and waits for it: dtpk_insert_check, dtpk_slot_insert, then the handshake with the driver (snd_cmd_18a0_post_retry posts request 0x18a0, snd_ack_word_wait_nonzero waits for the ARM7 flag 0x008000b4); when banks above must move, has the ARM7 block-move them up (snd_ram_copy_request) and waits (snd_ram_copy_wait_done); copies the image to its address with g2_cpu_copy_to_bus and ends the handshake (snd_flag_raise_wait_clear); returns 0 or the first error; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness after dtpk_drop_compact(5) with a planted bank ("DTPK", bank 99, size 64): it returned 0, filled slot 5 with (99, 0xA0CE8000, 64), moved slots 6 and 7 up by 64, called snd_ram_copy_request(0xA0CE8000, 0xA0CE8040, 0x263000), copied the 64 bytes to 0xA0CE8000 and wrote 99 to 0xa0800074; again into slot 5 it returned -3, a bad magic into an empty slot -2, slot 9 -1
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int dtpk_insert_copy(int image, uint slot)
@@ -417,8 +417,8 @@ int dtpk_insert_copy(int image, uint slot)
 }
 
 /* 0x0c111a20  size 0xa8  file by match with source
- * confidence: inferred
- * evidence: (bank image, slot, slot size): as dtpk_insert_copy but the slot takes the given size (-6 for 0), larger than the image, and that size is written into the copied bank's size word (+8) in sound RAM before the handshake ends; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd
+ * confidence: exercised
+ * evidence: (bank image, slot, slot size): as dtpk_insert_copy but the slot takes the given size (-6 for 0), larger than the image, and that size is written into the copied bank's size word (+8) in sound RAM before the handshake ends; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness after dtpk_drop_compact(7) with a planted bank ("DTPK", bank 99, size 64): slot size 0 returned -6; slot size 128 returned 0, filled slot 7 with (99, 0xA0E40000, 128), took dtpk_bytes_used from 0x630000 to 0x630080, made no block move, copied the image to 0xA0E40000 and left its size word (+8) at 128
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int dtpk_insert_copy_sized(int image, uint slot, int slot_size)
@@ -450,9 +450,9 @@ int dtpk_insert_copy_sized(int image, uint slot, int slot_size)
 }
 
 /* 0x0c111b00  size 0xc6  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xca
- * evidence: (bank image, slot): writes a bank over the one in the slot without moving anything: dtpk_overwrite_check; posts request 0x1100a0 (sound off on the slot's bank) until the ring takes it; stores the new bank number (with bit 31 set when it equals the old one, so the driver sees a change) in dtpk_slot_table and the driver's slot word; the handshake as in dtpk_insert_copy, the CPU copy to the slot's address and the slot's size written back into the bank's size word; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd
+ * evidence: (bank image, slot): writes a bank over the one in the slot without moving anything: dtpk_overwrite_check; posts request 0x1100a0 (sound off on the slot's bank) until the ring takes it; stores the new bank number (with bit 31 set when it equals the old one, so the driver sees a change) in dtpk_slot_table and the driver's slot word; the handshake as in dtpk_insert_copy, the CPU copy to the slot's address and the slot's size written back into the bank's size word; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness on slot 7 (bank 22, 0xA0E40000, size 0x150000) with a planted bank ("DTPK", bank 22, size 64): it posted snd_cmd_a0_post(7, 0x1100A0, 0), stored 0x80000016 in the table and at 0xa080007c, copied the image to 0xA0E40000 and wrote 0x150000 over its size word, returning 0; with bank 99 it stored 99, and with size 0x200000 it returned -4
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int dtpk_overwrite_copy(char *image, uint slot)
@@ -495,8 +495,8 @@ int dtpk_overwrite_copy(char *image, uint slot)
 }
 
 /* 0x0c111c00  size 0x6c  file by match with source
- * confidence: inferred
- * evidence: (bank image, slot, words per step): dtpk_insert_check and dtpk_slot_insert, then sets up the background job in dtpk_job_record (dtpk_job): job word 1 (step 1), the words copied per dtpk_job_step call, the image size twice (whole and left), the bytes to block-move, the image as source and the slot address as destination and start; returns 0 or the check's error; the copying is done by later dtpk_job_step calls; caller dtpk_insert_fed_begin; checked against reference material (not in this repo); part of libsnd
+ * confidence: exercised
+ * evidence: (bank image, slot, words per step): dtpk_insert_check and dtpk_slot_insert, then sets up the background job in dtpk_job_record (dtpk_job): job word 1 (step 1), the words copied per dtpk_job_step call, the image size twice (whole and left), the bytes to block-move, the image as source and the slot address as destination and start; returns 0 or the check's error; the copying is done by later dtpk_job_step calls; caller dtpk_insert_fed_begin; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness after dtpk_drop_compact(5) with a planted bank ("DTPK", bank 99, size 64 at 0x0F006000) and 8 words per step: it returned 0, filled slot 5 with (99, 0xA0CE8000, 64), and left dtpk_job_record job 1, words 8, whole size 64, bytes left 64, move 0x263000, source 0x0F006000, destination and start 0xA0CE8000, copying nothing; slot 9 returned -1
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int dtpk_insert_bg_begin(int image, uint slot, int words_per_step)
@@ -590,8 +590,8 @@ int dtpk_overwrite_bg_begin(char *image, uint slot, int words_per_step)
 }
 
 /* 0x0c111e00  size 0x20  file by match with source
- * confidence: inferred
- * evidence: (bank image, slot, words per step): dtpk_insert_bg_begin, then job word 0x1001: bit 12 makes dtpk_job_step wait at the copy step for the caller to put the data in place itself (dtpk_feed_chunk, or its own transfer to dtpk_feed_dest) instead of copying from the image; returns 0 or the error; caller sound_pack_load (the game's vf4lib sound_cmn.c); checked against reference material (not in this repo); part of libsnd
+ * confidence: exercised
+ * evidence: (bank image, slot, words per step): dtpk_insert_bg_begin, then job word 0x1001: bit 12 makes dtpk_job_step wait at the copy step for the caller to put the data in place itself (dtpk_feed_chunk, or its own transfer to dtpk_feed_dest) instead of copying from the image; returns 0 or the error; caller sound_pack_load (the game's vf4lib sound_cmn.c); checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness after dtpk_drop_compact(5) with a planted bank ("DTPK", bank 99, size 64) and 8 words per step: slot 9 returned -1; slot 5 returned 0 and left dtpk_job_record job 0x1001, words 8, sizes 64 and 64, move 0x263000, source 0x0F006000, destination and start 0xA0CE8000
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int dtpk_insert_fed_begin(int image, uint slot, int words_per_step)
@@ -626,9 +626,9 @@ int dtpk_overwrite_fed_begin(char *image, uint slot, int words_per_step)
 }
 
 /* 0x0c111ec0  size 0xa2  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xbc
- * evidence: (source): for a fed job at the copy step (job word & 0x10ff == 0x1004, else -1) copies the smaller of the bytes left and the per-step words from the source to the job's destination (g2_cpu_copy_to_bus); when nothing is left, writes the slot size into the bank's size word if bit 15 is set, sets the SH-4 handshake word 0x008000b0 to 1 and steps the job on, returning 0; otherwise advances the destination and returns 1; nothing in the image calls it (the game moves the data itself); checked against reference material (not in this repo); part of libsnd
+ * evidence: (source): for a fed job at the copy step (job word & 0x10ff == 0x1004, else -1) copies the smaller of the bytes left and the per-step words from the source to the job's destination (g2_cpu_copy_to_bus); when nothing is left, writes the slot size into the bank's size word if bit 15 is set, sets the SH-4 handshake word 0x008000b0 to 1 and steps the job on, returning 0; otherwise advances the destination and returns 1; nothing in the image calls it (the game moves the data itself); checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness with no job it returned -1; after dtpk_drop_compact(7), dtpk_insert_fed_begin(40-byte bank, 7, 4 words) and dtpk_job_step up to job 0x1004, three calls with a source of 0x5A bytes returned 1 (16 bytes copied, left 24, destination +0x10), 1 (left 8) and 0 (8 bytes, left 0, job 0x1005, 1 written to 0xa08000b0); 40 bytes of 0x5A were at 0xA0E40000
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int dtpk_feed_chunk(uint *src)
@@ -701,8 +701,8 @@ int dtpk_feed_done(void)
 }
 
 /* 0x0c112080  size 0x18  file by match with source
- * confidence: inferred
- * evidence: (words): -1 for 0, else stores the words-per-step in the job record and returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between dtpk_feed_done and dtpk_job_step, so by link order part of sdk/libsnd/libsnd.c
+ * confidence: exercised
+ * evidence: (words): -1 for 0, else stores the words-per-step in the job record and returns 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between dtpk_feed_done and dtpk_job_step, so by link order part of sdk/libsnd/libsnd.c; exercised 2026-11-12: called by the harness in one sandbox: 0 returned -1 and left the job record's words per step at 0x100, and 7 returned 0 and set it to 7
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int dtpk_words_per_step_set(int words)
@@ -815,8 +815,8 @@ int dtpk_job_blank_out(void)
 }
 
 /* 0x0c112340  size 0x7a  file by match with source
- * confidence: inferred
- * evidence: (slot): drops a bank and waits: dtpk_drop_check, dtpk_slot_delete, the handshake (snd_cmd_18a0_post_retry, snd_ack_word_wait_nonzero), then when banks lie above has the ARM7 block-move them down over the gap (snd_ram_copy_request, snd_ram_copy_wait_done), and ends the handshake (snd_flag_raise_wait_clear); returns 0 or the first error; callers sound_banks_default_load and sound_banks_alt_load; checked against reference material (not in this repo); part of libsnd
+ * confidence: exercised
+ * evidence: (slot): drops a bank and waits: dtpk_drop_check, dtpk_slot_delete, the handshake (snd_cmd_18a0_post_retry, snd_ack_word_wait_nonzero), then when banks lie above has the ARM7 block-move them down over the gap (snd_ram_copy_request, snd_ram_copy_wait_done), and ends the handshake (snd_flag_raise_wait_clear); returns 0 or the first error; callers sound_banks_default_load and sound_banks_alt_load; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness slot 8 returned -1; slot 5 (0x45000 bytes at 0xA0CE8000, slots 6 and 7 used above) returned 0 after snd_cmd_18a0_post_retry, snd_ack_word_wait_nonzero, snd_ram_copy_request(0xA0D2D000, 0xA0CE8000, 0x263000), snd_ram_copy_wait_done and snd_flag_raise_wait_clear, leaving slot 5 at -1, slots 6 and 7 at 0xA0CE8000 / 0xA0DFB000 and dtpk_bytes_used 0x73B000
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int dtpk_drop_compact(int slot)
@@ -846,8 +846,8 @@ int dtpk_drop_compact(int slot)
 }
 
 /* 0x0c1123e0  size 0x5c  file by match with source
- * confidence: inferred
- * evidence: (slot): dtpk_drop_check and dtpk_slot_delete, then a background job with job word 0x101 (a drop job: dtpk_job_step block-moves the banks above down and skips the copy), the negative size as whole size and the bytes to move; returns 0 or the check's error; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd
+ * confidence: exercised
+ * evidence: (slot): dtpk_drop_check and dtpk_slot_delete, then a background job with job word 0x101 (a drop job: dtpk_job_step block-moves the banks above down and skips the copy), the negative size as whole size and the bytes to move; returns 0 or the check's error; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness after dtpk_slot_delete(7, 0x150000), with slot 5 (0x45000 bytes) it returned 0 and left job 0x101, whole size -0x45000, move bytes 0x113000 and destination 0xA0D2D000 (slot 6's old address), slot 5 at -1 and slot 6 moved to 0xA0CE8000; a second call (slot 0) returned -3
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int dtpk_drop_compact_bg_begin(int slot)
@@ -1022,9 +1022,9 @@ int snd_cmd_a4_post(uint channel, int code, uint value)
 }
 
 /* 0x0c112a80  size 0x3c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x4c
- * evidence: (code, value): only code 0xa3 is taken (-2 otherwise): posts 0xa3 and then 0x1a3, each with the low four bits of the value in bits 16-19 (aica_ring_push); nothing in the image calls it; checked against reference material (not in this repo); part of libsnd
+ * evidence: (code, value): only code 0xa3 is taken (-2 otherwise): posts 0xa3 and then 0x1a3, each with the low four bits of the value in bits 16-19 (aica_ring_push); nothing in the image calls it; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness with (0xA2, 5) it returned -2 and pushed nothing; with (0xA3, 0x25) it pushed 0x500A3 and then 0x501A3 (aica_ring_push) and returned 0
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int snd_cmd_a3_post(int code, uint value)
@@ -1073,9 +1073,9 @@ int aica_ring_push(uint word)
 }
 
 /* 0x0c112ba0  size 0x64  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x7a
- * evidence: (bank slot 0-7, code): reads the slot's record in the driver's info block (word +0 of drv_info_addr points at 0x20-byte records, word +0x14 of each): bits 0-6 for code 0x4a0, bits 8-14 for 0x10a0 (the two volume codes of snd_cmd_a0_post); -0x80 for a bad slot or code; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd
+ * evidence: (bank slot 0-7, code): reads the slot's record in the driver's info block (word +0 of drv_info_addr holds the sound RAM offset (from 0x00800000) of 0x20-byte records, word +0x14 of each): bits 0-6 for code 0x4a0, bits 8-14 for 0x10a0 (the two volume codes of snd_cmd_a0_post); -0x80 for a bad slot or code; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness with the driver info block's word +0 (0xa080c3a0) poked to the offset 0x9000 and the words 0xBAC5 at 0xa0809074 (slot 3, +0x14) and 0x101 at 0xa0809054 (slot 2): slot 3 code 0x4A0 returned 0x45 and 0x10A0 returned 0x3A, slot 2 gave 1 and 1, code 0x5A0 and slot 8 returned -0x80
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 uint dtpk_slot_volume_read(uint slot, int code)
@@ -1102,9 +1102,9 @@ uint dtpk_slot_volume_read(uint slot, int code)
 }
 
 /* 0x0c112c40  size 0xe2  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x124
- * evidence: (bank slot 0-7, MIDI channel 1-16, code): looks up the channel's voice in the driver's info block (word +4 of drv_info_addr: 16 words per slot whose low byte is a record index, 0xff = none, -0x81) and reads its 0x40-byte record (word +8): +0x14 bits 0-6 for 0x1b0, bits 8-14 for 0x2b0, +8 bits 16-22 for 0x27b0, +8 bits 24-28 for 0x2ab0 mapped through dipan_to_pan_offset; -0x80 for bad arguments or codes; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd
+ * evidence: (bank slot 0-7, MIDI channel 1-16, code): looks up the channel's voice in the driver's info block (word +4 of drv_info_addr: 16 words per slot whose low byte is a record index, 0xff = none, -0x81) and reads its 0x40-byte record (word +8): +0x14 bits 0-6 for 0x1b0, bits 8-14 for 0x2b0, +8 bits 16-22 for 0x27b0, +8 bits 24-28 for 0x2ab0 mapped through dipan_to_pan_offset; -0x80 for bad arguments or codes; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness with the info block's words +4 and +8 poked to 0x9400 and 0x9800, channel map word (slot 2, channel 5) 0x107, (slot 2, channel 6) 0xFF, record 7 +0x14 = 0xBAC5 and +8 = 0x856A0000: codes 0x1B0, 0x2B0, 0x27B0, 0x2AB0 returned 0x45, 0x3A, 0x6A and 20 (dipan_to_pan_offset[5]); +8 = 0x936A0000 gave -12 (entry 19); channel 6 -0x81; channels 0 and 17, slot 8 and code 0x3B0 -0x80
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 uint midi_ch_value_read(uint slot, int channel, int code)
@@ -1151,8 +1151,8 @@ uint midi_ch_value_read(uint slot, int channel, int code)
 }
 
 /* 0x0c112da0  size 0x34  file by match with source
- * confidence: inferred
- * evidence: reads the word at +0x10 of the driver's info block (drv_info_addr) and clears it when it is not 0; returns it; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd
+ * confidence: exercised
+ * evidence: reads the word at +0x10 of the driver's info block (drv_info_addr) and clears it when it is not 0; returns it; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness with the info block's word +0x10 (0xa080c3b0) poked to 0x1234 it returned 0x1234 and left the word 0; a second call returned 0
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int drv_event_word_take(void)
@@ -1169,9 +1169,9 @@ int drv_event_word_take(void)
 }
 
 /* 0x0c112de0  size 0x7e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x80
- * evidence: (bank number): scans the driver's 16 sequence records (word +0xc of drv_info_addr, 0x30 bytes each) for an active one (bit 7) whose bits 16-23 hold the number: 0x100, or 0x101 when its bit 0 is set (paused); 0 when none plays it; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd
+ * evidence: (bank number): scans the driver's 16 sequence records (word +0xc of drv_info_addr, 0x30 bytes each) for an active one (bit 7) whose bits 16-23 hold the number: 0x100, or 0x101 when its bit 0 is set (paused); 0 when none plays it; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness with the info block's word +0xc poked to the offset 0xA000 and sequence words 0x250080 (record 2), 0x160081 (record 5), 0x300000 (record 7) and 0x400080 (a 17th record): bank 0x25 returned 0x100, 0x16 returned 0x101, 0x30 (inactive) 0, 0x40 (past the 16 records) 0 and 0x99 0
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int song_state_by_bank(uint bank_no)
@@ -1245,9 +1245,9 @@ char * libsnd_build_text(void)
 }
 
 /* 0x0c112f20  size 0x1ce  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x1f0
- * evidence: (mono ports, stereo ports, 0): sets up the driver's PCM ports: -2 unless the third count is 0, -1 when mono + 2 x stereo channels pass 8, -3 while a port is open; writes the two counts to 0x008000a0/0x008000a4; the per-channel buffer is the driver's free PCM space (0x0080008c) less 64 bytes a channel, divided by the channels, rounded down to 32 and at most 0x4000 (pcm_buffer_bytes); buffers are taken downwards from the top of sound RAM (sndram_size) below the driver's top area (drv_top_size_word, rounded up to 32); writes buffer size + 64 to 0x008000a8; fills pcm_port_table: per port its 0x60-byte driver record (0x00800100 + port * 0x60), buffer addresses (also written to record +0xc/+0x10, the second 0 for mono), the play-offset word (+0x14) and channel word (+4); ports not made are 0xff; posts request 0xa1 (aica_ring_push); nothing in the image calls it; checked against reference material (not in this repo); part of libsnd
+ * evidence: (mono ports, stereo ports, 0): sets up the driver's PCM ports: -2 unless the third count is 0, -1 when mono + 2 x stereo channels pass 8, -3 while a port is open; writes the two counts to 0x008000a0/0x008000a4; the per-channel buffer is the driver's free PCM space (0x0080008c) less 64 bytes a channel, divided by the channels, rounded down to 32 and at most 0x4000 (pcm_buffer_bytes); buffers are taken downwards from the top of sound RAM (sndram_size) below the driver's top area (drv_top_size_word, rounded up to 32); writes buffer size + 64 to 0x008000a8; fills pcm_port_table: per port its 0x60-byte driver record (0x00800100 + port * 0x60), buffer addresses (also written to record +0xc/+0x10, the second 0 for mono), the play-offset word (+0x14) and channel word (+4); ports not made are 0xff; posts request 0xa1 (aica_ring_push); nothing in the image calls it; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness with free PCM space 0xa080008c = 0x3100 and the top-size word (0xa080c290) 0x1001: (1, 1, 1) gave -2, (2, 4, 0) -1; (1, 1, 0) returned 0 with pcm_buffer_bytes 0x1000 (0x3040 / 3 rounded down to 32), 1, 1 and 0x1040 written to 0xa08000a0/a4/a8, port 0 mono buffer 0x7FDFA0 (top rounded to 0x1020), port 1 0x7FBF20 / 0x7FCF60, ports 2-7 0xFF, request 0xA1; after a port was opened -3; free 0x100000 gave 0x4000
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int pcm_ports_lay_out(short mono_ports, short stereo_ports, short third_count)
@@ -1321,8 +1321,8 @@ int pcm_ports_lay_out(short mono_ports, short stereo_ports, short third_count)
 }
 
 /* 0x0c113160  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: (header, size out): *out = header byte +7 x 16; returns the header; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pcm_ports_lay_out and pcm_port_header_send, so by link order part of sdk/libsnd/libsnd.c
+ * confidence: exercised
+ * evidence: (header, size out): *out = header byte +7 x 16; returns the header; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pcm_ports_lay_out and pcm_port_header_send, so by link order part of sdk/libsnd/libsnd.c; exercised 2026-11-12: called by the harness on a buffer with byte +7 = 0x23 it stored 0x230 and returned the buffer's address; with 0xFF it stored 0xFF0
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int pcm_header_size_get(int header, int *size)
@@ -1332,9 +1332,9 @@ int pcm_header_size_get(int header, int *size)
 }
 
 /* 0x0c113180  size 0x98  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xba
- * evidence: (port, 64-byte PCM header): for an open port that is not playing copies the header into the port's driver record (0x00800120 + port * 0x60) with g2_cpu_copy_to_bus and keeps its sample rate (u16 +0x2a) and sample size (byte +8: 0 16-bit, 1 8-bit, 2 or 3 4-bit) in pcm_port_table; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd
+ * evidence: (port, 64-byte PCM header): for an open port that is not playing copies the header into the port's driver record (0x00800120 + port * 0x60) with g2_cpu_copy_to_bus and keeps its sample rate (u16 +0x2a) and sample size (byte +8: 0 16-bit, 1 8-bit, 2 or 3 4-bit) in pcm_port_table; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness after pcm_ports_lay_out(1, 1, 0) and pcm_port_open(2) (port 1), a header with byte +8 = 1 and rate 22050 was copied word for word to 0xa0800180 and port 1 reported rate 22050 and 8 bits; with byte +8 = 3 and rate 8000 to the open port 0 it gave 8000 and 4 bits; sent to port 1 while it played, the rate stayed 22050
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 void pcm_port_header_send(int port, int header)
@@ -1364,8 +1364,8 @@ void pcm_port_header_send(int port, int header)
 }
 
 /* 0x0c113260  size 0x34  file by match with source
- * confidence: inferred
- * evidence: (port, channel, size out): for an open port stores pcm_buffer_bytes in *out and returns that channel's buffer address; 0 otherwise; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pcm_port_header_send and pcm_port_rate_get, so by link order part of sdk/libsnd/libsnd.c
+ * confidence: exercised
+ * evidence: (port, channel, size out): for an open port stores pcm_buffer_bytes in *out and returns that channel's buffer address; 0 otherwise; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pcm_port_header_send and pcm_port_rate_get, so by link order part of sdk/libsnd/libsnd.c; exercised 2026-11-12: called by the harness after pcm_ports_lay_out(1, 1, 0) (buffer 0x1000, top-size word 0): before any open (0, 0) returned 0; after both ports were opened, (1, 0) returned 0xA0FFCF40 with *size 0x1000, (1, 1) 0xA0FFDF80 and (0, 0) 0xA0FFEFC0, the addresses the layout kept
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int pcm_port_buffer_get(short port, short channel, int *size)
@@ -1380,8 +1380,8 @@ int pcm_port_buffer_get(short port, short channel, int *size)
 }
 
 /* 0x0c1132a0  size 0x28  file by match with source
- * confidence: inferred
- * evidence: (port): the port's sample rate (+0xc) when open, else 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pcm_port_buffer_get and pcm_port_bits_get, so by link order part of sdk/libsnd/libsnd.c
+ * confidence: exercised
+ * evidence: (port): the port's sample rate (+0xc) when open, else 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pcm_port_buffer_get and pcm_port_bits_get, so by link order part of sdk/libsnd/libsnd.c; exercised 2026-11-12: called by the harness after headers with rates 22050 and 8000 went to the open ports 1 and 0 (pcm_port_header_send) it returned 22050 and 8000, and 0 for the unmade port 2
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int pcm_port_rate_get(short port)
@@ -1393,8 +1393,8 @@ int pcm_port_rate_get(short port)
 }
 
 /* 0x0c1132e0  size 0x26  file by match with source
- * confidence: inferred
- * evidence: (port): the port's sample bits (+2) when open, else 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pcm_port_rate_get and pcm_port_offset_read, so by link order part of sdk/libsnd/libsnd.c
+ * confidence: exercised
+ * evidence: (port): the port's sample bits (+2) when open, else 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pcm_port_rate_get and pcm_port_offset_read, so by link order part of sdk/libsnd/libsnd.c; exercised 2026-11-12: called by the harness after headers with byte +8 = 1 and 3 went to the open ports 1 and 0 it returned 8 and 4, and 0 for the unmade port 2
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int pcm_port_bits_get(short port)
@@ -1406,8 +1406,8 @@ int pcm_port_bits_get(short port)
 }
 
 /* 0x0c113320  size 0x32  file by match with source
- * confidence: inferred
- * evidence: (port): for an open port that is playing reads the driver's play-offset word of the port (record +0x14, kept in pcm_port_table); 0 otherwise; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd
+ * confidence: exercised
+ * evidence: (port): for an open port that is playing reads the driver's play-offset word of the port (record +0x14, kept in pcm_port_table); 0 otherwise; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness with port 1 open and its play-offset word 0xa0800174 poked to 0x1234 it returned 0 while the port was not playing and 0x1234 after pcm_port_playback_on(1)
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 uint pcm_port_offset_read(short port)
@@ -1419,9 +1419,9 @@ uint pcm_port_offset_read(short port)
 }
 
 /* 0x0c113360  size 0x88  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xd2
- * evidence: (1 or 2 channels): finds a free mono / stereo port, marks it open (state 1) and returns its number; -1 when none is free or for another channel count; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pcm_port_offset_read and pcm_port_close, so by link order part of sdk/libsnd/libsnd.c
+ * evidence: (1 or 2 channels): finds a free mono / stereo port, marks it open (state 1) and returns its number; -1 when none is free or for another channel count; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pcm_port_offset_read and pcm_port_close, so by link order part of sdk/libsnd/libsnd.c; exercised 2026-11-12: called by the harness after pcm_ports_lay_out(1, 1, 0) (port 0 mono, port 1 stereo): 3 channels returned -1, 2 returned 1, 1 returned 0, and then 1 and 2 again returned -1
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int pcm_port_open(short channels)
@@ -1459,8 +1459,8 @@ int pcm_port_open(short channels)
 }
 
 /* 0x0c113440  size 0x28  file by match with source
- * confidence: inferred
- * evidence: (port): an open port that is not playing goes back to free (state 0); nothing in the image calls it (uncalled code, made a function 2026-11-09); between pcm_port_open and pcm_port_playback_on, so by link order part of sdk/libsnd/libsnd.c
+ * confidence: exercised
+ * evidence: (port): an open port that is not playing goes back to free (state 0); nothing in the image calls it (uncalled code, made a function 2026-11-09); between pcm_port_open and pcm_port_playback_on, so by link order part of sdk/libsnd/libsnd.c; exercised 2026-11-12: called by the harness with port 1 open and playing it left the state 1; after pcm_port_key_off(1) cleared the playing mark it set the state to 0 and pcm_port_state(1) gave 0
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 void pcm_port_close(short port)
@@ -1476,8 +1476,8 @@ void pcm_port_close(short port)
 }
 
 /* 0x0c113480  size 0x42  file by match with source
- * confidence: inferred
- * evidence: (port): for an open port that is not playing posts request (port << 12) | 0x1a1 (aica_ring_push) and marks it playing in pcm_port_table; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd
+ * confidence: exercised
+ * evidence: (port): for an open port that is not playing posts request (port << 12) | 0x1a1 (aica_ring_push) and marks it playing in pcm_port_table; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness with port 1 open and not playing it pushed 0x11A1 and set the playing mark (record bytes 1, 1); with port 0 open it pushed 0x1A1
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 void pcm_port_playback_on(int port)
@@ -1494,9 +1494,9 @@ void pcm_port_playback_on(int port)
 }
 
 /* 0x0c1134e0  size 0x112  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x132
- * evidence: (port): for a playing port waits (up to 0x40000 reads) for the driver to fill its channel word, then keys the AICA channel off: writes back only the low 11 bits of the channel's register 0 (dropping KYONB), does the same to the second channel when the header says two channels (record +0x28 bits 8-9 = 1), then writes the value again with bit 15 (KYONEX); on a timeout it skips to the end; then posts (port << 12) | 0x2a1 and clears the playing mark; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd
+ * evidence: (port): for a playing port waits (up to 0x40000 reads) for the driver to fill its channel word, then keys the AICA channel off: writes back only the low 11 bits of the channel's register 0 (dropping KYONB), does the same to the second channel when the header says two channels (record +0x28 bits 8-9 = 1), then writes the value again with bit 15 (KYONEX); on a timeout it skips to the end; then posts (port << 12) | 0x2a1 and clears the playing mark; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness on a playing mono port 0 with its channel word (0xa0800104) pointing at the word 0x00801000 holding 0xC123, it wrote 0x123 and then 0x8123 there, pushed 0x2A1 and cleared the playing mark; on stereo port 1 (header +9 = 1) with registers 0x7FFF and 0x4456 it wrote 0x7FF, 0x456, then 0x87FF and pushed 0x12A1; with the channel word 0 it wrote nothing, pushed 0x2A1 after the reads ran out
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 void pcm_port_key_off(short port)
@@ -1546,8 +1546,8 @@ done:
 }
 
 /* 0x0c113640  size 0x5c  file by match with source
- * confidence: inferred
- * evidence: (port): 0 for a port that is not open, 1 when it is marked playing, else from the port's driver record word: 2 when bit 6 is set, 1 when bit 7 is set, else 0; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd
+ * confidence: exercised
+ * evidence: (port): 0 for a port that is not open, 1 when it is marked playing, else from the port's driver record word: 2 when bit 6 is set, 1 when bit 7 is set, else 0; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness with port 1 open and not playing and its driver record word (0xa0800160) at 0x40, 0x80 and 0 it returned 2, 1 and 0; once playing it returned 1 with the word at 0x40; the unmade port 2 and the closed port 1 returned 0
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 uchar pcm_port_state(int port)
@@ -1585,8 +1585,8 @@ void empty_fn_0c1136e0(void)
 }
 
 /* 0x0c113700  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: (header): copies the 64 bytes of pcm_header_template into it; nothing in the image calls it (uncalled code, made a function 2026-11-09); between empty_fn_0c1136e0 and pcm_header_pitch_set, so by link order part of sdk/libsnd/libsnd.c
+ * confidence: exercised
+ * evidence: (header): copies the 64 bytes of pcm_header_template into it; nothing in the image calls it (uncalled code, made a function 2026-11-09); between empty_fn_0c1136e0 and pcm_header_pitch_set, so by link order part of sdk/libsnd/libsnd.c; exercised 2026-11-12: called by the harness on a buffer filled with 0xEE it wrote the 64 bytes of pcm_header_template (0x44535053, 0x04000100, 1, 0x00FFFFFF ... 0x7F0F) and nothing past them
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 void pcm_header_init(char *header)
@@ -1602,8 +1602,8 @@ void pcm_header_init(char *header)
 }
 
 /* 0x0c113720  size 0x16  file by match with source
- * confidence: inferred
- * evidence: (header, octave, fns): u16 +0x22 = octave << 11 | fns; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pcm_header_init and pcm_header_channels_set, so by link order part of sdk/libsnd/libsnd.c
+ * confidence: exercised
+ * evidence: (header, octave, fns): u16 +0x22 = octave << 11 | fns; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pcm_header_init and pcm_header_channels_set, so by link order part of sdk/libsnd/libsnd.c; exercised 2026-11-12: called by the harness with (5, 0x123) it stored 0x2923 at +0x22 and with (2, 0x7FF) 0x17FF
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 void pcm_header_pitch_set(int header, short octave, ushort fns)
@@ -1613,9 +1613,9 @@ void pcm_header_pitch_set(int header, short octave, ushort fns)
 }
 
 /* 0x0c113740  size 0x42  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x8e
- * evidence: (header, 1 / 2 / 4 channels): byte +9 low bits = 0 / 1 / 2, bit 7 kept; any other count leaves it; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pcm_header_pitch_set and pcm_header_volume_set, so by link order part of sdk/libsnd/libsnd.c
+ * evidence: (header, 1 / 2 / 4 channels): byte +9 low bits = 0 / 1 / 2, bit 7 kept; any other count leaves it; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pcm_header_pitch_set and pcm_header_volume_set, so by link order part of sdk/libsnd/libsnd.c; exercised 2026-11-12: called by the harness with byte +9 at 0x83, 2 channels gave 0x81, 4 gave 0x82 and 1 gave 0x80; 3 left 0x82 as it was; from 0x03, 2 gave 0x01
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 void pcm_header_channels_set(int header, short channels)
@@ -1638,8 +1638,8 @@ void pcm_header_channels_set(int header, short channels)
 }
 
 /* 0x0c1137e0  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (header, channel, volume): byte +0x31 + channel x 4; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pcm_header_channels_set and pcm_header_pan_set, so by link order part of sdk/libsnd/libsnd.c
+ * confidence: exercised
+ * evidence: (header, channel, volume): byte +0x31 + channel x 4; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pcm_header_channels_set and pcm_header_pan_set, so by link order part of sdk/libsnd/libsnd.c; exercised 2026-11-12: called by the harness on a zeroed header (2, 0x55) wrote 0x55 at +0x39 and nothing else in +0x30 to +0x3F
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 void pcm_header_volume_set(int header, short channel, uchar volume)
@@ -1649,8 +1649,8 @@ void pcm_header_volume_set(int header, short channel, uchar volume)
 }
 
 /* 0x0c113800  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (header, channel, pan): byte +0x32 + channel x 4; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pcm_header_volume_set and pcm_header_bits_set, so by link order part of sdk/libsnd/libsnd.c
+ * confidence: exercised
+ * evidence: (header, channel, pan): byte +0x32 + channel x 4; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pcm_header_volume_set and pcm_header_bits_set, so by link order part of sdk/libsnd/libsnd.c; exercised 2026-11-12: called by the harness on a zeroed header (3, 0x66) wrote 0x66 at +0x3E and nothing else in +0x30 to +0x3F
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 void pcm_header_pan_set(int header, short channel, uchar pan)
@@ -1660,9 +1660,9 @@ void pcm_header_pan_set(int header, short channel, uchar pan)
 }
 
 /* 0x0c113820  size 0x3e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x8c
- * evidence: (header, 16 / 8 / 4 bits): byte +8 = 0 / 1 / 3; any other width leaves it; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pcm_header_pan_set and pcm_header_dsp_send_set, so by link order part of sdk/libsnd/libsnd.c
+ * evidence: (header, 16 / 8 / 4 bits): byte +8 = 0 / 1 / 3; any other width leaves it; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pcm_header_pan_set and pcm_header_dsp_send_set, so by link order part of sdk/libsnd/libsnd.c; exercised 2026-11-12: called by the harness 16 bits stored 0 at +8, 8 stored 1, 4 stored 3, and 5 left the 3
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 void pcm_header_bits_set(int header, short bits)
@@ -1682,8 +1682,8 @@ void pcm_header_bits_set(int header, short bits)
 }
 
 /* 0x0c1138c0  size 0x24  file by match with source
- * confidence: inferred
- * evidence: (header, DSP channel, level): byte +0x33 + i x 4 = channel << 4 | level for all four channels; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pcm_header_bits_set and pcm_header_gain_set, so by link order part of sdk/libsnd/libsnd.c
+ * confidence: exercised
+ * evidence: (header, DSP channel, level): byte +0x33 + i x 4 = channel << 4 | level for all four channels; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pcm_header_bits_set and pcm_header_gain_set, so by link order part of sdk/libsnd/libsnd.c; exercised 2026-11-12: called by the harness with (3, 9) it wrote 0x39 at +0x33, +0x37, +0x3B and +0x3F, leaving the bytes between
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 void pcm_header_dsp_send_set(int header, short dsp_channel, short level)
@@ -1702,8 +1702,8 @@ void pcm_header_dsp_send_set(int header, short dsp_channel, short level)
 }
 
 /* 0x0c113900  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: (header, gain): byte +0x30 + i x 4 for all four channels; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pcm_header_dsp_send_set and pcm_header_field, so by link order part of sdk/libsnd/libsnd.c
+ * confidence: exercised
+ * evidence: (header, gain): byte +0x30 + i x 4 for all four channels; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pcm_header_dsp_send_set and pcm_header_field, so by link order part of sdk/libsnd/libsnd.c; exercised 2026-11-12: called by the harness with 0x7E it wrote 0x7E at +0x30, +0x34, +0x38 and +0x3C, leaving the bytes between
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 void pcm_header_gain_set(int header, short gain)
@@ -1720,9 +1720,9 @@ void pcm_header_gain_set(int header, short gain)
 }
 
 /* 0x0c113920  size 0xfa  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x272
- * evidence: (64-byte PCM header, field, channel): reads one header field: 0 sample rate (u16 +0x2a), 1 bits per sample (byte +8), 2 samples (size x 8 / bits / channels), 3 data size (+0xc), 4 channels (1, 2 or 4 from byte +9), 5 a channel's volume (+0x31 + ch * 4), 6 its pan (+0x32 + ch * 4), 7 and 8 the low and high nibble of +0x33 (DSP send channel and level), 9 filter cutoff (u16 +0x16 >> 6, 1 at least; 0 when byte +0x1f is set), 10 resonance (+0x1e); -1 for other fields; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd
+ * evidence: (64-byte PCM header, field, channel): reads one header field: 0 sample rate (u16 +0x2a), 1 bits per sample (byte +8), 2 samples (size x 8 / bits / channels), 3 data size (+0xc), 4 channels (1, 2 or 4 from byte +9), 5 a channel's volume (+0x31 + ch * 4), 6 its pan (+0x32 + ch * 4), 7 and 8 the low and high nibble of +0x33 (DSP send level and channel: pcm_header_dsp_send_set packs channel << 4 | level), 9 filter cutoff (u16 +0x16 >> 6, 1 at least; 0 when byte +0x1f is set), 10 resonance (+0x1e); -1 for other fields; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness on a header with size 0x1000, bits code 1, 2 channels, rate 22050, +0x16 = 0x1234, +0x1E = 0x11, DSP send set (3, 9): fields 0-10 gave 22050, 8, 0x800, 0x1000, 2, ch 2's volume 0x55, ch 3's pan 0x66, 9, 3, 0x48, 0x11, and 11 gave -1; with 4-bit and 4 channels field 2 gave 0x800 and 4 gave 4; +0x1F set made 9 give 0, +0x16 = 0x20 gave 1
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 uint pcm_header_field(int header, uint field, short ch, uint channels)
@@ -1783,8 +1783,8 @@ uint pcm_header_field(int header, uint field, short ch, uint channels)
 }
 
 /* 0x0c113ba0  size 0x40  file by match with source
- * confidence: inferred
- * evidence: (port, channel, volume): for an open port posts (port << 12) | (volume << 16) | 0xa2 + channel * 0x800 (aica_ring_push); nothing in the image calls it; checked against reference material (not in this repo); part of libsnd
+ * confidence: exercised
+ * evidence: (port, channel, volume): for an open port posts (port << 12) | (volume << 16) | 0xa2 + channel * 0x800 (aica_ring_push); nothing in the image calls it; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness in one sandbox after pcm_ports_lay_out(2, 1, 0), pcm_port_open(1) (port 0) and pcm_port_open(2) (stereo port 2), port 1 left laid out but not open; (0, 1, 0x55) pushed 0x005508A2 and (2, 0, 0x7F) pushed 0x007F20A2 (aica_ring_push, traced), and (1, 0, 5) pushed nothing
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 void pcm_port_ch_volume_post(short port, short ch, short volume)
@@ -1797,8 +1797,8 @@ void pcm_port_ch_volume_post(short port, short ch, short volume)
 }
 
 /* 0x0c113c00  size 0x34  file by match with source
- * confidence: inferred
- * evidence: (port, offset): for an open port posts (port << 12) | (offset + 0x40) << 16 | 0xca1; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd
+ * confidence: exercised
+ * evidence: (port, offset): for an open port posts (port << 12) | (offset + 0x40) << 16 | 0xca1; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness in one sandbox after pcm_ports_lay_out(2, 1, 0), pcm_port_open(1) (port 0) and pcm_port_open(2) (stereo port 2), port 1 left laid out but not open; (2, 3) pushed 0x00432CA1 and (0, -5) pushed 0x003B0CA1 (aica_ring_push, traced), and (1, 3) pushed nothing
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 void pcm_port_volume_offset_post(short port, short offset)
@@ -1809,8 +1809,8 @@ void pcm_port_volume_offset_post(short port, short offset)
 }
 
 /* 0x0c113c40  size 0x3c  file by match with source
- * confidence: inferred
- * evidence: (port, channel, pan): for an open port posts (port << 12) | (pan << 16) | 0x1a2 + channel * 0x800; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd
+ * confidence: exercised
+ * evidence: (port, channel, pan): for an open port posts (port << 12) | (pan << 16) | 0x1a2 + channel * 0x800; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness in one sandbox after pcm_ports_lay_out(2, 1, 0), pcm_port_open(1) (port 0) and pcm_port_open(2) (stereo port 2), port 1 left laid out but not open; (0, 1, 0x1F) pushed 0x001F09A2 and (2, 0, 3) pushed 0x000321A2 (aica_ring_push, traced), and (1, 0, 3) pushed nothing
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 void pcm_port_ch_pan_post(short port, short ch, short pan)
@@ -1823,8 +1823,8 @@ void pcm_port_ch_pan_post(short port, short ch, short pan)
 }
 
 /* 0x0c113ca0  size 0x34  file by match with source
- * confidence: inferred
- * evidence: (port, semitones): for an open port posts (port << 12) | (semitones + 0x40) << 16 | 0x8a1; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd
+ * confidence: exercised
+ * evidence: (port, semitones): for an open port posts (port << 12) | (semitones + 0x40) << 16 | 0x8a1; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness in one sandbox after pcm_ports_lay_out(2, 1, 0), pcm_port_open(1) (port 0) and pcm_port_open(2) (stereo port 2), port 1 left laid out but not open; (2, -12) pushed 0x003428A1 and (0, 7) pushed 0x004708A1 (aica_ring_push, traced), and (1, 7) pushed nothing
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 void pcm_port_semitone_post(short port, short semitones)
@@ -1833,8 +1833,8 @@ if (pcm_port_table[port * 0x1c] == 1) { aica_ring_push((int)port << 0xc | (semit
 }
 
 /* 0x0c113ce0  size 0x34  file by match with source
- * confidence: inferred
- * evidence: (port, fine pitch): for an open port posts (port << 12) | (value + 0x40) << 16 | 0x9a1; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd
+ * confidence: exercised
+ * evidence: (port, fine pitch): for an open port posts (port << 12) | (value + 0x40) << 16 | 0x9a1; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness in one sandbox after pcm_ports_lay_out(2, 1, 0), pcm_port_open(1) (port 0) and pcm_port_open(2) (stereo port 2), port 1 left laid out but not open; (0, 10) pushed 0x004A09A1 and (2, -64) pushed 0x000029A1 (aica_ring_push, traced), and (1, 10) pushed nothing
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 void pcm_port_fine_pitch_post(short port, short fine_pitch)
@@ -1845,8 +1845,8 @@ void pcm_port_fine_pitch_post(short port, short fine_pitch)
 }
 
 /* 0x0c113d20  size 0x7a  file by match with source
- * confidence: inferred
- * evidence: (port, DSP channel, DSP level): for an open port posts the level as (port << 12) | level << 16 | 0x2a2 and the channel as ... | 0x3a2, and for a stereo port (second buffer set) both again for channel 1 (+0x800); nothing in the image calls it; checked against reference material (not in this repo); part of libsnd
+ * confidence: exercised
+ * evidence: (port, DSP channel, DSP level): for an open port posts the level as (port << 12) | level << 16 | 0x2a2 and the channel as ... | 0x3a2, and for a stereo port (second buffer set) both again for channel 1 (+0x800); nothing in the image calls it; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness in one sandbox after pcm_ports_lay_out(2, 1, 0), pcm_port_open(1) (port 0) and pcm_port_open(2) (stereo port 2), port 1 left laid out but not open; (0, 3, 0x20) on the mono port pushed 0x002002A2 and 0x000303A2; (2, 5, 0x10) on the stereo port pushed 0x001022A2, 0x000523A2, 0x00102AA2, 0x00052BA2; (1, 5, 0x10) pushed nothing
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 void pcm_port_dsp_send_post(short port, short dsp_ch, short dsp_level)
@@ -1873,8 +1873,8 @@ void pcm_port_dsp_send_post(short port, short dsp_ch, short dsp_level)
 }
 
 /* 0x0c113dc0  size 0x54  file by match with source
- * confidence: inferred
- * evidence: (port, cutoff, resonance): for an open port posts (port << 12) | cutoff << 16 | 0xaa1 and then ... | resonance << 16 | 0xba1; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd
+ * confidence: exercised
+ * evidence: (port, cutoff, resonance): for an open port posts (port << 12) | cutoff << 16 | 0xaa1 and then ... | resonance << 16 | 0xba1; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness in one sandbox after pcm_ports_lay_out(2, 1, 0), pcm_port_open(1) (port 0) and pcm_port_open(2) (stereo port 2), port 1 left laid out but not open; (2, 0x100, 7) pushed 0x01002AA1 then 0x00072BA1 and (0, 0x1F, 0) pushed 0x001F0AA1 then 0x00000BA1 (aica_ring_push, traced), and (1, 0x1F, 0) pushed nothing
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 void pcm_port_filter_post(short port, short cutoff, short resonance)
@@ -1918,8 +1918,8 @@ int snd_dma_take_channel(void)
 }
 
 /* 0x0c113ea0  size 0x4a  file by match with source
- * confidence: inferred
- * evidence: for the open handles (flag bit 0) waits with snd_dma_handle_dequeue until each one can be taken back, then gives the G2 DMA channel back (g2dma_slot_mark_unused); 0, or -1 on failure; in this build the loop never advances its pointer, so only the first handle is looked at, 16 times; caller sound_off_dma_release; checked against reference material (not in this repo); part of libsnd
+ * confidence: exercised
+ * evidence: for the open handles (flag bit 0) waits with snd_dma_handle_dequeue until each one can be taken back, then gives the G2 DMA channel back (g2dma_slot_mark_unused); 0, or -1 on failure; in this build the loop never advances its pointer, so only the first handle is looked at, 16 times; caller sound_off_dma_release; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness after sndram_copy_path_select(0) and two snd_dma_handle_alloc calls (handles 0 and 1 open), it called snd_dma_handle_dequeue once with handle 0 only, which it freed, left handle 1's flag word at 1, called g2dma_slot_mark_unused(snd_dma_channel 0x0C41DE04), which cleared the channel's in-use byte +0x28, and returned 0; called again it returned -1
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int snd_dma_channel_give_back(void)
@@ -1954,8 +1954,8 @@ int sndram_copy_path_select(uint use_dma)
 }
 
 /* 0x0c113f40  size 0xe  file by match with source
- * confidence: inferred
- * evidence: returns sndram_copy_by_dma; nothing in the image calls it (uncalled code, made a function 2026-11-09); between sndram_copy_path_select and snd_dma_handle_alloc, so by link order part of sdk/libsnd/libsnd.c
+ * confidence: exercised
+ * evidence: returns sndram_copy_by_dma; nothing in the image calls it (uncalled code, made a function 2026-11-09); between sndram_copy_path_select and snd_dma_handle_alloc, so by link order part of sdk/libsnd/libsnd.c; exercised 2026-11-12: called by the harness on the snapshot it returned 1 (sndram_copy_by_dma peeked as 1), and in a sandbox after sndram_copy_path_select(0) it returned 0
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int sndram_copy_by_dma_get(void)
@@ -1964,9 +1964,9 @@ int sndram_copy_by_dma_get(void)
 }
 
 /* 0x0c113f60  size 0x28  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x2e
- * evidence: finds a free handle in snd_dma_handles, sets its flag word to 1 and returns it; 0 when all 16 are taken; nothing in the image calls it (uncalled code, made a function 2026-11-09); between sndram_copy_by_dma_get and snd_dma_handle_dequeue, so by link order part of sdk/libsnd/libsnd.c
+ * evidence: finds a free handle in snd_dma_handles, sets its flag word to 1 and returns it; 0 when all 16 are taken; nothing in the image calls it (uncalled code, made a function 2026-11-09); between sndram_copy_by_dma_get and snd_dma_handle_dequeue, so by link order part of sdk/libsnd/libsnd.c; exercised 2026-11-12: called by the harness in a sandbox it returned snd_dma_handles (0x0C5CAD2C) and then +0x10, setting each flag word to 1; with the first 15 flag words poked to 1 it returned the last handle (+0xF0), and with all 16 set it returned 0
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 uint * snd_dma_handle_alloc(void)
@@ -1986,9 +1986,9 @@ uint * snd_dma_handle_alloc(void)
 }
 
 /* 0x0c113fa0  size 0xa0  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xd0
- * evidence: (handle): -1 for a handle that is not open; unless snd_dma_handle_poll reports it done (0x100), a handle being transferred (bit 8) is cut off (snd_dma_cut_and_advance) and a queued one (bit 9) is taken out of snd_dma_ring, the later entries moving down one place (with wrap-around) and the tail with them; -0x80 for a busy handle with neither bit; clears its flag word and returns 0; caller snd_dma_channel_give_back; checked against reference material (not in this repo); part of libsnd
+ * evidence: (handle): -1 for a handle that is not open; unless snd_dma_handle_poll reports it done (0x100), a handle being transferred (bit 8) is cut off (snd_dma_cut_and_advance) and a queued one (bit 9) is taken out of snd_dma_ring, the later entries moving down one place (with wrap-around) and the tail with them; -0x80 for a busy handle with neither bit; clears its flag word and returns 0; caller snd_dma_channel_give_back; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness: a handle not open returned -1; on the CPU path (sndram_copy_path_select(0)) an open handle returned 0 with its flag word cleared; on the DMA path with handles h0 (transferring), h1, h2 queued by snd_dma_copy_queue, dequeue(h1) returned 0, cleared h1 and moved h2 down to ring[1] with the tail back to ring+8, and dequeue of a transferring handle went through snd_dma_cut_and_advance and cleared it
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int snd_dma_handle_dequeue(uint *handle)
@@ -2026,9 +2026,9 @@ int snd_dma_handle_dequeue(uint *handle)
 }
 
 /* 0x0c1140a0  size 0xce  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x112
- * evidence: (handle, source, destination, bytes): -1 for a handle that is not open, -2/-3/-4 when the source, destination or size is not a multiple of 32; with the CPU path (sndram_copy_by_dma 0) copies at once with g2_cpu_copy_to_bus and clears the busy bits; with the DMA path refuses (-5) a handle still busy, stores the three values in it, marks it queued (bit 9), appends it to snd_dma_ring and, when the ring was empty, starts it (snd_dma_handle_program_start); -0x80 for any other path; 0 on success; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd
+ * evidence: (handle, source, destination, bytes): -1 for a handle that is not open, -2/-3/-4 when the source, destination or size is not a multiple of 32; with the CPU path (sndram_copy_by_dma 0) copies at once with g2_cpu_copy_to_bus and clears the busy bits; with the DMA path refuses (-5) a handle still busy, stores the three values in it, marks it queued (bit 9), appends it to snd_dma_ring and, when the ring was empty, starts it (snd_dma_handle_program_start); -0x80 for any other path; 0 on success; nothing in the image calls it; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness with handles from snd_dma_handle_alloc: not open -1, source +4 -2, destination 0xA0900004 -3, size 65 -4; on the CPU path 64 bytes of text at buf:1 to 0xA0900000 returned 0, the bytes were there and flags 0x301 became 1; on the DMA path the first queued handle got 0x301, words src/dst/size, ring[0] and was started (g2dma_slot_store_transfer), the next two got 0x201 and ring[1], ring[2] with no start
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int snd_dma_copy_queue(uint *handle, uint src, uint dst, uint size)
@@ -2073,8 +2073,8 @@ int snd_dma_copy_queue(uint *handle, uint src, uint dst, uint size)
 }
 
 /* 0x0c1141e0  size 0x40  file by match with source
- * confidence: inferred
- * evidence: (handle): -1 for a handle that is not open, -2 when it is not being transferred (bit 8), -3 when snd_dma_handle_poll does not report it busy (0x101); clears the channel's start bit (g2dma_start_bit_clear) and moves the ring on (snd_dma_ring_advance); 0; caller snd_dma_handle_dequeue; checked against reference material (not in this repo); part of libsnd
+ * confidence: exercised
+ * evidence: (handle): -1 for a handle that is not open, -2 when it is not being transferred (bit 8), -3 when snd_dma_handle_poll does not report it busy (0x101); clears the channel's start bit (g2dma_start_bit_clear) and moves the ring on (snd_dma_ring_advance); 0; caller snd_dma_handle_dequeue; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness on the DMA path with handles h0 (started), h1, h2 queued by snd_dma_copy_queue: a handle not open returned -1, the queued h2 -2, h0 returned 0 after g2dma_start_bit_clear(0x0C41DE04), its busy bits cleared, the head moved to ring+4 and the next handle started (0x301); after the game's g2dma_start_bit_clear had cleared the start bit, a transferring handle returned -3
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int snd_dma_cut_and_advance(uint *handle)
@@ -2094,9 +2094,9 @@ int snd_dma_cut_and_advance(uint *handle)
 }
 
 /* 0x0c114240  size 0xb4  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xd0
- * evidence: (handle): with the CPU path always 0x100 (done); with the DMA path reads the channel's start bit (g2dma_start_bit_read): -1 for a handle not open, 0x101 (busy) while it is being transferred and the bit is set or while it is queued, else 0x100; when the channel is idle but the ring is not empty it moves the ring on, directly (snd_dma_ring_advance) with the SR interrupt mask at 0, else through the channel's end handler (g2dma_done_isr); -0x80 for an unknown path; callers snd_dma_handle_dequeue, snd_dma_copy_queue, snd_dma_cut_and_advance; checked against reference material (not in this repo); part of libsnd
+ * evidence: (handle): with the CPU path always 0x100 (done); with the DMA path reads the channel's start bit (g2dma_start_bit_read): -1 for a handle not open, 0x101 (busy) while it is being transferred and the bit is set or while it is queued, else 0x100; when the channel is idle but the ring is not empty it moves the ring on, directly (snd_dma_ring_advance) with the SR interrupt mask at 0, else through the channel's end handler (g2dma_done_isr); -0x80 for an unknown path; callers snd_dma_handle_dequeue, snd_dma_copy_queue, snd_dma_cut_and_advance; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness: on the CPU path it returned 0x100 for an open handle and for one not open; on the DMA path a handle not open gave -1, a queued handle 0x101, the started handle 0x101 while the start bit read 1, and 0x100 after g2dma_start_bit_clear, in which case it called g2dma_done_isr (interrupts masked), whose callback moved the ring on (head ring+4, next handle 0x301)
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int snd_dma_handle_poll(uint *handle)
@@ -2136,8 +2136,8 @@ int snd_dma_handle_poll(uint *handle)
 }
 
 /* 0x0c114340  size 0x4c  file by match with source
- * confidence: inferred
- * evidence: (handle): stores the handle's transfer in the G2 DMA channel (g2dma_slot_store_transfer: destination, source and size from handle words 2, 1 and 3, the end callback snd_dma_end_callback), marks it as being transferred (bit 8) and starts the channel (g2dma_regs_load_and_start); 0; callers snd_dma_copy_queue and snd_dma_ring_advance; checked against reference material (not in this repo); part of libsnd
+ * confidence: exercised
+ * evidence: (handle): stores the handle's transfer in the G2 DMA channel (g2dma_slot_store_transfer: destination, source and size from handle words 2, 1 and 3, the end callback snd_dma_end_callback), marks it as being transferred (bit 8) and starts the channel (g2dma_regs_load_and_start); 0; callers snd_dma_copy_queue and snd_dma_ring_advance; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness on handle 3 (flag 1 from snd_dma_handle_alloc, words 1-3 poked 0x0C601000, 0xA0901000, 0x80) it called g2dma_slot_store_transfer(0x0C41DE04, 0xA0901000, 0x0C601000, 0x80, 0, 0, 1, snd_dma_end_callback, 0), set the flag word to 0x101 and returned 0; through snd_dma_copy_queue the same for other handles
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 int snd_dma_handle_program_start(uint *handle)
@@ -2149,8 +2149,8 @@ int snd_dma_handle_program_start(uint *handle)
 }
 
 /* 0x0c1143a0  size 0x42  file by match with source
- * confidence: inferred
- * evidence: clears the busy bits (8 and 9) of the handle at snd_dma_ring_head, moves the head on with wrap-around and, when the ring still holds handles, starts the next one (snd_dma_handle_program_start); callers snd_dma_cut_and_advance, snd_dma_handle_poll and the DMA end callback snd_dma_end_callback; checked against reference material (not in this repo); part of libsnd
+ * confidence: exercised
+ * evidence: clears the busy bits (8 and 9) of the handle at snd_dma_ring_head, moves the head on with wrap-around and, when the ring still holds handles, starts the next one (snd_dma_handle_program_start); callers snd_dma_cut_and_advance, snd_dma_handle_poll and the DMA end callback snd_dma_end_callback; checked against reference material (not in this repo); part of libsnd; exercised 2026-11-12: called by the harness with h0 started and h1, h2 queued (snd_dma_copy_queue on the DMA path, head ring+4 after one advance): it cleared h1's busy bits (0x301 to 1), moved the head to ring+8 and started h2 (0x201 to 0x301, g2dma_slot_store_transfer with h2's words); called again it cleared h2 and moved the head to ring+12, equal to the tail, starting nothing
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 void snd_dma_ring_advance(void)
@@ -2166,8 +2166,8 @@ void snd_dma_ring_advance(void)
 }
 
 /* 0x0c114400  size 0x20  file by match with source
- * confidence: inferred
- * evidence: the end callback snd_dma_handle_program_start gives the G2 DMA channel: when the DMA queue's read and write indices (snd_dma_ring_tail, snd_dma_ring_head) differ, starts the next queued transfer (snd_dma_ring_advance); part of libsnd
+ * confidence: exercised
+ * evidence: the end callback snd_dma_handle_program_start gives the G2 DMA channel: when the DMA queue's read and write indices (snd_dma_ring_tail, snd_dma_ring_head) differ, starts the next queued transfer (snd_dma_ring_advance); part of libsnd; exercised 2026-11-12: called by the harness with h0 started and h1, h2 queued by snd_dma_copy_queue (tail ring+12, head ring) it called snd_dma_ring_advance: h0 to 1, head ring+4, h1 started (0x301); with the head equal to the tail (ring+12) it called nothing and left the head
  * matched: source/sdk/libsnd/libsnd.c (tools/match/match.py)
  */
 void snd_dma_end_callback(void)

@@ -60,9 +60,9 @@ int peer_set_transfer_mode(int which, int value)
 }
 
 /* 0x0c124680  size 0x30  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x52
- * evidence: (which, out): stores transfer-mode word 0 or 1 (peer_area_use_dma / peer_area_dma_nowait) to out and returns 0; -1 for a null pointer or another index; same code as xfer_setting_get; callers peer_area_read, peer_area_write; part of NLASOCK
+ * evidence: (which, out): stores transfer-mode word 0 or 1 (peer_area_use_dma / peer_area_dma_nowait) to out and returns 0; -1 for a null pointer or another index; same code as xfer_setting_get; callers peer_area_read, peer_area_write; part of NLASOCK; exercised 2026-11-12: called by the harness in one sandbox after peer_set_transfer_mode(0, 7) and (1, 9): which 0 stored 7 and returned 0, which 1 stored 9 and returned 0, which 2 returned -1 and left the word untouched, and which 0 with a null pointer returned -1
  * matched: source/sdk/nlasock/peer.c (tools/match/match.py)
  */
 int peer_get_transfer_mode(int which, int *out)
@@ -78,8 +78,8 @@ int peer_get_transfer_mode(int which, int *out)
 }
 
 /* 0x0c1246e0  size 0x18  file by match with source
- * confidence: inferred
- * evidence: returns the peer request's result word when its done word is 1, else -2; nothing in the image calls it (uncalled code, made a function 2026-11-09); between peer_get_transfer_mode and peer_request_done_get, so by link order part of sdk/nlasock/peer.c
+ * confidence: exercised
+ * evidence: returns the peer request's result word when its done word is 1, else -2; nothing in the image calls it (uncalled code, made a function 2026-11-09); between peer_get_transfer_mode and peer_request_done_get, so by link order part of sdk/nlasock/peer.c; exercised 2026-11-12: called by the harness with peer_request_state poked to done 1, result 0x1234 it returned 0x1234; with done poked 0 it returned -2
  * matched: source/sdk/nlasock/peer.c (tools/match/match.py)
  */
 int peer_request_result_get(void)
@@ -91,8 +91,8 @@ int peer_request_result_get(void)
 }
 
 /* 0x0c124700  size 0x10  file by match with source
- * confidence: inferred
- * evidence: returns the peer request's done word; nothing in the image calls it (uncalled code, made a function 2026-11-09); between peer_request_result_get and peer_area_range_check, so by link order part of sdk/nlasock/peer.c
+ * confidence: exercised
+ * evidence: returns the peer request's done word; nothing in the image calls it (uncalled code, made a function 2026-11-09); between peer_request_result_get and peer_area_range_check, so by link order part of sdk/nlasock/peer.c; exercised 2026-11-12: called by the harness with peer_request_state's done word poked 1, 0 and 5 it returned 1, 0 and 5
  * matched: source/sdk/nlasock/peer.c (tools/match/match.py)
  */
 int peer_request_done_get(void)
@@ -101,8 +101,8 @@ int peer_request_done_get(void)
 }
 
 /* 0x0c124720  size 0x20  file by match with source
- * confidence: inferred
- * evidence: (offset, length): returns -1 when offset is above 0xffff or offset + length passes 0x10000 (the 64 KiB peer area), else 0; callers peer_area_read_chunk, peer_area_write_chunk, peer_area_send, peer_area_send_async; part of NLASOCK
+ * confidence: exercised
+ * evidence: (offset, length): returns -1 when offset is above 0xffff or offset + length passes 0x10000 (the 64 KiB peer area), else 0; callers peer_area_read_chunk, peer_area_write_chunk, peer_area_send, peer_area_send_async; part of NLASOCK; exercised 2026-11-12: called by the harness: (0xffff, 1) returned 0, (0x10000, 0) -1, (0xff00, 0x100) 0 and (0xff00, 0x101) -1
  * matched: source/sdk/nlasock/peer.c (tools/match/match.py)
  */
 int peer_area_range_check(uint offset, int len)
@@ -112,8 +112,8 @@ int peer_area_range_check(uint offset, int len)
 }
 
 /* 0x0c124760  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (offset): returns offset + peer_area_base (the board address of the peer area); same code as recv_area_addr and send_area_addr; callers peer_area_read_chunk, peer_area_write_chunk; part of NLASOCK
+ * confidence: exercised
+ * evidence: (offset): returns offset + peer_area_base (the board address of the peer area); same code as recv_area_addr and send_area_addr; callers peer_area_read_chunk, peer_area_write_chunk; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (peer_area_base 0x0fd00000): offset 0x1234 returned 0x0fd01234; with peer_area_base poked 0x100, offset 5 returned 0x105
  * matched: source/sdk/nlasock/peer.c (tools/match/match.py)
  */
 int peer_area_address(int offset)
@@ -122,9 +122,9 @@ int peer_area_address(int offset)
 }
 
 /* 0x0c124780  size 0x130  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x13c
- * evidence: (offset, buffer, length, use DMA, no-wait flag): copies length bytes from the peer area to a host buffer: with DMA, aligns to 32 bytes, writes back the cache over the target (dcache_range_purge) and reads with dimm_dma_read; without, aligns to 2 bytes and reads 16-bit words (dimm_pio_read); an unaligned buffer or offset goes through the 4 KiB bounce buffer peer_area_bounce and is then copied out; -1 when the aligned span passes 4 KiB with the bounce buffer or the range check (peer_area_range_check) fails; returns length; only caller peer_area_read; part of NLASOCK
+ * evidence: (offset, buffer, length, use DMA, no-wait flag): copies length bytes from the peer area to a host buffer: with DMA, aligns to 32 bytes, writes back the cache over the target (dcache_range_purge) and reads with dimm_dma_read; without, aligns to 2 bytes and reads 16-bit words (dimm_pio_read); an unaligned buffer or offset goes through the 4 KiB bounce buffer peer_area_bounce and is then copied out; -1 when the aligned span passes 4 KiB with the bounce buffer or the range check (peer_area_range_check) fails; returns length; only caller peer_area_read; part of NLASOCK; as the game has it: an aligned peer_area_read_chunk of a length that is not a multiple of 2 (of 32 with DMA) writes past the end of the caller's buffer; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on) after peer_area_write_chunk put bytes 10..1f at offset 0x100: (0x100, buffer, 16, 0, 0) called dimm_pio_read(0x0fd00100, buffer, 16), returned 16 with those bytes; (0x111, buffer, 3) read 4 bytes at 0x0fd00110 into peer_area_bounce and copied 12 13 14; (0xfff0, buffer, 0x20) gave -1; DMA (0x40, buffer, 64, 1, 1) called dcache_range_purge(buffer, 64) and dimm_dma_read(0x0fd00040, buffer, 64, 1)
  * matched: source/sdk/nlasock/peer.c (tools/match/match.py)
  */
 int peer_area_read_chunk(uint offset, void *dst, int len, int use_dma, int no_wait)
@@ -179,8 +179,8 @@ int peer_area_read_chunk(uint offset, void *dst, int len, int use_dma, int no_wa
 }
 
 /* 0x0c1248e0  size 0x6e  file by match with source
- * confidence: inferred
- * evidence: (offset, buffer, length): under the board lock (dimm_busy_word, -1 when taken) reads the transfer modes (peer_get_transfer_mode) and runs peer_area_read_chunk; returns its result; nothing in the image calls it; part of NLASOCK
+ * confidence: exercised
+ * evidence: (offset, buffer, length): under the board lock (dimm_busy_word, -1 when taken) reads the transfer modes (peer_get_transfer_mode) and runs peer_area_read_chunk; returns its result; nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): with dimm_busy_word 1 it returned -1; with transfer modes 0 and 0 it ran peer_area_read_chunk(0x100, buffer, 16, 0, 0) and returned 16 with the bytes written there before; after peer_set_transfer_mode(0, 1) and (1, 1) it ran peer_area_read_chunk(0x40, buffer, 32, 1, 1), the DMA path, and returned 32
  * matched: source/sdk/nlasock/peer.c (tools/match/match.py)
  */
 int peer_area_read(uint offset, void *dst, int len)
@@ -201,9 +201,9 @@ int peer_area_read(uint offset, void *dst, int len)
 }
 
 /* 0x0c124980  size 0x13a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x15c
- * evidence: (buffer, offset, length, use DMA, no-wait flag): the write direction of peer_area_read_chunk: copies a host buffer to the peer area (bounce buffer peer_area_bounce for unaligned data, dcache_range_purge and dimm_dma_write with DMA, else 16-bit words with dimm_pio_write); -1 for a span over 4 KiB with the bounce buffer or a failed range check; returns length; only caller peer_area_write; part of NLASOCK
+ * evidence: (buffer, offset, length, use DMA, no-wait flag): the write direction of peer_area_read_chunk: copies a host buffer to the peer area (bounce buffer peer_area_bounce for unaligned data, dcache_range_purge and dimm_dma_write with DMA, else 16-bit words with dimm_pio_write); -1 for a span over 4 KiB with the bounce buffer or a failed range check; returns length; only caller peer_area_write; part of NLASOCK; as the game has it: an unaligned peer_area_write_chunk overwrites the board bytes beside its range (in its first and last 16-bit word, or 32-byte line with DMA) with stale data; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): (bytes 10..1f, 0x100, 16, 0, 0) called dimm_pio_write(buffer, 0x0fd00100, 16) and returned 16; (buffer+1, 0x110, 5) went through peer_area_bounce: dimm_pio_write(bounce, 0x0fd00110, 6), 5; (buffer, 0x121, 4) copied to bounce+1, 6 bytes at 0x0fd00120; (0xfff0, 0x20) and unaligned 0x1001 gave -1, aligned 0x1002 was written; DMA (buffer, 0x40, 64, 1, 1) called dcache_range_purge and dimm_dma_write(buffer, 0x0fd00040, 64, 1)
  * matched: source/sdk/nlasock/peer.c (tools/match/match.py)
  */
 int peer_area_write_chunk(void *src, uint offset, int len, int use_dma, int no_wait)
@@ -258,8 +258,8 @@ int peer_area_write_chunk(void *src, uint offset, int len, int use_dma, int no_w
 }
 
 /* 0x0c124b00  size 0x6e  file by match with source
- * confidence: inferred
- * evidence: (buffer, offset, length): under the board lock (-1 when taken) reads the transfer modes and runs peer_area_write_chunk; returns its result; nothing in the image calls it; part of NLASOCK
+ * confidence: exercised
+ * evidence: (buffer, offset, length): under the board lock (-1 when taken) reads the transfer modes and runs peer_area_write_chunk; returns its result; nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): with dimm_busy_word 1 it returned -1; with transfer modes 0 and 0 it ran peer_area_write_chunk(buffer, 0x100, 16, 0, 0) and returned 16; after peer_set_transfer_mode(0, 1) and (1, 1) it ran peer_area_write_chunk(buffer, 0x40, 32, 1, 1), which used dimm_dma_write, and returned 32
  * matched: source/sdk/nlasock/peer.c (tools/match/match.py)
  */
 int peer_area_write(void *src, uint offset, int len)
@@ -281,7 +281,7 @@ int peer_area_write(void *src, uint offset, int len)
 
 /* 0x0c124ba0  size 0x5c  file by match with source
  * confidence: inferred
- * evidence: (peer request state, first value, port, count, word list, out address): sets out to the peer area address (peer request state +8) + 0xff000, i.e. board base +0xdff000, puts the first value at the block at peer_start_table +0, the port at +8 and count 32-bit words from the list at +0x10, and writes the block, rounded up to 32 bytes, to that board address (dimm_pio_write); only caller peer_start; part of NLASOCK
+ * evidence: (peer request state, first value, port, count, word list, out address): sets out to the peer area address (peer request state +8) + 0xff000, i.e. board base +0xdff000, puts the first value at the block at peer_start_table +0, the port at +8 and count 32-bit words from the list at +0x10, and writes (count * 4 + 0x23) & ~0x1f bytes of the block to that board address (dimm_pio_write): the block rounded up to 32 bytes for counts 1-4, 8-12 and 16, but 32 bytes short of it for counts 5-7 and 13-15, whose last one to three list words never reach the board (as the game has it); only caller peer_start; part of NLASOCK; as the game has it: peer_start_put_table leaves the last one to three host words out of the board table for counts 5-7 and 13-15; corrected 2026-11-12 from harness calls: the block is not written rounded up to 32 bytes: called by the harness after dimm_net_attach(0) with (peer_request_state, 0x123, 0x5c11, count, list 0xc0000201...) it set out to 0x0fdff000 and put 0x123 at peer_start_table +0, 0x5c11 at +8 and the words at +0x10, and wrote 0x20 bytes for count 3 and 0x40 for count 8 as described, but for count 5 (a 0x24-byte block) only 0x20 bytes, so the fifth word 0xc0000205 never reached the board: the length is (count * 4 + 0x23) & ~0x1f
  * matched: source/sdk/nlasock/peer.c (tools/match/match.py)
  */
 void peer_start_put_table(peer_request_rec *req, uint start_value, uint port, int count, void *list, uint *table_addr)
@@ -295,9 +295,9 @@ void peer_start_put_table(peer_request_rec *req, uint start_value, uint port, in
 }
 
 /* 0x0c124c20  size 0xf4  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xfc
- * evidence: (value 1..0x1000, port in network byte order, count 1..16, own index below count, mode, word list): needs bit 0x80000 of board information word +0x1c (dimm_board_info_fetch, -3), the block at peer_request_state done (-2), every argument in range (the port, byte-swapped, at least 1024) and a list (-2); takes the board lock (-2 when taken); writes the table with peer_start_put_table, clears the request state and sends board command 0x33 with sub-code mode*2|1, offset count<<8 | index and the table's board address as the two parameters (dimm_cmd_post); spins until peer_reply_handler marks it done and returns the result; reads as a start call for a group of up to 16 hosts sharing one port, the hosts' words probably IPv4 addresses (not proven); nothing in the image calls it; part of NLASOCK
+ * evidence: (value 1..0x1000, port in network byte order, count 1..16, own index below count, mode, word list): needs bit 0x80000 of board information word +0x1c (dimm_board_info_fetch, -3), the block at peer_request_state done (-2), every argument in range (the port, byte-swapped, at least 1024) and a list (-2); takes the board lock (-2 when taken); writes the table with peer_start_put_table, clears the request state and sends board command 0x33 with sub-code mode*2|1, offset count<<8 | index and the table's board address as the two parameters (dimm_cmd_post); spins until peer_reply_handler marks it done and returns the result; reads as a start call for a group of up to 16 hosts sharing one port, the hosts' words probably IPv4 addresses (not proven); nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): with dimm_board_word_24 0 it returned -3; with 0x80000, done 0, value 0 or 0x1001, port 0xff03 (1023 swapped), count 0 or 17, index 3 of 3 or -1, a null list and the lock taken gave -2; (0x1000, 0x0004, 16, 15, 1, list) wrote the table to 0x0fdff000, posted dimm_cmd_post(0x33, 3, 0x100f, 0xf000, 0x0fdf), waited and returned the model's 0; (1, 0x5c11, 3, 2, 2) posted (0x33, 5, 0x302, ...)
  * matched: source/sdk/nlasock/peer.c (tools/match/match.py)
  */
 int peer_start(uint value, uint port, int count, uint index, uint mode, uint *list)
@@ -332,8 +332,8 @@ ok:
 }
 
 /* 0x0c124d60  size 0x8c  file by match with source
- * confidence: inferred
- * evidence: (32-bit value, 16-bit value, channel below 8): needs bit 0x200000 of board information word +0x1c (-3), the request state done and channel below 8 (-2), the board lock (-2); clears the request state, sends board command 0x35 with sub-code channel*2, offset = low half of the value, parameters high half and the 16-bit value (dimm_cmd_post), spins until done and returns the result; meaning not known; nothing in the image calls it; part of NLASOCK
+ * confidence: exercised
+ * evidence: (32-bit value, 16-bit value, channel below 8): needs bit 0x200000 of board information word +0x1c (-3), the request state done and channel below 8 (-2), the board lock (-2); clears the request state, sends board command 0x35 with sub-code channel*2, offset = low half of the value, parameters high half and the 16-bit value (dimm_cmd_post), spins until done and returns the result; meaning not known; nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): with dimm_board_word_24 0 it returned -3; with 0x200000, channel 8, done poked 0 and the lock taken each gave -2; (0x12345678, 0xbeef, 3) posted dimm_cmd_post(0x35, 6, 0x5678, 0x1234, 0xbeef), waited and returned the board model's 0 with done back at 1
  * matched: source/sdk/nlasock/peer.c (tools/match/match.py)
  */
 int peer_cmd35_post_wait(uint value, ushort param, ushort channel)
@@ -355,8 +355,8 @@ int peer_cmd35_post_wait(uint value, ushort param, ushort channel)
 }
 
 /* 0x0c124e20  size 0x84  file by match with source
- * confidence: inferred
- * evidence: (32-bit value, 16-bit value, channel below 8): peer_cmd35_post_wait without the wait: same checks and board command 0x35, returns 0 after sending; nothing in the image calls it; part of NLASOCK
+ * confidence: exercised
+ * evidence: (32-bit value, 16-bit value, channel below 8): peer_cmd35_post_wait without the wait: same checks and board command 0x35, returns 0 after sending; nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): with dimm_board_word_24 0 it returned -3; with 0x200000, channel 8, done poked 0 and the lock taken each gave -2; (0xa0b0c0d0, 0x7777, 7) posted dimm_cmd_post(0x35, 14, 0xc0d0, 0xa0b0, 0x7777) and returned 0 at once, leaving done 0 and dimm_busy_word 0
  * matched: source/sdk/nlasock/peer.c (tools/match/match.py)
  */
 int peer_cmd35_post(uint value, ushort param, ushort channel)
@@ -377,8 +377,8 @@ int peer_cmd35_post(uint value, ushort param, ushort channel)
 }
 
 /* 0x0c124ee0  size 0x68  file by match with source
- * confidence: inferred
- * evidence: (): needs bit 0x20000 of board information word +0x1c (-3), the request state done and the board lock (-2); clears the request state, sends board command 0x31 with sub-code 0 and no parameters, spins until done and returns the result; meaning not known; nothing in the image calls it; part of NLASOCK
+ * confidence: exercised
+ * evidence: (): needs bit 0x20000 of board information word +0x1c (-3), the request state done and the board lock (-2); clears the request state, sends board command 0x31 with sub-code 0 and no parameters, spins until done and returns the result; meaning not known; nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): with dimm_board_word_24 0 it returned -3; with 0x20000 poked, done poked 0 and the lock taken gave -2; then it posted dimm_cmd_post(0x31, 0, 0, 0, 0), waited and returned the board model's 0
  * matched: source/sdk/nlasock/peer.c (tools/match/match.py)
  */
 int peer_cmd31_query0(void)
@@ -409,8 +409,8 @@ int peer_cmd31_query0(void)
 }
 
 /* 0x0c124f80  size 0x68  file by match with source
- * confidence: inferred
- * evidence: (): peer_cmd31_query0 with sub-code 1 (same feature bit 0x20000, checks, wait and result); nothing in the image calls it; part of NLASOCK
+ * confidence: exercised
+ * evidence: (): peer_cmd31_query0 with sub-code 1 (same feature bit 0x20000, checks, wait and result); nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): with dimm_board_word_24 0 it returned -3; with 0x20000 poked, done poked 0 and the lock taken gave -2; then it posted dimm_cmd_post(0x31, 1, 0, 0, 0), waited and returned the board model's 0
  * matched: source/sdk/nlasock/peer.c (tools/match/match.py)
  */
 int peer_cmd31_query1(void)
@@ -431,8 +431,8 @@ int peer_cmd31_query1(void)
 }
 
 /* 0x0c125020  size 0x84  file by match with source
- * confidence: inferred
- * evidence: (length, mode): needs bit 0x100000 of board information word +0x1c (-3), the request state done (-2), a length that fits the 64 KiB peer area from offset 0 (peer_area_range_check, -2) and the board lock (-2); clears the request state, sends board command 0x34 with sub-code mode and the length as offset (dimm_cmd_post), spins until done and returns the result; reads as handing the first length bytes of the peer area to the board (not proven); nothing in the image calls it; part of NLASOCK
+ * confidence: exercised
+ * evidence: (length, mode): needs bit 0x100000 of board information word +0x1c (-3), the request state done (-2), a length that fits the 64 KiB peer area from offset 0 (peer_area_range_check, -2) and the board lock (-2); clears the request state, sends board command 0x34 with sub-code mode and the length as offset (dimm_cmd_post), spins until done and returns the result; reads as handing the first length bytes of the peer area to the board (not proven); nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): with dimm_board_word_24 0 it returned -3; with 0x100000 poked, length 0x10001, done poked 0 and the lock taken gave -2; (0x800, 2) posted dimm_cmd_post(0x34, 2, 0x800, 0, 0), waited and returned the board model's 0; (0x10000, 3) without interrupts posted (0x34, 3, 0x10000, 0, 0) and did not return within its budget
  * matched: source/sdk/nlasock/peer.c (tools/match/match.py)
  */
 int peer_area_send(int len, uint mode)
@@ -456,8 +456,8 @@ int peer_area_send(int len, uint mode)
 }
 
 /* 0x0c1250e0  size 0x7c  file by match with source
- * confidence: inferred
- * evidence: (length, mode): peer_area_send without the wait: same checks and board command 0x34, returns 0 after sending; nothing in the image calls it; part of NLASOCK
+ * confidence: exercised
+ * evidence: (length, mode): peer_area_send without the wait: same checks and board command 0x34, returns 0 after sending; nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): with dimm_board_word_24 0 it returned -3; with 0x100000 poked, length 0x10001, done poked 0 and the lock taken gave -2; (0x1234, 5) posted dimm_cmd_post(0x34, 5, 0x1234, 0, 0) and returned 0 at once, leaving done 0 and dimm_busy_word 0
  * matched: source/sdk/nlasock/peer.c (tools/match/match.py)
  */
 int peer_area_send_async(int len, uint mode)
@@ -476,8 +476,8 @@ int peer_area_send_async(int len, uint mode)
 }
 
 /* 0x0c125180  size 0x68  file by match with source
- * confidence: inferred
- * evidence: (): needs bit 0x80000 of board information word +0x1c (-3), the request state done and the board lock (-2); clears the request state, sends board command 0x33 with sub-code 0 (peer_start uses an odd sub-code) and no parameters, spins until done and returns the result; nothing in the image calls it; last routine of the peer group code; part of NLASOCK
+ * confidence: exercised
+ * evidence: (): needs bit 0x80000 of board information word +0x1c (-3), the request state done and the board lock (-2); clears the request state, sends board command 0x33 with sub-code 0 (peer_start uses an odd sub-code) and no parameters, spins until done and returns the result; nothing in the image calls it; last routine of the peer group code; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): with dimm_board_word_24 0 it returned -3; with 0x80000 poked, done poked 0 and the lock taken gave -2; then it posted dimm_cmd_post(0x33, 0, 0, 0, 0), waited and returned the board model's 0
  * matched: source/sdk/nlasock/peer.c (tools/match/match.py)
  */
 int peer_stop(void)

@@ -7,34 +7,34 @@
 #include "vf4ft.h"
 
 /* 0x0c046962  size 0x384  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x38e
- * evidence: (obj, header block, alpha fr4): intensity_send_alpha's loop with r13 = &intensity_spill_params loaded for its helpers, which add k0 x (base + k1) to the offset intensity (k0, k1 = intensity_spill_params, through r13), so that base intensity above the threshold given to intensity_spill_put spills into the offset (highlight) intensity with its gain; calls intensity_spill_strip_send, intensity_spill_tri_send, intensity_spill_strip_near_clip, intensity_spill_tri_near_clip, bump_group_send and vertex_colour_group_send; stored in both the slot words at typed_send_slots_alpha by intensity_spill_put (pool 0x0C10A42C); a start Ghidra missed (its entry is 0x0C10B664); part of the ELAN renderers (hand-written assembly)
+ * evidence: (obj, header block, alpha fr4): intensity_send_alpha's loop with r13 = &intensity_spill_params loaded for its helpers, which add k0 x (base + k1) to the offset intensity (k0, k1 = intensity_spill_params, through r13), so that base intensity above the threshold given to intensity_spill_put spills into the offset (highlight) intensity with its gain; calls intensity_spill_strip_send, intensity_spill_tri_send, intensity_spill_strip_near_clip, intensity_spill_tri_near_clip, bump_group_send and vertex_colour_group_send; stored in both the slot words at typed_send_slots_alpha by intensity_spill_put (pool 0x0C10A42C); a start Ghidra missed (its entry is 0x0C10B664); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with intensity_spill_params poked to (.5, -.25), alpha 1 and the object of intensity_send_alpha's test the output was intensity_send_alpha's with offsets k0 x (base + k1): bases .65 .75 .25 got .2 .25 0, bases .5 .9 1 got .125 .325 .375
  * same code as main.bin 0c10b642 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c10b640.s (hand-written assembly, tools/match/match.py)
  */
 void intensity_spill_send_alpha(int *obj, obj_send_header_rec *header, float alpha);
 
 /* 0x0c046d40  size 0x180  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x2ac
- * evidence: intensity_strip_send with k0 x (base + k1) added to the offset intensity (k0, k1 = intensity_spill_params, through r13) (not on the unlit path; the term is held to 0 and above only where a highlight is read from the row, N.L above 0 and the index above 309, 0x0C10BD54-0x0C10BD6C: with no highlight the offset intensity is k0 x (base + k1) even when that is negative); the unlit and diffuse bodies keep r7, the specular body does not: it uses r7 for the vertex control word (0x0C10BCEC, 0x0C10BD90); called by intensity_spill_send_alpha (bsr); takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * evidence: intensity_strip_send with k0 x (base + k1) added to the offset intensity (k0, k1 = intensity_spill_params, through r13) (not on the unlit path; the term is held to 0 and above only where a highlight is read from the row, N.L above 0 and the index above 309, 0x0C10BD54-0x0C10BD6C: with no highlight the offset intensity is k0 x (base + k1) even when that is negative); the unlit and diffuse bodies keep r7, the specular body does not: it uses r7 for the vertex control word (0x0C10BCEC, 0x0C10BD90); called by intensity_spill_send_alpha (bsr); takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with a matrix giving depth z + 10, x 2x, y 3y, near -4, r13 on (.5, -.25): diffuse bases .9 1.1 .1 got offsets .325 .425 -.075; with a row and fr15 -1, a highlight vertex kept the row's .55 (term -.225 held to 0), one without kept -.625, and one reading a row entry of 0 got 0
  * same code as main.bin 0c10ba20 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c10b640.s (hand-written assembly, tools/match/match.py)
  */
 void intensity_spill_strip_send(void);
 
 /* 0x0c0470d0  size 0x266  file by match with source
- * confidence: inferred
- * evidence: a copy of intensity_strip_near_clip (braf at 0x0C10BF3E, its eight entries from 0x0C10BF42, entries 0 and 7 unreachable nop pairs) over the intensity_spill vertex helpers; called by intensity_spill_send_alpha (bsr); takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: a copy of intensity_strip_near_clip (braf at 0x0C10BF3E, its eight entries from 0x0C10BF42, entries 0 and 7 unreachable nop pairs) over the intensity_spill vertex helpers; called by intensity_spill_send_alpha (bsr); takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with a matrix giving depth z + 10, x 2x, y 3y, near -4, r13 on (.5, -.25): the same strips as intensity_strip_near_clip's test came out in the same order (v0, v1, cut(0,2), v1, cut(1,2) and cut(0,1), v1, cut(0,2), v1, v2, v3) with offsets .5 x (base - .25), interpolated at the cuts
  * same code as main.bin 0c10bdb0 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c10b640.s (hand-written assembly, tools/match/match.py)
  */
 void intensity_spill_strip_near_clip(void);
 
 /* 0x0c047340  size 0xba  file by match with source
- * confidence: inferred
- * evidence: intensity_vtx_load with k0 x (base + k1) added to the offset intensity (k0, k1 = intensity_spill_params, through r13) (held to 0 and above only where a highlight is read from the row, 0x0C10C094-0x0C10C0D8; otherwise added even when negative); bsr from intensity_spill_strip_near_clip and intensity_spill_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: intensity_vtx_load with k0 x (base + k1) added to the offset intensity (k0, k1 = intensity_spill_params, through r13) (held to 0 and above only where a highlight is read from the row, 0x0C10C094-0x0C10C0D8; otherwise added even when negative); bsr from intensity_spill_strip_near_clip and intensity_spill_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with a matrix giving depth z + 10, x 2x, y 3y, near -4, r13 on (.5, -.25): as intensity_vtx_load's cases with offset + .5 x (base - .25): diffuse .325, row .55 + .325 = .875, no highlight .325, facing away -.075 (not held), unlit 0
  * same code as main.bin 0c10c020 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c10b640.s (hand-written assembly, tools/match/match.py)
  */
@@ -76,9 +76,9 @@ void intensity_spill_kept_vtx_emit(void);
 void intensity_spill_near_cut_emit(void);
 
 /* 0x0c047580  size 0xb4  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xcc
- * evidence: a copy of intensity_tri_near_clip (braf 0x0C10C29A, table 0x0C10C29E; chosen when run bit 4 is clear, whatever bit 3 says) over intensity_spill_tri_classify and the intensity_spill vertex helpers; called by intensity_spill_send_alpha (bsr); takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * evidence: a copy of intensity_tri_near_clip (braf 0x0C10C29A, table 0x0C10C29E; chosen when run bit 4 is clear, whatever bit 3 says) over intensity_spill_tri_classify and the intensity_spill vertex helpers; called by intensity_spill_send_alpha (bsr); takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with a matrix giving depth z + 10, x 2x, y 3y, near -4, r13 on (.5, -.25): triangles coded 001, 110, 111, 000 came out as intensity_tri_near_clip's (four, three, none, three vertices) with offsets .5 x (base - .25), interpolated at the cuts; r12 bit 0 set
  * same code as main.bin 0c10c260 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c10b640.s (hand-written assembly, tools/match/match.py)
  */
@@ -92,18 +92,18 @@ void intensity_spill_tri_near_clip(void);
 void intensity_spill_tri_classify(void);
 
 /* 0x0c047770  size 0x16e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x27c
- * evidence: intensity_tri_send with the spill term of intensity_spill_strip_send; the unlit and diffuse bodies keep r7, the specular body does not: it uses r7 for the vertex control word (intensity_spill_tri_send_spec+0x22, intensity_spill_tri_send_spec+0xc4); called by intensity_spill_send_alpha (bsr); it runs to 0x0C10C7A9: 0x0C10C6CC-0x0C10C7A9 is its specular body (intensity_spill_tri_send_spec), entered by the bra at 0x0C10C45C; zero fill 0x0C10C7AA-0x0C10C7AF follows; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * evidence: intensity_tri_send with the spill term of intensity_spill_strip_send; the unlit and diffuse bodies keep r7, the specular body does not: it uses r7 for the vertex control word (intensity_spill_tri_send_spec+0x22, intensity_spill_tri_send_spec+0xc4); called by intensity_spill_send_alpha (bsr); it runs to 0x0C10C7A9: 0x0C10C6CC-0x0C10C7A9 is its specular body (intensity_spill_tri_send_spec), entered by the bra at 0x0C10C45C; zero fill 0x0C10C7AA-0x0C10C7AF follows; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with a matrix giving depth z + 10, x 2x, y 3y, near -4, r13 on (.5, -.25): two diffuse triangles gave intensity_tri_send's six vertices with offsets .325 .425 -.075 .3375 -.075 .425 (.5 x (base - .25)), the 3rd and 6th ending strips
  * same code as main.bin 0c10c450 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c10b640.s (hand-written assembly, tools/match/match.py)
  */
 void intensity_spill_tri_send(void);
 
 /* 0x0c0479ec  size 0xd6  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xde
- * evidence: hand-written: the specular body of intensity_spill_tri_send, entered by its bra at 0x0C10C45C when r8 is non-zero and even; the twin of intensity_tri_send_spec with the spill term; takes no C-style arguments (it works on its caller's registers, listed in its .s file); called code: part of intensity_spill_tri_send, whose assembly source ends before it; made a function 2026-11-09; between intensity_spill_tri_send and bump_group_send, so by link order part of sdk/naomi2_library/elan_intensity_spill.c
+ * evidence: hand-written: the specular body of intensity_spill_tri_send, entered by its bra at 0x0C10C45C when r8 is non-zero and even; the twin of intensity_tri_send_spec with the spill term; takes no C-style arguments (it works on its caller's registers, listed in its .s file); called code: part of intensity_spill_tri_send, whose assembly source ends before it; made a function 2026-11-09; between intensity_spill_tri_send and bump_group_send, so by link order part of sdk/naomi2_library/elan_intensity_spill.c; exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with a matrix giving depth z + 10, x 2x, y 3y, near -4: called through intensity_spill_tri_send with r8 a row (entries 320, 330 = .55, .3), half (0,0,400), r13 on (.5, -.25): offsets .3 + .3375 = .6375, .55 + .325 = .875 and 0 + .425 for the row's 0
  * same code as main.bin 0c10c6cc (ghidra/TransferFromMain.java)
  * matched: source/asm/0c10c6cc.s (hand-written assembly, tools/match/match.py)
  */

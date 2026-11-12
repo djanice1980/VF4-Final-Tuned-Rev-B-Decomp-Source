@@ -675,8 +675,8 @@ void model_tex_rebind_by_entry_ids(compiled_model_rec *model, int tex_list)
 }
 
 /* 0x0c03dbe0  size 0x34  file by match with source
- * confidence: inferred
- * evidence: (field 0-3, value): for a field up to 3 takes {mask, shift} from obj_flag_fields (one bit at 9, 10, 11 or 12), clears it from obj_flag_keep_mask and ORs value << shift into obj_flag_force_bits, the two words model_tex_load_walk applies to word 2 of each object header; nothing in the image calls it (uncalled code, made a function 2026-11-09); between model_tex_rebind_by_entry_ids and obj_flag_override_clear, so by link order part of sdk/naomi2_library/model_tex.c
+ * confidence: exercised
+ * evidence: (field 0-3, value): for a field up to 3 takes {mask, shift} from obj_flag_fields (one bit at 9, 10, 11 or 12), clears it from obj_flag_keep_mask and ORs value << shift into obj_flag_force_bits, the two words model_tex_load_walk applies to word 2 of each object header; nothing in the image calls it (uncalled code, made a function 2026-11-09); between model_tex_rebind_by_entry_ids and obj_flag_override_clear, so by link order part of sdk/naomi2_library/model_tex.c; exercised 2026-11-12: called by the harness in one sandbox with obj_flag_fields {1,9}, {1,10}, {1,11}, {1,12} and obj_flag_keep_mask / obj_flag_force_bits poked to 0xFFFFFFFF / 0: (1, 1) made them 0xFFFFFBFF / 0x400, then (3, 1) 0xFFFFEBFF / 0x1400; (4, 1) changed nothing
  * same code as main.bin 0c100920 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/model_tex.c (tools/match/match.py)
  */
@@ -693,8 +693,8 @@ void obj_flag_override_set(uint field, uint value)
 }
 
 /* 0x0c03dc20  size 0x30  file by match with source
- * confidence: inferred
- * evidence: (field 0-3): undoes obj_flag_override_set for one field: sets its bits in obj_flag_keep_mask and clears them in obj_flag_force_bits; nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_flag_override_set and obj_flag_overrides_reset, so by link order part of sdk/naomi2_library/model_tex.c
+ * confidence: exercised
+ * evidence: (field 0-3): undoes obj_flag_override_set for one field: sets its bits in obj_flag_keep_mask and clears them in obj_flag_force_bits; nothing in the image calls it (uncalled code, made a function 2026-11-09); between obj_flag_override_set and obj_flag_overrides_reset, so by link order part of sdk/naomi2_library/model_tex.c; exercised 2026-11-12: called by the harness after obj_flag_override_set(1, 1) and (3, 1) had left obj_flag_keep_mask 0xFFFFEBFF and obj_flag_force_bits 0x1400: clear(1) made them 0xFFFFEFFF and 0x1000; clear(5) changed nothing
  * same code as main.bin 0c100960 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi2_library/model_tex.c (tools/match/match.py)
  */

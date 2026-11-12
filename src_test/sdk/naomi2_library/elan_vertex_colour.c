@@ -14,81 +14,81 @@
 void vertex_colour_group_send(void);
 
 /* 0x0c0485f0  size 0x10c  file by match with source
- * confidence: inferred
- * evidence: unclipped strip sender of vertex_colour_group_send: r3 = vertex count; per 32-byte record (x, y, z, three signed normal bytes with a lit flag in the top byte, packed ARGB, unused word, u, v; inline or reference) transforms, takes 1/depth and builds the base color as the packed ARGB x fr12-fr15, times (the caller's fr15 + max(0, N.L) / 127) for lit vertices; writes 64-byte textured floating-color vertices (X, Y, 1/w, u, v, base ARGB, zero offset color) at r6 (control word r6, r6 >> 1 on the last); r5 + 64; a positive next word with bit 7 set starts another strip; bsr from vertex_colour_group_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: unclipped strip sender of vertex_colour_group_send: r3 = vertex count; per 32-byte record (x, y, z, three signed normal bytes with a lit flag in the top byte, packed ARGB, unused word, u, v; inline or reference) transforms, takes 1/depth and builds the base color as the packed ARGB x fr12-fr15, times (the caller's fr15 + max(0, N.L) / 127) for lit vertices; writes 64-byte textured floating-color vertices (X, Y, 1/w, u, v, base ARGB, zero offset color) at r6 (control word r6, r6 >> 1 on the last); r5 + 64; a positive next word with bit 7 set starts another strip; bsr from vertex_colour_group_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with a matrix giving depth z + 10, x 2x, y 3y, near -4, scales (1/256, .01, .02, .004), light (0,0,1) and group float .25 on the stack: color 0x80FF4020 lit with normal byte 0 64 gave (.5, 1.9225, .965, .0965) (x (.25 + 64/127)), unlit (.5, 2.55, 1.28, .128), facing away x .25; 64-byte vertices, offset color 0, the last ending the strip
  * same code as main.bin 0c10d2d0 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c10d2d0.s (hand-written assembly, tools/match/match.py)
  */
 void vertex_colour_strip_send(void);
 
 /* 0x0c048700  size 0x108  file by match with source
- * confidence: inferred
- * evidence: as vertex_colour_strip_send for independent triangles: r9 = triangle count, three vertices each with an end-of-strip control word on every third; bsr from vertex_colour_group_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: as vertex_colour_strip_send for independent triangles: r9 = triangle count, three vertices each with an end-of-strip control word on every third; bsr from vertex_colour_group_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with a matrix giving depth z + 10, x 2x, y 3y, near -4, as vertex_colour_strip_send's test: two triangles gave six 64-byte vertices with the same colors, the 3rd and 6th ending strips, r4 on the next word
  * same code as main.bin 0c10d3e0 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c10d3e0.s (hand-written assembly, tools/match/match.py)
  */
 void vertex_colour_tri_send(void);
 
 /* 0x0c048810  size 0x24a  file by match with source
- * confidence: inferred
- * evidence: near-plane clipping strip walk of vertex_colour_group_send (the case layout of float_colour_strip_near_clip_spec, braf table at 0x0C10D67A, whose entries for cases 0 and 7 are nop pairs never reached): loads with vertex_colour_vtx_load or an inline transform and near test, keeps vertices in vertex_colour_clip_ring (vertex_colour_vtx_keep), copies the last color back when flat (vertex_colour_flat_copy) and sends vertex_colour_vtx_emit, vertex_colour_kept_vtx_emit and vertex_colour_near_cut_emit vertices; its backward steps rely on bit 0 of a 32-byte record's last word being set; continues over bit-7 runs and returns with r12 bit 0 set; bsr from vertex_colour_group_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: near-plane clipping strip walk of vertex_colour_group_send (the case layout of float_colour_strip_near_clip_spec, braf table at 0x0C10D67A, whose entries for cases 0 and 7 are nop pairs never reached): loads with vertex_colour_vtx_load or an inline transform and near test, keeps vertices in vertex_colour_clip_ring (vertex_colour_vtx_keep), copies the last color back when flat (vertex_colour_flat_copy) and sends vertex_colour_vtx_emit, vertex_colour_kept_vtx_emit and vertex_colour_near_cut_emit vertices; its backward steps rely on bit 0 of a 32-byte record's last word being set; continues over bit-7 runs and returns with r12 bit 0 set; bsr from vertex_colour_group_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with a matrix giving depth z + 10, x 2x, y 3y, near -4 (records with bit 0 of the last word set): a strip front, front, nearer gave v0, v1, cut(0,2), v1, cut(1,2), cuts on the plane with 1/w .25 and ARGB interpolated, the last ending the strip; r12 bit 0 set
  * same code as main.bin 0c10d4f0 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c10d4f0.s (hand-written assembly, tools/match/match.py)
  */
 void vertex_colour_strip_near_clip(void);
 
 /* 0x0c048a60  size 0xaa  file by match with source
- * confidence: inferred
- * evidence: fetches the next record at r4 (inline or reference) and advances r4, transforms it and builds the base color as vertex_colour_strip_send (the light and ambient read further up the stack, past the walk's pushes); returns fr4 = minus depth, fr5, fr6 = x, y not yet divided, fr7 = 1/depth, fr8-fr11 = ARGB, r1 at u, v and T = the vertex lies behind the near plane; bsr from vertex_colour_strip_near_clip and vertex_colour_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: fetches the next record at r4 (inline or reference) and advances r4, transforms it and builds the base color as vertex_colour_strip_send (the light and ambient read further up the stack, past the walk's pushes); returns fr4 = minus depth, fr5, fr6 = x, y not yet divided, fr7 = 1/depth, fr8-fr11 = ARGB, r1 at u, v and T = the vertex lies behind the near plane; bsr from vertex_colour_strip_near_clip and vertex_colour_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with a matrix giving depth z + 10, x 2x, y 3y, near -4, light and group float .25 in a caller frame: lit color 0x80FF4020, normal byte 0 64 gave fr8-fr11 (.5, 1.9225, .965, .0965); unlit (.5, 2.55, 1.28, .128); normal bytes 1, 2 (paired with the zero y, x light) the .25 factor only; fr4-fr7 (-15, 2, 6, 1/15), r1 on u, r4 + 32; a vertex nearer than the plane gave T 1; a reference r4 + 8
  * same code as main.bin 0c10d740 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c10d4f0.s (hand-written assembly, tools/match/match.py)
  */
 void vertex_colour_vtx_load(void);
 
 /* 0x0c048b10  size 0x36  file by match with source
- * confidence: inferred
- * evidence: sends the loaded vertex as one of the 64-byte textured floating-color vertices (X, Y, 1/w, u, v, base ARGB, zero offset color) at r6 (control word r6, or r6 >> 1 when dt r3 reaches 0), prefetches both halves, r5 + 64; bsr from vertex_colour_strip_near_clip and vertex_colour_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: sends the loaded vertex as one of the 64-byte textured floating-color vertices (X, Y, 1/w, u, v, base ARGB, zero offset color) at r6 (control word r6, or (r6 + 16) >> 1 when dt r3 reaches 0), prefetches both halves, r5 + 64; bsr from vertex_colour_strip_near_clip and vertex_colour_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with fr4-fr7 (-3, 6, 9, .25), fr8-fr11 (.1, .2, .3, .4), u, v .25, .75 at r1 and r3 2 it wrote a 64-byte vertex X 1.5, Y 2.25, .25, .25, .75, ARGB at +32, zeros at +48, control r6, r5 + 64; r3 1 gave control (r6 + 16) >> 1 and T 1
  * same code as main.bin 0c10d7f0 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c10d4f0.s (hand-written assembly, tools/match/match.py)
  */
 void vertex_colour_vtx_emit(void);
 
 /* 0x0c048b50  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: stores the loaded vertex (minus depth, x, y, 1/depth, u, v, ARGB) in slot r11 & 3 of vertex_colour_clip_ring; bsr from vertex_colour_strip_near_clip and vertex_colour_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: stores the loaded vertex (minus depth, x, y, 1/depth, u, v, ARGB) in slot r11 & 3 of vertex_colour_clip_ring; bsr from vertex_colour_strip_near_clip and vertex_colour_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with fr4-fr7 (-3, 6, 9, .25), fr8-fr11 (.1, .2, .3, .4), u, v .25, .75 at r1 and r11 7 it stored the ten words in slot 3 of vertex_colour_clip_ring, its last six words and the other slots as planted
  * same code as main.bin 0c10d830 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c10d4f0.s (hand-written assembly, tools/match/match.py)
  */
 void vertex_colour_vtx_keep(void);
 
 /* 0x0c048b70  size 0x2a  file by match with source
- * confidence: inferred
- * evidence: copies the ARGB of ring slot r11 & 3 into the two slots before it (flat shading across a near-plane cut), run when r12 bit 0 is set; bsr from vertex_colour_strip_near_clip and vertex_colour_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: copies the ARGB of ring slot r11 & 3 into the two slots before it (flat shading across a near-plane cut), run when r12 bit 0 is set; bsr from vertex_colour_strip_near_clip and vertex_colour_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with vertex_colour_clip_ring planted 100 s + w: r11 = 1 copied slot 1's ARGB (106-109) into slots 0 and 3, slot 2 untouched
  * same code as main.bin 0c10d850 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c10d4f0.s (hand-written assembly, tools/match/match.py)
  */
 void vertex_colour_flat_copy(void);
 
 /* 0x0c048ba0  size 0x4a  file by match with source
- * confidence: inferred
- * evidence: sends slot r0 & 3 of vertex_colour_clip_ring as a 64-byte vertex (x, y times its 1/depth, zero offset color); control word 0xf0000000 when T is set on entry, else r6; r5 + 64; bsr from vertex_colour_strip_near_clip and vertex_colour_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: sends slot r0 & 3 of vertex_colour_clip_ring as a 64-byte vertex (x, y times its 1/depth, zero offset color); control word 0xf0000000 when T is set on entry, else r6; r5 + 64; bsr from vertex_colour_strip_near_clip and vertex_colour_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with vertex_colour_clip_ring planted 100 s + w: r0 2, T 1 sent 40803, 41006 (x, y times the stored 1/w 203), 203, 204, 205, ARGB 206-209, zero offset color, control 0xf0000000; r0 4, T 0 slot 0 with control r6; r5 + 64
  * same code as main.bin 0c10d880 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c10d4f0.s (hand-written assembly, tools/match/match.py)
  */
 void vertex_colour_kept_vtx_emit(void);
 
 /* 0x0c048bf0  size 0xa8  file by match with source
- * confidence: inferred
- * evidence: sends the point where the edge from ring slot r0 & 3 to slot r11 & 3 crosses the near plane: t = (near - a) / (b - a) on the minus-depth words (near from r12), interpolating x, y, u, v and ARGB; 1/w = r7 and x, y times r7; control word 0xf0000000 when T is set on entry, else r6; its pool (0x0C10D978) holds vertex_colour_clip_ring +0, +0x28, +0x18; bsr from vertex_colour_strip_near_clip and vertex_colour_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: sends the point where the edge from ring slot r0 & 3 to slot r11 & 3 crosses the near plane: t = (near - a) / (b - a) on the minus-depth words (near from r12), interpolating x, y, u, v and ARGB; 1/w = r7 and x, y times r7; control word 0xf0000000 when T is set on entry, else r6 + 4; its pool (0x0C10D978) holds vertex_colour_clip_ring +0, +0x28, +0x18; bsr from vertex_colour_strip_near_clip and vertex_colour_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with slot 0 (-2, 10, 20, u 0, v 1, ARGB 1, .2, .4, 0), slot 1 (-6, 30, 60, 1, 0, 0, .6, 0, 1), near -4, r7 .25, T 1: X 5, Y 10, .25, .5, .5, ARGB .5, .4, .2, .5 and 0xf0000000; from slot 1 to 0 with near -3, r7 .75: t .75, X 11.25, Y 22.5, ARGB .75, .3, .3, .25
  * same code as main.bin 0c10d8d0 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c10d4f0.s (hand-written assembly, tools/match/match.py)
  */
 void vertex_colour_near_cut_emit(void);
 
 /* 0x0c048cb0  size 0x8e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xae
- * evidence: near-plane clipping for independent triangles of vertex_colour_group_send (the case layout of float_colour_tri_near_clip_spec): r3 = triangle count, vertex_colour_tri_classify gives the 3-bit code, 0 sends the three vertices, 7 skips them, otherwise they are kept in slots 0-2 (flat copy when flat) and a braf table at 0x0C10D9CE sends kept vertices and near cuts; returns with r12 bit 0 set; bsr from vertex_colour_group_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * evidence: near-plane clipping for independent triangles of vertex_colour_group_send (the case layout of float_colour_tri_near_clip_spec): r3 = triangle count, vertex_colour_tri_classify gives the 3-bit code, 0 sends the three vertices, 7 skips them, otherwise they are kept in slots 0-2 (flat copy when flat) and a braf table at 0x0C10D9CE sends kept vertices and near cuts; returns with r12 bit 0 set; bsr from vertex_colour_group_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with a matrix giving depth z + 10, x 2x, y 3y, near -4: triangles coded 001, 110, 111, 000 gave v0, v1, cut(0,2), cut(1,2) | cut(0,2), cut(1,2), v2 | nothing | three vertices, 64 bytes each with ARGB interpolated at the cuts, each strip ended; r12 bit 0 set
  * same code as main.bin 0c10d990 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c10d990.s (hand-written assembly, tools/match/match.py)
  */

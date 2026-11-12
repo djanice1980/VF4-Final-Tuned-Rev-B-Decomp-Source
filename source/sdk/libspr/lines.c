@@ -27,16 +27,14 @@ extern line3d_piece_start_pt line3d_piece_start; /* 0x0c5cab0c */
 extern line3d_piece_end_pt line3d_piece_end; /* 0x0c5cab18 */
 extern graphics_work_rec graphics_work; /* 0x0c5d4800 */
 
-void line3d_quads_opaque(float *a, float *b, uint colour)
+int line3d_quads_opaque(float *a, float *b, uint colour)
 {
-  line3d_quads_emit(a,b,colour,0);
-  return;
+  return line3d_quads_emit(a,b,colour,0);
 }
 
-void line3d_quads_opaque_world(float *a, float *b, uint colour)
+int line3d_quads_opaque_world(float *a, float *b, uint colour)
 {
-  line3d_quads_emit(a,b,colour,2);
-  return;
+  return line3d_quads_emit(a,b,colour,2);
 }
 
 int line3d_quads_alpha(float *a, float *b, uint colour)
@@ -44,10 +42,9 @@ int line3d_quads_alpha(float *a, float *b, uint colour)
   return line3d_quads_emit(a,b,colour,1);
 }
 
-void line3d_quads_alpha_world(float *a, float *b, uint colour)
+int line3d_quads_alpha_world(float *a, float *b, uint colour)
 {
-  line3d_quads_emit(a,b,colour,3);
-  return;
+  return line3d_quads_emit(a,b,colour,3);
 }
 
 void line3d_runs_opaque(uint *runs)

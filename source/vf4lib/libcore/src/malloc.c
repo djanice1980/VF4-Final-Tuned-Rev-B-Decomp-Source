@@ -354,9 +354,10 @@ void heap_free(heap *h, void *p)
   set_imask_level(lvl);
 }
 
-void heap_realloc(heap *h, void *p, int size)
+void *heap_realloc(heap *h, void *p, int size)
 {
   void *ra;
+  void *r;
   unsigned int sr;
   unsigned int lvl;
   unsigned int t, u;
@@ -366,10 +367,11 @@ void heap_realloc(heap *h, void *p, int size)
   sr |= 0xf0;
   __asm__ volatile ("ldc %0,sr" : : "r" (sr));
   check_heap_internal(h);
-  realloc_internal(h,ra,p,size);
+  r = realloc_internal(h,ra,p,size);
   __asm__ volatile ("stc sr,%0" : "=r" (t));
   u = t & 0xffffff0f; t = u | (lvl << 4);
   __asm__ volatile ("ldc %0,sr" : : "r" (t));
+  return r;
 }
 
 void * heap_calloc(heap *h, int n, int size)
@@ -547,9 +549,10 @@ void free(void *p)
   __asm__ volatile ("ldc %0,sr" : : "r" (t));
 }
 
-void realloc(void *p, int size)
+void *realloc(void *p, int size)
 {
   void *ra;
+  void *r;
   unsigned int sr;
   unsigned int lvl;
   unsigned int t, u;
@@ -562,11 +565,11 @@ void realloc(void *p, int size)
   h = &main_heap;
   main_heap_init();
   check_heap_internal(h);
-  realloc_internal(h,ra,p,size);
+  r = realloc_internal(h,ra,p,size);
   __asm__ volatile ("stc sr,%0" : "=r" (t));
   u = t & 0xffffff0f; t = u | (lvl << 4);
   __asm__ volatile ("ldc %0,sr" : : "r" (t));
-
+  return r;
 }
 
 void * calloc(size_t n, size_t size)

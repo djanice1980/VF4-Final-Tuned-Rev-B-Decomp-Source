@@ -450,8 +450,8 @@ void win_value_inc(win_rec *w)
 }
 
 /* 0x0c0ebb60  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: (window): win_value_step(window, 1, +1): up by a large step; bound to direction 0x10 with buttons 0x01 and 0x02 long-held (win_keys_focused); part of vf4lib/libdebug/src/win_sys.c
+ * confidence: exercised
+ * evidence: (window): win_value_step(window, 1, +1): up by a large step; bound to direction 0x10 with buttons 0x01 and 0x02 long-held (win_keys_focused); part of vf4lib/libdebug/src/win_sys.c; exercised 2026-11-12: called by the harness with a planted window at 0x0F00C000 (item 0 of kind 0), it called win_value_step(0x0F00C000, 1, 1), where win_value_dec_fast called win_value_step(0x0F00C000, 1, -1)
  * matched: source/vf4lib/libdebug/src/win_sys.c (tools/match/match.py)
  */
 void win_value_inc_fast(win_rec *w)
@@ -472,8 +472,8 @@ void win_value_dec(win_rec *w)
 }
 
 /* 0x0c0ebba0  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: (window): win_value_step(window, 1, -1): down by a large step; bound to direction 0x20 with buttons 0x01 and 0x02 long-held (win_keys_focused); part of vf4lib/libdebug/src/win_sys.c
+ * confidence: exercised
+ * evidence: (window): win_value_step(window, 1, -1): down by a large step; bound to direction 0x20 with buttons 0x01 and 0x02 long-held (win_keys_focused); part of vf4lib/libdebug/src/win_sys.c; exercised 2026-11-12: called by the harness with a planted window at 0x0F00C000 (item 0 of kind 0), it called win_value_step(0x0F00C000, 1, -1), where win_value_inc_fast called win_value_step(0x0F00C000, 1, 1)
  * matched: source/vf4lib/libdebug/src/win_sys.c (tools/match/match.py)
  */
 void win_value_dec_fast(win_rec *w)
@@ -682,8 +682,8 @@ void win_height_grow(win_rec *w)
 }
 
 /* 0x0c0ebf40  size 0x20  file by match with source
- * confidence: inferred
- * evidence: (window): a debug window key handler: width +0x46 plus one up to 81; 0x10 with all three (the key table win_keys_focused, which win_key_table_run walks); Ghidra did not make this a function; part of vf4lib/libdebug/src/win_sys.c
+ * confidence: exercised
+ * evidence: (window): a debug window key handler: width +0x46 plus one up to 81; 0x10 with all three (the key table win_keys_focused, which win_key_table_run walks); Ghidra did not make this a function; part of vf4lib/libdebug/src/win_sys.c; exercised 2026-11-12: called by the harness on a window record in a scratch buffer, width (+0x46) 80 became 81 and a second call left it at 81 (the limit)
  * matched: source/vf4lib/libdebug/src/win_sys.c (tools/match/match.py)
  */
 void win_width_grow(win_rec *w)
@@ -697,8 +697,8 @@ void win_width_grow(win_rec *w)
 }
 
 /* 0x0c0ebf60  size 0x2a  file by match with source
- * confidence: inferred
- * evidence: (window): a debug window key handler: width minus one while above the name-column width +0x0A; 0x20 with all three (the key table win_keys_focused, which win_key_table_run walks); Ghidra did not make this a function; part of vf4lib/libdebug/src/win_sys.c
+ * confidence: exercised
+ * evidence: (window): a debug window key handler: width minus one while above the name-column width +0x0A; 0x20 with all three (the key table win_keys_focused, which win_key_table_run walks); Ghidra did not make this a function; part of vf4lib/libdebug/src/win_sys.c; exercised 2026-11-12: called by the harness on a window record in a scratch buffer with name_cols (+0x0A) 10 and width (+0x46) 12, three calls left the width 11, 10 and 10 (never below the name columns)
  * matched: source/vf4lib/libdebug/src/win_sys.c (tools/match/match.py)
  */
 void win_width_shrink(win_rec *w)
@@ -1242,8 +1242,8 @@ void win_text_put(win_rec *w, int col, int row, char *text, uint len)
 }
 
 /* 0x0c0ecfa0  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: (window, column, row, text): win_text_put with no length limit (-1); nothing in the image calls it; part of vf4lib/libdebug/src/win_sys.c
+ * confidence: exercised
+ * evidence: (window, column, row, text): win_text_put with no length limit (-1); nothing in the image calls it; part of vf4lib/libdebug/src/win_sys.c; exercised 2026-11-12: called by the harness with (a scratch window, column 3, row 5, "hi") it called win_text_put with the same window, 3, 5 and text, and length -1 (0xFFFFFFFF) as the fifth (stack) argument
  * matched: source/vf4lib/libdebug/src/win_sys.c (tools/match/match.py)
  */
 void win_text_put_all(win_rec *w, int col, int row, char *text)
@@ -1483,8 +1483,8 @@ void win_background_draw(win_rec *win)
 }
 
 /* 0x0c0ed580  size 0x3e  file by match with source
- * confidence: inferred
- * evidence: (0x0RGB, 4 bits each): widens each channel and sets its low bits (R<<1|1 at bit 11, G<<3|0x60 at bit 5, B<<1|1), returning a 16-bit RGB565 pixel; caller fb_glyph_pixel; part of vf4lib/libdebug/src/win_sys.c
+ * confidence: exercised
+ * evidence: (0x0RGB, 4 bits each): widens each channel and sets its low bits (R<<1|1 at bit 11, G<<2|3 at bit 5, B<<1|1: 0x123 gives 0x1967), returning a 16-bit RGB565 pixel; caller fb_glyph_pixel; part of vf4lib/libdebug/src/win_sys.c; exercised 2026-11-12: called by the harness, 0x123 returned 0x1967, 0xF00 0xF861, 0x0F0 0x0FE1, 0x00F 0x087F, and 0xF123 0x1967 (bits above the 12 ignored): each channel widened with its low bits set
  * matched: source/vf4lib/libdebug/src/win_sys.c (tools/match/match.py)
  */
 uint rgb444_to_rgb565(uint color)
@@ -1502,8 +1502,8 @@ uint rgb444_to_rgb565(uint color)
 }
 
 /* 0x0c0ed5c0  size 0x2c  file by match with source
- * confidence: inferred
- * evidence: (character, x, y): pixel (x, y) of the character's 8x8 glyph in the 64-halfword-per-character RGB444 font at text_glyph_pixels, converted by rgb444_to_rgb565; caller fb_glyph_put; part of vf4lib/libdebug/src/win_sys.c
+ * confidence: exercised
+ * evidence: (character, x, y): pixel (x, y) of the character's 8x8 glyph in the 64-halfword-per-character RGB444 font at text_glyph_pixels, converted by rgb444_to_rgb565; caller fb_glyph_put; part of vf4lib/libdebug/src/win_sys.c; exercised 2026-11-12: called by the harness on glyph 0x41 (the same 64 halfwords at text_glyph_pixels + 0x41 x 128 in the image and the snapshot), (x 2, y 4) returned 0xFFFF (table 0xFFFF), (x 4, y 2) returned 0x0861 (table 0x0000, x and y not swapped), and glyph 0x30 (2, 1) returned 0x0861 (table 0x8000), each through rgb444_to_rgb565
  * matched: source/vf4lib/libdebug/src/win_sys.c (tools/match/match.py)
  */
 uint fb_glyph_pixel(int glyph, int x, int y)
@@ -1512,8 +1512,8 @@ uint fb_glyph_pixel(int glyph, int x, int y)
 }
 
 /* 0x0c0ed600  size 0x76  file by match with source
- * confidence: inferred
- * evidence: (cursor {column, row}, character): writes the 8x8 glyph straight into the frame buffer: start address read from the display register at 0xA05F8114 plus 0xA5000000 (uncached video memory), 640 pixels of 2 bytes per line, cell (column*8, row*8); caller fb_text_print; part of vf4lib/libdebug/src/win_sys.c
+ * confidence: exercised
+ * evidence: (cursor {column, row}, character): writes the 8x8 glyph straight into the frame buffer: start address read from the display register at 0xA05F8114 plus 0xA5000000 (uncached video memory), 640 pixels of 2 bytes per line, cell (column*8, row*8); caller fb_text_print; part of vf4lib/libdebug/src/win_sys.c; exercised 2026-11-12: called by the harness with the cursor {2, 1} in a scratch buffer and glyph 0x41 (display register 0xA05F8114 read as 0), it made 64 halfword stores from 0xA5002820 (row 1 x 8 lines x 0x500 + column 2 x 16 bytes), lines 0x500 bytes apart, the glyph row 0 (0, FFFF x4, 8000, 0, 0) as 0861 FFFF FFFF FFFF FFFF 0861 0861 0861 and row 4 as FFFF x6 0861 0861
  * matched: source/vf4lib/libdebug/src/win_sys.c (tools/match/match.py)
  */
 void fb_glyph_put(int *cursor, int glyph)
@@ -1535,8 +1535,8 @@ void fb_glyph_put(int *cursor, int glyph)
 }
 
 /* 0x0c0ed6a0  size 0x12  file by match with source
- * confidence: inferred
- * evidence: (column, row): stores the frame-buffer text cursor fb_text_cursor; nothing in the image calls it (uncalled code, made a function 2026-11-09); between fb_glyph_put and fb_text_print, so by link order part of vf4lib/libdebug/src/win_sys.c
+ * confidence: exercised
+ * evidence: (column, row): stores the frame-buffer text cursor fb_text_cursor; nothing in the image calls it (uncalled code, made a function 2026-11-09); between fb_glyph_put and fb_text_print, so by link order part of vf4lib/libdebug/src/win_sys.c; exercised 2026-11-12: called by the harness in one sandbox, (7, 9) left fb_text_cursor at 7, 9 and (79, 59) at 79, 59
  * matched: source/vf4lib/libdebug/src/win_sys.c (tools/match/match.py)
  */
 void fb_text_cursor_set(int column, int row)
@@ -1547,9 +1547,9 @@ void fb_text_cursor_set(int column, int row)
 }
 
 /* 0x0c0ed6c0  size 0x9a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xa6
- * evidence: (string): prints a string with fb_glyph_put at fb_text_cursor, bypassing the text overlay: CR returns to column 0, LF starts the next row, characters the ctype table rejects print as '.', the line wraps after 80 columns and the row wraps at 60 (a 640x480 screen of 8x8 cells); nothing in the image calls it; part of vf4lib/libdebug/src/win_sys.c
+ * evidence: (string): prints a string with fb_glyph_put at fb_text_cursor, bypassing the text overlay: CR returns to column 0, LF starts the next row, characters the ctype table rejects print as '.', the line wraps after 80 columns and the row wraps at 60 (a 640x480 screen of 8x8 cells); nothing in the image calls it; part of vf4lib/libdebug/src/win_sys.c; exercised 2026-11-12: called by the harness after fb_text_cursor_set(5, 3) with the bytes "ab", CR, "c", LF, "d", 0x01 it called fb_glyph_put with 0x61, 0x62, 0x63, 0x64, 0x2E and left the cursor at (2, 4); from (79, 59) "x" wrapped it to (0, 0), and from (79, 10) "xy" left it at (1, 11)
  * matched: source/vf4lib/libdebug/src/win_sys.c (tools/match/match.py)
  */
 void fb_text_print(char *text)

@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c054b80  size 0x34  file by match with source
- * confidence: inferred
- * evidence: (socket, backlog, slot record): writes a 0x20-byte request {operation, socket, backlog, 0...} by PIO; caller sock_listen; part of NLASOCK
+ * confidence: exercised
+ * evidence: (socket, backlog, slot record): writes a 0x20-byte request {operation, socket, backlog, 0...} by PIO; caller sock_listen; part of NLASOCK; exercised 2026-11-12: called by the harness on slot 3 (op poked 8) with (3, 5): dimm_pio_write of the 0x20 bytes {8, 3, 5, 0, 0, 0, 0, 0} to 0x0f803000; on slot 1 of a table prepared at 0x12000000 with op poked 0x5a, (1, 7) gave {0x5a, 1, 7, 0...} to 0x12801000
  * same code as main.bin 0c122380 (ghidra/TransferFromMain.java)
  * matched: source/sdk/nlasock/listen.c (tools/match/match.py)
  */

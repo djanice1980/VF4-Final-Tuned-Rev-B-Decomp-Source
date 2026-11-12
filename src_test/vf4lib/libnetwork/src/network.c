@@ -203,7 +203,7 @@ uchar net_is_on(void)
 
 /* 0x0c028880  size 0x1e  file by match with source
  * confidence: inferred
- * evidence: (URL): 1 when it starts with "http://211.132.254.10/sys/servlet/PowerOn" (0x2A bytes compared); nothing in the image calls it; part of vf4lib/libnetwork/src/network.c
+ * evidence: (URL): 1 when it is exactly "http://211.132.254.10/sys/servlet/PowerOn" (0x2A bytes compared: the 41 characters and the terminating NUL, so a longer URL with that start gives 0); nothing in the image calls it; part of vf4lib/libnetwork/src/network.c; corrected 2026-11-12 from harness calls: called by the harness: "http://211.132.254.10/sys/servlet/PowerOn" returned 1, but the same URL with "?x=1" appended returned 0 (and ".../PowerOf" 0): the 0x2A bytes memcmp compares are the 41 characters and the text's terminating NUL, so it is an exact match, not a prefix test
  * same code as main.bin 0c07f660 (ghidra/TransferFromMain.java)
  * matched: source/vf4lib/libnetwork/src/network.c (tools/match/match.py)
  */
@@ -216,8 +216,8 @@ bool url_is_power_on(char *url)
 }
 
 /* 0x0c0288c0  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: (URL): 1 when it starts with "http://211.132.254.10"; nothing in the image calls it; part of vf4lib/libnetwork/src/network.c
+ * confidence: exercised
+ * evidence: (URL): 1 when it starts with "http://211.132.254.10"; nothing in the image calls it; part of vf4lib/libnetwork/src/network.c; exercised 2026-11-12: called by the harness "http://211.132.254.10/abc" returned 1, "http://211.132.254.10" 1 and "http://211.132.254.1/" 0 (memcmp of 21 bytes, traced)
  * same code as main.bin 0c07f6a0 (ghidra/TransferFromMain.java)
  * matched: source/vf4lib/libnetwork/src/network.c (tools/match/match.py)
  */
@@ -446,8 +446,8 @@ void net_log_record_fill(net_check_log_rec *log, char *ip_text, char *serial_tex
 }
 
 /* 0x0c028dc0  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: (record): stamps the clock (get_now_tm) at +0x210; nothing in the image calls it; part of vf4lib/libnetwork/src/network.c
+ * confidence: exercised
+ * evidence: (record): stamps the clock (get_now_tm) at +0x210; nothing in the image calls it; part of vf4lib/libnetwork/src/network.c; exercised 2026-11-12: called by the harness with buf:5 (0x0F00A000, filled with 0xCC) it called get_now_tm(0x0F00A210) and the clock's tm landed at +0x210 with the bytes below left 0xCC; with buf:6+0x100 it called get_now_tm(0x0F00C310)
  * same code as main.bin 0c07fba0 (ghidra/TransferFromMain.java)
  * matched: source/vf4lib/libnetwork/src/network.c (tools/match/match.py)
  */

@@ -37,8 +37,8 @@ int jvs_index_replies(int node, int len, char *reply, char *cmd)
 }
 
 /* 0x0c050380  size 0x56  file by match with source
- * confidence: inferred
- * evidence: copies the node's automatic command (jvs_frame_command_len[node] bytes), then cmd, into jvs_last_command[node]; nothing calls it, so it was never disassembled until named here (it starts after jvs_index_replies' pool, not at its rts); checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: copies the node's automatic command (jvs_frame_command_len[node] bytes), then cmd, into jvs_last_command[node]; nothing calls it, so it was never disassembled until named here (it starts after jvs_index_replies' pool, not at its rts); checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with (1, 3, "xyz") it wrote 20 02 02 21 02 78 79 7A to jvs_last_command[1] (node 1's frame command of length 5 from the snapshot, then the bytes); with jvs_frame_command_len[2] poked to 2 and jvs_frame_command[2] to AB CD, (2, 2, "pq") wrote AB CD 70 71 and left the rest
  * same code as main.bin 0c11b260 (ghidra/TransferFromMain.java)
  * matched: source/sdk/nlajamma/jvs.c (tools/match/match.py)
  */
@@ -266,8 +266,8 @@ int jvs_read_node(int node, int *service, int *coins)
 }
 
 /* 0x0c0509e0  size 0xc0  file by match with source
- * confidence: inferred
- * evidence: packs node, length and extra command bytes for two nodes into jvs_two_node_command and returns its length; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: packs node, length and extra command bytes for two nodes into jvs_two_node_command and returns its length; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with jvs_extra_command_len[1] = 2 (11 22) and [2] = 1 (33) poked, (1, 2) returned 7 with jvs_two_node_command 01 02 11 22 02 01 33 and (2, 1) returned 7 with 02 01 33 01 02 11 22; with jvs_extra_command_len[1] then 0, (1, 2) returned 5 with 01 00 02 01 33
  * same code as main.bin 0c11b8c0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/nlajamma/jvs.c (tools/match/match.py)
  */

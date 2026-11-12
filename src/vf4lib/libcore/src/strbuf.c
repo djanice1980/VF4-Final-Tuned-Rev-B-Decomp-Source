@@ -94,8 +94,8 @@ void strbuf_drop_line(strbuf_rec *sb, int offset)
 }
 
 /* 0x0c0f5500  size 0x54  file by match with source
- * confidence: inferred
- * evidence: (sb, format, ap): scans from the read cursor up to the write cursor with the counted vsscanf vsscanf_counted and advances the read cursor by what it consumed; called by strbuf_scanf; part of vf4lib/libcore/src/strbuf.c
+ * confidence: exercised
+ * evidence: (sb, format, ap): scans from the read cursor up to the write cursor with the counted vsscanf vsscanf_counted and advances the read cursor by what it consumed; called by strbuf_scanf; part of vf4lib/libcore/src/strbuf.c; exercised 2026-11-12: called by the harness with a strbuf record {base, end, write, read} over the text "42 17 zz" (write at +8, read at +0), the format "%d %d" and a five-word va_list whose int area held two int addresses: it called vsscanf_counted with the length 8, stored 42 and 17 and moved read to +5
  * matched: source/vf4lib/libcore/src/strbuf.c (tools/match/match.py)
  */
 int strbuf_vscanf(strbuf_rec *sb, char *format, va_list ap)
@@ -112,17 +112,19 @@ int strbuf_vscanf(strbuf_rec *sb, char *format, va_list ap)
 }
 
 /* 0x0c0f5560  size 0x62  file by match with source
- * confidence: inferred
- * evidence: (sb, format, ...): variadic strbuf_vscanf; nothing in the image calls it; part of vf4lib/libcore/src/strbuf.c
+ * confidence: exercised
+ * evidence: (sb, format, ...): variadic strbuf_vscanf; nothing in the image calls it; part of vf4lib/libcore/src/strbuf.c; exercised 2026-11-12: called by the harness over the text "42 17 zz" with "%d %d": write at +8 and read at +0 stored 42 and 17 and moved read to +5; write at +2 stored 42 only and moved read to +2; read at +3 stored 17 and moved read to +6; read at +4 beyond write at +0 stored nothing and left read at +4
  * variadic: 2 named int, 0 named float arguments (from the registers its prologue stores)
  * matched: source/vf4lib/libcore/src/strbuf.c (tools/match/match.py)
  */
-void strbuf_scanf(strbuf_rec *sb, char *format, ...)
+int strbuf_scanf(strbuf_rec *sb, char *format, ...)
 {
   va_list ap;
+  int r;
 
   __builtin_stdarg_start(ap, format);
-  strbuf_vscanf(sb, format, ap);
+  r = strbuf_vscanf(sb, format, ap);
   __builtin_va_end(ap);
+  return r;
 }
 

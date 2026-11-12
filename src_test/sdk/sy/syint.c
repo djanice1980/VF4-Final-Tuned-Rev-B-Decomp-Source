@@ -34,8 +34,8 @@ void ic_flush_and_unblock(int mode, uint stack)
 }
 
 /* 0x0c062860  size 0x52  file by match with source
- * confidence: inferred
- * evidence: with interrupts masked: when given a stack, or when one is already set (irq_stack_in_use), takes the given one or the remembered one (irq_stack_before); the first time it asks the firmware through trapa #0x23 (r4 = 1, r5 = the stack) and keeps what that returns in irq_stack_before; records the stack in irq_stack_in_use; part of syInt; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: with interrupts masked: when given a stack, or when one is already set (irq_stack_in_use), takes the given one or the remembered one (irq_stack_before); the first time it asks the firmware through trapa #0x23 (r4 = 1, r5 = the stack) and keeps what that returns in irq_stack_before; records the stack in irq_stack_in_use; part of syInt; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness in one sandbox with irq_stack_in_use poked 0x0c300000 and irq_stack_before 0x0c200000, the argument 0x0c400000 set irq_stack_in_use to 0x0c400000 without the trapa, then 0 set it to 0x0c200000 (the remembered stack); with irq_stack_in_use 0 and the argument 0 nothing changed; the first-time path that asks the firmware (trapa #0x23) was not run
  * same code as main.bin 0c138de0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/sy/syint.c (tools/match/match.py)
  */
@@ -76,8 +76,8 @@ void irq_stack_switch(uint stack)
 void sr_bl_clear(void);
 
 /* 0x0c0628d0  size 0x16  file by match with source
- * confidence: inferred
- * evidence: hand-written: (level): replaces the interrupt mask bits 4-7 of SR with level and clears the block bit 28; nothing in the image calls it (uncalled code, made a function 2026-11-09); between sr_bl_clear and sq_windows_map, so by link order part of sdk/sy/syint.c
+ * confidence: exercised
+ * evidence: hand-written: (level): replaces the interrupt mask bits 4-7 of SR with level and clears the block bit 28, and returns the new SR value; nothing in the image calls it (uncalled code, made a function 2026-11-09); between sr_bl_clear and sq_windows_map, so by link order part of sdk/sy/syint.c; exercised 2026-11-12: called by the harness from SR 0x400000f0, the level 5 returned 0x40000050 and the level 0xa returned 0x400000a0 in r0, the value written to SR: bits 4-7 replaced and the other bits kept (the first call let the interrupt waiting at the frame's end run, 17,104 instructions)
  * same code as main.bin 0c138e50 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c138e50.s (hand-written assembly, tools/match/match.py)
  */

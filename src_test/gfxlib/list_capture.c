@@ -43,9 +43,9 @@ void ring_slot_lists_record(int slot)
 }
 
 /* 0x0c034fc0  size 0x30  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x44
- * evidence: (ring slot): sets the state's ring slot (+0x35c) and list mask (+0x360, from +0x474), clears +0x364 and sends every list (lists_send_to_ta 0xff); spins forever when the state is in the stored-list mode (+0x33c); nothing in the image calls it; part of the unidentified game-built graphics library (list capture object, 0x0C12B9A0-0x0C12C0BF)
+ * evidence: (ring slot): sets the state's ring slot (+0x35c) and list mask (+0x360, from +0x474), clears +0x364 and sends every list (lists_send_to_ta 0xff); spins forever when the state is in the stored-list mode (+0x33c); nothing in the image calls it; part of the unidentified game-built graphics library (list capture object, 0x0C12B9A0-0x0C12C0BF); exercised 2026-11-12: called by the harness: slot 1 set state +0x35c = 1, +0x360 = 0x1f, +0x364 = 0 and called lists_send_to_ta(0xff); with +0x474 poked 0x15 slot 3 gave 3 and 0x15; with +0x33c poked 1 it did not return within its budget
  * same code as main.bin 0c12bae0 (ghidra/TransferFromMain.java)
  * matched: source/gfxlib/list_capture.c (tools/match/match.py)
  */
@@ -62,8 +62,8 @@ void ring_slot_send_all(int slot)
 }
 
 /* 0x0c035020  size 0x58  file by match with source
- * confidence: inferred
- * evidence: (capture record, ring slot): unless the state is in the stored-list mode (+0x33c), puts the record's five addresses and sizes into the ring slot's table (state +0x37c / +0x3cc), sets the ring slot (+0x35c), the record's list mask (+0x360) and +0x364 = 0, and sends every list (lists_send_to_ta 0xff); nothing in the image calls it; part of the unidentified game-built graphics library (list capture object, 0x0C12B9A0-0x0C12C0BF)
+ * confidence: exercised
+ * evidence: (capture record, ring slot): unless the state is in the stored-list mode (+0x33c), puts the record's five addresses and sizes into the ring slot's table (state +0x37c / +0x3cc), sets the ring slot (+0x35c), the record's list mask (+0x360) and +0x364 = 0, and sends every list (lists_send_to_ta 0xff); nothing in the image calls it; part of the unidentified game-built graphics library (list capture object, 0x0C12B9A0-0x0C12C0BF); exercised 2026-11-12: called by the harness with a record of mask 5, starts 0x0f004000 + 0x100 i, sizes 0x40 0x60 0x80 0xa0 0xc0 and slot 3: state +0x388 + 0x10 i got the starts, +0x3d8 + 0x10 i the sizes, +0x35c = 3, +0x360 = 5, +0x364 = 0 and it called lists_send_to_ta(0xff); with +0x33c poked 1 (slot 0) it stored nothing and called nothing
  * same code as main.bin 0c12bb40 (ghidra/TransferFromMain.java)
  * matched: source/gfxlib/list_capture.c (tools/match/match.py)
  */
@@ -89,8 +89,8 @@ void capture_send_via_slot(capture_rec *rec, int slot)
 }
 
 /* 0x0c0350a0  size 0x3a  file by match with source
- * confidence: inferred
- * evidence: starts capture record 0: clears capture_count, points capture_first and capture_open at the block at capture_records, and stores in it the enabled-list mask (state +0x474) and the five list starts (from list_starts); caller capture_mode_begin; part of the unidentified game-built graphics library (list capture object, 0x0C12B9A0-0x0C12C0BF)
+ * confidence: exercised
+ * evidence: starts capture record 0: clears capture_count, points capture_first and capture_open at the block at capture_records, and stores in it the enabled-list mask (state +0x474) and the five list starts (from list_starts); caller capture_mode_begin; part of the unidentified game-built graphics library (list capture object, 0x0C12B9A0-0x0C12C0BF); exercised 2026-11-12: called by the harness with capture_count poked 7: capture_count 0, capture_first = capture_open = capture_records, record 0 = mask 0x1f and the five list starts 0xabcbc000, 0xabebc000, 0xabefc000, 0xabf7c000, 0xabfbc000; with state +0x474 poked 0x15 the mask was 0x15
  * same code as main.bin 0c12bbc0 (ghidra/TransferFromMain.java)
  * matched: source/gfxlib/list_capture.c (tools/match/match.py)
  */
@@ -109,8 +109,8 @@ void capture_first_begin(void)
 }
 
 /* 0x0c035100  size 0x44  file by match with source
- * confidence: inferred
- * evidence: opens capture record capture_count as capture_first / capture_open, with the enabled-list mask and the five current list write pointers; nothing in the image calls it (uncalled code, made a function 2026-11-09); between capture_first_begin and capture_first_close, so by link order part of gfxlib/list_capture.c
+ * confidence: exercised
+ * evidence: opens capture record capture_count as capture_first / capture_open, with the enabled-list mask and the five current list write pointers; nothing in the image calls it (uncalled code, made a function 2026-11-09); between capture_first_begin and capture_first_close, so by link order part of gfxlib/list_capture.c; exercised 2026-11-12: called by the harness with capture_count poked 2: capture_first = capture_open = capture_records+0x58 (record 2), which got mask 0x1f and the five write pointers 0xabcbc020 ... 0xabfbc020; record 0 was untouched
  * same code as main.bin 0c12bc20 (ghidra/TransferFromMain.java)
  * matched: source/gfxlib/list_capture.c (tools/match/match.py)
  */
@@ -130,8 +130,8 @@ void capture_first_open(void)
 }
 
 /* 0x0c035240  size 0x42  file by match with source
- * confidence: inferred
- * evidence: (capture record): adds each list segment of the record with a nonzero size ({address +4 + 4i, size +0x18 + 4i}) to the lists (list_seg_append_padded); caller capture_all_replay; part of the unidentified game-built graphics library (list capture object, 0x0C12B9A0-0x0C12C0BF)
+ * confidence: exercised
+ * evidence: (capture record): adds each list segment of the record with a nonzero size ({address +4 + 4i, size +0x18 + 4i}) to the lists (list_seg_append_padded); caller capture_all_replay; part of the unidentified game-built graphics library (list capture object, 0x0C12B9A0-0x0C12C0BF); exercised 2026-11-12: called by the harness with a record of starts 0x0f004000 + 0x100 i and sizes 0x40 0 0x80 0 0: it called list_seg_append_padded(0, 0x0f004000, 0x40) and (2, 0x0f004200, 0x80) and nothing else
  * same code as main.bin 0c12bd60 (ghidra/TransferFromMain.java)
  * matched: source/gfxlib/list_capture.c (tools/match/match.py)
  */
@@ -144,8 +144,8 @@ void capture_rec_replay(capture_rec *rec)
 }
 
 /* 0x0c0352a0  size 0x48  file by match with source
- * confidence: inferred
- * evidence: replays the first capture_count capture records in order (capture_rec_replay); caller capture_mode_finish; part of the unidentified game-built graphics library (list capture object, 0x0C12B9A0-0x0C12C0BF)
+ * confidence: exercised
+ * evidence: replays the first capture_count capture records in order (capture_rec_replay); caller capture_mode_finish; part of the unidentified game-built graphics library (list capture object, 0x0C12B9A0-0x0C12C0BF); exercised 2026-11-12: called by the harness in one sandbox after two records were closed (capture_count 2): it called capture_rec_replay(capture_records) then (capture_records+0x2c); called through capture_mode_finish with capture_count 0 it replayed nothing
  * same code as main.bin 0c12bdc0 (ghidra/TransferFromMain.java)
  * matched: source/gfxlib/list_capture.c (tools/match/match.py)
  */
@@ -160,8 +160,8 @@ void capture_all_replay(void)
 }
 
 /* 0x0c035300  size 0x2c  file by match with source
- * confidence: inferred
- * evidence: (capture record): keeps the list-start pointer (list_starts) in list_starts_saved and points it at the block at captured_list_starts, filled with the record's five addresses, so the lists are taken to start where the capture began; nothing in the image reads list_starts_saved back; caller capture_mode_finish; part of the unidentified game-built graphics library (list capture object, 0x0C12B9A0-0x0C12C0BF)
+ * confidence: exercised
+ * evidence: (capture record): keeps the list-start pointer (list_starts) in list_starts_saved and points it at the block at captured_list_starts, filled with the record's five addresses, so the lists are taken to start where the capture began; nothing in the image reads list_starts_saved back; caller capture_mode_finish; part of the unidentified game-built graphics library (list capture object, 0x0C12B9A0-0x0C12C0BF); exercised 2026-11-12: called by the harness with a record whose starts are 0x0f004000, 0x0f004100, 0x0f004200, 0x0f004300, 0x0f004400: list_starts_saved became 0x0c5d5ccc (the old list_starts) and list_starts captured_list_starts, which held the five planted addresses
  * same code as main.bin 0c12be20 (ghidra/TransferFromMain.java)
  * matched: source/gfxlib/list_capture.c (tools/match/match.py)
  */
@@ -189,8 +189,8 @@ void write_ptrs_saved_clear(void)
 }
 
 /* 0x0c035360  size 0x32  file by match with source
- * confidence: inferred
- * evidence: when write_ptrs_saved is clear, copies the five list write pointers into write_ptrs_save and sets the flag; nothing in the image calls it (uncalled code, made a function 2026-11-09); between write_ptrs_saved_clear and write_ptrs_restore, so by link order part of gfxlib/list_capture.c
+ * confidence: exercised
+ * evidence: when write_ptrs_saved is clear, copies the five list write pointers into write_ptrs_save and sets the flag; nothing in the image calls it (uncalled code, made a function 2026-11-09); between write_ptrs_saved_clear and write_ptrs_restore, so by link order part of gfxlib/list_capture.c; exercised 2026-11-12: called by the harness: write_ptrs_save got the five write pointers 0xabcbc020 ... 0xabfbc020 and write_ptrs_saved 1; after write pointer 0 was poked 0x12340000 a second call left write_ptrs_save as it was
  * same code as main.bin 0c12be80 (ghidra/TransferFromMain.java)
  * matched: source/gfxlib/list_capture.c (tools/match/match.py)
  */
@@ -208,8 +208,8 @@ void write_ptrs_save_once(void)
 }
 
 /* 0x0c0353a0  size 0x32  file by match with source
- * confidence: inferred
- * evidence: when write_ptrs_saved is set, puts the five list write pointers back from write_ptrs_save and clears the flag; nothing in the image calls it (uncalled code, made a function 2026-11-09); between write_ptrs_save_once and capture_rec_open, so by link order part of gfxlib/list_capture.c
+ * confidence: exercised
+ * evidence: when write_ptrs_saved is set, puts the five list write pointers back from write_ptrs_save and clears the flag; nothing in the image calls it (uncalled code, made a function 2026-11-09); between write_ptrs_save_once and capture_rec_open, so by link order part of gfxlib/list_capture.c; exercised 2026-11-12: called by the harness after write_ptrs_save_once and write pointer 0 poked 0x12340000: pointer 0 was back at 0xabcbc020 and write_ptrs_saved 0; a second call after pointer 1 was poked 0x56780000 left it 0x56780000
  * same code as main.bin 0c12bec0 (ghidra/TransferFromMain.java)
  * matched: source/gfxlib/list_capture.c (tools/match/match.py)
  */
@@ -227,8 +227,8 @@ void write_ptrs_restore(void)
 }
 
 /* 0x0c0353e0  size 0x3a  file by match with source
- * confidence: inferred
- * evidence: (capture record): makes the record capture_open and stores each enabled list's current write pointer in it; nothing in the image calls it (uncalled code, made a function 2026-11-09); between write_ptrs_restore and capture_rec_close, so by link order part of gfxlib/list_capture.c
+ * confidence: exercised
+ * evidence: (capture record): makes the record capture_open and stores each enabled list's current write pointer in it; nothing in the image calls it (uncalled code, made a function 2026-11-09); between write_ptrs_restore and capture_rec_close, so by link order part of gfxlib/list_capture.c; exercised 2026-11-12: called by the harness with a record in scratch memory of mask 5 and starts planted 0x1111: capture_open became the record and starts 0 and 2 took the write pointers 0xabcbc020 and 0xabefc020, the others staying 0x1111
  * same code as main.bin 0c12bf00 (ghidra/TransferFromMain.java)
  * matched: source/gfxlib/list_capture.c (tools/match/match.py)
  */
@@ -246,8 +246,8 @@ void capture_rec_open(capture_rec *rec)
 }
 
 /* 0x0c035500  size 0x22  file by match with source
- * confidence: inferred
- * evidence: sets capture_mode_on, clears capture_open and starts capture record 0 (capture_first_begin); nothing in the image calls it; part of the unidentified game-built graphics library (list capture object, 0x0C12B9A0-0x0C12C0BF)
+ * confidence: exercised
+ * evidence: sets capture_mode_on, clears capture_open and starts capture record 0 (capture_first_begin); nothing in the image calls it; part of the unidentified game-built graphics library (list capture object, 0x0C12B9A0-0x0C12C0BF); exercised 2026-11-12: called by the harness with capture_open poked 0x1234: capture_mode_on 1, capture_open = capture_first = capture_records, capture_count 0, record 0 = mask 0x1f and the five list starts; it called capture_first_begin
  * same code as main.bin 0c12c020 (ghidra/TransferFromMain.java)
  * matched: source/gfxlib/list_capture.c (tools/match/match.py)
  */
@@ -261,7 +261,7 @@ void capture_mode_begin(void)
 
 /* 0x0c035540  size 0x34  file by match with source
  * confidence: inferred
- * evidence: when capture record 0 is still the open one and capture_count is nonzero, takes the list starts from it (list_starts_from_capture); then replays all captures (capture_all_replay); nothing in the image calls it; part of the unidentified game-built graphics library (list capture object, 0x0C12B9A0-0x0C12C0BF)
+ * evidence: when the open capture record is capture_first (capture_open == capture_first, not null) and capture_count is nonzero, takes the list starts from it (list_starts_from_capture); then replays all captures (capture_all_replay); nothing in the image calls it; part of the unidentified game-built graphics library (list capture object, 0x0C12B9A0-0x0C12C0BF); corrected 2026-11-12 from harness calls: the condition is that the open record is capture_first, not record 0: called by the harness right after capture_mode_begin (count 0) it only called capture_all_replay; after two records were closed and capture_first_open had made record 2 (capture_records+0x58) first and open, it called list_starts_from_capture(capture_records+0x58) and then capture_all_replay
  * same code as main.bin 0c12c060 (ghidra/TransferFromMain.java)
  * matched: source/gfxlib/list_capture.c (tools/match/match.py)
  */

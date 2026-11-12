@@ -27,9 +27,9 @@ void connect_request_write(uint sock, void *addr, int addr_len, sock_slot_rec *s
 }
 
 /* 0x0c1214e0  size 0xd0  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xe6
- * evidence: (socket, address, length): socket operation 4 (connect to a peer), blocking: -2 above 63, no address or length above 0x40, -4 when busy; connect_request_write, DIMM command 0x11, waits and returns the result; nothing in the image calls it; part of NLASOCK
+ * evidence: (socket, address, length): socket operation 4 (connect to a peer), blocking: -2 above 63, no address or length above 0x40, -4 when busy; connect_request_write, DIMM command 0x11, waits and returns the result; nothing in the image calls it; part of NLASOCK; exercised 2026-11-12: called by the harness after dimm_net_attach(0) (board model on): socket 64 and a null address gave -2, dimm_busy_word poked 1 gave -4; (5, a 16-byte address, 16) wrote 0x30 bytes {4, 5, 0x0f805020, 16, 0 x4, the address} to 0x0f805000, posted dimm_cmd_post(0x11, 5), waited and returned the board model's -1
  * matched: source/sdk/nlasock/connect.c (tools/match/match.py)
  */
 int sock_connect(uint sock, void *addr, int addr_len)

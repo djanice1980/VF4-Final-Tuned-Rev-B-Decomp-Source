@@ -103,8 +103,8 @@ void stage_load_request(int stage_no)
 }
 
 /* 0x0c0dcca0  size 0x60  file by match with source
- * confidence: inferred
- * evidence: (stage number): stage_load_request without the effect object file; nothing in the image calls it; part of vf4lib/librobdisp/src/stage.c (file name ours; library inferred from position and callers, see notes)
+ * confidence: exercised
+ * evidence: (stage number): stage_load_request without the effect object file; nothing in the image calls it; part of vf4lib/librobdisp/src/stage.c (file name ours; library inferred from position and callers, see notes); exercised 2026-11-12: called by the harness with stage 3: stage_cur_no 3, stage_cur 0x0C306828 (AQUARIUM), lights 4 / 5, txn_list_current_set(0) and only load_poly_req(3, 10, ...), where stage_load_request(3) also made load_poly_req(4, 25, ...); with stage 0: stage_cur 0x0C306898 (ROME), lights 10 / 11, load_poly_req(3, 12, ...)
  * matched: source/vf4lib/librobdisp/src/stage.c (tools/match/match.py)
  */
 void stage_obj_load_request(int stage_no)

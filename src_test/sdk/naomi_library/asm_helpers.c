@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c058580  size 0x44  file by match with source
- * confidence: inferred
- * evidence: hand-written: (y in fr4, x in fr5): the angle of the vector with 0x100 a turn: folds the signs and the larger of the two into an octant, divides, and looks the quotient up in the 129-byte arctangent table after it; nothing in the image calls it (uncalled code, made a function 2026-11-09); between words_copy and fsca_sin16, so by link order part of sdk/naomi_library/asm_helpers.c
+ * confidence: exercised
+ * evidence: hand-written: (y in fr4, x in fr5): the angle of the vector with 0x100 a turn: folds the signs and the larger of the two into an octant, divides, and looks the quotient up in the 129-byte arctangent table after it; nothing in the image calls it (uncalled code, made a function 2026-11-09); between words_copy and fsca_sin16, so by link order part of sdk/naomi_library/asm_helpers.c; exercised 2026-11-12: called by the harness with (y, x) = (0, 1) it returned 0, (1, 0) 0x40, (0, -1) 0x80, (-1, 0) 0xC0, (1, 2) 19 (byte 64 of arctan_ang8_table), (2, 1) 45 (0x40 - 19), (-1, -2) 147 (0x80 + 19) and (3, -3) 0x60
  * same code as main.bin 0c12c810 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c12c810.s (hand-written assembly, tools/match/match.py)
  */
@@ -29,9 +29,9 @@ float fsca_cos16(ushort param_1);
 void fsca_sincos16(ushort param_1,float *param_2,float *param_3);
 
 /* 0x0c05867c  size 0x32  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x3a
- * evidence: (first entry, source, count): copies count entries into the palette shadow table at pal_shadow (4 bytes an entry from first entry * 4): 32-bit words when the mode byte graphics_work.pal_entry_format is 3, else 16-bit halves; then sets the upload flag byte graphics_work.pal_shadow_changed (0c5d4800) to 1, which pal_shadow_flush (0x0C12F780) tests and clears when it sends the shadow; callers pal_group_store_colors and the game's palette users model_tex_load_walk, obj_textures_load_step, sprite_record_make, sprite_record_pal_group_replace, strip_pal_group_ref; part of the NAOMI library; checked against reference material (not in this repo)
+ * evidence: (first entry, source, count): copies count entries into the palette shadow table at pal_shadow (4 bytes an entry from first entry * 4): 32-bit words when the mode byte graphics_work.pal_entry_format is 3, else the source's 16-bit halfwords, each into the low half of its entry (the high half kept); then sets the upload flag byte graphics_work.pal_shadow_changed (0c5d4800) to 1, which pal_shadow_flush (0x0C12F780) tests and clears when it sends the shadow; callers pal_group_store_colors and the game's palette users model_tex_load_walk, obj_textures_load_step, sprite_record_make, sprite_record_pal_group_replace, strip_pal_group_ref; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness (2, words 11112222 33334444 55556666, 3) in sandboxes with graphics_work.pal_entry_format poked (0 in the snapshot): with 3 the three words went whole into pal_shadow entries 2 to 4 (entry 5 untouched); with 1 the halfwords 2222, 1111, 4444 went into the low halves of entries 2 to 4, keeping the high halves 9999, 8888, 7777 planted there; both times pal_shadow_changed became 1
  * same code as main.bin 0c12c90c (ghidra/TransferFromMain.java)
  * matched: source/asm/0c12c90c.s (hand-written assembly, tools/match/match.py)
  */

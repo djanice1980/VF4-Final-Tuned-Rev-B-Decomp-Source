@@ -183,8 +183,8 @@ void water_speeds_set(float *speeds1, float *speeds2)
 }
 
 /* 0x0c126340  size 0x18  file by match with source
- * confidence: inferred
- * evidence: (a, b): stores two floats at water_state +0x34 / +0x38 (look[4], look[5]); nothing in the image calls it (uncalled code, made a function 2026-11-09); between water_speeds_set and water_grid_spare_set, so by link order part of gfxlib/water_surface.c
+ * confidence: exercised
+ * evidence: (a, b): stores two floats at water_state +0x34 / +0x38 (look[4], look[5]); nothing in the image calls it (uncalled code, made a function 2026-11-09); between water_speeds_set and water_grid_spare_set, so by link order part of gfxlib/water_surface.c; exercised 2026-11-12: called by the harness in one sandbox, (1.5, -2.25) left water_state +0x34 at 1.5 and +0x38 at -2.25 with +0x30 and +0x3c untouched, then (3.0, 4.0) left them at 3 and 4
  * matched: source/gfxlib/water_surface.c (tools/match/match.py)
  */
 void water_look_pair_set(float a, float b)
@@ -195,8 +195,8 @@ void water_look_pair_set(float a, float b)
 }
 
 /* 0x0c126360  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: (value, vector): stores a float in water_grid_spare_value (0x0C41345C) and copies a 3-float vector to water_grid_spare_vec; nothing in the image calls it (uncalled code, made a function 2026-11-09); between water_look_pair_set and water_colors_set, so by link order part of gfxlib/water_surface.c
+ * confidence: exercised
+ * evidence: (value, vector): stores a float in water_grid_spare_value (0x0C41345C) and copies a 3-float vector to water_grid_spare_vec; nothing in the image calls it (uncalled code, made a function 2026-11-09); between water_look_pair_set and water_colors_set, so by link order part of gfxlib/water_surface.c; exercised 2026-11-12: called by the harness with 0.75 and a buffer holding the floats 1, 2, 3, it left water_grid_spare_value at 0.75 and water_grid_spare_vec at 1, 2, 3
  * matched: source/gfxlib/water_surface.c (tools/match/match.py)
  */
 void water_grid_spare_set(float value, uint *vec)
@@ -297,8 +297,8 @@ void water_step(water_state_rec *water)
 }
 
 /* 0x0c126620  size 0x170  file by match with source
- * confidence: inferred
- * evidence: (water state): for each of the 16 x 16 grid points makes the two edge vectors to the next point across and down (spacing +4, heights at +0x44), takes their cross product (vec3_cross) and normalizes it (vec3_normalize), and stores the height and normal in the 20-byte cells at +0xe4c; copies column 0 into column 16 and row 0 into row 16; only caller water_update; part of an unidentified module (stage water surface, game-built, not network code)
+ * confidence: exercised
+ * evidence: (water state): for each of the 16 x 16 grid points makes the two edge vectors to the next point across and down (spacing +4, heights at +0x44), takes their cross product (vec3_cross) and normalizes it (vec3_normalize), and stores the height and normal in the 20-byte cells at +0xe4c; copies column 0 into column 16 and row 0 into row 16; only caller water_update; part of an unidentified module (stage water surface, game-built, not network code); exercised 2026-11-12: called by the harness on a zeroed record with spacing 2.0 at +4 and heights at +0x44 all 0 but (row 3, column 5) 2, (5, 0) 1 and (0, 2) 3, the cells at +0xe4c held height 2 and normal (0.577, 0.577, 0.577) at (3, 5), (-0.707, 0.707, 0) at (3, 4), (0, 0.707, -0.707) at (2, 5), (0, 1, 0) on flat ground, height 1 and (0.408, 0.816, 0.408) at (5, 0) and the same at (5, 16), and at (16, 2) a copy of (0, 2) with height 3
  * matched: source/gfxlib/water_surface.c (tools/match/match.py)
  */
 void water_normals_build(water_state_rec *water)
@@ -354,8 +354,8 @@ void water_normals_build(water_state_rec *water)
 }
 
 /* 0x0c1267a0  size 0x140  file by match with source
- * confidence: inferred
- * evidence: (water state, strip vertex block or 0): copies the cell heights (+0xe4c) into the height word (+8) of the 24-byte vertices at block +0xc0, two rows at a time in the order a triangle-strip mesh of the 17 x 17 grid walks them (rows 7/8 reversed first, then outward pairs, then rows 15-16 and 1/0); nothing for a null block; only caller water_update; part of an unidentified module (stage water surface, game-built, not network code)
+ * confidence: exercised
+ * evidence: (water state, strip vertex block or 0): copies the cell heights (+0xe4c) into the height word (+8) of the 24-byte vertices at block +0xc0, two rows at a time in the order a triangle-strip mesh of the 17 x 17 grid walks them (rows 7/8 reversed first, then outward pairs, then rows 15-16 and 1/0); nothing for a null block; only caller water_update; part of an unidentified module (stage water surface, game-built, not network code); exercised 2026-11-12: called by the harness with cell heights (+0xe4c) poked (7,16) 1.5, (8,16) 2.5, (9,0) 5.5, (8,0) 3.5, (15,0) 6.5 and (0,16) 4.5, the 24-byte vertices from block +0xc0 got height (+8) 1.5 in vertex 0, 2.5 in 1, 5.5 in 34, 3.5 in 35, 6.5 in 442 and 477 and 4.5 in 543, the last; vertex 544 and the words before +8 stayed 0, and a null block returned without writing
  * matched: source/gfxlib/water_surface.c (tools/match/match.py)
  */
 void water_strip_heights_fill(water_state_rec *water, uchar *block)

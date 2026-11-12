@@ -23,9 +23,9 @@ int string_hash_x5(char *str)
 }
 
 /* 0x0c0f2600  size 0x2a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x36
- * evidence: (n): busy loop of n * 100 steps on a volatile counter; the DIMM file system's waits use it (g1_bus_hold, dimm_dma_wait_ack, dimm_dma_abort with n = 2); part of vf4lib/libcore/src/sffs.c
+ * evidence: (n): busy loop of n * 100 steps on a volatile counter; the DIMM file system's waits use it (g1_bus_hold, dimm_dma_wait_ack, dimm_dma_abort with n = 2); part of vf4lib/libcore/src/sffs.c; exercised 2026-11-12: called by the harness with 0, 1, 2 and 5: 18, 618, 1218 and 3018 instructions (600 a unit, six a step) and its counter ended at 0, 100, 200 and 500 (r1)
  * matched: source/vf4lib/libcore/src/sffs.c (tools/match/match.py)
  */
 void spin_delay(int count)
@@ -190,8 +190,8 @@ void dimm_dma_wait_ack(void)
 }
 
 /* 0x0c0f2960  size 0xa0  file by match with source
- * confidence: inferred
- * evidence: with interrupts masked: when dimm_dma_active is set, stops the G1 DMA (0xA05F7414 = 0), waits up to 99 times for it to stop (trapa #0x50 if it never does), acknowledges, steps the current queue entry back by its last chunk and clears dimm_dma_active and dimm_dma_started; nothing in the image calls it; part of vf4lib/libcore/src/sffs.c
+ * confidence: exercised
+ * evidence: with interrupts masked: when dimm_dma_active is set, stops the G1 DMA (0xA05F7414 = 0), waits up to 99 times for it to stop (trapa #0x50 if it never does), acknowledges, steps the current queue entry back by its last chunk and clears dimm_dma_active and dimm_dma_started; nothing in the image calls it; part of vf4lib/libcore/src/sffs.c; exercised 2026-11-12: called by the harness: with dimm_dma_active 0 it changed nothing and wrote no register; with dimm_dma_active 1 it wrote 0 to 0xA05F7414 and 0x4000 to 0xA05F700C, stepped queue entry 0 (dst 0x2000, offset 0x1000, remaining 0x300, chunk 0x100) to 0x1f00, 0xf00, 0x400 and cleared dimm_dma_active and dimm_dma_started; with dimm_dma_cur 3 entry 3 (0x8000, 0x9000, 0x40, chunk 0x20) became 0x7fe0, 0x8fe0, 0x60
  * matched: source/vf4lib/libcore/src/sffs.c (tools/match/match.py)
  */
 void dimm_dma_abort(void)
@@ -682,9 +682,9 @@ void path_resolve(char *out, char *in)
 }
 
 /* 0x0c0f3460  size 0x5c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x62
- * evidence: (path): "" goes back to the root; otherwise path_resolve, then sffs_find, and only an entry with mode bit 0x4000 (a directory) becomes sffs_cwd; returns 0, or -1 when not found or not a directory; nothing in the image calls it; part of vf4lib/libcore/src/sffs.c
+ * evidence: (path): "" goes back to the root; otherwise path_resolve, then sffs_find, and only an entry with mode bit 0x4000 (a directory) becomes sffs_cwd; returns 0, or -1 when not found or not a directory; nothing in the image calls it; part of vf4lib/libcore/src/sffs.c; exercised 2026-11-12: called by the harness in one sandbox: "spr_logo.bin" (a file, mode 0x81a4) returned -1 and "no_such_name" -1, sffs_cwd staying empty; with that entry's mode word poked 0x41ed it returned 0 and sffs_cwd became "spr_logo.bin"; "" then returned 0 and emptied sffs_cwd
  * matched: source/vf4lib/libcore/src/sffs.c (tools/match/match.py)
  */
 int sffs_chdir(uchar *path)
@@ -870,8 +870,8 @@ int dimm_fseek(dimm_file *fp, int offset, int whence)
 }
 
 /* 0x0c0f3900  size 0x30  file by match with source
- * confidence: inferred
- * evidence: (fp): the position from the file's start (pos - start); -1 for a closed handle or a position outside start..end; nothing in the image calls it (uncalled code, made a function 2026-11-09); between dimm_fseek and dimm_fcheck, so by link order part of vf4lib/libcore/src/sffs.c
+ * confidence: exercised
+ * evidence: (fp): the position from the file's start (pos - start); -1 for a closed handle or a position outside start..end; nothing in the image calls it (uncalled code, made a function 2026-11-09); between dimm_fseek and dimm_fcheck, so by link order part of vf4lib/libcore/src/sffs.c; exercised 2026-11-12: called by the harness on the first file handle: closed it returned -1; after dimm_fopen("spr_logo.bin", "rb") 0; after dimm_fseek to 0x123 0x123, to end - 4 0x6fffc, 0x10 past that (outside the file) -1, to the end 0x70000; after dimm_fclose -1
  * matched: source/vf4lib/libcore/src/sffs.c (tools/match/match.py)
  */
 int dimm_ftell(dimm_file *fp)

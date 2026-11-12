@@ -182,9 +182,9 @@ int spg_hblank_line_write(int line)
 }
 
 /* 0x0c140d60  size 0xb6  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xf2
- * evidence: (int *out): when option 2 (state+0x8) is set reads the current line from SPG_STATUS (0xa05f810c, bits 0-9; 0 otherwise), takes off the vertical start, scales it for the interlace mode (the field bit 0x40000 adds one), and stores the display line, minus the line count when past 480 / 240; returns 0; called by the NAOMI library's beam_line_read; part of KamuiTL; checked against reference material (not in this repo)
+ * evidence: (int *out): when option 2 (state+0x8) is set reads the current line from SPG_STATUS (0xa05f810c, bits 0-9; 0 otherwise), takes off the vertical start, scales it for the interlace mode (the field bit 0x40000 adds one), and stores the display line, minus the line count when past 480 / 240; returns 0; called by the NAOMI library's beam_line_read; part of KamuiTL; checked against reference material (not in this repo); record as the game has it (read from the code, not run): with option 2 clear the interlaced line count adds a field bit read from an uninitialized register variable; exercised 2026-11-12: called by the harness with option 2 cleared (gfx_state+0x8 poked 0x8d from 0x8f), display mode 1 and the vertical start +0x5c 0x24 (the snapshot's, offset 0) it stored -0x24, and with the start poked 0x30 it stored -0x30; returned 0; the SPG_STATUS path needs the hardware's answer and was not judged
  * matched: source/sdk/kamui/hooks.c (tools/match/match.py)
  */
 int spg_status_display_line(int *line_out)
@@ -253,8 +253,8 @@ int surface_alloc_fail_hook_put(int fn, int arg)
 }
 
 /* 0x0c140ec0  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: (function, argument): installs the hook for slot 4, run from the error interrupt for the strip buffer hazard (error status bit 1, strip_hazard_irq raises pending bit 4); called by the NAOMI library's event_hook_slot4_put; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (function, argument): installs the hook for slot 4 (a function of 0 puts the default handler strip_hazard_hook_noop back and keeps the old argument), run from the error interrupt for the strip buffer hazard (error status bit 1, strip_hazard_irq raises pending bit 4); called by the NAOMI library's event_hook_slot4_put; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness in one sandbox: (0x0c0ffee0, 7) stored the function and argument at gfx_state+0x250/+0x254 (slot 4) through hook_slot_store(gfx_state, 4, ...), then (0x0c123400, 9) replaced them; slots 3, 5 and 6 unchanged; returned 0
  * matched: source/sdk/kamui/hooks.c (tools/match/match.py)
  */
 int strip_hazard_hook_put(int fn, int arg)
@@ -264,8 +264,8 @@ int strip_hazard_hook_put(int fn, int arg)
 }
 
 /* 0x0c140f00  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: (function, argument): installs the hook for slot 5 of the hook table; nothing in this image raises slot 5's pending bit (0x20); called by the NAOMI library's event_hook_slot5_put; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (function, argument): installs the hook for slot 5 of the hook table (a function of 0 puts the default handler list_input_end_hook_noop back and keeps the old argument); nothing in this image raises slot 5's pending bit (0x20); called by the NAOMI library's event_hook_slot5_put; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness in one sandbox: (0x0c0ffee4, 0x55) stored the function and argument at gfx_state+0x258/+0x25c (slot 5) through hook_slot_store(gfx_state, 5, ...), slots 4 and 6 unchanged; returned 0
  * matched: source/sdk/kamui/hooks.c (tools/match/match.py)
  */
 int slot5_hook_put(int fn, int arg)
@@ -275,8 +275,8 @@ int slot5_hook_put(int fn, int arg)
 }
 
 /* 0x0c140f40  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: (function, argument): installs the hook for slot 6, run from the end-of-YUV-transfer interrupt (normal status bit 6, yuv_done_irq raises pending bit 6); nothing in the image calls it; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (function, argument): installs the hook for slot 6 (a function of 0 puts the default handler yuv_done_hook_noop back and keeps the old argument), run from the end-of-YUV-transfer interrupt (normal status bit 6, yuv_done_irq raises pending bit 6); nothing in the image calls it; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness in one sandbox: (0x0c0ffee8, 0x66) stored the function and argument at gfx_state+0x260/+0x264 (slot 6) through hook_slot_store(gfx_state, 6, ...), slots 4 and 5 unchanged; returned 0
  * matched: source/sdk/kamui/hooks.c (tools/match/match.py)
  */
 int yuv_done_hook_put(int fn, int arg)
@@ -388,9 +388,9 @@ void busy_wait_hook_noop(void)
 }
 
 /* 0x0c141100  size 0x34  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x8c
- * evidence: (code): the default handler of hook slot 8: sets the border color (pvr_vo_border_col_put) to blue, red, green or magenta for codes 1-4 and loops forever; stored by hook_slots_defaults and hook_slot_default; part of KamuiTL
+ * evidence: (code): the default handler of hook slot 8: sets the border color (pvr_vo_border_col_put) to blue, red, green or magenta for codes 1-4 and loops forever; stored by hook_slots_defaults and hook_slot_default; part of KamuiTL; exercised 2026-11-12: called by the harness with code 1 it passed 0xff0000ff (blue) to pvr_vo_border_col_put, with 2 0xffff0000 (red), with 4 0xffff00ff (magenta), and each call was still spinning when its budget ran out
  * matched: source/sdk/kamui/hooks.c (tools/match/match.py)
  */
 void border_color_by_code_hang(uint code)

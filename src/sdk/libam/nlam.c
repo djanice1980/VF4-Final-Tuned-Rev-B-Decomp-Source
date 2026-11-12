@@ -73,8 +73,8 @@ int media_board_probe(uint *info)
 }
 
 /* 0x0c117ca0  size 0x10  file by match with source
- * confidence: inferred
- * evidence: returns the float nlam_version_number (2.22083), the number after the library's version text "...220830/Fri Dec 14 2001/NAOMI LIBRARY FOR AM "; nothing in the image calls it (uncalled code, made a function 2026-11-09); between media_board_probe and board_config_validate, so by link order part of sdk/libam/nlam.c
+ * confidence: exercised
+ * evidence: returns the float nlam_version_number (2.22083), the number after the library's version text "...220830/Fri Dec 14 2001/NAOMI LIBRARY FOR AM "; nothing in the image calls it (uncalled code, made a function 2026-11-09); between media_board_probe and board_config_validate, so by link order part of sdk/libam/nlam.c; exercised 2026-11-12: called by the harness it returned 2.22083 in fr0 (nlam_version_number in the snapshot, bits 0x400E2214), and -3.25 after nlam_version_number was poked to -3.25
  * matched: source/sdk/libam/nlam.c (tools/match/match.py)
  */
 float nlam_version_number_get(void)
@@ -206,8 +206,8 @@ void board_config_pack(char *config, uchar *packed)
 }
 
 /* 0x0c117f60  size 0xcc  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlam.c: fills the coin configuration from 10 arguments (a coin setting number, or 27 for a custom one with its 4 rate values), validates it, then packs it to the EEPROM and reinitializes the credits; returns non-zero on a bad configuration; nothing calls it; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlam.c: fills the coin configuration from 10 arguments (a coin setting number, or 27 for a custom one with its 4 rate values), validates it, then packs it to the EEPROM and reinitializes the credits; returns non-zero on a bad configuration; nothing calls it; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with (12, 0, 1, 27, 2, 3, 4, 1, 5, 6) it returned 0 and coin_settings read 12, 0, 1, free_play 0, 27, prices 5, 6, six 1s, rates 1-3 = 2, 3, 4 and rate 0 = 1; it then called coin_config_pack (eeprom_copy_a+7 became 0C 01 1B 01 02 03 04 56 ...), eeprom_flush, bios_credit_init and bios_helper_34; maximum credit 0 or 1000 returned 1 after the BIOS check, without packing, and 999 returned 0
  * matched: source/sdk/libam/nlam.c (tools/match/match.py)
  */
 int coin_config_from_args(int max_credit, uint value_4, uint separate_credits, int coin_setting, uint rate_1, uint rate_2, uint rate_3, uint rate_0, uint price_0, uint price_1)
@@ -250,8 +250,8 @@ int coin_config_from_args(int max_credit, uint value_4, uint separate_credits, i
 }
 
 /* 0x0c118060  size 0x4c  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlam.c: validates 4 board configuration words and stores them when valid (returns the validation result); nothing calls it; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlam.c: validates 4 board configuration words and stores them when valid (returns the validation result); nothing calls it; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with (3, 1, 0, 5) it returned 0 and board_settings became 3, 1, 0, 5; with (4, 2, 5, 7) it returned 2 and with (4, 0, 9, 7) 1, and board_settings stayed 0, 1, 0, 1 as in the snapshot
  * matched: source/sdk/libam/nlam.c (tools/match/match.py)
  */
 int board_config_from_args(uint country, uint value_4, uint value_8, uint dip_switch_1)
@@ -305,8 +305,8 @@ void bios_signature_check(void)
 }
 
 /* 0x0c118140  size 0x10  file by match with source
- * confidence: inferred
- * evidence: returns bios_signature_found; nothing in the image calls it (uncalled code, made a function 2026-11-09); between bios_signature_check and sram_time_get, so by link order part of sdk/libam/nlam.c
+ * confidence: exercised
+ * evidence: returns bios_signature_found; nothing in the image calls it (uncalled code, made a function 2026-11-09); between bios_signature_check and sram_time_get, so by link order part of sdk/libam/nlam.c; exercised 2026-11-12: called by the harness it returned 1, bios_signature_found in the snapshot, and 7 after bios_signature_found was poked to 7
  * matched: source/sdk/libam/nlam.c (tools/match/match.py)
  */
 int bios_signature_found_get(void)
@@ -315,8 +315,8 @@ int bios_signature_found_get(void)
 }
 
 /* 0x0c118160  size 0x12  file by match with source
- * confidence: inferred
- * evidence: returns the word sram_time points at; nothing in the image calls it (uncalled code, made a function 2026-11-09); between bios_signature_found_get and mie_start, so by link order part of sdk/libam/nlam.c
+ * confidence: exercised
+ * evidence: returns the word sram_time points at; nothing in the image calls it (uncalled code, made a function 2026-11-09); between bios_signature_found_get and mie_start, so by link order part of sdk/libam/nlam.c; exercised 2026-11-12: called by the harness it returned 0x93, the word at 0xA0200000 where sram_time points in the snapshot, and 0x12345678 after sram_time was poked to a scratch word holding 0x12345678
  * matched: source/sdk/libam/nlam.c (tools/match/match.py)
  */
 uint sram_time_get(void)
@@ -642,9 +642,9 @@ void board_start_core(int country, int timing_mode)
 }
 
 /* 0x0c118920  size 0x182  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x18a
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlam.c: a second copy of board_start_core (one volatile reload of dip_switches differs); nothing calls it
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlam.c: a second copy of board_start_core (one volatile reload of dip_switches differs); nothing calls it; exercised 2026-11-12: called by the harness (irq, 60 frames) in one sandbox and board_start_core with the same arguments in another: with (2, 0) and with (5, 1) both left boot_country 2 and 5 (bios_signature_found 1), only (5, 1) called cart_timing_slowest, and for each pair the two records listed the same stores, callees and path and the same 153,480,348 and 153,480,407 instructions
  * matched: source/sdk/libam/nlam.c (tools/match/match.py)
  */
 void board_start_core_dup(int country, int timing_mode)
@@ -799,8 +799,8 @@ void credit_snapshot(int dst)
 }
 
 /* 0x0c118d60  size 0x66  file by match with source
- * confidence: inferred
- * evidence: (out): a byte-for-byte duplicate of credit_snapshot (0x0C118CE0), which the game calls: copies credit_status (4 x 4 bytes widened to words), coin_settings' free_play, separate_credits and +4 words and its 8 price words into a 0x6c-byte record; nothing in the image calls it (uncalled code, made a function 2026-11-09); between credit_snapshot and credit_event_pop, so by link order part of sdk/libam/nlam.c
+ * confidence: exercised
+ * evidence: (out): a byte-for-byte duplicate of credit_snapshot (0x0C118CE0), which the game calls: copies credit_status (4 x 4 bytes widened to words), coin_settings' free_play, separate_credits and +4 words and its 8 price words into a 0x6c-byte record; nothing in the image calls it (uncalled code, made a function 2026-11-09); between credit_snapshot and credit_event_pop, so by link order part of sdk/libam/nlam.c; exercised 2026-11-12: called by the harness after credit_status was poked to 10 11 ... 1F, coin_settings +0xC (free_play) to 0x77, +8 to 0x66, +4 to 0x55 and its 8 price words to 0xA0-0xA7, it wrote the words 0x10 to 0x1F, 0x77, 0x66, 0x55, 0xA0 to 0xA7 (0x6C bytes) and left the next word as planted; credit_snapshot wrote the same 0x6C bytes
  * matched: source/sdk/libam/nlam.c (tools/match/match.py)
  */
 void credit_snapshot_dup(int dst)
@@ -930,9 +930,9 @@ void settings_to_eeprom(void)
 }
 
 /* 0x0c119000  size 0xfc  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x130
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlam.c: applies the 16-byte coin entry for the current country from the boot id copy at 0x0c01f400 (coin table at +0x1e0): chute layout, coin setting (or custom rates for 27) and 8 price bytes, then packs both configurations and writes the EEPROM; nothing calls it; checked against reference material (not in this repo)
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlam.c: applies the 16-byte coin entry for the current country from the boot id copy at 0x0c01f400 (coin table at +0x1e0): byte 1 the chute layout (0 to 3 set board_settings +4 and +8 to 1 0, 1 1, 0 0, 0 1), byte 2 separate_credits, byte 3 the coin setting plus 1 (28 for the custom setting 27, whose rates are bytes 4 to 7 as rate 1, 2, 0, 3) and bytes 8 to 15 the 8 prices, then packs both configurations and writes the EEPROM; nothing calls it; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with country 0 and the entry at 0x0C01F5E0 poked to 00 02 01 04 00 00 00 00 31 ... 38, prices 0-7 became 0x31-0x38; with board_settings.country poked to 2 and the entry at 0x0C01F600 to 00 03 00 04 0 0 0 0 41 ... 48, they became 0x41-0x48; byte 3 = 28 there gave setting 27 with the rates from bytes 4-7; each call ended in board_config_pack, coin_config_pack and eeprom_flush
  * matched: source/sdk/libam/nlam.c (tools/match/match.py)
  */
 void settings_from_boot_id(void)
@@ -1019,8 +1019,8 @@ void sram_bank_snapshot(uint *dst)
 }
 
 /* 0x0c1191c0  size 0x3c  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlam.c: waits for G1 DMA, sram_banks_clear, reloads the ledger and reinitializes the credits through the BIOS helpers; nothing calls it; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlam.c: waits for G1 DMA, sram_banks_clear, reloads the ledger and reinitializes the credits through the BIOS helpers; nothing calls it; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness after SRAM words 0xA0200050, 0xA02001F0, 0xA0200200, 0xA0200300 and 0xA0207FFC were poked and credit_ledger+0x40 set to 0x55: the first two (inside the first 0x1F8 bytes) and the time word went to 0, bank 0's CRC word to 0x33B5, the other three stayed, credit_ledger+0x40 was reloaded as 0, and bios_credit_init and bios_helper_34 were called
  * matched: source/sdk/libam/nlam.c (tools/match/match.py)
  */
 void credit_sram_reset(void)
@@ -1035,8 +1035,8 @@ void credit_sram_reset(void)
 }
 
 /* 0x0c119240  size 0x3c  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlam.c: as credit_sram_reset but with sram_clear_all (the whole SRAM); nothing calls it
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlam.c: as credit_sram_reset but with sram_clear_all (the whole SRAM); nothing calls it; exercised 2026-11-12: called by the harness after the same five SRAM words were poked as for credit_sram_reset (0xA0200050, 0xA02001F0, 0xA0200200, 0xA0200300, 0xA0207FFC) and credit_ledger+0x40 set to 0x55, all five read 0 (credit_sram_reset left the last three), credit_ledger+0x40 0, and sram_clear_all, ledger_from_sram, bios_credit_init and bios_helper_34 were called
  * matched: source/sdk/libam/nlam.c (tools/match/match.py)
  */
 void sram_wipe(void)
@@ -1066,8 +1066,8 @@ uint sram_save_load_dma_safe(uint size, void *buffer)
 }
 
 /* 0x0c119300  size 0x16  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlam.c: eeprom_save_load; nothing calls it; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlam.c: eeprom_save_load; nothing calls it; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with (6, buffer) over twelve 0xAA bytes it set eeprom_save_ready 1, eeprom_save_buffer, size 6 and padded size 8, zeroed 8 buffer bytes (the rest stayed AA) and wrote headers 7A BA 06 08 and zero copies into eeprom_image, as eeprom_save_load does; with (0, other buffer) it only set eeprom_save_ready to 0
  * matched: source/sdk/libam/nlam.c (tools/match/match.py)
  */
 void eeprom_save_load_wrap(uint size, uchar *buffer)
@@ -1090,8 +1090,8 @@ void sram_save_store_dma_safe(void)
 }
 
 /* 0x0c119360  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlam.c: eeprom_save_store, then eeprom_flush; nothing calls it; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlam.c: eeprom_save_store, then eeprom_flush; nothing calls it; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness after eeprom_save_load(6, buffer) and the buffer filled with "12345678", it wrote the headers 97 38 06 08 (CRC 0x3897, crc16_ccitt of those bytes in the same sandbox) and the bytes at eeprom_image+0x2c and +0x34, and called eeprom_save_store then eeprom_flush
  * matched: source/sdk/libam/nlam.c (tools/match/match.py)
  */
 void eeprom_save_store_flush(void)
@@ -1102,8 +1102,8 @@ void eeprom_save_store_flush(void)
 }
 
 /* 0x0c1193a0  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlam.c: waits for G1 DMA, then sram_save_store_range; nothing calls it; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlam.c: waits for G1 DMA, then sram_save_store_range; nothing calls it; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with (14, 2) after sram_save_load(16, buffer), with the buffer 'z' 'B' ... 'P', it wrote the headers 0x44F3, 16, 16, 0 to both slots (0x44F3 = crc16_ccitt of the buffer in the same sandbox) and changed only bytes 14-15 of both copies to 4F 50 (byte 0 kept 41, not 'z')
  * matched: source/sdk/libam/nlam.c (tools/match/match.py)
  */
 void sram_save_store_range_dma_safe(int offset, int n)
@@ -1227,8 +1227,8 @@ void coin_input_hold(void)
 }
 
 /* 0x0c119680  size 0x12  file by match with source
- * confidence: inferred
- * evidence: clears coin_input_held, the flag coin_input_hold sets; nothing in the image calls it (uncalled code, made a function 2026-11-09); between coin_input_hold and coin_meter_table, so by link order part of sdk/libam/nlam.c
+ * confidence: exercised
+ * evidence: clears coin_input_held, the flag coin_input_hold sets; nothing in the image calls it (uncalled code, made a function 2026-11-09); between coin_input_hold and coin_meter_table, so by link order part of sdk/libam/nlam.c; exercised 2026-11-12: called by the harness after coin_input_held was poked to 1, and again after it was poked to 0x12345678, coin_input_held read 0 both times
  * matched: source/sdk/libam/nlam.c (tools/match/match.py)
  */
 void coin_input_release(void)

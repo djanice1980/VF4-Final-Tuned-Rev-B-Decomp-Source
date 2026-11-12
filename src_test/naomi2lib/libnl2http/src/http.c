@@ -1230,8 +1230,8 @@ bool http_reply_is_packed(char *text)
 }
 
 /* 0x0c032b80  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: (tail out, active out, head out): stores http_ring_tail, http_ring_active and http_ring_head through its three pointers; nothing in the image calls it (uncalled code, made a function 2026-11-09); between http_reply_is_packed and http_pack_bodies_set, so by link order part of naomi2lib/libnl2http/src/http.c
+ * confidence: exercised
+ * evidence: (tail out, active out, head out): stores http_ring_tail, http_ring_active and http_ring_head through its three pointers; nothing in the image calls it (uncalled code, made a function 2026-11-09); between http_reply_is_packed and http_pack_bodies_set, so by link order part of naomi2lib/libnl2http/src/http.c; exercised 2026-11-12: called by the harness with http_ring_tail, http_ring_active and http_ring_head poked to 3, 9 and 12 it stored 3, 9 and 12 through its three pointers (buf:1, +4, +8)
  * same code as main.bin 0c11ec00 (ghidra/TransferFromMain.java)
  * matched: source/naomi2lib/libnl2http/src/http.c (tools/match/match.py)
  */

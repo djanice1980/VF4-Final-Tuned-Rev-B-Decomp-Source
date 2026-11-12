@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c0741c0  size 0x28  file by match with source
- * confidence: inferred
- * evidence: calls entry n of the library's nine (function, argument) event callback slots in the state block at 0x0C41E240 (gfx_state + 0x230, filled with defaults by hook_slots_defaults and run for pending events by the interrupt code at 0x0C149560); the texture loaders surface_set_up_and_place, surface_pair_set_up_and_place, surface_array_one_block and the NAOMI-side target_tex_place call slot 3; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: calls entry n of the library's nine (function, argument) event callback slots in the state block at 0x0C41E240 (gfx_state + 0x230, filled with defaults by hook_slots_defaults and run for pending events by the interrupt code at 0x0C149560); the texture loaders surface_set_up_and_place, surface_pair_set_up_and_place, surface_array_one_block and the NAOMI-side target_tex_place call slot 3; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with slot 3 (0x0C41E258) poked to (saturating_decrement, 0x0F002000) and slot 5 (0x0C41E268) to (saturating_decrement, 0x0F004000), the buffers holding 5 and 9: hook_slot_run(3) called saturating_decrement(0x0F002000) (5 became 4, 9 untouched) and hook_slot_run(5) called it with 0x0F004000 (9 became 8)
  * same code as main.bin 0c14a180 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/chip_access.c (tools/match/match.py)
  */
@@ -123,8 +123,8 @@ int vram32_write_chip_b(int offset, uint *src, uint bytes)
 }
 
 /* 0x0c0743c0  size 0x18  file by match with source
- * confidence: inferred
- * evidence: (destination, offset, bytes): copies words out of graphics memory through the 32-bit window 0xA5000000 + offset and returns 1; nothing in the image calls it; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (destination, offset, bytes): copies words out of graphics memory through the 32-bit window 0xA5000000 + offset and returns 1; nothing in the image calls it; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with words 0x11111111..0x55555555 poked at 0xA5100000..0xA5100010: (buffer, 0x100000, 16) copied the first four words and left the fifth destination word (0x77) alone, (buffer, 0x100004, 8) copied 0x22222222 and 0x33333333; returned 1 both times
  * same code as main.bin 0c14a380 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/chip_access.c (tools/match/match.py)
  */
@@ -135,8 +135,8 @@ int vram32_read(uint *dst, int offset, uint bytes)
 }
 
 /* 0x0c0743e0  size 0x22  file by match with source
- * confidence: inferred
- * evidence: (destination, offset, bytes): reads the same offset through both 32-bit windows 0xA5000000 and 0xA7000000 and stores the OR of each pair of words (the hand-written words_or_merge), so an image split between the two chips comes back whole; returns 1; nothing in the image calls it; part of KamuiTL
+ * confidence: exercised
+ * evidence: (destination, offset, bytes): reads the same offset through both 32-bit windows 0xA5000000 and 0xA7000000 and stores the OR of each pair of words (the hand-written words_or_merge), so an image split between the two chips comes back whole; returns 1; nothing in the image calls it; part of KamuiTL; exercised 2026-11-12: called by the harness with 0x0000FFFF, 0xF0, 1 poked at 0xA5100000.. and 0x12340000, 0x0F, 2 at 0xA7100000..: (buffer, 0x100000, 8) stored 0x1234FFFF and 0xFF (the ORs; words_or_merge got 0xA5100000 and 0xA7100000) and left the third word alone; returned 1
  * same code as main.bin 0c14a3a0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/chip_access.c (tools/match/match.py)
  */
@@ -184,8 +184,8 @@ int vram64_write(uint offset, uint src, uint bytes)
 }
 
 /* 0x0c074540  size 0x2c  file by match with source
- * confidence: inferred
- * evidence: (destination, offset, bytes): copies words out of texture memory through the 64-bit window 0xA4000000 + offset, then writes back the destination's cache lines (dcache_writeback_span); returns 1; callers the texture code (surface_read_back, mip16_chain_from_vram, vq_image_from_vram, small_vq_from_vram, mip_level_to_vram_pal4 ...); part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (destination, offset, bytes): copies words out of texture memory through the 64-bit window 0xA4000000 + offset, then writes back the destination's cache lines (dcache_writeback_span); returns 1; callers the texture code (surface_read_back, mip16_chain_from_vram, vq_image_from_vram, small_vq_from_vram, mip_level_to_vram_pal4 ...); part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with 0xAAAA0001..0xAAAA0004 poked at 0xA4100000..: (buffer, 0x100000, 12) copied the first three words (fourth destination word left alone), then called dcache_writeback_span(buffer, 12); returned 1
  * same code as main.bin 0c14a500 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/chip_access.c (tools/match/match.py)
  */
@@ -197,8 +197,8 @@ int vram64_read(uint *dst, int offset, uint bytes)
 }
 
 /* 0x0c074580  size 0x40  file by match with source
- * confidence: inferred
- * evidence: (count, pairs): for each (offset, value) pair of an array, stores the value through pvr_reg_write_both; nothing in the image calls it; part of KamuiTL; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (count, pairs): for each (offset, value) pair of an array, stores the value through pvr_reg_write_both; nothing in the image calls it; part of KamuiTL; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on the pairs (0xb0, 0x123456), (0xb4, 0x654321), (0xb8, 0xff07) in a buffer: with count 2 it called pvr_reg_write_both(0xb0, 0x123456) and (0xb4, 0x654321) only, with count 3 also (0xb8, 0xff07)
  * same code as main.bin 0c14a540 (ghidra/TransferFromMain.java)
  * matched: source/sdk/kamui/chip_access.c (tools/match/match.py)
  */

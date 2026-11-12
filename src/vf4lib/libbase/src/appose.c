@@ -237,9 +237,9 @@ void appose_intro_solo_wait(void)
 }
 
 /* 0x0c042900  size 0xe2  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xfa
- * evidence: starts a paired intro from the found appose_pair_table entry: both motions (+4, +6) on appose_pair_side's rob and its opponent, then the rob camera (MODE_ROB, camera_reset) for camera -1 or the SOFTIMAGE clip (+2) with sic_rob_id; clears +0x84/+0x8C; next step; step 0 of appose_steps_pair, unreachable while appose_pair_table is empty; part of vf4lib/libbase/src/appose.c
+ * evidence: starts a paired intro from the found appose_pair_table entry: both motions (+4, +6) on appose_pair_side's rob and its opponent, then the rob camera (MODE_ROB, camera_reset) for camera -1 or the SOFTIMAGE clip (+2) with sic_rob_id; clears +0x84/+0x8C; next step; step 0 of appose_steps_pair, unreachable while appose_pair_table is empty; part of vf4lib/libbase/src/appose.c; exercised 2026-11-12: called by the harness with appose_pair_entry poked to a planted entry (+4 0x12, +6 0x34) and appose_pair_side 1: with camera (+2) -1 it called rob_move_set(rob 1, 0x12), rob_move_set(rob 0, 0x34) and camera_reset, left camera mode 0 (MODE_ROB), cleared +0x84 and +0x8C of both robs (1.5 to 0) and moved appose_step from 4 to 5; with camera 7 it set mode 5 (SOFTIMAGE), cam_anim_index 7, sic_rob_id 1, without camera_reset
  * matched: source/vf4lib/libbase/src/appose.c (tools/match/match.py)
  */
 void appose_intro_pair_play(void)
@@ -281,7 +281,7 @@ void appose_intro_pair_play(void)
 
 /* 0x0c042a40  size 0x4c  file by match with source
  * confidence: inferred
- * evidence: moves to the next step when both robs have finished their motions (+0x318 bit 2); step 1 of appose_steps_pair; part of vf4lib/libbase/src/appose.c
+ * evidence: moves to the next step when both robs have finished their motions (+0x318 bit 1, mask 2); step 1 of appose_steps_pair; part of vf4lib/libbase/src/appose.c; corrected 2026-11-12 from harness calls: called by the harness with +0x318 of both robs poked to 4 (bit 2) appose_step stayed 4; with 2 (bit 1) in both it went from 4 to 5; with 4 in rob 0 and 0 in rob 1 it stayed 4; the code tests (+0x318 & 2) of both robs, bit 1, not bit 2
  * matched: source/vf4lib/libbase/src/appose.c (tools/match/match.py)
  */
 void appose_intro_pair_wait(void)

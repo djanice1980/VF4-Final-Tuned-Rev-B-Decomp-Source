@@ -38,11 +38,11 @@ tm * get_now_tm(tm *t)
 }
 
 /* 0x0c0f2580  size 0x30  file by match with source
- * confidence: inferred
- * evidence: (out): get_now_tm into a local struct tm, mktime of it, stores the result in *out when out is not null (the shape of time()); nothing in the image calls it; part of vf4lib/libcore/src/tm_sys.c
+ * confidence: exercised
+ * evidence: (out): get_now_tm into a local struct tm, mktime of it, stores the result in *out when out is not null (the shape of time()); nothing in the image calls it; part of vf4lib/libcore/src/tm_sys.c; exercised 2026-11-12: called by the harness in one sandbox after get_now_tm gave 2004-11-10 07:20:51 and mktime of it 0x4191c153: now_seconds_get(buffer) stored 0x4191c153 in the buffer (planted 0x11111111) and now_seconds_get(0) returned normally
  * matched: source/vf4lib/libcore/src/tm_sys.c (tools/match/match.py)
  */
-void now_seconds_get(int *out)
+int now_seconds_get(int *out)
 {
   int seconds;
   tm t;
@@ -52,6 +52,6 @@ void now_seconds_get(int *out)
   if (out != (int *)0x0) {
     *out = seconds;
   }
-  return;
+  return seconds;
 }
 

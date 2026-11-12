@@ -86,8 +86,8 @@ int dimm_cmd_handler_put(uint cmd, void *routine)
 }
 
 /* 0x0c052220  size 0x20  file by match with source
- * confidence: inferred
- * evidence: (id): clears dimm_cmd_handler_table[id] for an id below 64 and returns 0, else -1; the partner of dimm_cmd_handler_put; nothing in the image calls it (uncalled code, made a function 2026-11-09); between dimm_cmd_handler_put and dimm_cmd_post, so by link order part of sdk/nlasock/dimm_link.c
+ * confidence: exercised
+ * evidence: (id): clears dimm_cmd_handler_table[id] for an id below 64 and returns 0, else -1; the partner of dimm_cmd_handler_put; nothing in the image calls it (uncalled code, made a function 2026-11-09); between dimm_cmd_handler_put and dimm_cmd_post, so by link order part of sdk/nlasock/dimm_link.c; exercised 2026-11-12: called by the harness after dimm_cmd_handler_put(5, 0x0C123456), (6, 0x0C12345A) and (63, 0x0C123458): clear(5) returned 0 and zeroed entry 5 only (entry 6 kept), clear(64) returned -1 and clear(63) returned 0 and zeroed entry 63
  * same code as main.bin 0c11fa20 (ghidra/TransferFromMain.java)
  * matched: source/sdk/nlasock/dimm_link.c (tools/match/match.py)
  */

@@ -75,8 +75,8 @@ int jvs_send(int id, int node, int len, char *cmd)
 }
 
 /* 0x0c1160e0  size 0x82  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file jamma.c: the same request as jvs_send (subcommand 0x17) but returns the Maple reply buffer without reading a status from it; nothing calls it
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file jamma.c: the same request as jvs_send (subcommand 0x17) but returns the Maple reply buffer without reading a status from it (-1 without sending when there are more than 12 bytes); nothing calls it; exercised 2026-11-12: called by the harness as (1, 2, 3, "ABC") it built 17 77 00 00 00 01 02 03 41 42 43 in mie_request (the old-I/O bytes as the snapshot has them), called maple_send(0x86, 0, 0x20, mie_request, 3) and returned its reply buffer 0xAC3E07C0; with 13 bytes it returned -1 without sending
  * matched: source/sdk/libam/jamma.c (tools/match/match.py)
  */
 uchar *jvs_send_unchecked(int id, int node, uint len, char *cmd)
@@ -100,8 +100,8 @@ uchar *jvs_send_unchecked(int id, int node, uint len, char *cmd)
 }
 
 /* 0x0c116180  size 0x90  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file jamma.c: jvs_send_two_nodes under MIE subcommand 0x25 instead of 0x27: two nodes' commands without their per-frame commands; nothing calls it; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file jamma.c: jvs_send_two_nodes under MIE subcommand 0x25 instead of 0x27: two nodes' commands without their per-frame commands; nothing calls it; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness as (5, 2, 4, "WXYZ") it built 25 77 00 00 00 05 02 57 58 59 5A in mie_request and called maple_send(0x86, 0, 0x20, mie_request, 3); with 21 bytes it returned -1 without sending
  * matched: source/sdk/libam/jamma.c (tools/match/match.py)
  */
 uint jvs_send_two_nodes_bare(int id, int nodes, uint len, char *cmd)
@@ -126,8 +126,8 @@ uint jvs_send_two_nodes_bare(int id, int nodes, uint len, char *cmd)
 }
 
 /* 0x0c116240  size 0x90  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file jamma.c: sends up to 20 command bytes for two nodes (MIE subcommand 0x27 with the old-I/O output bytes, id, nodes, bytes); returns the MIE's status byte or -1; jvs_read_two_nodes uses it
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file jamma.c: sends up to 20 command bytes for two nodes (MIE subcommand 0x27 with the old-I/O output bytes, id, nodes, bytes); returns the MIE's status byte or -1; jvs_read_two_nodes uses it; exercised 2026-11-12: called by the harness as (5, 2, 4, "WXYZ") it built 27 77 00 00 00 05 02 57 58 59 5A in mie_request (no length byte) and called maple_send(0x86, 0, 0x20, mie_request, 3); with 21 bytes it returned -1 without sending
  * matched: source/sdk/libam/jamma.c (tools/match/match.py)
  */
 int jvs_send_two_nodes(int id, int nodes, int len, char *cmd)
@@ -152,8 +152,8 @@ int jvs_send_two_nodes(int id, int nodes, int len, char *cmd)
 }
 
 /* 0x0c116300  size 0x90  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file jamma.c: a byte-for-byte second copy of jvs_send_two_nodes (subcommand 0x27); nothing calls it; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file jamma.c: a byte-for-byte second copy of jvs_send_two_nodes (subcommand 0x27); nothing calls it; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness as (5, 2, 4, "WXYZ") it built 27 77 00 00 00 05 02 57 58 59 5A in mie_request and called maple_send(0x86, 0, 0x20, mie_request, 3), as jvs_send_two_nodes did; with 21 bytes it returned -1 without sending
  * matched: source/sdk/libam/jamma.c (tools/match/match.py)
  */
 uint jvs_send_two_nodes_alt(int id, int nodes, uint len, char *cmd)
@@ -253,8 +253,8 @@ int jvs_set_frame_command(int node, int len, char *cmd)
 }
 
 /* 0x0c1165a0  size 0x6e  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file jamma.c: MIE subcommand 0x37: stores up to 25 bytes at an offset (0-255) of a command buffer kept in the MIE; returns the status byte or -1; nothing calls it; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file jamma.c: MIE subcommand 0x37: stores up to 25 bytes at an offset (0-255) of a command buffer kept in the MIE; returns the status byte or -1; nothing calls it; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with length 26, and with offset 256, it returned -1 without calling maple_send; with (5, 3, "abc") it stored 37 05 03 61 62 63 at mie_request and called maple_send(0x86, 0, 0x20, mie_request, 2), and with (0xff, 25, "ABC...Y") it stored 37 FF 19 and the 25 letters and sent 7 words; both returned byte 5 of the reply
  * matched: source/sdk/libam/jamma.c (tools/match/match.py)
  */
 uint jvs_write_mie_buffer(uint offset, uint len, char *data)
@@ -278,8 +278,8 @@ uint jvs_write_mie_buffer(uint offset, uint len, char *data)
 }
 
 /* 0x0c116620  size 0x94  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file jamma.c: jvs_queue_command under MIE subcommand 0x19 instead of 0x21: the node's command is placed after its per-frame command; nothing calls it; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file jamma.c: jvs_queue_command under MIE subcommand 0x19 instead of 0x21: the node's command is placed after its per-frame command; unlike jvs_queue_command it returns -1 when the reply's first word is -1; nothing calls it; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with length 13 it returned -1 without sending; with (id 1, node 2, 3, "xyz") it stored 19 77 00 00 00 01 02 03 78 79 7A at mie_request (subcommand 0x19, then legacy_io_direction 0x77 and the three zero output bytes as in the snapshot, id, node, length, bytes) and sent 3 words, and with (0, 1, 0) it stored 19 77 00 00 00 00 01 00 and sent 2 words, the layout and word count of jvs_queue_command
  * matched: source/sdk/libam/jamma.c (tools/match/match.py)
  */
 uint jvs_queue_command_after(int id, int node, uint len, char *cmd)

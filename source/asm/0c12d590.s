@@ -6,8 +6,10 @@
 	.balign	4
 
 ! Rotates the current matrix about x by a 16-bit angle, in the sense
-! opposite to mtx_rot_x_s16: mtx_rot_x_sincos_opposite with the sine
-! and cosine taken from the angle by fsca.
+! opposite to mtx_rot_x_s16 (its Y axis becomes (0, c, -s) and its Z
+! axis (0, s, c)), with the sine and cosine taken from the angle by
+! fsca: a true rotation, unlike mtx_rot_x_sincos_opposite, which
+! negates neither sine.
 ! In:  r4 = angle (0x10000 a turn); the current matrix in XMTRX
 ! Out: rows 1 and 2 of the current matrix replaced; fr0-fr7 changed
 	.global	_mtx_rot_x_s16_opposite

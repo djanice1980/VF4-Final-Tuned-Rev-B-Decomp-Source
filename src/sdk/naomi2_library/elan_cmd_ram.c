@@ -16,7 +16,7 @@ uint *elan_matrix_cmds_write(uint *dst, elan_matrix_param_rec *params);
 
 /* 0x0c101aa0  size 0xc6  file by match with source
  * confidence: inferred
- * evidence: hand-written: the variant of elan_matrix_cmds_write that takes the matrix already in the front FPU bank (no frchg), saves fr12-fr15, scales the rows by floats +0, +4 and +0x18 of the parameter record and writes the same 0x08000200 / 0x08000100 commands with a 1.0 word; returns the end pointer; nothing in the image calls it (uncalled code, made a function 2026-11-09); between elan_matrix_cmds_write and elan_ram_region_take, so by link order part of sdk/naomi2_library/elan_cmd_ram.c
+ * evidence: hand-written: the variant of elan_matrix_cmds_write that copies the current matrix (XMTRX, the back FPU bank) into the front registers itself with paired moves (fschg; no frchg), saves fr12-fr15, writes four 32-byte blocks from the pointer: 0x08000200 with the record's word +0x1c and elements 0, 4, 8, 1, 5, 9, 2, 6, 10, word +0x20, floats +8, +0xc and -(+0x10); then 0x08000100, 1.0 and the elements scaled by the record's floats +0, +4 and +0x18 (elements 0, 4, 8, 12 by +0; 1, 5, 9, 13 by +4; 2, 6, 10, 14 by +0x18), float +0x14 and 1.0; returns the end pointer (+128); nothing in the image calls it (uncalled code, made a function 2026-11-09); between elan_matrix_cmds_write and elan_ram_region_take, so by link order part of sdk/naomi2_library/elan_cmd_ram.c; corrected 2026-11-12 from harness calls: called by the harness with a buffer and a record of floats 2, 3, 5, 7, 11, 13, 17, words W1c, W20: the elements it wrote were the snapshot's current matrix (XMTRX, as mtx_store_wordwise gave it), not the front registers: block 1 = 0x08000200, W1c, m0 m4 m8 m1 m5 m9; 2 = m2 m6 m10, W20, 5, 7, -11; 3 = 0x08000100, 1.0, m0*2, m1*3, m2*17, m4*2, m5*3, m6*17; 4 = m8*2, m9*3, m10*17, m12*2, m13*3, m14*17, 13, 1.0; it returned buffer + 128; its code copies XMTRX itself (fschg, paired fmov)
  * convention: __keeps_r2_r3_r5 (AssignCallEffects)
  * matched: source/asm/0c101aa0.s (hand-written assembly, tools/match/match.py)
  */
@@ -43,8 +43,8 @@ bool elan_ram_region_take(void)
 }
 
 /* 0x0c101be0  size 0x14  file by match with source
- * confidence: inferred
- * evidence: zeroes elan_ram_top and elan_cmd_write_ptr; nothing in the image calls it (uncalled code, made a function 2026-11-09); between elan_ram_region_take and elan_cmd_alloc, so by link order part of sdk/naomi2_library/elan_cmd_ram.c
+ * confidence: exercised
+ * evidence: zeroes elan_ram_top and elan_cmd_write_ptr; nothing in the image calls it (uncalled code, made a function 2026-11-09); between elan_ram_region_take and elan_cmd_alloc, so by link order part of sdk/naomi2_library/elan_cmd_ram.c; exercised 2026-11-12: called by the harness with elan_ram_top and elan_cmd_write_ptr poked to 0x01234560 and 0x07654320 (the snapshot has 0xAB97BE80 and 0xAA100000): both read 0 afterwards
  * matched: source/sdk/naomi2_library/elan_cmd_ram.c (tools/match/match.py)
  */
 void elan_ram_pointers_clear(void)
@@ -55,8 +55,8 @@ void elan_ram_pointers_clear(void)
 }
 
 /* 0x0c101c00  size 0x18  file by match with source
- * confidence: inferred
- * evidence: (bytes): reserves the size rounded up to 32 bytes in the ELAN command buffer: moves elan_cmd_write_ptr on by it and returns the pointer as it was before, the start of the reserved bytes (as elan_ram_alloc_top beside it hands back its block); nothing in the image calls it (uncalled code, made a function 2026-11-09); between elan_ram_pointers_clear and elan_ram_alloc_top, so by link order part of sdk/naomi2_library/elan_cmd_ram.c
+ * confidence: exercised
+ * evidence: (bytes): reserves the size rounded up to 32 bytes in the ELAN command buffer: moves elan_cmd_write_ptr on by it and returns the pointer as it was before, the start of the reserved bytes (as elan_ram_alloc_top beside it hands back its block); nothing in the image calls it (uncalled code, made a function 2026-11-09); between elan_ram_pointers_clear and elan_ram_alloc_top, so by link order part of sdk/naomi2_library/elan_cmd_ram.c; exercised 2026-11-12: called by the harness in one sandbox with elan_cmd_write_ptr poked to 0x0C500000: (33) returned 0x0C500000 and moved it to 0x0C500040, (64) returned 0x0C500040 and moved it to 0x0C500080, (1) returned 0x0C500080 and moved it to 0x0C5000A0
  * matched: source/sdk/naomi2_library/elan_cmd_ram.c (tools/match/match.py)
  */
 uint *elan_cmd_alloc(int size)
@@ -80,8 +80,8 @@ int elan_ram_alloc_top(int size)
 }
 
 /* 0x0c101c40  size 0x16  file by match with source
- * confidence: inferred
- * evidence: gives top allocations back: elan_ram_top = p + size rounded up to 32; only caller model_buf_free (which passes a block and its word +0x3c); part of the NAOMI2 library
+ * confidence: exercised
+ * evidence: gives top allocations back: elan_ram_top = p + size rounded up to 32; only caller model_buf_free (which passes a block and its word +0x3c); part of the NAOMI2 library; exercised 2026-11-12: called by the harness: (0x0C600000, 33) set elan_ram_top to 0x0C600040 and (0x0C600010, 0x40) set it to 0x0C600050
  * matched: source/sdk/naomi2_library/elan_cmd_ram.c (tools/match/match.py)
  */
 void elan_ram_top_release_to(int p, int size)
@@ -107,8 +107,8 @@ void elan_cmd_buffer_flip(void)
 }
 
 /* 0x0c101cc0  size 0x12  file by match with source
- * confidence: inferred
- * evidence: puts elan_ram_top back to elan_ram_region_end, dropping every top allocation; nothing in the image calls it (uncalled code, made a function 2026-11-09); between elan_cmd_buffer_flip and lights_elan_state_init, so by link order part of sdk/naomi2_library/elan_cmd_ram.c
+ * confidence: exercised
+ * evidence: puts elan_ram_top back to elan_ram_region_end, dropping every top allocation; nothing in the image calls it (uncalled code, made a function 2026-11-09); between elan_cmd_buffer_flip and lights_elan_state_init, so by link order part of sdk/naomi2_library/elan_cmd_ram.c; exercised 2026-11-12: called by the harness with elan_ram_region_end poked to 0x0C777000 (0xABFFC000 in the snapshot) and elan_ram_top at 0x0C600050: elan_ram_top became 0x0C777000
  * matched: source/sdk/naomi2_library/elan_cmd_ram.c (tools/match/match.py)
  */
 void elan_ram_top_release_all(void)

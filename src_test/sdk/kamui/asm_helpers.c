@@ -23,8 +23,8 @@ void copy_by_pairs_or_words(undefined4 *param_1,undefined4 *param_2,uint param_3
 void copy_words(undefined4 *param_1,undefined4 *param_2,uint param_3);
 
 /* 0x0c0637ee  size 0x16  file by match with source
- * confidence: inferred
- * evidence: hand-written: (dst, a, b, n): stores a[i] | b[i] into dst[i] for n / 4 words; r0 on return is only the last merged word; only caller vram32_read_both_ored; part of KamuiTL; prototype: an entry inside hand-written asm that merges bits and returns a value: vram32_read_both_ored calls it through r0 and matches only with a value-returning declaration; pilot 268
+ * confidence: exercised
+ * evidence: hand-written: (dst, a, b, n): stores a[i] | b[i] into dst[i] for n / 4 words; r0 on return is only the last merged word; only caller vram32_read_both_ored; part of KamuiTL; prototype: an entry inside hand-written asm that merges bits and returns a value: vram32_read_both_ored calls it through r0 and matches only with a value-returning declaration; pilot 268; exercised 2026-11-12: called by the harness with a = (0x0f0f0000, 1, 0x80000000, 0x55), b = (0x00f00f00, 2, 1, 0xaa) and dst filled 0xee: n 12 stored 0x0fff0f00, 3, 0x80000001 and returned 0x80000001, the fourth word untouched; n 8 stored two words and returned 3
  * same code as main.bin 0c1397ae (ghidra/TransferFromMain.java)
  * matched: source/asm/0c1397ae.s (hand-written assembly, tools/match/match.py)
  */
@@ -38,8 +38,8 @@ int words_or_merge(uint *param_1, uint *param_2, uint *param_3, uint param_4);
 void ocbwb_line(undefined4 param_1);
 
 /* 0x0c065828  size 0x14  file by match with source
- * confidence: inferred
- * evidence: hand-written: (routine, a, b): switches to the private stack at 0x0C13B7E0, saves FPSCR (clearing its bits 19-20), FPUL, fr0-fr15, MACL, MACH and PR there, calls routine(a, b), restores everything and returns on the caller's stack; nothing in the image calls it (uncalled code, made a function 2026-11-09); between ocbwb_line and irq_entry_on_private_stack, so by link order part of sdk/kamui/asm_helpers.c
+ * confidence: exercised
+ * evidence: hand-written: (routine, a, b): switches to the private stack at 0x0C13B7E0, saves FPSCR (clearing its bits 19-20), FPUL, fr0-fr15, MACL, MACH and PR there, calls routine(a, b), restores everything and returns on the caller's stack; nothing in the image calls it (uncalled code, made a function 2026-11-09); between ocbwb_line and irq_entry_on_private_stack, so by link order part of sdk/kamui/asm_helpers.c; exercised 2026-11-12: called by the harness with (strcpy, buf:1, "hello"): strcpy ran with those two arguments and its stack pointer at 0x0C13B78C, inside the private stack below 0x0C13B7E0; buf:1 held hello and irq_private_stack_saved_sp the caller's stack pointer (0x0DFFBDA0)
  * same code as main.bin 0c13b7e8 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c13b7e8.s (hand-written assembly, tools/match/match.py)
  */

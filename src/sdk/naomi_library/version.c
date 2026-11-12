@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c12f800  size 0xe  file by match with source
- * confidence: inferred
- * evidence: (byte): stores pal_raw_mode; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pal_entry_format_select and naomi_lib_build_date_get, so by link order part of sdk/naomi_library/version.c
+ * confidence: exercised
+ * evidence: (byte): stores pal_raw_mode; nothing in the image calls it (uncalled code, made a function 2026-11-09); between pal_entry_format_select and naomi_lib_build_date_get, so by link order part of sdk/naomi_library/version.c; exercised 2026-11-12: called by the harness in one sandbox, pal_raw_mode_set(5) left the byte pal_raw_mode at 5 and pal_raw_mode_set(0x7F) at 0x7F, the three bytes after it unchanged
  * matched: source/sdk/naomi_library/version.c (tools/match/match.py)
  */
 void pal_raw_mode_set(char mode)
@@ -28,8 +28,8 @@ char * naomi_lib_build_date_get(void)
 }
 
 /* 0x0c12f840  size 0xe  file by match with source
- * confidence: inferred
- * evidence: (value): stores clip_stretch_step; nothing in the image calls it (uncalled code, made a function 2026-11-09); between naomi_lib_build_date_get and clip_stretch_step_report, so by link order part of sdk/naomi_library/version.c
+ * confidence: exercised
+ * evidence: (value): stores clip_stretch_step; nothing in the image calls it (uncalled code, made a function 2026-11-09); between naomi_lib_build_date_get and clip_stretch_step_report, so by link order part of sdk/naomi_library/version.c; exercised 2026-11-12: called by the harness in one sandbox, clip_stretch_step_set(3) left clip_stretch_step at 3 and clip_stretch_step_report then gave 3; after clip_stretch_step_set(4) it gave 4
  * matched: source/sdk/naomi_library/version.c (tools/match/match.py)
  */
 void clip_stretch_step_set(int step)
@@ -39,8 +39,8 @@ void clip_stretch_step_set(int step)
 }
 
 /* 0x0c12f860  size 0x10  file by match with source
- * confidence: inferred
- * evidence: copies clip_stretch_step into the second word of the record it is given; the start-up graphics_bring_up and the display mode change video_reconfigure pass it to the 3D library's hook_request_ignored (which does nothing with it) when clip_stretch_on is 1; called through that pointer only, so Ghidra never made it a function; part of the NAOMI library
+ * confidence: exercised
+ * evidence: copies clip_stretch_step into the second word of the record it is given; the start-up graphics_bring_up and the display mode change video_reconfigure pass it to the 3D library's hook_request_ignored (which does nothing with it) when clip_stretch_on is 1; called through that pointer only, so Ghidra never made it a function; part of the NAOMI library; exercised 2026-11-12: called by the harness in one sandbox after clip_stretch_step_set(3), clip_stretch_step_report on a buffer of 0x55555555 words stored 3 in its second word and left the first and third alone; after clip_stretch_step_set(4) it stored 4
  * matched: source/sdk/naomi_library/version.c (tools/match/match.py)
  */
 void clip_stretch_step_report(uint *report)

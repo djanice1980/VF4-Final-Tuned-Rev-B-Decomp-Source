@@ -25,8 +25,8 @@ ushort acos_ang16(float x)
 }
 
 /* 0x0c131280  size 0x20  file by match with source
- * confidence: inferred
- * evidence: arc cosecant as an angle: asin_ang16 of 1/x, 0 for x == 0; nothing in the game calls it; angles are 16-bit, 0x10000 to a turn; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: arc cosecant as an angle: asin_ang16 of 1/x, 0 for x == 0; nothing in the game calls it; angles are 16-bit, 0x10000 to a turn; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness, acsc_ang16(2.0) returned 0x1555 (30 degrees), (-2.0) 0xEAAB, (0.5) 0x4000 (asin_ang16 of 2 saturates) and (0.0) 0
  * matched: source/sdk/naomi_library/scalar_math.c (tools/match/match.py)
  */
 uint acsc_ang16(float x)
@@ -41,8 +41,8 @@ uint acsc_ang16(float x)
 }
 
 /* 0x0c1312c0  size 0x20  file by match with source
- * confidence: inferred
- * evidence: arc cotangent as an angle: atan_ang16 of 1/x, 0 for x == 0; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: arc cotangent as an angle: atan_ang16 of 1/x, 0 for x == 0; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness, acot_ang16(1.0) returned 0x2000 (45 degrees), (0.5) 0x2D1C (63.4 degrees), (-1.0) 0xE000 and (0.0) 0
  * matched: source/sdk/naomi_library/scalar_math.c (tools/match/match.py)
  */
 uint acot_ang16(float x)
@@ -57,8 +57,8 @@ uint acot_ang16(float x)
 }
 
 /* 0x0c131300  size 0x20  file by match with source
- * confidence: inferred
- * evidence: arc secant as an angle: acos_ang16 of 1/x, 0 for x == 0; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: arc secant as an angle: acos_ang16 of 1/x, 0 for x == 0; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness, asec_ang16(2.0) returned 0x2AAB (60 degrees), (-2.0) 0x5555 (120 degrees), (0.5) 0 (acos_ang16 of 2) and (0.0) 0
  * matched: source/sdk/naomi_library/scalar_math.c (tools/match/match.py)
  */
 uint asec_ang16(float x)
@@ -143,9 +143,9 @@ uint atan_ang16(float x)
 }
 
 /* 0x0c1314c0  size 0x76  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xba
- * evidence: two-argument arc tangent (y, x) as an angle: picks the octant by comparing y with x and -x, then atan_ang16 of y/x or x/y offset by 0x4000, 0x8000 or 0xc000 (0, 0x4000, 0x8000, 0xc000 on the axes); called twice by trig_benchmark_draw; part of the NAOMI library; checked against reference material (not in this repo)
+ * evidence: two-argument arc tangent (y, x) as an angle: picks the octant by comparing y with x and -x, then atan_ang16 of y/x or x/y offset by 0x4000, 0x8000 or 0xc000 (0, 0x4000, 0x8000, 0xc000 on the axes); called twice by trig_benchmark_draw; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness as (y, x), (0, 1) returned 0, (1, 0) 0x4000, (0, -1) 0x8000, (-1, 0) 0xC000, (1, 1) 0x2000, (1, -1) 0x6000, (-1, -1) 0xA000, (-1, 1) 0xE000 and (0, 0) 0
  * matched: source/sdk/naomi_library/scalar_math.c (tools/match/match.py)
  */
 uint atan2_ang16(float y, float x)
@@ -179,8 +179,8 @@ uint atan2_ang16(float y, float x)
 }
 
 /* 0x0c1315a0  size 0x16  file by match with source
- * confidence: inferred
- * evidence: smallest whole number not below x, as -float_floor(-x); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: smallest whole number not below x, as -float_floor(-x); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness, float_ceil(2.5) returned 3, (-2.5) -2, (3.0) 3, (-3.0) -3 and (0.25) 1
  * matched: source/sdk/naomi_library/scalar_math.c (tools/match/match.py)
  */
 float float_ceil(float x)
@@ -208,8 +208,8 @@ float cos_ang16(uint angle)
 }
 
 /* 0x0c131600  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: cosecant of a 16-bit angle: 1 / sin_ang16, the largest float at 0 and 0x8000; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: cosecant of a 16-bit angle: 1 / sin_ang16, the largest float at 0 and 0x8000; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with 0x2000 it returned 1.41421, with 0x1000 2.61313 and with 0x4000 1 (1 over the sine of 45, 22.5 and 90 degrees), and with 0 and 0x8000 the largest float 0x7f7fffff
  * matched: source/sdk/naomi_library/scalar_math.c (tools/match/match.py)
  */
 float csc_ang16(uint angle)
@@ -233,8 +233,8 @@ float cos_radians(float angle)
 }
 
 /* 0x0c131680  size 0x30  file by match with source
- * confidence: inferred
- * evidence: hyperbolic cosine of a 16-bit angle taken as radians (a * 2pi / 0x10000): (e + 1/e) / 2 with e = exp_float of it; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: hyperbolic cosine of a 16-bit angle taken as radians (a * 2pi / 0x10000): (e + 1/e) / 2 with e = exp_float of it; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with 0x4000 it returned 2.50918 = cosh(pi/2), with 0x2000 1.32461 = cosh(pi/4) and with 0 it returned 1
  * matched: source/sdk/naomi_library/scalar_math.c (tools/match/match.py)
  */
 float cosh_ang16(uint angle)
@@ -246,8 +246,8 @@ float cosh_ang16(uint angle)
 }
 
 /* 0x0c1316c0  size 0x3e  file by match with source
- * confidence: inferred
- * evidence: cotangent of a 16-bit angle: 1 / tan_ang16, the largest float at 0 and 0x8000 and 0 at 0x4000 and 0xc000; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: cotangent of a 16-bit angle: 1 / tan_ang16, the largest float at 0 and 0x8000 and 0 at 0x4000 and 0xc000; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with 0x1000 it returned 2.41421 and with 0x2000 1.0000001 (cot of 22.5 and 45 degrees), with 0x4000 and 0xc000 it returned 0, and with 0 and 0x8000 the largest float 0x7f7fffff
  * matched: source/sdk/naomi_library/scalar_math.c (tools/match/match.py)
  */
 float cot_ang16(ushort angle)
@@ -313,8 +313,8 @@ float float_floor(float x)
 }
 
 /* 0x0c1317e0  size 0x2a  file by match with source
- * confidence: inferred
- * evidence: (x): the fractional part of x with x's sign; 0 for |x| of 2^23 or more; nothing in the image calls it (uncalled code, made a function 2026-11-09); between float_floor and rsqrt_signed, so by link order part of sdk/naomi_library/scalar_math.c
+ * confidence: exercised
+ * evidence: (x): the fractional part of x with x's sign; 0 for |x| of 2^23 or more; nothing in the image calls it (uncalled code, made a function 2026-11-09); between float_floor and rsqrt_signed, so by link order part of sdk/naomi_library/scalar_math.c; exercised 2026-11-12: called by the harness with 2.75 it returned 0.75, with -2.75 -0.75, with 3.0 0, and with 1e8 (above 2^23) 0
  * matched: source/sdk/naomi_library/scalar_math.c (tools/match/match.py)
  */
 float float_fraction(float x)
@@ -330,8 +330,8 @@ float float_fraction(float x)
 }
 
 /* 0x0c131820  size 0x24  file by match with source
- * confidence: inferred
- * evidence: 1 / signed_sqrt(x), the largest float for 0; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: 1 / signed_sqrt(x), the largest float for 0; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with 4.0 it returned 0.5, with -4.0 -0.5, with 0.25 2.0, and with 0 the largest float 0x7f7fffff
  * matched: source/sdk/naomi_library/scalar_math.c (tools/match/match.py)
  */
 float rsqrt_signed(float x)
@@ -426,8 +426,8 @@ float log_natural(float x)
 }
 
 /* 0x0c1319c0  size 0x18  file by match with source
- * confidence: inferred
- * evidence: log_natural(x) / ln 10; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: log_natural(x) / ln 10; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with 1000 it returned 3.0000002 and with 2 it returned 0.30103
  * matched: source/sdk/naomi_library/scalar_math.c (tools/match/match.py)
  */
 float log_base10(float x)
@@ -439,8 +439,8 @@ float log_base10(float x)
 }
 
 /* 0x0c1319e0  size 0x18  file by match with source
- * confidence: inferred
- * evidence: log_natural(x) / ln 2; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: log_natural(x) / ln 2; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with 8 it returned 3 and with 10 it returned 3.32193
  * matched: source/sdk/naomi_library/scalar_math.c (tools/match/match.py)
  */
 float log_base2(float x)
@@ -519,8 +519,8 @@ void lcg_seed_set(uint seed)
 }
 
 /* 0x0c131b40  size 0x36  file by match with source
- * confidence: inferred
- * evidence: (x): x rounded toward zero; x itself for |x| of 2^23 or more or with no fraction; nothing in the image calls it (uncalled code, made a function 2026-11-09); between lcg_seed_set and float_round_away, so by link order part of sdk/naomi_library/scalar_math.c
+ * confidence: exercised
+ * evidence: (x): x rounded toward zero; x itself for |x| of 2^23 or more or with no fraction; nothing in the image calls it (uncalled code, made a function 2026-11-09); between lcg_seed_set and float_round_away, so by link order part of sdk/naomi_library/scalar_math.c; exercised 2026-11-12: called by the harness with 2.7 it returned 2, with -2.7 -2, with 0.4 0, with 2.0 2.0 and with 1e8 1e8 unchanged
  * matched: source/sdk/naomi_library/scalar_math.c (tools/match/match.py)
  */
 float float_trunc(float x)
@@ -540,8 +540,8 @@ float float_trunc(float x)
 }
 
 /* 0x0c131b80  size 0x38  file by match with source
- * confidence: inferred
- * evidence: (x): x rounded away from zero to the next integer; x itself for |x| of 2^23 or more or with no fraction; nothing in the image calls it (uncalled code, made a function 2026-11-09); between float_trunc and sec_ang16, so by link order part of sdk/naomi_library/scalar_math.c
+ * confidence: exercised
+ * evidence: (x): x rounded away from zero to the next integer; x itself for |x| of 2^23 or more or with no fraction; nothing in the image calls it (uncalled code, made a function 2026-11-09); between float_trunc and sec_ang16, so by link order part of sdk/naomi_library/scalar_math.c; exercised 2026-11-12: called by the harness with 2.3 it returned 3, with -2.3 -3, with 0.4 1, with -0.4 -1 and with 2.0 2.0
  * matched: source/sdk/naomi_library/scalar_math.c (tools/match/match.py)
  */
 float float_round_away(float x)
@@ -558,8 +558,8 @@ float float_round_away(float x)
 }
 
 /* 0x0c131bc0  size 0x30  file by match with source
- * confidence: inferred
- * evidence: secant of a 16-bit angle: 1 / cos_ang16, the largest float at 0x4000 and 0xc000; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: secant of a 16-bit angle: 1 / cos_ang16, the largest float at 0x4000 and 0xc000; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with 0 it returned 1, with 0x2aab 2.00011 and with 0x1555 1.15468 (1 over the cosine of 60 and 30 degrees), and with 0x4000 and 0xc000 the largest float 0x7f7fffff
  * matched: source/sdk/naomi_library/scalar_math.c (tools/match/match.py)
  */
 float sec_ang16(uint angle)
@@ -598,9 +598,9 @@ float sin_ang16(uint angle)
 }
 
 /* 0x0c131c80  size 0x4e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x58
- * evidence: hyperbolic sine of a 16-bit angle taken as radians: (e - 1/e) / 2 with e = exp_float, or x * (1 + x*x/6) below 0.01; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * evidence: hyperbolic sine of a 16-bit angle taken as radians: (e - 1/e) / 2 with e = exp_float, or x * (1 + x*x/6) below 0.01; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with 0x4000 it returned 2.30130 = sinh(pi/2) and with 0x2000 0.868671 through exp_float (122 instructions), and with 16 (x = 0.0015340, below 0.01) it returned 0.0015340 by the short series (28 instructions); 0 gave 0
  * matched: source/sdk/naomi_library/scalar_math.c (tools/match/match.py)
  */
 float sinh_ang16(uint angle)
@@ -658,8 +658,8 @@ float sin_radians_core(int *quadrant, float x)
 }
 
 /* 0x0c131de0  size 0x32  file by match with source
- * confidence: inferred
- * evidence: tangent of an angle in radians: tan_radians_core, then -1/t for an odd quadrant count (the largest float when t is 0); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: tangent of an angle in radians: tan_radians_core, then -1/t for an odd quadrant count (the largest float when t is 0); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with 0.5 it returned 0.546302, with 1.0 1.557408, with 2.0 -2.18504 (an odd quadrant count, -1/t), with -1.0 -1.557408 and with 3.0 -0.142547, the tangents
  * matched: source/sdk/naomi_library/scalar_math.c (tools/match/match.py)
  */
 float tan_radians(float angle)
@@ -676,8 +676,8 @@ float tan_radians(float angle)
 }
 
 /* 0x0c131e20  size 0x56  file by match with source
- * confidence: inferred
- * evidence: for tan_radians only: the same quadrant reduction and continued-fraction tangent as sin_radians_core (quadrant count through the first argument); part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: for tan_radians only: the same quadrant reduction and continued-fraction tangent as sin_radians_core (quadrant count through the first argument); part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness in one sandbox with an int buffer: x = 0.5 returned 0.546302 and stored quadrant 0, x = 2.0 returned 0.457658 = tan(2 - pi/2) and stored 1, x = 3.0 returned -0.142547 = tan(3 - pi) and stored 2
  * matched: source/sdk/naomi_library/scalar_math.c (tools/match/match.py)
  */
 float tan_radians_core(int *quadrant, float x)
@@ -736,9 +736,9 @@ float tan_ang16(uint angle)
 }
 
 /* 0x0c131f40  size 0x6e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x96
- * evidence: hyperbolic tangent of a 16-bit angle taken as radians: 2 / (e^-2x + 1) - 1 through exp_float, x * (1 - x*x/3) near 0; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * evidence: hyperbolic tangent of a 16-bit angle taken as radians: 2 / (e^-2x + 1) - 1 through exp_float, 1 - 2 / (e^2x + 1) below 0.001 (the series x * (1 - x*x/3) is taken only for x exactly 0.001, which no 16-bit angle gives; angle 0 ran through exp_float); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with 0x4000 it returned 0.917152 = tanh(pi/2), with 0x2000 0.655794 = tanh(pi/4), with 16 0.0015340 and with 0 it returned 0
  * matched: source/sdk/naomi_library/scalar_math.c (tools/match/match.py)
  */
 float tanh_ang16(uint angle)

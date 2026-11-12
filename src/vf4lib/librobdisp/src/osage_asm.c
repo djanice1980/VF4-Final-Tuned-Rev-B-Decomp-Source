@@ -62,8 +62,8 @@ undefined4 coli_list_push_point(float *param_1,undefined4 param_2,undefined4 par
 int coli_list_push_core(undefined4 param_1,short *param_2,float param_3,float param_4,float param_5);
 
 /* 0x0c0dc800  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (point, sphere parameters): memory form of coli_sphere_push_core (loads and stores the point); nothing in the image calls it (the handler table points at the core); part of vf4lib/librobdisp/src/osage_asm.c (file name ours; hand-written assembly, see notes)
+ * confidence: exercised
+ * evidence: (point, sphere parameters): memory form of coli_sphere_push_core (loads and stores the point); nothing in the image calls it (the handler table points at the core); part of vf4lib/librobdisp/src/osage_asm.c (file name ours; hand-written assembly, see notes); exercised 2026-11-12: called by the harness with XMTRX the snapshot's matrix (read with mtx_store_wordwise: a turn about y and a move by (-0.0961, -5, -3.9447)) and a sphere (1, 2, 3) radius 0.5, whose center lands at C = (-2.8328, -3, -2.3602): C + (0.3, 0, 0) came back as C + (0.5, 0, 0) with r0 1, C + (0, -0.2, 0.1) as C + 0.5 x its direction with r0 1, and C + (0, 0.6, 0) unchanged with r0 0
  * convention: __keeps_r1_r2_r3_r6_r7_fr1_fr2 (AssignCallEffects)
  * matched: source/asm/0c0dc800.s (hand-written assembly, tools/match/match.py)
  */
@@ -78,24 +78,24 @@ void coli_sphere_push_point(float *param_1,undefined4 param_2);
 bool coli_sphere_push_core(undefined4 param_1,float *param_2,float param_3,float param_4,float param_5);
 
 /* 0x0c0dc85a  size 0x22  file by match with source
- * confidence: inferred
- * evidence: (point, parameters): memory form of the shape-2 test: puts the point in the matrix's frame (point_to_xmtrx_local), runs coli_capsule_push_local with the axis z (center x, y from +0, +4), turns it back with ftrv and stores it; nothing in the image calls it; part of vf4lib/librobdisp/src/osage_asm.c (file name ours; hand-written assembly, see notes)
+ * confidence: exercised
+ * evidence: (point, parameters): memory form of the shape-2 test: puts the point in the matrix's frame (point_to_xmtrx_local), runs coli_capsule_push_local with the axis z (center x, y from +0, +4), turns it back with ftrv and stores it; nothing in the image calls it; part of vf4lib/librobdisp/src/osage_asm.c (file name ours; hand-written assembly, see notes); exercised 2026-11-12: called by the harness with XMTRX the snapshot's matrix (mtx_store_wordwise) and a capsule axis at x 1, y 2, radius 0.5, ends z -1 / 1, points given as the matrix times a local point: local (1.2, 2, 0) came back as the matrix times (1.5, 2, 0) with r0 1, (1, 2, 1.3) as (1, 2, 1.5) (the end cap) with r0 1, and (1, 2.6, 0) unchanged with r0 0
  * convention: __keeps_r2_r3_r5_r6_r7 (AssignCallEffects)
  * matched: source/asm/0c0dc85a.s (hand-written assembly, tools/match/match.py)
  */
 void coli_capsule_z_push_point(float *param_1,float *param_2);
 
 /* 0x0c0dc87c  size 0x32  file by match with source
- * confidence: inferred
- * evidence: (point, parameters): as coli_capsule_z_push_point with the axis x (the coordinates rotated, center from +4, +8); nothing in the image calls it; part of vf4lib/librobdisp/src/osage_asm.c (file name ours; hand-written assembly, see notes)
+ * confidence: exercised
+ * evidence: (point, parameters): as coli_capsule_z_push_point with the axis x (the coordinates rotated, center from +4, +8); nothing in the image calls it; part of vf4lib/librobdisp/src/osage_asm.c (file name ours; hand-written assembly, see notes); exercised 2026-11-12: called by the harness with XMTRX the snapshot's matrix (mtx_store_wordwise) and a capsule with the axis along x at y 2 (+4), z 3 (+8), radius 0.5, ends -1 / 1: local (0, 2.2, 3) came back as (0, 2.5, 3) with r0 1, (-1.2, 2, 3.1) pushed out of the end cap round (-1, 2, 3) with r0 1, and (1.6, 2, 3) unchanged with r0 0 (all through the matrix)
  * convention: __keeps_r2_r3_r5_r6_r7 (AssignCallEffects)
  * matched: source/asm/0c0dc85a.s (hand-written assembly, tools/match/match.py)
  */
 void coli_capsule_x_push_point(float *param_1,int param_2);
 
 /* 0x0c0dc8ae  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: (point, parameters): as coli_capsule_z_push_point with the axis y (center from +0, +8); nothing in the image calls it; part of vf4lib/librobdisp/src/osage_asm.c (file name ours; hand-written assembly, see notes)
+ * confidence: exercised
+ * evidence: (point, parameters): as coli_capsule_z_push_point with the axis y (center from +0, +8); nothing in the image calls it; part of vf4lib/librobdisp/src/osage_asm.c (file name ours; hand-written assembly, see notes); exercised 2026-11-12: called by the harness with XMTRX the snapshot's matrix (mtx_store_wordwise) and a capsule with the axis along y at x 1 (+0), z 3 (+8), radius 0.5, ends -1 / 1: local (1, 0, 3.3) came back as (1, 0, 3.5) with r0 1, (1.1, 1.2, 3) pushed out of the end cap round (1, 1, 3) with r0 1, and (1, 2, 3) unchanged with r0 0 (all through the matrix)
  * convention: __keeps_r2_r3_r5_r6_r7 (AssignCallEffects)
  * matched: source/asm/0c0dc85a.s (hand-written assembly, tools/match/match.py)
  */

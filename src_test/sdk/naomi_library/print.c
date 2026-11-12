@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c05c7a0  size 0x12  file by match with source
- * confidence: inferred
- * evidence: (z): text_depth = 1 / z; nothing in the image calls it (uncalled code, made a function 2026-11-09); between text_glyphs_set_source and text_sprite_ctrl_bits16_set, so by link order part of sdk/naomi_library/print.c
+ * confidence: exercised
+ * evidence: (z): text_depth = 1 / z; nothing in the image calls it (uncalled code, made a function 2026-11-09); between text_glyphs_set_source and text_sprite_ctrl_bits16_set, so by link order part of sdk/naomi_library/print.c; exercised 2026-11-12: called by the harness in one sandbox: with 4.0 text_depth became 0.25 and with 0.5 it became 2.0
  * same code as main.bin 0c132020 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi_library/print.c (tools/match/match.py)
  */
@@ -51,8 +51,8 @@ void text_overlay_setup(void)
 }
 
 /* 0x0c05c8e0  size 0x36  file by match with source
- * confidence: inferred
- * evidence: (list): stores the low byte as the text sprite header's list choice and rebuilds its control word bits 24-26 and its blend bits: list 0 gets control bit 25 and blend bits 0x94000000, any other 0x20000000; nothing in the image calls it (uncalled code, made a function 2026-11-09); between text_rotated_set and text_sprite_tex_word, so by link order part of sdk/naomi_library/print.c
+ * confidence: exercised
+ * evidence: (list): stores the low byte as the text sprite header's list choice and rebuilds its control word bits 24-26 and its blend bits: list 0 gets control bit 25 and blend bits 0x94000000, any other 0x20000000; nothing in the image calls it (uncalled code, made a function 2026-11-09); between text_rotated_set and text_sprite_tex_word, so by link order part of sdk/naomi_library/print.c; exercised 2026-11-12: called by the harness in one sandbox on the snapshot's header (control 0xa2000009, blend word 0x949004c7): list 3 made them 0xa0000009 and 0x209004c7 with list_choice 3, then list 0 made them 0xa2000009 and 0x949004c7 with list_choice 0
  * same code as main.bin 0c132160 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi_library/print.c (tools/match/match.py)
  */
@@ -202,8 +202,8 @@ void text_newline_keeps_margin(void)
 }
 
 /* 0x0c05cb60  size 0x14  file by match with source
- * confidence: inferred
- * evidence: clears bit 0 of text_flags; nothing in the image calls it (uncalled code, made a function 2026-11-09); between text_newline_keeps_margin and text_cell_size_set, so by link order part of sdk/naomi_library/print.c
+ * confidence: exercised
+ * evidence: clears bit 0 of text_flags; nothing in the image calls it (uncalled code, made a function 2026-11-09); between text_newline_keeps_margin and text_cell_size_set, so by link order part of sdk/naomi_library/print.c; exercised 2026-11-12: called by the harness in one sandbox: with text_flags poked to 0xf it left 0xe, and called again on 0xe it left 0xe
  * same code as main.bin 0c1323e0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi_library/print.c (tools/match/match.py)
  */

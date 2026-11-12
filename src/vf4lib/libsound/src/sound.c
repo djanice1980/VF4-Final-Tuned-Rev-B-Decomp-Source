@@ -537,8 +537,8 @@ void chara_sound_banks_load(char chara_a, char chara_b, int how)
 }
 
 /* 0x0c078b20  size 0x14  file by match with source
- * confidence: inferred
- * evidence: sets bit 6 of sound_state; callers bonus_time_roll and mission_sim_bonus_roll, both after a random draw (lcg_next15 against 400 / a table entry) that also sets bonus_time_flags bit 0; stage_sound_banks_load clears the bit when an extra music is picked; no reader of the bit found, role unclear; part of vf4lib/libsound/src/sound.c (by its globals and link order; no string of its own)
+ * confidence: exercised
+ * evidence: sets bit 6 of sound_state; callers bonus_time_roll and mission_sim_bonus_roll, both after a random draw (lcg_next15 against 400 / a table entry) that also sets bonus_time_flags bit 0; stage_sound_banks_load clears the bit when an extra music is picked; no reader of the bit found, role unclear; part of vf4lib/libsound/src/sound.c (by its globals and link order; no string of its own); exercised 2026-11-12: called by the harness in one sandbox: sound_state's flags word 0x2400 (snapshot) became 0x2440, poked 0 it became 0x40, poked 0xFFFFFFBF it became 0xFFFFFFFF
  * matched: source/vf4lib/libsound/src/sound.c (tools/match/match.py)
  */
 void sound_state_bit6_set(void)
@@ -707,8 +707,8 @@ void rob_blow_sounds_step(rob_rec *rob, short *se)
 }
 
 /* 0x0c078f20  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: (level 0 / 1 / other): posts code 0xAA0 with 0, 0x40 or 0x7F on bank slot 7 (the music slot; snd_cmd_a0_post) and keeps the result in sound_state +0x14; the parameter 0xAA0 sets is not identified, role unclear; nothing in the image calls it; part of vf4lib/libsound/src/sound.c
+ * confidence: exercised
+ * evidence: (level, its low byte 0 / 1 / other: 0x101 posts 0x40): posts code 0xAA0 with 0, 0x40 or 0x7F on bank slot 7 (the music slot; snd_cmd_a0_post) and keeps the result in sound_state +0x14; the parameter 0xAA0 sets is not identified, role unclear; nothing in the image calls it; part of vf4lib/libsound/src/sound.c; exercised 2026-11-12: called by the harness in one sandbox with sound_state+0x14 poked 0x5555: level 0 called snd_cmd_a0_post(7, 0xAA0, 0) and its result 0 replaced the 0x5555; level 1 posted 0x40 and level 2 0x7F, on slot 7 each time
  * matched: source/vf4lib/libsound/src/sound.c (tools/match/match.py)
  */
 void bgm_code_aa0_level_set(int level)
@@ -1039,8 +1039,8 @@ void attack_result_sounds_play(rob_rec *attacker, rob_rec *defender, uint result
 }
 
 /* 0x0c079720  size 0x22  file by match with source
- * confidence: inferred
- * evidence: when sound_test_state.title_se is 0, attract_sound_play of the const short at attract_adv_se_id (889, B_SE_STAGE_ADV_ADV, the id title_init passes directly); nothing in the image calls it; part of vf4lib/libsound/src/sound.c
+ * confidence: exercised
+ * evidence: when sound_test_state.title_se is 0, attract_sound_play of the const short at attract_adv_se_id (889, B_SE_STAGE_ADV_ADV, the id title_init passes directly); nothing in the image calls it; part of vf4lib/libsound/src/sound.c; exercised 2026-11-12: called by the harness in one sandbox: with sound_test_state.title_se (+0x0D) poked 0 it called attract_sound_play(889) (attract_adv_se_id reads 0x379); with it poked 1 it called nothing
  * matched: source/vf4lib/libsound/src/sound.c (tools/match/match.py)
  */
 void attract_adv_se_play(void)
@@ -1320,8 +1320,8 @@ uint * sound_state_get(void)
 }
 
 /* 0x0c079da0  size 0x10  file by match with source
- * confidence: inferred
- * evidence: returns stage_sound_record; caller move_tcmd_01_sound; part of vf4lib/libsound/src/sound.c
+ * confidence: exercised
+ * evidence: returns stage_sound_record; caller move_tcmd_01_sound; part of vf4lib/libsound/src/sound.c; exercised 2026-11-12: called by the harness in one sandbox it returned 0x0C168238, the snapshot's stage_sound_record, and after that global was poked 0x12345678 it returned 0x12345678
  * matched: source/vf4lib/libsound/src/sound.c (tools/match/match.py)
  */
 uint stage_sound_record_get(void)

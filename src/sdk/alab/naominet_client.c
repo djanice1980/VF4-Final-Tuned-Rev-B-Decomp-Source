@@ -596,8 +596,8 @@ int naominet_status_poll(void)
 }
 
 /* 0x0c0f71a0  size 0x18  file by match with source
- * confidence: inferred
- * evidence: returns the address of naominet_last_error while the client is started (naominet_ready == 1), else 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between naominet_status_poll and naominet_step, so by link order part of sdk/alab/naominet_client.c
+ * confidence: exercised
+ * evidence: returns the address of naominet_last_error while the client is started (naominet_ready == 1), else 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between naominet_status_poll and naominet_step, so by link order part of sdk/alab/naominet_client.c; exercised 2026-11-12: called by the harness on the snapshot (naominet_ready 0) it returned 0, and with naominet_ready poked to 1 it returned 0x0C5C3CB4, the address of naominet_last_error
  * matched: source/sdk/alab/naominet_client.c (tools/match/match.py)
  */
 naominet_error_rec * naominet_last_error_get(void)
@@ -1071,8 +1071,8 @@ int naominet_retry_wait_set(uint wait_ms)
 }
 
 /* 0x0c0f8080  size 0x5a  file by match with source
- * confidence: inferred
- * evidence: for a started client: clears naominet_ready and naominet_authed and each player's er / di / active flags, sets the status to -101 and returns 0; -1 when it was not started; nothing in the image calls it (uncalled code, made a function 2026-11-09); between naominet_retry_wait_set and naominet_board_check, so by link order part of sdk/alab/naominet_client.c
+ * confidence: exercised
+ * evidence: for a started client: clears naominet_ready and naominet_authed and each player's er / di / active flags, sets the status to -101 and returns 0; -1 when it was not started; nothing in the image calls it (uncalled code, made a function 2026-11-09); between naominet_retry_wait_set and naominet_board_check, so by link order part of sdk/alab/naominet_client.c; exercised 2026-11-12: called by the harness on the snapshot (naominet_ready 0) it returned -1; with naominet_ready and naominet_authed poked to 1, naominet_config.player_count 2 and the er / di / active flag pointers aimed at three buffers holding 1, 1, 7 each, it returned 0, cleared ready and authed, set naominet_status to -101 and cleared the two players' flags, leaving the third word 7
  * matched: source/sdk/alab/naominet_client.c (tools/match/match.py)
  */
 int naominet_stop(void)
@@ -3120,8 +3120,8 @@ uint naominet_crc_update(char *data, uint crc, int len)
 }
 
 /* 0x0c0fb8e0  size 0x3e  file by match with source
- * confidence: inferred
- * evidence: (IPv4 address, low byte first): formats "%d.%d.%d.%d" into the 16-byte ip_dotted_text_buf and returns it; nothing in the image calls it; part of sdk/alab/naominet_client.c
+ * confidence: exercised
+ * evidence: (IPv4 address, low byte first): formats "%d.%d.%d.%d" into the 16-byte ip_dotted_text_buf and returns it; nothing in the image calls it; part of sdk/alab/naominet_client.c; exercised 2026-11-12: called by the harness with 0x0A01A8C0 it wrote "192.168.1.10" into ip_dotted_text_buf and returned it, and with 0xFFFEFDFC it wrote "252.253.254.255"
  * matched: source/sdk/alab/naominet_client.c (tools/match/match.py)
  */
 char * ip_to_dotted_text(uint ip)

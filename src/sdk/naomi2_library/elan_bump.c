@@ -7,90 +7,90 @@
 #include "vf4ft.h"
 
 /* 0x0c10c7b0  size 0x112  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x11c
- * evidence: renderer for a group whose material byte is -2 (bump mapped): r4 on the group's run words with its intensity k, a second factor K1 and a light scale s in the three floats at group +0x3c, +0x40, +0x44 (the words the other renderers read as the offset color), r5 the list write address, r6 the store-queue pointer, r10/r11 the list record and list offset, r12 the near value (bit 0 the crosses-near flag), r7 the near 1/w, fv12 the light direction and XMTRX's fourth row minus the depth row. Packs the caller's fr0-fr3 x 255 into the base color word (constant over the group) and k x 255, K1 x 255 into r13, scales fv12 by s (1/s kept in the word at 0x0C10C840, undone on the way out; the routine keeps that word and the clip ring bump_clip_ring, 0x0C10C8D0-0x0C10C94F, inside its code area). For each positive run word sends a 32-byte polygon header from the copy at elan_group_header_words with the color-type bits cleared (packed color) and culling bits 27-28 from run bits 0-1; that holds only when poly_header_or_words.control_or is negative: when it is not, the bt.s at 0x0C10C856 skips the and #3 as well as the flip, the whole run word is shifted by 27 and run bits 2-4 land in header bits 29-31 (the other four group senders have the and #3 in the branch's delay slot; a slip, as the game has it); then runs bump_strip_send (run bit 3 clear) or bump_tri_send, or for a group crossing the near plane bump_strip_near_clip (bit 4) or bump_tri_near_clip (bit 3), else spins; a run word of 0 or below stores the list write pointer back and returns T = (word is 0, end of object). Entered by pointer from the renderers lit_groups_send_alpha and lit_offset_groups_send_alpha (pools lit_groups_send_alpha+0x3de, lit_offset_groups_send_alpha+0x43e) and from float_colour_send_alpha, intensity_send_alpha and intensity_spill_send_alpha (pools float_colour_send_alpha+0x2ae, intensity_send_alpha+0x3c2, 0x0C10BA00); zero fill before it; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * evidence: renderer for a group whose material byte is -2 (bump mapped): r4 on the group's run words with its intensity k, a second factor K1 and a light scale s in the three floats at group +0x3c, +0x40, +0x44 (the words the other renderers read as the offset color), r5 the list write address, r6 the store-queue pointer, r10/r11 the list record and list offset, r12 the near value (bit 0 the crosses-near flag), r7 the near 1/w, fv12 the light direction and XMTRX's fourth row minus the depth row. Packs the caller's fr0-fr3 x 255 into the base color word (constant over the group) and k x 255, K1 x 255 into r13, scales fv12 by s (1/s kept in the word at 0x0C10C840, undone on the way out; the routine keeps that word and the clip ring bump_clip_ring, 0x0C10C8D0-0x0C10C94F, inside its code area). For each positive run word sends a 32-byte polygon header from the copy at elan_group_header_words with the color-type bits cleared (packed color) and culling bits 27-28 from run bits 0-1; that holds only when poly_header_or_words.control_or is negative: when it is not, the bt.s at 0x0C10C856 skips the and #3 as well as the flip, the whole run word is shifted by 27 and run bits 2-4 land in header bits 29-31 (the other four group senders have the and #3 in the branch's delay slot; a slip, as the game has it); then runs bump_strip_send (run bit 3 clear) or bump_tri_send, or for a group crossing the near plane bump_strip_near_clip (bit 4) or bump_tri_near_clip (bit 3), else spins; a run word of 0 or below stores the list write pointer back and returns T = (word is 0, end of object). Entered by pointer from the renderers lit_groups_send_alpha and lit_offset_groups_send_alpha (pools lit_groups_send_alpha+0x3de, lit_offset_groups_send_alpha+0x43e) and from float_colour_send_alpha, intensity_send_alpha and intensity_spill_send_alpha (pools float_colour_send_alpha+0x2ae, intensity_send_alpha+0x3c2, 0x0C10BA00); zero fill before it; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with a matrix giving depth z + 10, x 2x, y 3y, near -4: entered from intensity_send_alpha for a group of material -2 (k .8, K1 .2, s 2, run 0x45): header word 0 0x80000000, word 1 0x29234567 (run bits 0 and 2 at 27 and 29, the noted slip), then three vertices with base word 0xcc339933 and offset words 0x33a37a00, ..c0, ..5a; 1/s (0.5) stored at 0x0C10C840
  * convention: __keeps_r7 (AssignCallEffects)
  * matched: source/asm/0c10c7b0.s (hand-written assembly, tools/match/match.py)
  */
 void bump_group_send(void);
 
 /* 0x0c10c9e0  size 0x102  file by match with source
- * confidence: inferred
- * evidence: unclipped strip sender of bump_group_send: r3 = vertex count; per 56-byte vertex record (x, y, z, three vectors N, T, B, u, v; always inline) transforms the position, takes 1/depth and writes a 32-byte textured packed-color vertex at r6 (control word r6, r6 >> 1 on the last; X, Y, 1/w, u, v, the base word, a per-vertex offset word whose bytes are K1 x 255, k x N.L, k x sqrt(1 - (N.L)^2) and the direction of L in the T, B plane from an arctangent table at arctan_ang8_table and octant halfwords: the TA's bump-map parameters by its arithmetic); a positive next word with bit 7 set starts another strip; constants at 0x0C10CB20; unreached code after its return (0x0C10CAE2-0x0C10CB15: a second way to end a vertex; nothing branches there and no word holds its address); bsr from bump_group_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: unclipped strip sender of bump_group_send: r3 = vertex count; per 56-byte vertex record (x, y, z, three vectors N, T, B, u, v; always inline) transforms the position, takes 1/depth and writes a 32-byte textured packed-color vertex at r6 (control word r6, r6 >> 1 on the last; X, Y, 1/w, u, v, the base word, a per-vertex offset word whose bytes are K1 x 255, k x N.L, k x sqrt(1 - (N.L)^2) and the direction of L in the T, B plane from an arctangent table at arctan_ang8_table and octant halfwords: the TA's bump-map parameters by its arithmetic); a positive next word with bit 7 set starts another strip; constants at 0x0C10CB20; unreached code after its return (0x0C10CAE2-0x0C10CB15: a second way to end a vertex; nothing branches there and no word holds its address); bsr from bump_group_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with a matrix giving depth z + 10, x 2x, y 3y, near -4, light (.6,0,.8), r8 0x11223344, r13 0x400000c8: three 56-byte records gave X, Y, 1/w, u, v, r8 and offset words 0x40a07700, 0x40a07713, 0x40a0775a (K1 byte, 200 x .8, 200 x .6, angles 0, table[64] = 19, 64 + table[96] = 90), the last ending the strip, r4 on the next word
  * convention: __keeps_r7 (AssignCallEffects)
  * matched: source/asm/0c10c7b0.s (hand-written assembly, tools/match/match.py)
  */
 void bump_strip_send(void);
 
 /* 0x0c10cb40  size 0xfa  file by match with source
- * confidence: inferred
- * evidence: as bump_strip_send for independent triangles: r9 = triangle count, three vertices each with an end-of-strip control word on every third; own constants at 0x0C10CC70; unreached code after its return (0x0C10CC3A-0x0C10CC6D: a second way to end a vertex; nothing branches there and no word holds its address); bsr from bump_group_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: as bump_strip_send for independent triangles: r9 = triangle count, three vertices each with an end-of-strip control word on every third; own constants at 0x0C10CC70; unreached code after its return (0x0C10CC3A-0x0C10CC6D: a second way to end a vertex; nothing branches there and no word holds its address); bsr from bump_group_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with a matrix giving depth z + 10, x 2x, y 3y, near -4, as bump_strip_send's test: two triangles gave six vertices with offset words 0x40a077c0 (angle 192), ..00, ..13, ..5a, 0x4000c800 (facing away: 0 and 200), ..00, the 3rd and 6th ending strips
  * convention: __keeps_r7 (AssignCallEffects)
  * matched: source/asm/0c10c7b0.s (hand-written assembly, tools/match/match.py)
  */
 void bump_tri_send(void);
 
 /* 0x0c10cc90  size 0x18e  file by match with source
- * confidence: inferred
- * evidence: near-plane clipping strip walk of bump_group_send (the shape of float_colour_strip_near_clip_spec): 3-bit in/out history in r9, ring index r11, braf at 0x0C10CD5A (its table from 0x0C10CD5E; the entries for cases 0 and 7 are nop pairs, neither case arises) sending bump_vtx_emit, bump_kept_vtx_emit and bump_near_cut_emit vertices; no flat copy (the base color is constant over the group); continues over bit-7 runs and returns with r12 bit 0 set; bsr from bump_group_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: near-plane clipping strip walk of bump_group_send (the shape of float_colour_strip_near_clip_spec): 3-bit in/out history in r9, ring index r11, braf at 0x0C10CD5A (its table from 0x0C10CD5E; the entries for cases 0 and 7 are nop pairs, neither case arises) sending bump_vtx_emit, bump_kept_vtx_emit and bump_near_cut_emit vertices; no flat copy (the base color is constant over the group); continues over bit-7 runs and returns with r12 bit 0 set; bsr from bump_group_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with a matrix giving depth z + 10, x 2x, y 3y, near -4: a strip front, front, nearer gave v0, v1, cut(0,2), v1, cut(1,2) (cuts on the plane, 1/w = r7 .25, interpolated x, y, u, v, packed words copied), the last ending the strip; r12 bit 0 set
  * convention: __keeps_r7 (AssignCallEffects)
  * matched: source/asm/0c10c7b0.s (hand-written assembly, tools/match/match.py)
  */
 void bump_strip_near_clip(void);
 
 /* 0x0c10ce20  size 0xc8  file by match with source
- * confidence: inferred
- * evidence: loads the 56-byte record at r4 and advances r4 by 56, transforms it (fr4 = minus depth, fr7 = 1/depth), computes the offset word as bump_strip_send into r1 and u, v; returns T = the vertex lies behind the near plane (r12 against minus depth's bits); constants at 0x0C10CEF0; bsr from bump_strip_near_clip and bump_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: loads the 56-byte record at r4 and advances r4 by 56, transforms it (fr4 = minus depth, fr7 = 1/depth), computes the offset word as bump_strip_send into r1 and u, v; returns T = the vertex lies behind the near plane (r12 against minus depth's bits); constants at 0x0C10CEF0; bsr from bump_strip_near_clip and bump_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with a matrix giving depth z + 10, x 2x, y 3y, near -4, light (.6,0,.8), r13 0x400000c8: four records whose tangent and binormal put the light at angles 0, 192, table[64] and 64 + table[96] gave r1 0x40a07700, ..c0, ..13, ..5a; facing away 0x4000c800; fr4-fr7 (-15, 2, 6, 1/15), u, v, r4 + 56; a vertex nearer than the plane gave T 1
  * convention: __keeps_r3_r5_r6_r7 (AssignCallEffects)
  * matched: source/asm/0c10c7b0.s (hand-written assembly, tools/match/match.py)
  */
 void bump_vtx_load(void);
 
 /* 0x0c10cf10  size 0x28  file by match with source
- * confidence: inferred
- * evidence: writes the loaded vertex as a 32-byte vertex at r6 (control word r6, or r6 >> 1 when dt r3 reaches 0; X, Y, 1/w, u, v, base word r8, offset word r1); r5 and r6 + 32; bsr from bump_strip_near_clip and bump_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: writes the loaded vertex as a 32-byte vertex at r6 (control word r6, or (r6 + 24) >> 1 when dt r3 reaches 0; X, Y, 1/w, u, v, base word r8, offset word r1); r5 and r6 + 32; bsr from bump_strip_near_clip and bump_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with fr4-fr7 (-3, 6, 9, .25), u, v .25, .75, r8 0x11223344, r1 0x55667788, r3 2 it wrote X 1.5, Y 2.25, .25, .25, .75, r8, r1 at r6 with control word r6, r3 1; r3 1 gave control word (r6 + 24) >> 1 and T 1
  * convention: __keeps_r1_r2_r4_r7_fr1_fr2_fr3_fr4_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c10c7b0.s (hand-written assembly, tools/match/match.py)
  */
 void bump_vtx_emit(void);
 
 /* 0x0c10cf40  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: stores the loaded vertex (minus depth, x, y, 1/depth, u, v, base and offset words) in slot r11 & 3 of the clip ring at bump_clip_ring; bsr from bump_strip_near_clip and bump_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: stores the loaded vertex (minus depth, x, y, 1/depth, u, v, base and offset words) in slot r11 & 3 of the clip ring at bump_clip_ring; bsr from bump_strip_near_clip and bump_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with fr4-fr7 (-3, 6, 9, .25), u, v .25, .75, r8 0x11223344, r1 0x55667788 and r11 6 it stored those eight words in slot 2 of bump_clip_ring, the other slots as planted
  * convention: __keeps_r1_r2_r3_r4_r5_r6_r7_fr1_fr2_fr3_fr4_fr5_fr6_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c10c7b0.s (hand-written assembly, tools/match/match.py)
  */
 void bump_vtx_keep(void);
 
 /* 0x0c10cf60  size 0x38  file by match with source
- * confidence: inferred
- * evidence: sends slot r0 & 3 of the clip ring at bump_clip_ring as a 32-byte vertex (x, y times its 1/depth); control word 0xf0000000 when T is set on entry, else r6; bsr from bump_strip_near_clip and bump_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: sends slot r0 & 3 of the clip ring at bump_clip_ring as a 32-byte vertex (x, y times its 1/depth); control word 0xf0000000 when T is set on entry, else r6; bsr from bump_strip_near_clip and bump_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with bump_clip_ring planted: r0 5, T 1 sent slot 1 as 143, 156 (x, y times the stored 1/w 13), 13, 14, 15 and its packed words with control 0xf0000000; r0 3, T 0 slot 3 with control word r6
  * convention: __keeps_r3_r4_r7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c10c7b0.s (hand-written assembly, tools/match/match.py)
  */
 void bump_kept_vtx_emit(void);
 
 /* 0x0c10cfa0  size 0x7a  file by match with source
- * confidence: inferred
- * evidence: sends the point where the edge from ring slot r0 & 3 to slot r11 & 3 crosses the near plane: t on the minus-depth words, interpolating x, y, u, v; 1/w = r7 and x, y times r7; the packed base and offset words of slot r11 copied, not interpolated; end of strip by T; bsr from bump_strip_near_clip and bump_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: sends the point where the edge from ring slot r0 & 3 to slot r11 & 3 crosses the near plane: t on the minus-depth words, interpolating x, y, u, v; 1/w = r7 and x, y times r7; the packed base and offset words of slot r11 copied, not interpolated; end of strip by T; bsr from bump_strip_near_clip and bump_tri_near_clip; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with slot 0 (minus depth -2, x 10, y 20, u 0, v 1, packed words 0xaaaa0000, ...), slot 1 (-6, 30, 60, 1, 0, 0xaaaa0001, ...), near -4, r7 .25: r0 0, r11 1, T 1 gave X 5, Y 10, .25, .5, .5 with slot 1's words and 0xf0000000; r0 1, r11 0, T 0 the same point with slot 0's words (r11's, not interpolated) and control word r6 + 4
  * convention: __keeps_r3_r4_r7_fr6_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c10c7b0.s (hand-written assembly, tools/match/match.py)
  */
 void bump_near_cut_emit(void);
 
 /* 0x0c10d030  size 0x8e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xa6
- * evidence: near-plane clipping for independent triangles of bump_group_send: r3 = triangle count, bump_tri_classify gives the 3-bit code, 0 sends the triangle (bump_vtx_load / bump_vtx_emit), 7 skips its 168 bytes, otherwise the three are kept and a six-case braf table (0x0C10D064) sends kept vertices and near cuts; returns with r12 bit 0 set; bsr from bump_group_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * evidence: near-plane clipping for independent triangles of bump_group_send: r3 = triangle count, bump_tri_classify gives the 3-bit code, 0 sends the triangle (bump_vtx_load / bump_vtx_emit), 7 skips its 168 bytes, otherwise the three are kept and a six-case braf table (0x0C10D064) sends kept vertices and near cuts; returns with r12 bit 0 set; bsr from bump_group_send; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with a matrix giving depth z + 10, x 2x, y 3y, near -4: triangles coded 001, 110, 111, 000 gave four, three, no and three vertices (cuts on the plane with 1/w .25 and b's packed words, each strip ended), r4 past the count word and 12 records of 56 bytes, r12 bit 0 set
  * convention: __keeps_r7 (AssignCallEffects)
  * matched: source/asm/0c10c7b0.s (hand-written assembly, tools/match/match.py)
  */
 void bump_tri_near_clip(void);
 
 /* 0x0c10d170  size 0x4e  file by match with source
- * confidence: inferred
- * evidence: transforms the three positions at r4, r4 + 56 and r4 + 112 (r4 kept) and rotates their near tests into r9 (0 all in front, 7 all behind); bsr from bump_tri_near_clip; a zero halfword at 0x0C10D1BE follows; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly)
+ * confidence: exercised
+ * evidence: transforms the three positions at r4, r4 + 56 and r4 + 112 (r4 kept) and rotates their near tests into r9 (0 all in front, 7 all behind); bsr from bump_tri_near_clip; a zero halfword at 0x0C10D1BE follows; takes no C-style arguments (it works on its caller's registers, listed in its .s file); part of the ELAN renderers (hand-written assembly); exercised 2026-11-12: through a harness driver (registers, fr0-fr15 and XMTRX set, the routine called, registers stored) with a matrix giving depth z + 10, x 2x, y 3y, near -4: records (56 bytes apart) behind, in front, behind the near plane gave r9 5, and front, behind, front gave 2, r4 kept
  * convention: __keeps_r1_r2_r3_r5_r6_r7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c10c7b0.s (hand-written assembly, tools/match/match.py)
  */

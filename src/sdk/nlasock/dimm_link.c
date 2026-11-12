@@ -8,7 +8,7 @@
 
 /* 0x0c11f880  size 0xe  file by match with source
  * confidence: inferred
- * evidence: returns the module's build text "NLASOCK Ver.0.12 Build: Oct 19 2004 19:52:09"; nothing in the image calls it (uncalled code, made a function 2026-11-09); between base64_decode and dimm_net_attach, so by link order part of sdk/nlasock/dimm_link.c
+ * evidence: returns the module's build text "NLASOCK Ver.0.12 Build: Oct 19 2004 19:52:09" with a line end before and after it (0x0C211B5C); nothing in the image calls it (uncalled code, made a function 2026-11-09); between base64_decode and dimm_net_attach, so by link order part of sdk/nlasock/dimm_link.c
  * matched: source/sdk/nlasock/dimm_link.c (tools/match/match.py)
  */
 char * nlasock_version_get(void)
@@ -93,8 +93,8 @@ int dimm_cmd_handler_put(uint cmd, void *routine)
 }
 
 /* 0x0c11fa20  size 0x20  file by match with source
- * confidence: inferred
- * evidence: (id): clears dimm_cmd_handler_table[id] for an id below 64 and returns 0, else -1; the partner of dimm_cmd_handler_put; nothing in the image calls it (uncalled code, made a function 2026-11-09); between dimm_cmd_handler_put and dimm_cmd_post, so by link order part of sdk/nlasock/dimm_link.c
+ * confidence: exercised
+ * evidence: (id): clears dimm_cmd_handler_table[id] for an id below 64 and returns 0, else -1; the partner of dimm_cmd_handler_put; nothing in the image calls it (uncalled code, made a function 2026-11-09); between dimm_cmd_handler_put and dimm_cmd_post, so by link order part of sdk/nlasock/dimm_link.c; exercised 2026-11-12: called by the harness after dimm_cmd_handler_put(5, 0x0C123456), (6, 0x0C12345A) and (63, 0x0C123458): clear(5) returned 0 and zeroed entry 5 only (entry 6 kept), clear(64) returned -1 and clear(63) returned 0 and zeroed entry 63
  * matched: source/sdk/nlasock/dimm_link.c (tools/match/match.py)
  */
 int dimm_cmd_handler_clear(uint id)

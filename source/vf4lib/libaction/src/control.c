@@ -2455,7 +2455,7 @@ int script_op_61_move_if_other_side(control_rec *ctrl)
   return script_move_if(ctrl,1,-1);
 }
 
-int script_op_62_move_if_opponent(control_rec *ctrl)
+int script_op_62_move_if_chara(control_rec *ctrl)
 {
   return script_move_if(ctrl,0,(int)*(char *)(script_pc + 1));
 }

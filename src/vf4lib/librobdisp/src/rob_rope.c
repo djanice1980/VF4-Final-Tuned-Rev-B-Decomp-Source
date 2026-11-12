@@ -210,8 +210,8 @@ void rope_draw(void)
 }
 
 /* 0x0c0ce7c0  size 0x24  file by match with source
- * confidence: inferred
- * evidence: (rob, distance): distance / rope_link_length, counted from the other end (127 - n) for side 1; callers rope_grip_link_index, move_tcmd_18; part of vf4lib/librobdisp/src/rob_rope.c
+ * confidence: exercised
+ * evidence: (rob, distance): distance / rope_link_length (truncated), counted from the other end (127 - n) for side 1, returned as a signed byte (3.0 with a link length of 0.02 gives -106); callers rope_grip_link_index, move_tcmd_18; part of vf4lib/librobdisp/src/rob_rope.c; exercised 2026-11-12: called by the harness with rope_link_length 0.02: robs[0] (side 0) and 0.51 returned 25, robs[1] (side 1) 102, robs[0] and 1.03 51, robs[1] 76; robs[0] and 3.0 returned -106 (150 as a signed byte; notes row)
  * matched: source/vf4lib/librobdisp/src/rob_rope.c (tools/match/match.py)
  */
 int rope_link_at_distance(rob_rec *rob, float distance)
@@ -225,8 +225,8 @@ int rope_link_at_distance(rob_rec *rob, float distance)
 }
 
 /* 0x0c0ce800  size 0x46  file by match with source
- * confidence: inferred
- * evidence: (rob, bone): rope_link_at_distance of the distance between the bone and the anchor bone rope_anchor_bone in the rob's matrices (+0x4C); callers rope_grips_update, move_tcmd_18; part of vf4lib/librobdisp/src/rob_rope.c
+ * confidence: exercised
+ * evidence: (rob, bone): rope_link_at_distance of the distance between the bone and the anchor bone rope_anchor_bone in the rob's matrices (+0x4C); callers rope_grips_update, move_tcmd_18; part of vf4lib/librobdisp/src/rob_rope.c; exercised 2026-11-12: called by the harness with rope_anchor_bone 0 and the snapshot's matrices (+0x4C): robs[0] bone 7 returned 40 and bone 10 44 (distances 0.8072 and 0.8917 from bone 0, worked out from the peeked +0x30 rows, over 0.02), robs[1] bone 7 returned 85 (127 - 42, distance 0.8500)
  * matched: source/vf4lib/librobdisp/src/rob_rope.c (tools/match/match.py)
  */
 int rope_grip_link_index(rob_rec *rob, int bone)

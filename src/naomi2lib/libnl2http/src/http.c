@@ -295,9 +295,9 @@ void http_board_result_take(void)
 }
 
 /* 0x0c11d600  size 0x9a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xa2
- * evidence: (URL): queues a GET: error 2 ("http:not initialized", line 368) unless http_is_ready; takes a slot (http_slot_alloc), marks it queued (state 1), splits the URL (http_url_split) and writes "GET %s HTTP/1.0\r\n\r\n" with the path into the slot's buffer (+0x138, 4 KB), storing its length at +0x124 (error 13 when snprintf truncated, line 379); returns the error code with 1 (wait) turned into 0; nothing in the image calls it; part of libnl2http http.c
+ * evidence: (URL): queues a GET: error 2 ("http:not initialized", line 368) unless http_is_ready; takes a slot (http_slot_alloc), marks it queued (state 1), splits the URL (http_url_split) and writes "GET %s HTTP/1.0\r\n\r\n" with the path into the slot's buffer (+0x138, 4 KB), storing its length at +0x124 (error 13 when snprintf truncated, line 379); returns the error code with 1 (wait) turned into 0; nothing in the image calls it; part of libnl2http http.c; exercised 2026-11-12: called by the harness on the snapshot (http_ready_flag 0) it returned 2; with http_ready_flag poked to 1 and "http://192.0.2.10/sys/x.cgi?a=1" it returned 0, set slot 0's state to 1, wrote "GET /sys/x.cgi?a=1 HTTP/1.0" with two CR LF at +0x138, stored the length 31 at +0x124 and moved http_ring_tail to 1; "ftp://x/y" returned 3
  * matched: source/naomi2lib/libnl2http/src/http.c (tools/match/match.py)
  */
 uint http_get_queue(char *url)
@@ -471,8 +471,8 @@ char * http_header_end_find(char *text)
 }
 
 /* 0x0c11db40  size 0x2e  file by match with source
- * confidence: inferred
- * evidence: returns the head slot's body size (+0x130) when http_reply_ready, else -1; nothing in the image calls it; part of libnl2http http.c
+ * confidence: exercised
+ * evidence: returns the head slot's body size (+0x130) when http_reply_ready, else -1; nothing in the image calls it; part of libnl2http http.c; exercised 2026-11-12: called by the harness on the snapshot (head slot 0 in state 0) it returned -1; with http_ring_head poked to 2 and slot 2's state +0x11C poked to 7, board-wait +0x120 0 and body size +0x130 1234 (the finished-reply condition of http_reply_ready) it returned 1234, with the board-wait word 1 it returned -1, and with the head back at 0 -1
  * matched: source/naomi2lib/libnl2http/src/http.c (tools/match/match.py)
  */
 int http_reply_body_size(void)
@@ -1041,8 +1041,8 @@ int http_error_code(void)
 }
 
 /* 0x0c11e760  size 0x10  file by match with source
- * confidence: inferred
- * evidence: returns http_retry_total, the count of failed requests restarted; nothing in the image calls it (uncalled code, made a function 2026-11-09); between http_error_code and http_error_code_store, so by link order part of naomi2lib/libnl2http/src/http.c
+ * confidence: exercised
+ * evidence: returns http_retry_total, the count of failed requests restarted; nothing in the image calls it (uncalled code, made a function 2026-11-09); between http_error_code and http_error_code_store, so by link order part of naomi2lib/libnl2http/src/http.c; exercised 2026-11-12: called by the harness with http_retry_total poked to 5 it returned 5, and with 0x1234 it returned 0x1234
  * matched: source/naomi2lib/libnl2http/src/http.c (tools/match/match.py)
  */
 int http_retry_total_get(void)
@@ -1230,8 +1230,8 @@ bool http_reply_is_packed(char *text)
 }
 
 /* 0x0c11ec00  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: (tail out, active out, head out): stores http_ring_tail, http_ring_active and http_ring_head through its three pointers; nothing in the image calls it (uncalled code, made a function 2026-11-09); between http_reply_is_packed and http_pack_bodies_set, so by link order part of naomi2lib/libnl2http/src/http.c
+ * confidence: exercised
+ * evidence: (tail out, active out, head out): stores http_ring_tail, http_ring_active and http_ring_head through its three pointers; nothing in the image calls it (uncalled code, made a function 2026-11-09); between http_reply_is_packed and http_pack_bodies_set, so by link order part of naomi2lib/libnl2http/src/http.c; exercised 2026-11-12: called by the harness with http_ring_tail, http_ring_active and http_ring_head poked to 3, 9 and 12 it stored 3, 9 and 12 through its three pointers (buf:1, +4, +8)
  * matched: source/naomi2lib/libnl2http/src/http.c (tools/match/match.py)
  */
 void http_ring_state_get(int *tail, int *active, int *head)
@@ -1243,8 +1243,8 @@ void http_ring_state_get(int *tail, int *active, int *head)
 }
 
 /* 0x0c11ec40  size 0x10  file by match with source
- * confidence: inferred
- * evidence: (on): stores http_pack_bodies, turning POST body packing on or off; nothing in the image calls it (uncalled code, made a function 2026-11-09); between http_ring_state_get and http_dump_hook_set, so by link order part of naomi2lib/libnl2http/src/http.c
+ * confidence: exercised
+ * evidence: (on): stores http_pack_bodies, turning POST body packing on or off; nothing in the image calls it (uncalled code, made a function 2026-11-09); between http_ring_state_get and http_dump_hook_set, so by link order part of naomi2lib/libnl2http/src/http.c; exercised 2026-11-12: called by the harness with 7 it left http_pack_bodies 7, and then with 0 it left 0
  * matched: source/naomi2lib/libnl2http/src/http.c (tools/match/match.py)
  */
 void http_pack_bodies_set(int on)
@@ -1254,8 +1254,8 @@ void http_pack_bodies_set(int on)
 }
 
 /* 0x0c11ec60  size 0x10  file by match with source
- * confidence: inferred
- * evidence: (routine): stores http_dump_hook, the request dump callback; nothing in the image calls it (uncalled code, made a function 2026-11-09); between http_pack_bodies_set and http_board_done_locked, so by link order part of naomi2lib/libnl2http/src/http.c
+ * confidence: exercised
+ * evidence: (routine): stores http_dump_hook, the request dump callback; nothing in the image calls it (uncalled code, made a function 2026-11-09); between http_pack_bodies_set and http_board_done_locked, so by link order part of naomi2lib/libnl2http/src/http.c; exercised 2026-11-12: called by the harness with 0x0C0A0B00 it left http_dump_hook 0x0C0A0B00, and then with 0 it left 0
  * matched: source/naomi2lib/libnl2http/src/http.c (tools/match/match.py)
  */
 void http_dump_hook_set(http_dump_fn hook)

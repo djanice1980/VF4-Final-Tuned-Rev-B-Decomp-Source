@@ -570,9 +570,9 @@ int msnm_round_result_get(int round)
 }
 
 /* 0x0c0a0740  size 0x48  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x56
- * evidence: (side): the mission record +0x1C when active with a mission and the side is the player's, else 0; nothing in the image calls it; part of vf4lib/libmission/src/msnm.c
+ * evidence: (side): the mission record +0x1C when active with a mission and the side is the player's, else 0; nothing in the image calls it; part of vf4lib/libmission/src/msnm.c; exercised 2026-11-12: called by the harness with msnm_work's active byte poked 1, side 1 and mission type (+0x1C) 5: side 1 returned 0x0C37F964 (msnm_work + 0x1C), side 0 returned 0; with the type -1, or active 0, side 1 returned 0
  * matched: source/vf4lib/libmission/src/msnm.c (tools/match/match.py)
  */
 msnm_try_rec * msnm_mission_record_get(char side)
@@ -708,8 +708,8 @@ int msnm_row_get(void)
 }
 
 /* 0x0c0a0920  size 0x2c  file by match with source
- * confidence: inferred
- * evidence: (row, column): for a row below 8 and a column not above it, stores both in msnm_work; nothing in the image calls it (uncalled code, made a function 2026-11-09); between msnm_row_get and msnm_textures_load, so by link order part of vf4lib/libmission/src/msnm.c
+ * confidence: exercised
+ * evidence: (row, column): for a row below 8 and a column not above it, stores both in msnm_work; nothing in the image calls it (uncalled code, made a function 2026-11-09); between msnm_row_get and msnm_textures_load, so by link order part of vf4lib/libmission/src/msnm.c; exercised 2026-11-12: called by the harness in one sandbox, read back with msnm_row_get / msnm_column_get: (5, 3) gave row 5, column 3; (8, 0) and (3, 5) left 5 and 3; (7, 7) gave 7 and 7
  * matched: source/vf4lib/libmission/src/msnm.c (tools/match/match.py)
  */
 void msnm_row_column_set(int row, int column)
@@ -1468,8 +1468,8 @@ int msnm_rule11_cpu_check(char side)
 }
 
 /* 0x0c0a1ee0  size 0x32  file by match with source
- * confidence: inferred
- * evidence: (side): 1 when the rule is 12 and the side is not the player's, else 0; nothing in the image calls it; part of vf4lib/libmission/src/msnm.c
+ * confidence: exercised
+ * evidence: (side): 1 when the rule is 12 and the side is not the player's, else 0; nothing in the image calls it; part of vf4lib/libmission/src/msnm.c; exercised 2026-11-12: called by the harness with msnm_work active, player side 0 and mission type 52 (rule 12 in msnm_try_types; msnm_rule_get returned 12): side 1 returned 1 and side 0 returned 0; with type 48 (rule 10) side 1 returned 0
  * matched: source/vf4lib/libmission/src/msnm.c (tools/match/match.py)
  */
 int msnm_rule12_cpu_check(char side)
@@ -1485,7 +1485,7 @@ int msnm_rule12_cpu_check(char side)
 
 /* 0x0c0a1f20  size 0x1e  file by match with source
  * confidence: inferred
- * evidence: the rule parameter block (msnm_rule_params_rec *): msnm_rule_params_all (0x0C19C078) for rule 8, else msnm_rule_params (0x0C19C040); callers the msnm_rule routines, rob_damage_apply, attack_hit_resolve, thrown_update_common, move_tcmd_15_damage_tick; part of vf4lib/libmission/src/msnm.c
+ * evidence: the rule parameter block (msnm_rule_params_rec *): msnm_rule_params_all (0x0C19C078) for rule 8 (which no entry of msnm_try_types has: their rules are 0 and 9 to 13), else msnm_rule_params (0x0C19C040); callers the msnm_rule routines, rob_damage_apply, attack_hit_resolve, thrown_update_common, move_tcmd_15_damage_tick; part of vf4lib/libmission/src/msnm.c
  * matched: source/vf4lib/libmission/src/msnm.c (tools/match/match.py)
  */
 msnm_rule_params_rec * msnm_rule_params_get(void)
@@ -1675,8 +1675,8 @@ void msnm_combo_reset(int side)
 }
 
 /* 0x0c0a23a0  size 0x22  file by match with source
- * confidence: inferred
- * evidence: (side): the cut_short byte (+1) of the side's combo record; the same instructions as msnm_combo_active, which follows it; nothing in the image calls it (uncalled code, made a function 2026-11-09); between msnm_combo_reset and msnm_combo_active, so by link order part of vf4lib/libmission/src/msnm.c
+ * confidence: exercised
+ * evidence: (side): the cut_short byte (+1) of the side's combo record; the same instructions as msnm_combo_active, which follows it; nothing in the image calls it (uncalled code, made a function 2026-11-09); between msnm_combo_reset and msnm_combo_active, so by link order part of vf4lib/libmission/src/msnm.c; exercised 2026-11-12: called by the harness with byte +1 of the combo records poked (side 0 at msnm_work_area+0x87C, side 1 at +0x958, placed from msnm_combo_d4_add's stores) 0x11 and 0x44: side 0 returned 17 and side 1 returned 68
  * matched: source/vf4lib/libmission/src/msnm.c (tools/match/match.py)
  */
 uchar msnm_combo_cut_short(int side)
@@ -1697,8 +1697,8 @@ uchar msnm_combo_active(int side)
 }
 
 /* 0x0c0a2420  size 0x22  file by match with source
- * confidence: inferred
- * evidence: (side): the broken byte of msnm_work's combo record for that side; nothing in the image calls it (uncalled code, made a function 2026-11-09); between msnm_combo_active and msnm_combo_count, so by link order part of vf4lib/libmission/src/msnm.c
+ * confidence: exercised
+ * evidence: (side): the broken byte of msnm_work's combo record for that side; nothing in the image calls it (uncalled code, made a function 2026-11-09); between msnm_combo_active and msnm_combo_count, so by link order part of vf4lib/libmission/src/msnm.c; exercised 2026-11-12: called by the harness with byte +2 of the combo records poked (side 0 at msnm_work_area+0x87C, side 1 at +0x958) 0x22 and 0x55: side 0 returned 34 and side 1 returned 85
  * matched: source/vf4lib/libmission/src/msnm.c (tools/match/match.py)
  */
 uchar msnm_combo_broken(int side)
@@ -1741,8 +1741,8 @@ void msnm_combo_d0_set(int side, int frame)
 }
 
 /* 0x0c0a2520  size 0x20  file by match with source
- * confidence: inferred
- * evidence: (side): the damage sum (+0xD4) of the side's combo record, the word msnm_combo_d4_add adds to; nothing in the image calls it (uncalled code, made a function 2026-11-09); between msnm_combo_d0_set and msnm_combo_d4_add, so by link order part of vf4lib/libmission/src/msnm.c
+ * confidence: exercised
+ * evidence: (side): the damage sum (+0xD4) of the side's combo record, the word msnm_combo_d4_add adds to; nothing in the image calls it (uncalled code, made a function 2026-11-09); between msnm_combo_d0_set and msnm_combo_d4_add, so by link order part of vf4lib/libmission/src/msnm.c; exercised 2026-11-12: called by the harness in one sandbox from 0 for both sides: after msnm_combo_d4_add(1, 5) and (1, 7) side 1 returned 12 and side 0 still 0; after msnm_combo_d4_add(0, -3) side 0 returned -3 and side 1 still 12
  * matched: source/vf4lib/libmission/src/msnm.c (tools/match/match.py)
  */
 int msnm_combo_d4_get(int side)
@@ -1752,8 +1752,8 @@ int msnm_combo_d4_get(int side)
 }
 
 /* 0x0c0a2560  size 0x26  file by match with source
- * confidence: inferred
- * evidence: (side, value): adds to word +0xD4 of the side's combo record; only caller rob_damage_apply; part of vf4lib/libmission/src/msnm.c
+ * confidence: exercised
+ * evidence: (side, value): adds to word +0xD4 of the side's combo record; only caller rob_damage_apply; part of vf4lib/libmission/src/msnm.c; exercised 2026-11-12: called by the harness in one sandbox: (1, 5) and (1, 7) stored 5 and then 12 in msnm_work_area+0xA2C (side 1's combo record +0xD4) and msnm_combo_d4_get(1) returned 12; (0, -3) stored -3 at +0x950 (side 0's, 0xDC lower) and msnm_combo_d4_get(0) returned -3
  * matched: source/vf4lib/libmission/src/msnm.c (tools/match/match.py)
  */
 void msnm_combo_d4_add(int side, int damage)
@@ -1764,8 +1764,8 @@ void msnm_combo_d4_add(int side, int damage)
 }
 
 /* 0x0c0a25a0  size 0x20  file by match with source
- * confidence: inferred
- * evidence: (side): the count at +0xD8 of the side's combo record (flag4000_moves); nothing in the image calls it (uncalled code, made a function 2026-11-09); between msnm_combo_d4_add and msnm_combo_move_add, so by link order part of vf4lib/libmission/src/msnm.c
+ * confidence: exercised
+ * evidence: (side): the count at +0xD8 of the side's combo record (flag4000_moves); nothing in the image calls it (uncalled code, made a function 2026-11-09); between msnm_combo_d4_add and msnm_combo_move_add, so by link order part of vf4lib/libmission/src/msnm.c; exercised 2026-11-12: called by the harness with word +0xD8 of the combo records poked (side 0 at msnm_work_area+0x87C, side 1 at +0x958) 0x333 and 0x666: side 0 returned 0x333 and side 1 returned 0x666
  * matched: source/vf4lib/libmission/src/msnm.c (tools/match/match.py)
  */
 int msnm_combo_d8_get(int side)
@@ -2018,8 +2018,8 @@ int msnm_reward_roll(int grade, int column)
 }
 
 /* 0x0c0a2ce0  size 0xae  file by match with source
- * confidence: inferred
- * evidence: (out count): the card's 2-bit counter (card_hdr_ftf_ticket_get of the player's card) + 1 into *out; past 3 an item through msnm_get_item_pick from the character's pair at msnm_char_items (0x0C19C328 + 8 x character), else from its list msnm_char_item_lists[character] (count msnm_char_item_counts), else money 1000 (card_money_add), and the counter restarts at 0; writes the counter back (card_hdr_ftf_ticket_set); returns 1 when an item was given; only caller msnm_reward_roll; last function before the msnm.c assert function msnm_get_item_pick; part of vf4lib/libmission/src/msnm.c
+ * confidence: exercised
+ * evidence: (out count): the card's 2-bit counter (card_hdr_ftf_ticket_get of the player's card) + 1 into *out; past 3 an item through msnm_get_item_pick from the character's pair at msnm_char_items (0x0C19C328 + 8 x character), else from its list msnm_char_item_lists[character] (count msnm_char_item_counts), else money 1000 (card_money_add), and the counter restarts at 0; writes the counter back (card_hdr_ftf_ticket_set); returns 1 when an item was given; only caller msnm_reward_roll; last function before the msnm.c assert function msnm_get_item_pick; part of vf4lib/libmission/src/msnm.c; exercised 2026-11-12: called by the harness with player side 0 (character 14) and side 0's card header +0x1A poked: with the counter 1 it wrote 2 to *out, set the counter 2 and returned 0 with no item pick; with 3 it wrote 4, called msnm_get_item_pick(msnm_char_items+0x70, 2) (character 14's pair), which gave item 0x11, set the counter to 0 and returned 1
  * matched: source/vf4lib/libmission/src/msnm.c (tools/match/match.py)
  */
 bool msnm_item_award(uint *count)
@@ -2062,8 +2062,8 @@ bool msnm_item_award(uint *count)
 }
 
 /* 0x0c0a2dc0  size 0xca  file by match with source
- * confidence: inferred
- * evidence: (item list, count): asserts the count is at most 30 (msnm.c:2963 "item_max <= MSNM_GET_ITEM_MAX"), keeps the items for which item_has_unchecked(player side, item) returns 0, picks one of them with msnm_random_unit, stores it in the mission state (*msnm_work) +0x558 and hands it to item_give_carded(player side, item) (the card side); returns 1, or 0 when none was left; the "GET ITEM %d" format sits in the same .rodata block; only caller msnm_item_award; part of vf4lib/libmission/src/msnm.c
+ * confidence: exercised
+ * evidence: (item list, count): asserts the count is at most 30 (msnm.c:2963 "item_max <= MSNM_GET_ITEM_MAX"), keeps the items for which item_has_unchecked(player side, item) returns 0, picks one of them with msnm_random_unit, stores it in the mission state (*msnm_work) +0x558 and hands it to item_give_carded(player side, item) (the card side); returns 1, or 0 when none was left; the "GET ITEM %d" format sits in the same .rodata block; only caller msnm_item_award; part of vf4lib/libmission/src/msnm.c; exercised 2026-11-12: called by the harness with items 0x10, 0x62, 0xA3 and count 3 (item_has_unchecked gave 0 for each): with the random unit 0.950 it stored 0xA3 at msnm_work +0x558 and called item_give_carded(0, 0xA3), after two lcg_next15 calls (0.609) 0x62, after three (0.194) 0x10, each returning 1; with count 31 it called fatal_at(msnm.c, 2963, .., "item_max <= MSNM_GET_ITEM_MAX")
  * assert msnm.c:2963: item_max <= MSNM_GET_ITEM_MAX
  * matched: source/vf4lib/libmission/src/msnm.c (tools/match/match.py)
  */

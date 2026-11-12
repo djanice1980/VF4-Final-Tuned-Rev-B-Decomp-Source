@@ -80,11 +80,13 @@ int strbuf_vscanf(strbuf_rec *sb, char *format, va_list ap)
   return;
 }
 
-void strbuf_scanf(strbuf_rec *sb, char *format, ...)
+int strbuf_scanf(strbuf_rec *sb, char *format, ...)
 {
   va_list ap;
+  int r;
 
   __builtin_stdarg_start(ap, format);
-  strbuf_vscanf(sb, format, ap);
+  r = strbuf_vscanf(sb, format, ap);
   __builtin_va_end(ap);
+  return r;
 }

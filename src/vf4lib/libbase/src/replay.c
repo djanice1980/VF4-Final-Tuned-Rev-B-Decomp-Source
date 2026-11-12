@@ -785,8 +785,8 @@ int rep_load_finished(void)
 }
 
 /* 0x0c0245c0  size 0x4e  file by match with source
- * confidence: inferred
- * evidence: starts task REP_LOAD, stops ROB_CTRL, sets rep_play_pos to the oldest frame of the ring (rep_ring_write + 1, or 0 when the ring has not wrapped), clears rep_full_flag and sets rep_play_while_held, so the whole ring plays even in a held frame; nothing in the image calls it; part of vf4lib/libbase/src/replay.c
+ * confidence: exercised
+ * evidence: starts task REP_LOAD, stops ROB_CTRL, sets rep_play_pos to the oldest frame of the ring (rep_ring_write + 1, 0 when rep_ring_write is the last slot 0x167, or 0 when the ring has not wrapped), clears rep_full_flag and sets rep_play_while_held, so the whole ring plays even in a held frame; nothing in the image calls it; part of vf4lib/libbase/src/replay.c; exercised 2026-11-12: called by the harness with rep_ring_write poked 10 and rep_ring_wrapped 1: task_start(task_rep_load), task_stop(task_rob_ctrl), rep_play_pos 11, rep_full_flag 0, rep_play_while_held 1; with rep_ring_wrapped 0 rep_play_pos became 0 (and with write 0x167 and wrapped 1 also 0)
  * matched: source/vf4lib/libbase/src/replay.c (tools/match/match.py)
  */
 void rep_full_start(void)
@@ -802,8 +802,8 @@ void rep_full_start(void)
 }
 
 /* 0x0c024640  size 0x22  file by match with source
- * confidence: inferred
- * evidence: when the replay ring has not wrapped and rep_play_pos is at or past rep_ring_write, sets rep_play_pos to 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between rep_full_start and rep_full_stop, so by link order part of vf4lib/libbase/src/replay.c
+ * confidence: exercised
+ * evidence: when the replay ring has not wrapped and rep_play_pos is at or past rep_ring_write, sets rep_play_pos to 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between rep_full_start and rep_full_stop, so by link order part of vf4lib/libbase/src/replay.c; exercised 2026-11-12: called by the harness with rep_ring_write poked 10 and rep_ring_wrapped 0: rep_play_pos 20 and 10 became 0, 5 stayed 5; with rep_ring_wrapped 1 a rep_play_pos of 20 stayed 20
  * matched: source/vf4lib/libbase/src/replay.c (tools/match/match.py)
  */
 void rep_play_pos_clamp(void)
@@ -818,8 +818,8 @@ void rep_play_pos_clamp(void)
 }
 
 /* 0x0c024680  size 0x24  file by match with source
- * confidence: inferred
- * evidence: rep_load_end, resumes ROB_CTRL and clears rep_play_while_held: the other half of rep_full_start; nothing in the image calls it; last routine of the file before mode.c; part of vf4lib/libbase/src/replay.c
+ * confidence: exercised
+ * evidence: rep_load_end, resumes ROB_CTRL and clears rep_play_while_held: the other half of rep_full_start; nothing in the image calls it; last routine of the file before mode.c; part of vf4lib/libbase/src/replay.c; exercised 2026-11-12: called by the harness in one sandbox after rep_full_start: it called rep_load_end and task_resume(task_rob_ctrl) (whose flags rep_full_start had left 2) and rep_play_while_held went from 1 to 0
  * matched: source/vf4lib/libbase/src/replay.c (tools/match/match.py)
  */
 void rep_full_stop(void)

@@ -381,9 +381,9 @@ next:
 }
 
 /* 0x0c0f40c0  size 0x96  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xc2
- * evidence: p == 0: malloc_internal; shrinks in place, or allocates, memcpy()s the old block and frees it
+ * evidence: p == 0: malloc_internal; shrinks in place, or allocates, memcpy()s the old block's whole size (bsize << 5, which counts its 32-byte header, so 32 bytes past the old user area are copied too) and frees it; as the game has it: memcpy(dst, p, b->bsize << 5) reads 32 bytes past the old block's user area; exercised 2026-11-12: called by the harness on a heap made with heap_init in scratch memory: (h, 0x1234, 0, 24) returned the first block 0x0f002020 tagged 0x1234; filled with 0x41 and shrunk to 10 it returned the same pointer with size 10 and the guard at +10; grown to 100 it returned a new block 0x0f002060 (tag 0x9abc) holding the old bytes, the old block freed (0xdd)
  * matched: source/vf4lib/libcore/src/malloc.c (tools/match/match.py)
  */
 void * realloc_internal(heap *h, void *tag, void *p, int size)
@@ -453,13 +453,14 @@ void heap_free(heap *h, void *p)
 }
 
 /* 0x0c0f42a0  size 0x5e  file by match with source
- * confidence: inferred
- * evidence: (h, p, size): interrupts off, check_heap_internal(h), realloc_internal(h, caller's return address, p, size), interrupt level back; the heap_malloc pattern for realloc; nothing in the image calls it; part of vf4lib/libcore/src/malloc.c
+ * confidence: exercised
+ * evidence: (h, p, size): interrupts off, check_heap_internal(h), realloc_internal(h, caller's return address, p, size), interrupt level back; the heap_malloc pattern for realloc; nothing in the image calls it; part of vf4lib/libcore/src/malloc.c; exercised 2026-11-12: called by the harness on a heap made with heap_init in scratch memory after heap_malloc(h, 24) and a 0x42 fill: (h, p, 12) kept the block with size 12 and the guard at +12; (h, p, 200) moved it to 0x0f002060 (8 units, size 200) with the 0x42 bytes at its start and freed the old block; both headers carry the caller's return address 0xfffffff0 as tag
  * matched: source/vf4lib/libcore/src/malloc.c (tools/match/match.py)
  */
-void heap_realloc(heap *h, void *p, int size)
+void *heap_realloc(heap *h, void *p, int size)
 {
   void *ra;
+  void *r;
   unsigned int sr;
   unsigned int lvl;
   unsigned int t, u;
@@ -469,15 +470,16 @@ void heap_realloc(heap *h, void *p, int size)
   sr |= 0xf0;
   __asm__ volatile ("ldc %0,sr" : : "r" (sr));
   check_heap_internal(h);
-  realloc_internal(h,ra,p,size);
+  r = realloc_internal(h,ra,p,size);
   __asm__ volatile ("stc sr,%0" : "=r" (t));
   u = t & 0xffffff0f; t = u | (lvl << 4);
   __asm__ volatile ("ldc %0,sr" : : "r" (t));
+  return r;
 }
 
 /* 0x0c0f4320  size 0x6e  file by match with source
- * confidence: inferred
- * evidence: malloc_internal(h, caller, n * size), then memset(p, 0, n * size)
+ * confidence: exercised
+ * evidence: malloc_internal(h, caller, n * size), then memset(p, 0, n * size); exercised 2026-11-12: called by the harness on a heap made with heap_init in scratch memory: (h, 3, 8) returned 0x0f002020 with header size 24 and 24 zero bytes (malloc_internal fills with 0xcd), (h, 5, 20) returned 0x0f002060 with size 100 and 100 zero bytes, guards after each; tag the caller's return address
  * matched: source/vf4lib/libcore/src/malloc.c (tools/match/match.py)
  */
 void * heap_calloc(heap *h, int n, int size)
@@ -686,13 +688,14 @@ void free(void *p)
 }
 
 /* 0x0c0f46a0  size 0x66  file by match with source
- * confidence: inferred
- * evidence: main_heap_init(), then the heap_realloc sequence on main_heap with the caller's return address as tag (its malloc, free and calloc neighbors do the same); nothing in the image calls it; part of vf4lib/libcore/src/malloc.c
+ * confidence: exercised
+ * evidence: main_heap_init(), then the heap_realloc sequence on main_heap with the caller's return address as tag (its malloc, free and calloc neighbors do the same); nothing in the image calls it; part of vf4lib/libcore/src/malloc.c; exercised 2026-11-12: called by the harness in one sandbox after malloc(16) gave P = 0x0DD352E0 (filled with 0x42): realloc(P, 8) called main_heap_init, check_heap_internal and realloc_internal(main_heap, 0xFFFFFFF0 = its return address, P, 8), which kept P and set the block's request size word to 8; realloc(P, 200) got 0x0DD35320 from realloc_internal, holding P's 0x42 bytes, and P's block was marked free; realloc(0, 40) got the new block 0x0DD35420
  * matched: source/vf4lib/libcore/src/malloc.c (tools/match/match.py)
  */
-void realloc(void *p, int size)
+void *realloc(void *p, int size)
 {
   void *ra;
+  void *r;
   unsigned int sr;
   unsigned int lvl;
   unsigned int t, u;
@@ -705,11 +708,11 @@ void realloc(void *p, int size)
   h = &main_heap;
   main_heap_init();
   check_heap_internal(h);
-  realloc_internal(h,ra,p,size);
+  r = realloc_internal(h,ra,p,size);
   __asm__ volatile ("stc sr,%0" : "=r" (t));
   u = t & 0xffffff0f; t = u | (lvl << 4);
   __asm__ volatile ("ldc %0,sr" : : "r" (t));
-
+  return r;
 }
 
 /* 0x0c0f4720  size 0x76  file by match with source
@@ -774,8 +777,8 @@ void main_heap_stats_get(struct mallinfo *info)
 }
 
 /* 0x0c0f4820  size 0x4c  file by match with source
- * confidence: inferred
- * evidence: returns the 40-byte statistics of main_heap by value, filled by main_heap_stats_get (the struct mallinfo layout); nothing in the image calls it; part of vf4lib/libcore/src/malloc.c
+ * confidence: exercised
+ * evidence: returns the 40-byte statistics of main_heap by value, filled by main_heap_stats_get (the struct mallinfo layout); nothing in the image calls it; part of vf4lib/libcore/src/malloc.c; exercised 2026-11-12: called by the harness with the result address in r2: the ten words were those main_heap_stats_get wrote into another buffer (0x18F0000 usable, 1 free block, largest free 0x2BAD40, used 0x16352C0, free 0x2BAD40); after malloc(0x10000) in the same sandbox it returned used 0x1645300 and free and largest 0x2AAD00 (0x10040 moved), usable unchanged
  * matched: source/vf4lib/libcore/src/malloc.c (tools/match/match.py)
  */
 struct mallinfo main_heap_mallinfo(void)

@@ -73,8 +73,8 @@ void caches_switch_mode(uint mode)
 }
 
 /* 0x0c060560  size 0x14  file by match with source
- * confidence: inferred
- * evidence: sets bit 11 of the cache control register (instruction cache invalidate); nothing in the image calls it (uncalled code, made a function 2026-11-09); between caches_switch_mode and ocache_invalidate_bit_set, so by link order part of sdk/sy/sycache.c
+ * confidence: exercised
+ * evidence: sets bit 11 of the cache control register (instruction cache invalidate); nothing in the image calls it (uncalled code, made a function 2026-11-09); between caches_switch_mode and ocache_invalidate_bit_set, so by link order part of sdk/sy/sycache.c; exercised 2026-11-12: called by the harness with the cache control register reading 0x105 (after caches_reset_to_mode(0x105)) it wrote 0x905, and reading 0 (after cache_turn_off) it wrote 0x800
  * same code as main.bin 0c136100 (ghidra/TransferFromMain.java)
  * matched: source/sdk/sy/sycache.c (tools/match/match.py)
  */
@@ -85,8 +85,8 @@ void icache_invalidate_bit_set(void)
 }
 
 /* 0x0c060580  size 0x12  file by match with source
- * confidence: inferred
- * evidence: sets bit 3 of the cache control register (operand cache invalidate); nothing in the image calls it (uncalled code, made a function 2026-11-09); between icache_invalidate_bit_set and dcache_discard_range, so by link order part of sdk/sy/sycache.c
+ * confidence: exercised
+ * evidence: sets bit 3 of the cache control register (operand cache invalidate); nothing in the image calls it (uncalled code, made a function 2026-11-09); between icache_invalidate_bit_set and dcache_discard_range, so by link order part of sdk/sy/sycache.c; exercised 2026-11-12: called by the harness with the cache control register reading 0x105 (after caches_reset_to_mode(0x105)) it wrote 0x10d, and reading 0 it wrote 0x8
  * same code as main.bin 0c136120 (ghidra/TransferFromMain.java)
  * matched: source/sdk/sy/sycache.c (tools/match/match.py)
  */
@@ -262,8 +262,8 @@ void dcache_writeback_range_uncached(uint addr, uint size)
 }
 
 /* 0x0c060900  size 0x1c  file by match with source
- * confidence: inferred
- * evidence: rounds the address down to a 32-byte line, grows the length by the rounding and calls cache_prefetch_range; nothing in the game calls it; part of syCache; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: rounds the address down to a 32-byte line and clears bits 29 and 30 (address & 0x9fffffe0: an 0xa... address becomes its 0x8... alias), grows the length by the rounding and calls cache_prefetch_range; nothing in the game calls it; part of syCache; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with (0x8c100013, 0x40) it called cache_prefetch_range(0x8c100000, 0x53), with (0x8c200020, 5) cache_prefetch_range(0x8c200020, 5), and with (0xac200005, 0x10) cache_prefetch_range(0x8c200000, 0x15)
  * same code as main.bin 0c1364a0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/sy/sycache.c (tools/match/match.py)
  */
@@ -285,8 +285,8 @@ void dcache_tags_clear_uncached(void)
 }
 
 /* 0x0c060a20  size 0x6a  file by match with source
- * confidence: inferred
- * evidence: (address out, blocks): hands out the next blocks of the 8 1 KB blocks of cache RAM: marks each taken in cache_ram_block_tags, stores the first block's address (0x7C000000 | index << 10) in *out and moves cache_ram_next on; nothing is stored when the run ends at block 8; nothing in the image calls it (uncalled code, made a function 2026-11-09); between dcache_tags_clear_uncached and cache_ram_block_release, so by link order part of sdk/sy/sycache.c
+ * confidence: exercised
+ * evidence: (address out, blocks): hands out the next blocks of the 8 1 KB blocks of cache RAM: marks each taken in cache_ram_block_tags, stores the first block's address (0x7C000000 | index << 10) in *out and moves cache_ram_next on; nothing is stored when the run ends at block 8; nothing in the image calls it (uncalled code, made a function 2026-11-09); between dcache_tags_clear_uncached and cache_ram_block_release, so by link order part of sdk/sy/sycache.c; exercised 2026-11-12: called by the harness in one sandbox from cache_ram_next 0: (out, 2) stored 0x7c000000 in out, tags 0 and 0x400, next 2; (out2, 3) stored 0x7c000800, tags 0x800, 0xc00, 0x1000, next 5; (out3, 3) marked tags 0x1400, 0x1800, 0x1c00 but stored nothing in out3 and left next at 5 (the run ended at block 8)
  * same code as main.bin 0c1365c0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/sy/sycache.c (tools/match/match.py)
  */
@@ -304,8 +304,8 @@ void cache_ram_blocks_take(uint *address_out, int blocks)
 }
 
 /* 0x0c060aa0  size 0x3a  file by match with source
- * confidence: inferred
- * evidence: (address): for each tag from index cache_ram_next down to 1 that equals the address's block number (address >> 10 & 7), lowers cache_ram_next by one; it does not undo cache_ram_blocks_take: take stores block << 10 as the tag and this compares the tag with the unshifted block number, it never looks at entry 0, and it can read cache_ram_block_tags[8], one past the array (broken or unfinished, as the game has it); nothing in the image calls it (uncalled code, made a function 2026-11-09); between cache_ram_blocks_take and dcache_discard_lines, so by link order part of sdk/sy/sycache.c
+ * confidence: exercised
+ * evidence: (address): for each tag from index cache_ram_next down to 1 that equals the address's block number (address >> 10 & 7), lowers cache_ram_next by one; it does not undo cache_ram_blocks_take: take stores block << 10 as the tag and this compares the tag with the unshifted block number, it never looks at entry 0, and it can read cache_ram_block_tags[8], one past the array (broken or unfinished, as the game has it); nothing in the image calls it (uncalled code, made a function 2026-11-09); between cache_ram_blocks_take and dcache_discard_lines, so by link order part of sdk/sy/sycache.c; exercised 2026-11-12: called by the harness after cache_ram_blocks_take had taken blocks 0-4 (tags i x 0x400, next 5), release(0x7c000400) and release(0x7c001c00) left next at 5 (no tag equals 1 or 7); after take(out, 2), release(0x7c000400) left next at 2; after take(out, 1), release(0x7c000000) lowered next to 0, because tag 1, never taken, is 0, block 0's number
  * same code as main.bin 0c136640 (ghidra/TransferFromMain.java)
  * matched: source/sdk/sy/sycache.c (tools/match/match.py)
  */
@@ -338,7 +338,7 @@ void dcache_writeback_discard_lines(int addr, int length);
 
 /* 0x0c060b40  size 0x14  file by match with source
  * confidence: inferred
- * evidence: hand-written: the same loop with ocbwb; the short-range path of dcache_writeback_range; part of syCache
+ * evidence: hand-written: the same loop with ocbwb; the short-range path of dcache_writeback_range; (length + 31) / 32 lines, so a length of 0 wraps the count and runs 2^32 lines (the canned call (0, 0) did not return; dcache_writeback_range tests for 0 first); part of syCache
  * same code as main.bin 0c1366e0 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c1366e0.s (hand-written assembly, tools/match/match.py)
  */
@@ -346,7 +346,7 @@ void dcache_writeback_lines(int param_1,int param_2);
 
 /* 0x0c060b60  size 0x14  file by match with source
  * confidence: inferred
- * evidence: prefetches a range a cache line at a time (the caller passes the address rounded down to 32 bytes and the length grown by the rounding); hand-written, part of syCache Ver 2.01 (the module's version string is in the binary); checked against reference material (not in this repo): byte for byte
+ * evidence: prefetches a range a cache line at a time ((length + 31) / 32 lines: a length of 0 wraps the count and runs 2^32 lines; the canned call (0, 0) did not return) (the caller passes the address rounded down to 32 bytes and the length grown by the rounding); hand-written, part of syCache Ver 2.01 (the module's version string is in the binary); checked against reference material (not in this repo): byte for byte
  * same code as main.bin 0c136700 (ghidra/TransferFromMain.java)
  * matched: source/asm/0c136700.s (hand-written assembly, tools/match/match.py)
  */

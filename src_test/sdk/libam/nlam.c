@@ -212,8 +212,8 @@ void board_config_pack(char *config, uchar *packed)
 }
 
 /* 0x0c04d080  size 0xcc  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlam.c: fills the coin configuration from 10 arguments (a coin setting number, or 27 for a custom one with its 4 rate values), validates it, then packs it to the EEPROM and reinitializes the credits; returns non-zero on a bad configuration; nothing calls it; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlam.c: fills the coin configuration from 10 arguments (a coin setting number, or 27 for a custom one with its 4 rate values), validates it, then packs it to the EEPROM and reinitializes the credits; returns non-zero on a bad configuration; nothing calls it; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with (12, 0, 1, 27, 2, 3, 4, 1, 5, 6) it returned 0 and coin_settings read 12, 0, 1, free_play 0, 27, prices 5, 6, six 1s, rates 1-3 = 2, 3, 4 and rate 0 = 1; it then called coin_config_pack (eeprom_copy_a+7 became 0C 01 1B 01 02 03 04 56 ...), eeprom_flush, bios_credit_init and bios_helper_34; maximum credit 0 or 1000 returned 1 after the BIOS check, without packing, and 999 returned 0
  * same code as main.bin 0c117f60 (ghidra/TransferFromMain.java)
  * matched: source/sdk/libam/nlam.c (tools/match/match.py)
  */
@@ -257,8 +257,8 @@ int coin_config_from_args(int max_credit, uint value_4, uint separate_credits, i
 }
 
 /* 0x0c04d180  size 0x4c  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlam.c: validates 4 board configuration words and stores them when valid (returns the validation result); nothing calls it; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlam.c: validates 4 board configuration words and stores them when valid (returns the validation result); nothing calls it; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with (3, 1, 0, 5) it returned 0 and board_settings became 3, 1, 0, 5; with (4, 2, 5, 7) it returned 2 and with (4, 0, 9, 7) 1, and board_settings stayed 0, 1, 0, 1 as in the snapshot
  * same code as main.bin 0c118060 (ghidra/TransferFromMain.java)
  * matched: source/sdk/libam/nlam.c (tools/match/match.py)
  */
@@ -314,8 +314,8 @@ void bios_signature_check(void)
 }
 
 /* 0x0c04d280  size 0x12  file by match with source
- * confidence: inferred
- * evidence: returns the word sram_time points at; nothing in the image calls it (uncalled code, made a function 2026-11-09); between bios_signature_found_get and mie_start, so by link order part of sdk/libam/nlam.c
+ * confidence: exercised
+ * evidence: returns the word sram_time points at; nothing in the image calls it (uncalled code, made a function 2026-11-09); between bios_signature_found_get and mie_start, so by link order part of sdk/libam/nlam.c; exercised 2026-11-12: called by the harness it returned 0x93, the word at 0xA0200000 where sram_time points in the snapshot, and 0x12345678 after sram_time was poked to a scratch word holding 0x12345678
  * same code as main.bin 0c118160 (ghidra/TransferFromMain.java)
  * matched: source/sdk/libam/nlam.c (tools/match/match.py)
  */

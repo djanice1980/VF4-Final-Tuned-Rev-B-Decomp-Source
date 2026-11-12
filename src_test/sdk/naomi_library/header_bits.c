@@ -42,8 +42,8 @@ void hdr_or_color_clamp(int clamp)
 }
 
 /* 0x0c05cf20  size 0x18  file by match with source
- * confidence: inferred
- * evidence: (value): bits 8-11 of poly_header_or_words' tsp_or word; nothing in the image calls it (uncalled code, made a function 2026-11-09); between hdr_or_color_clamp and hdr_or_top_bit, so by link order part of sdk/naomi_library/header_bits.c
+ * confidence: exercised
+ * evidence: (value): clears bits 8-11 of poly_header_or_words' tsp_or word and ORs in value << 8, not masked (a value above 15 also sets higher bits); nothing in the image calls it (uncalled code, made a function 2026-11-09); between hdr_or_color_clamp and hdr_or_top_bit, so by link order part of sdk/naomi_library/header_bits.c; exercised 2026-11-12: called by the harness in one sandbox: on the snapshot's tsp_or word 0 value 5 gave 0x500; with the word poked to 0xffffffff value 5 gave 0xfffff5ff and then value 0xa gave 0xfffffaff (bits 8-11 replaced, control_or untouched)
  * same code as main.bin 0c132940 (ghidra/TransferFromMain.java)
  * matched: source/sdk/naomi_library/header_bits.c (tools/match/match.py)
  */

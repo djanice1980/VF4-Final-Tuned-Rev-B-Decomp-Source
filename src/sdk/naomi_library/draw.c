@@ -68,8 +68,8 @@ void polystrip_plain_blended(int count, uint *verts)
 }
 
 /* 0x0c12dc80  size 0xf0  file by match with source
- * confidence: inferred
- * evidence: (n, vertices, texture slot): puts the given texture slot of tex_slot_table (0x3c bytes each) into the current context's texture field (+0x6c), loads context row 0x12 (opaque, textured) and sends n vertices of seven words (x, y, z, u, v, base color; the offset color sent as 0) with vertex kind 3; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: (n, vertices, texture slot): puts the given texture slot of tex_slot_table (0x3c bytes each) into the current context's texture field (+0x6c), loads context row 0x12 (opaque, textured) and sends n vertices of seven words (x, y, z, u, v, base color; the offset color sent as 0) with vertex kind 3; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness (3, verts, 386): the current context's +0x6C became 0x0C514310 (tex_slot_table + 386 x 0x3C), draw_context_preset_apply got 0x12, and list_block_sq_write got three 32-byte blocks of kind 3: E0000000, E0000000, F0000000, each followed by x, y, z, u, v and the base color of a 7-word source vertex, and 0 where the source's offset color (0x00405060 + i) was
  * matched: source/sdk/naomi_library/draw.c (tools/match/match.py)
  */
 void polystrip_tex_opaque(int count, uint *verts, int slot_no)
@@ -144,8 +144,8 @@ void polystrip_tex_blended(int count, uint *verts, int slot_no)
 }
 
 /* 0x0c12dec0  size 0xf8  file by match with source
- * confidence: inferred
- * evidence: as polystrip_tex_opaque, but each vertex's seventh word (the offset color) is sent as well; context row 0x12; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: as polystrip_tex_opaque, but each vertex's seventh word (the offset color) is sent as well; context row 0x12; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness (3, verts, 386): context +0x6C 0x0C514310 (slot 386), preset 0x12, and three kind-3 blocks E0000000, E0000000, F0000000 with x, y, z, u, v, base color and the offset color 0x00405060, 0x00405061, 0x00405062 of the three 7-word source vertices
  * matched: source/sdk/naomi_library/draw.c (tools/match/match.py)
  */
 void polystrip_tex_offset_opaque(int count, uint *verts, int slot_no)
@@ -185,8 +185,8 @@ void polystrip_tex_offset_opaque(int count, uint *verts, int slot_no)
 }
 
 /* 0x0c12dfe0  size 0xf8  file by match with source
- * confidence: inferred
- * evidence: as polystrip_tex_offset_opaque with context row 0x1f (translucent, textured, the row's last flag set); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: as polystrip_tex_offset_opaque with context row 0x1f (translucent, textured, the row's last flag set); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness (3, verts, 386): context +0x6C 0x0C514310 (slot 386), draw_context_preset_apply got 0x1F, and three kind-3 blocks with x, y, z, u, v, base and offset colors 0x00405060 to 0x00405062 of the source vertices, the last headed F0000000
  * matched: source/sdk/naomi_library/draw.c (tools/match/match.py)
  */
 void polystrip_tex_offset_blended(int count, uint *verts, int slot_no)
@@ -226,8 +226,8 @@ void polystrip_tex_offset_blended(int count, uint *verts, int slot_no)
 }
 
 /* 0x0c12e100  size 0x90  file by match with source
- * confidence: inferred
- * evidence: fills a strip context with defaults (control bits 0x3f3ffff, opaque list, the eight color scales 1.0) and makes it current with both parameter sets (context_hw_words_compute, context_header_select, context_volume2_header_select: the second set is what polygons inside a modifier volume use); modvol_ctxs_init applies it to dualvol_ctx; part of the NAOMI library
+ * confidence: exercised
+ * evidence: fills a strip context with defaults (control bits 0x3f3ffff, opaque list, the eight color scales 1.0) and makes it current with both parameter sets (context_hw_words_compute, context_header_select, context_volume2_header_select: the second set is what polygons inside a modifier volume use); modvol_ctxs_init applies it to dualvol_ctx; part of the NAOMI library; exercised 2026-11-12: called by the harness on a buffer of 0x5A bytes: change mask 0x3F3FFFF, header and list type 0, the eight color floats at +0x70 to +0x8C 1.0, the volume word and bounds left as planted; it called context_hw_words_compute, context_header_select and context_volume2_header_select with the buffer
  * matched: source/sdk/naomi_library/draw.c (tools/match/match.py)
  */
 void dualvol_ctx_init(strip_context_rec *ctx)
@@ -275,8 +275,8 @@ void dualvol_ctx_init(strip_context_rec *ctx)
 }
 
 /* 0x0c12e1c0  size 0xa6  file by match with source
- * confidence: inferred
- * evidence: fills a strip context for a modifier volume (list 1, the opaque modifier volume list; area 0, 0 to 639, 479; volume word +0xa0 = 0, opening polygon) and makes it current; nothing in the game calls it; part of the NAOMI library
+ * confidence: exercised
+ * evidence: fills a strip context for a modifier volume (list 1, the opaque modifier volume list; area 0, 0 to 639, 479; volume word +0xa0 = 0, opening polygon) and makes it current; nothing in the game calls it; part of the NAOMI library; exercised 2026-11-12: called by the harness on a buffer of 0x5A bytes: list (and header) type 1, bounds 0, 0, 639, 479, volume word +0xA0 = 0, change mask 0x3F3FFFF, colors 1.0; then context_hw_words_compute and context_header_select with it
  * matched: source/sdk/naomi_library/draw.c (tools/match/match.py)
  */
 void modvol_ctx_init_first(strip_context_rec *ctx)
@@ -328,8 +328,8 @@ void modvol_ctx_init_first(strip_context_rec *ctx)
 }
 
 /* 0x0c12e280  size 0xaa  file by match with source
- * confidence: inferred
- * evidence: as modvol_ctx_init_first, with the volume word +0xa0 = 0x20000000 (the polygon that closes the volume); nothing in the game calls it; part of the NAOMI library
+ * confidence: exercised
+ * evidence: as modvol_ctx_init_first, with the volume word +0xa0 = 0x20000000 (the polygon that closes the volume); nothing in the game calls it; part of the NAOMI library; exercised 2026-11-12: called by the harness on a buffer of 0x5A bytes: as modvol_ctx_init_first (list 1, bounds 0, 0, 639, 479, then context_header_select) but the volume word +0xA0 = 0x20000000, which also showed in the ISP word (0x20900000 against 0x00900000)
  * matched: source/sdk/naomi_library/draw.c (tools/match/match.py)
  */
 void modvol_ctx_init_closing(strip_context_rec *ctx)
@@ -381,8 +381,8 @@ void modvol_ctx_init_closing(strip_context_rec *ctx)
 }
 
 /* 0x0c12e360  size 0xa6  file by match with source
- * confidence: inferred
- * evidence: as modvol_ctx_init_first (volume word 0), the context for the polygons between the first and the last; nothing in the game calls it; part of the NAOMI library
+ * confidence: exercised
+ * evidence: as modvol_ctx_init_first (volume word 0), the context for the polygons between the first and the last; nothing in the game calls it; part of the NAOMI library; exercised 2026-11-12: called by the harness on a buffer of 0x5A bytes: list type 1, bounds 0, 0, 639, 479, volume word +0xA0 = 0, the same words as modvol_ctx_init_first, then context_hw_words_compute and context_header_select
  * matched: source/sdk/naomi_library/draw.c (tools/match/match.py)
  */
 void modvol_ctx_init_inner(strip_context_rec *ctx)
@@ -434,8 +434,8 @@ void modvol_ctx_init_inner(strip_context_rec *ctx)
 }
 
 /* 0x0c12e420  size 0x46  file by match with source
- * confidence: inferred
- * evidence: (context, texture slot): sets control bits 0x300008, list 1, field +0x20 = 3, the slot's address in tex_slot_table at +0x6c and the volume word +0xa0 = 0, then makes it current; modvol_ctxs_init uses it for modvol_ctx_first; part of the NAOMI library
+ * confidence: exercised
+ * evidence: (context, texture slot): sets control bits 0x300008, list 1, field +0x20 = 3, the slot's address in tex_slot_table at +0x6c and the volume word +0xa0 = 0, then makes it current; modvol_ctxs_init uses it for modvol_ctx_first; part of the NAOMI library; exercised 2026-11-12: called by the harness (buffer of 0x5A bytes, 386): change mask 0x300008, list 1, +0x20 = 3, +0x6C = 0x0C514310 (tex_slot_table + 386 x 0x3C), +0xA0 = 0, colors and bounds left as planted; then context_hw_words_compute and context_header_select
  * matched: source/sdk/naomi_library/draw.c (tools/match/match.py)
  */
 void modvol_tex_ctx_init_first(strip_context_rec *ctx, int slot_no)
@@ -452,8 +452,8 @@ void modvol_tex_ctx_init_first(strip_context_rec *ctx, int slot_no)
 }
 
 /* 0x0c12e480  size 0x46  file by match with source
- * confidence: inferred
- * evidence: as modvol_tex_ctx_init_first with the volume word +0xa0 = 0x20000000 (closing polygon); modvol_ctxs_init uses it for modvol_ctx_closing; part of the NAOMI library
+ * confidence: exercised
+ * evidence: as modvol_tex_ctx_init_first with the volume word +0xa0 = 0x20000000 (closing polygon); modvol_ctxs_init uses it for modvol_ctx_closing; part of the NAOMI library; exercised 2026-11-12: called by the harness (buffer of 0x5A bytes, 386): change mask 0x300008, list 1, +0x20 = 3, +0x6C = 0x0C514310 (slot 386), +0xA0 = 0x20000000; then context_header_select
  * matched: source/sdk/naomi_library/draw.c (tools/match/match.py)
  */
 void modvol_tex_ctx_init_closing(strip_context_rec *ctx, int slot_no)
@@ -470,8 +470,8 @@ void modvol_tex_ctx_init_closing(strip_context_rec *ctx, int slot_no)
 }
 
 /* 0x0c12e4e0  size 0x46  file by match with source
- * confidence: inferred
- * evidence: as modvol_tex_ctx_init_first (volume word 0); modvol_ctxs_init uses it for modvol_ctx_inner; part of the NAOMI library
+ * confidence: exercised
+ * evidence: as modvol_tex_ctx_init_first (volume word 0); modvol_ctxs_init uses it for modvol_ctx_inner; part of the NAOMI library; exercised 2026-11-12: called by the harness (buffer of 0x5A bytes, 2): change mask 0x300008, list 1, +0x20 = 3, +0x6C = 0x0C50E910 (tex_slot_table + 2 x 0x3C), +0xA0 = 0; then context_header_select
  * matched: source/sdk/naomi_library/draw.c (tools/match/match.py)
  */
 void modvol_tex_ctx_init_inner(strip_context_rec *ctx, int slot_no)
@@ -488,8 +488,8 @@ void modvol_tex_ctx_init_inner(strip_context_rec *ctx, int slot_no)
 }
 
 /* 0x0c12e540  size 0x2c  file by match with source
- * confidence: inferred
- * evidence: sets up the library's four drawing contexts: dualvol_ctx through dualvol_ctx_init and modvol_ctx_first / _closing / _inner with texture slot 0; nothing in the game calls it; part of the NAOMI library
+ * confidence: exercised
+ * evidence: sets up the library's four drawing contexts: dualvol_ctx through dualvol_ctx_init and modvol_ctx_first / _closing / _inner with texture slot 0; nothing in the game calls it; part of the NAOMI library; exercised 2026-11-12: called by the harness it called dualvol_ctx_init(dualvol_ctx) and modvol_tex_ctx_init_first, _closing, _inner on modvol_ctx_first, _closing, _inner; afterwards dualvol_ctx had change mask 0x3F3FFFF, list 0, colors 1.0, and the three others change mask 0x300008, list 1, +0x20 = 3, +0x6C = tex_slot_table (slot 0) and +0xA0 = 0, 0x20000000, 0
  * matched: source/sdk/naomi_library/draw.c (tools/match/match.py)
  */
 void modvol_ctxs_init(void)
@@ -502,8 +502,8 @@ void modvol_ctxs_init(void)
 }
 
 /* 0x0c12e5a0  size 0x1bc  file by match with source
- * confidence: inferred
- * evidence: (triangles, n): sends n modifier volume triangles of nine floats each with vertex kind 0x11 (64 bytes): the first through modvol_ctx_first, the middle ones through modvol_ctx_inner, the last through modvol_ctx_closing, each context made current and a strip started before it; nothing in the game calls it; part of the NAOMI library
+ * confidence: exercised
+ * evidence: (triangles, n): sends n modifier volume triangles of nine floats each with vertex kind 0x11 (64 bytes): the first through modvol_ctx_first, the middle ones through modvol_ctx_inner, the last through modvol_ctx_closing, each context made current and a strip started before it; nothing in the game calls it; part of the NAOMI library; record as the game has it: n must be at least 2, and for n below 3 an empty strip goes out through modvol_ctx_inner; exercised 2026-11-12: called by the harness (three triangles of floats 1-9, 11-19, 21-29, 3): context_header_select(modvol_ctx_first), list_header_sq_write, a 64-byte block of kind 0x11 E0000000 + 1..9; then modvol_ctx_inner, a header, 11..19; then modvol_ctx_closing, a header, 21..29
  * matched: source/sdk/naomi_library/draw.c (tools/match/match.py)
  */
 void modvol_send_triangles(uint *tris, int count)
@@ -557,8 +557,8 @@ void modvol_send_triangles(uint *tris, int count)
 }
 
 /* 0x0c12e780  size 0xc2  file by match with source
- * confidence: inferred
- * evidence: sends a strip of n vertices of five words (x, y, z and two packed colors, one for each side of a modifier volume) with vertex kind 9 through dualvol_ctx (both parameter sets loaded); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: sends a strip of n vertices of five words (x, y, z and two packed colors, one for each side of a modifier volume) with vertex kind 9 through dualvol_ctx (both parameter sets loaded); nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness (3, three 5-word vertices): context_header_select and context_volume2_header_select with dualvol_ctx, a list header, then three 32-byte blocks of kind 9: E0000000, E0000000, F0000000, each with x, y, z and the vertex's two color words (0x11223344 + i, 0x55667788 + i)
  * matched: source/sdk/naomi_library/draw.c (tools/match/match.py)
  */
 void polystrip_plain_dualvol(int count, uint *verts)
@@ -589,7 +589,7 @@ void polystrip_plain_dualvol(int count, uint *verts)
 
 /* 0x0c12e880  size 0x110  file by match with source
  * confidence: inferred
- * evidence: as polystrip_tex_opaque but with vertex kind 0xb (64 bytes): each source vertex of ten words gives x, y, z, u, v and two colors, sent again (u, v and colors) for the second side of a modifier volume; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo)
+ * evidence: as polystrip_tex_opaque but with vertex kind 0xb (64 bytes): each source vertex of eleven words (44 bytes) gives x, y, z, u, v, a base color, an offset color, two unread words, a second base color (+0x24) and an unread word; u, v and the offset color are sent again for the second side of a modifier volume with the second base color, except for the last vertex, whose first base color is sent twice; nothing in the game calls it; part of the NAOMI library; checked against reference material (not in this repo); corrected 2026-11-12 from harness calls: the source vertices are 11 words (44 bytes) apart and the second side's base color is the tenth word: called by the harness (3, verts, 386) with 10-word vertices the second block began at word 11; with 11-word vertices each 64-byte kind-0xB block held x, y, z, u, v, base, offset, then u, v, the word at +0x24 (0xCC000030 + i) and the offset again, except the last vertex, which repeated its base color 0xFF000012; context +0x6C slot 386, preset 0x12 as described
  * matched: source/sdk/naomi_library/draw.c (tools/match/match.py)
  */
 void polystrip_tex_dualvol_opaque(int count, uint *verts, int slot_no)
@@ -635,8 +635,8 @@ void polystrip_tex_dualvol_opaque(int count, uint *verts, int slot_no)
 }
 
 /* 0x0c12e9c0  size 0x36  file by match with source
- * confidence: inferred
- * evidence: (area a, area b): rounds both addresses up to 32 bytes and makes them the bases of the two work areas in graphics_work: entry 0 of each mark stack, the base, current and start words of each; mark depth 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between polystrip_tex_dualvol_opaque and work_areas_rewind, so by link order part of sdk/naomi_library/draw.c
+ * confidence: exercised
+ * evidence: (area a, area b): rounds both addresses up to 32 bytes and makes them the bases of the two work areas in graphics_work: entry 0 of each mark stack, the base, current and start words of each; mark depth 0; nothing in the image calls it (uncalled code, made a function 2026-11-09); between polystrip_tex_dualvol_opaque and work_areas_rewind, so by link order part of sdk/naomi_library/draw.c; exercised 2026-11-12: called by the harness (0x0F002005, 0x0F004020): graphics_work.work_a_out, work_a_out_end, work_a_base and work_a_marks[0] all became 0x0F002020 (rounded up to 32), the b words and work_b_marks[0] 0x0F004020, and the mark depth 0
  * matched: source/sdk/naomi_library/draw.c (tools/match/match.py)
  */
 void work_areas_set(int area_a,int area_b)
@@ -655,8 +655,8 @@ void work_areas_set(int area_a,int area_b)
 }
 
 /* 0x0c12ea20  size 0x14  file by match with source
- * confidence: inferred
- * evidence: puts both work areas' current pointers back to their start words; nothing in the image calls it (uncalled code, made a function 2026-11-09); between work_areas_set and work_areas_reset, so by link order part of sdk/naomi_library/draw.c
+ * confidence: exercised
+ * evidence: puts both work areas' current pointers back to their start words; nothing in the image calls it (uncalled code, made a function 2026-11-09); between work_areas_set and work_areas_reset, so by link order part of sdk/naomi_library/draw.c; exercised 2026-11-12: called by the harness in one sandbox after work_areas_set, with the start words (work_a_out_end, work_b_out_end) poked 0x0F002080 / 0x0F004080 and the current words 0x0F002300 / 0x0F004500: the current words became 0x0F002080 / 0x0F004080, nothing else changed
  * matched: source/sdk/naomi_library/draw.c (tools/match/match.py)
  */
 void work_areas_rewind(void)
@@ -667,8 +667,8 @@ void work_areas_rewind(void)
 }
 
 /* 0x0c12ea40  size 0x24  file by match with source
- * confidence: inferred
- * evidence: mark depth 0 and both work areas' current and start words back to entry 0 of their mark stacks; nothing in the image calls it (uncalled code, made a function 2026-11-09); between work_areas_rewind and work_areas_mark_push, so by link order part of sdk/naomi_library/draw.c
+ * confidence: exercised
+ * evidence: mark depth 0 and both work areas' current and start words back to entry 0 of their mark stacks; nothing in the image calls it (uncalled code, made a function 2026-11-09); between work_areas_rewind and work_areas_mark_push, so by link order part of sdk/naomi_library/draw.c; exercised 2026-11-12: called by the harness in one sandbox after work_areas_set (marks[0] 0x0F002020 / 0x0F004020), a push, a pop, a rewind and the depth left at 48: the depth became 0 and both current and start words 0x0F002020 / 0x0F004020
  * matched: source/sdk/naomi_library/draw.c (tools/match/match.py)
  */
 void work_areas_reset(void)
@@ -679,8 +679,8 @@ void work_areas_reset(void)
 }
 
 /* 0x0c12ea80  size 0x30  file by match with source
- * confidence: inferred
- * evidence: pushes both work areas' current pointers on the mark stacks (48 deep) and returns 0; -1 when the stacks are full; nothing in the image calls it (uncalled code, made a function 2026-11-09); between work_areas_reset and work_areas_mark_pop, so by link order part of sdk/naomi_library/draw.c
+ * confidence: exercised
+ * evidence: pushes both work areas' current pointers on the mark stacks (48 deep) and returns 0; -1 when the stacks are full; nothing in the image calls it (uncalled code, made a function 2026-11-09); between work_areas_reset and work_areas_mark_pop, so by link order part of sdk/naomi_library/draw.c; record as the game has it: 48 deep means 49 entries with entry 0, and the stacks hold 48; exercised 2026-11-12: called by the harness in one sandbox after work_areas_set, with the current words poked 0x0F002100 / 0x0F004300 it returned 0, depth 1, work_a_marks[1] / work_b_marks[1] those values; with the depth poked 48 it returned -1 and the depth stayed 48; with 47 it returned 0 and the depth became 48
  * matched: source/sdk/naomi_library/draw.c (tools/match/match.py)
  */
 int work_areas_mark_push(void)
@@ -700,8 +700,8 @@ int work_areas_mark_push(void)
 }
 
 /* 0x0c12eac0  size 0x30  file by match with source
- * confidence: inferred
- * evidence: pops both work areas' current pointers back from the mark stacks and returns 0; -1 when the stacks are empty; nothing in the image calls it (uncalled code, made a function 2026-11-09); between work_areas_mark_push and tex_slot_create_and_load, so by link order part of sdk/naomi_library/draw.c
+ * confidence: exercised
+ * evidence: pops both work areas' current pointers back from the mark stacks and returns 0; -1 when the stacks are empty; nothing in the image calls it (uncalled code, made a function 2026-11-09); between work_areas_mark_push and tex_slot_create_and_load, so by link order part of sdk/naomi_library/draw.c; exercised 2026-11-12: called by the harness in one sandbox after work_areas_set and a push of 0x0F002100 / 0x0F004300, with the current words poked 0x0F002200 / 0x0F004400 it returned 0, depth 0 and the current words back to 0x0F002100 / 0x0F004300; a second pop returned -1 and changed nothing
  * matched: source/sdk/naomi_library/draw.c (tools/match/match.py)
  */
 int work_areas_mark_pop(void)

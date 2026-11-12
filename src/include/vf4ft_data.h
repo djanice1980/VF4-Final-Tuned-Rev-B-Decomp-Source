@@ -19434,8 +19434,6 @@ extern undefined * PTR_rob_start_pos_apply_0c0eed94; /* 0x0c0eed94 */
 extern undefined * PTR_main_heap_stats_get_0c0eedbc; /* 0x0c0eedbc */
 extern undefined * PTR_debug_dan_i_0c0eef40; /* 0x0c0eef40 */
 extern undefined * PTR_level_change_items_0c0eef44; /* 0x0c0eef44 */
-extern undefined * PTR_DAT_0c0eef54; /* 0x0c0eef54 */
-extern undefined * PTR_DAT_0c0eef58; /* 0x0c0eef58 */
 extern undefined * PTR_card_flags_get_0c0eef5c; /* 0x0c0eef5c */
 extern undefined * PTR_card_record_get_0c0eef60; /* 0x0c0eef60 */
 extern undefined * PTR_item_slot_get_0c0eef64; /* 0x0c0eef64 */

@@ -250,9 +250,9 @@ void elan_light_masks_queue(elan_light_masks_rec *state)
 }
 
 /* 0x0c0fc540  size 0x4c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x56
- * evidence: (compiled model, iterator of 6 words): for a model in the compiled form (word 0 = 0x100) sets the iterator to {model, list 0, start and end of the list 0 block found through the {offset, size} slot at +0x40, 0, 0} and returns 0; returns 1 for a null argument or another layout; only caller obj_material_color_set (put_poly.c, sets the color words of every material command in a model); part of the NAOMI2 library
+ * evidence: (compiled model, iterator of 6 words): for a model in the compiled form (word 0 = 0x100) sets the iterator to {model, list 0, start and end of the list 0 block found through the {offset, size} slot at +0x40, 0, 0} and returns 0; returns 1 for a null argument or another layout; only caller obj_material_color_set (put_poly.c, sets the color words of every material command in a model); part of the NAOMI2 library; exercised 2026-11-12: called by the harness in one sandbox on a model compiled into buf:3 by model_compile_to (word 0 0x100, list 0 slot {0x20, 0xC0} at +0x40): it returned 0 and set the iterator to {buf:3, 0, buf:3+0x60, buf:3+0x120, 0, 0}; a null model, a null iterator and the uncompiled source model (word 0 = 0) each returned 1
  * matched: source/sdk/naomi2_library/elan_light_cmds.c (tools/match/match.py)
  */
 int model_cmd_iter_init(compiled_model_rec *model, model_cmd_iter_rec *iter)
@@ -279,9 +279,9 @@ int model_cmd_iter_init(compiled_model_rec *model, model_cmd_iter_rec *iter)
 }
 
 /* 0x0c0fc5a0  size 0xda  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x116
- * evidence: (iterator, kind out, vertex format out): returns the address of the next command in a compiled model and its kind: 3 for each vertex of the current strip (stepping by the vertex size), else by bits 8-11 of the command word: 7 (strip header, 0x20 bytes) gives 2, stores the format word +0x18, the vertex size from vertex_bytes_from_format and the count +0x1c; 5 (material command, 0x40 bytes) gives 1; 0 (end words, 8 bytes) gives 0; at the end of a list moves to list + 2 through model_list_slot_table and gives 0x40000000, after list 4 gives 0x80000000; only caller obj_material_color_set; part of the NAOMI2 library
+ * evidence: (iterator, kind out, vertex format out): returns the address of the next command in a compiled model and its kind: 3 for each vertex of the current strip (stepping by the vertex size), else by bits 8-11 of the command word: 7 (strip header, 0x20 bytes) gives 2, stores the format word +0x18, the vertex size from vertex_bytes_from_format and the count +0x1c; 5 (material command, 0x40 bytes) gives 1; 0 (end words, 8 bytes) gives 0; at the end of a list moves to list + 2 through model_list_slot_table and gives 0x40000000, after list 4 gives 0x80000000; only caller obj_material_color_set; part of the NAOMI2 library; exercised 2026-11-12: called by the harness in one sandbox over a model compiled into buf:3 (strip counts at header +0x1C poked 3 and 4, see model_list_compile): it gave +0x60 kind 1, +0xA0 kind 2 (format 10, vertex size 24, count 3), three vertices kind 3 24 bytes apart, three 8-byte pads kind 0, then 0 with kind 0x40000000 (list 2 next); list 2 gave kinds 1, 2 and four 3, then 0x40000000 (list 4, empty) and 0x80000000 from then on
  * matched: source/sdk/naomi2_library/elan_light_cmds.c (tools/match/match.py)
  */
 int model_cmd_iter_next(model_cmd_iter_rec *iter, uint *kind, uint *format)

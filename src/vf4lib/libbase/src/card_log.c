@@ -19,8 +19,8 @@ void card_log_session_start(void)
 }
 
 /* 0x0c021460  size 0xec  file by match with source
- * confidence: inferred
- * evidence: (packed stamp): the time from the stamp to now in minutes (days from month_day_offsets, a day more in years divisible by 4, a year of 525600 / 527040 minutes when the year changed); returns 0 up to 4319 minutes (3 days), 1 up to 10079 (7 days), else 2; callers card_item_log_drop_player only; part of vf4lib/libbase/src/card_log.c
+ * confidence: exercised
+ * evidence: (packed stamp): the time from the stamp to now in minutes (days from month_day_offsets, a day more in years divisible by 4, a year of 525600 / 527040 minutes when the year changed); returns 0 up to 4319 minutes (3 days), 1 up to 10079 (7 days), else 2; callers card_item_log_drop_player only; part of vf4lib/libbase/src/card_log.c; exercised 2026-11-12: called by the harness with the clock stamp 0x036b51d4 (year 54, November 10, 7:20, read with date_stamp_now in the same machine): the stamp itself and November 7 7:21 (4319 minutes back) returned 0, November 7 7:20 (4320) and November 3 7:21 (10079) returned 1, November 3 7:20 (10080) returned 2
  * matched: source/vf4lib/libbase/src/card_log.c (tools/match/match.py)
  */
 int card_log_stamp_age(uint stamp)
@@ -503,8 +503,8 @@ void card_data_log_restore(side) char side;
 }
 
 /* 0x0c021fc0  size 0x92  file by match with source
- * confidence: inferred
- * evidence: clears every the block at 0c375ba4 and the block at 0c375da4 record carrying the session stamp, then zeroes the stamp and marks the backup dirty; nothing in the image calls it; part of vf4lib/libbase/src/card_log.c
+ * confidence: exercised
+ * evidence: clears every record of card_item_log (the block at 0c375ba4) and card_data_log (the block at 0c375da4) carrying the session stamp card_log_stamp, then zeroes the stamp and marks the backup dirty; nothing in the image calls it; part of vf4lib/libbase/src/card_log.c; exercised 2026-11-12: called by the harness with card_log_stamp poked 0x12345, item-log records 0 and 31 and data-log records 0 and 2 carrying it and item record 1 and data record 1 carrying 0x999: the four records with 0x12345 were zeroed (card_snapshot_clear on both snapshots of each data record), the two with 0x999 kept, card_log_stamp became 0 and user_back_mark_dirty was called
  * matched: source/vf4lib/libbase/src/card_log.c (tools/match/match.py)
  */
 void card_logs_session_clear(void)

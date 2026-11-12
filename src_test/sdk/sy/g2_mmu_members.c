@@ -325,8 +325,8 @@ uint utlb_install(uint phys, uint virt, uint page_size)
 }
 
 /* 0x0c063320  size 0x28  file by match with source
- * confidence: inferred
- * evidence: for an entry number below 64: clears V in its UTLB address array word and zeroes its data array word; called by sq_windows_unmap; part of syMmu; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: for an entry number below 64: clears V in its UTLB address array word and zeroes its data array word; called by sq_windows_unmap; part of syMmu; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with entry 1 it wrote f6000100 back with bit 8 (V) clear and 0 to f7000100; with 64 it wrote nothing; called by sq_windows_unmap it took the 25 entry numbers poked there
  * same code as main.bin 0c139500 (ghidra/TransferFromMain.java)
  * matched: source/sdk/sy/symmu.c (tools/match/match.py)
  */
@@ -341,7 +341,7 @@ void utlb_uninstall(uint entry)
 
 /* 0x0c063360  size 0x24  file by match with source
  * confidence: inferred
- * evidence: (entry, bits): for an entry below 64, replaces bits 0 and 3 of its UTLB address array word (0xF7000000 + entry x 0x100) with the byte given; nothing in the image calls it (uncalled code, made a function 2026-11-09); between utlb_uninstall and aica_fifo_idle_flag, so by link order part of sdk/sy/symmu.c
+ * evidence: (entry, bits): for an entry below 64, clears bits 0 and 3 of its UTLB data array word (0xF7000000 + entry x 0x100) and ORs in the byte given (all of its bits, not only 0 and 3); nothing in the image calls it (uncalled code, made a function 2026-11-09); between utlb_uninstall and aica_fifo_idle_flag, so by link order part of sdk/sy/symmu.c; corrected 2026-11-12 from harness calls: the results contradict the description: the whole byte is ORed in, not just bits 0 and 3, and the word is the data array's. Called by the harness (the model reads 0 there), (1, 9) wrote 9 to f7000100, (2, 0x46) wrote 0x46 to f7000200 (bits 1, 2 and 6 set as well) and (64, 9) wrote nothing
  * same code as main.bin 0c139540 (ghidra/TransferFromMain.java)
  * matched: source/sdk/sy/symmu.c (tools/match/match.py)
  */
@@ -373,8 +373,8 @@ int aica_fifo_spin_until_idle(void)
 }
 
 /* 0x0c063400  size 0x86  file by match with source
- * confidence: inferred
- * evidence: the DMA end handler g2_subsystem_start hooks to events 0xa60/0xa80/0xaa0/0xac0 (Holly normal bits 15-18) with the channel record as argument: clears the channel's enable register (+0x14 of its block at 0xa05f7800), marks it idle (+0x29) and done (+0x2a), counts the end in the G2 state, acknowledges the bit in 0xa05f6900 (read back twice) and calls the channel's callback with its argument; part of the G2 DMA object; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: the DMA end handler g2_subsystem_start hooks to events 0xa60/0xa80/0xaa0/0xac0 (Holly normal bits 15-18) with the channel record as argument: clears the channel's enable register (+0x14 of its block at 0xa05f7800), marks it idle (+0x29) and done (+0x2a), counts the end in the G2 state, acknowledges the bit in 0xa05f6900 (read back twice) and calls the channel's callback with its argument; part of the G2 DMA object; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness on channel 2 of the snapshot's G2 state (0x0c41de5c) with g2dma_slot_mark_unused and the buffer 0x0f002000 poked as its callback and argument and +0x29 set to 1: it wrote 0 to 0xa05f7854 and 0x20000 to 0xa05f6900, set +0x29 to 0 and +0x2a to 1, counted done_count[2] 0 to 1 and called g2dma_slot_mark_unused(0x0f002000); on channel 0 with no callback it wrote 0xa05f7814 and 0x8000 and called nothing
  * same code as main.bin 0c1376a0 (ghidra/TransferFromMain.java)
  * matched: source/sdk/sy/g2_dma.c (tools/match/match.py)
  */

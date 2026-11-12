@@ -7,9 +7,9 @@
 #include "vf4ft.h"
 
 /* 0x0c14d3a0  size 0x18  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x26
- * evidence: (value): when value is 0 sets the border color of both chips (0xA85F8040) to magenta 0xff00ff and loops for ever; called by elan_vram_read_batch; part of KamuiTL
+ * evidence: (value): when value is 0 sets the border color of both chips (0xA85F8040) to magenta 0xff00ff and loops for ever; called by elan_vram_read_batch; part of KamuiTL; exercised 2026-11-12: called by the harness: with 1 it returned at once (also with 7); with 0 it wrote 0xff00ff to 0xa85f8040 and did not return within its budget
  * matched: source/sdk/kamui/elan_commands.c (tools/match/match.py)
  */
 void elancmd_check_or_halt(int ok)
@@ -643,8 +643,8 @@ void elan_reg_d0_value_put(uint value)
 }
 
 /* 0x0c14e2e0  size 0xd8  file by match with source
- * confidence: inferred
- * evidence: (pixel positions as x, y halfword pairs, addresses out, count): turns each into a frame buffer address in the current frame (16-bit pixels, the frame's base and stride from the main state block gfx_state) and sets bit 25 when the tile is not rendered by the first chip, from that frame's tile bitmap (tile_owner_bitmaps, built on first use by tile_split_bitmap_update); called by surface_read_back; part of KamuiTL
+ * confidence: exercised
+ * evidence: (pixel positions as x, y halfword pairs, addresses out, count): turns each into a frame buffer address in the current frame (16-bit pixels, the frame's base and stride from the main state block gfx_state) and sets bit 25 when the tile is not rendered by the first chip, from that frame's tile bitmap (tile_owner_bitmaps, built on first use by tile_split_bitmap_update); called by surface_read_back; part of KamuiTL; exercised 2026-11-12: called by the harness on the fight snapshot (frame slot 1, base 0x00C00000, stride 1280, tile bitmap rows 0xCCCCCCCC, 0xCCCCCCCC, 0x33333333, 0x33333333) with the pixels (0,0), (64,0), (10,70), (100,200): it stored 0x00C00000, 0x02C00080, 0x02C15E14 and 0x00C3E8C8 (bit 25 for the tiles whose bit is clear) and left the fifth word alone
  * matched: source/sdk/kamui/elan_commands.c (tools/match/match.py)
  */
 void fb_pixel_addrs_by_chip(ushort *positions, uint *addrs, uint count)

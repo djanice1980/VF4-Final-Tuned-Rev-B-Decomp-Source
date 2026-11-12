@@ -7,9 +7,9 @@
 #include "vf4ft.h"
 
 /* 0x0c0f1900  size 0x1f6  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x21e
- * evidence: (p, out, a, b): distance from point p to segment a-b; projects p on the line (t = -(e.d)/(e.e) with d = a - p, e = b - a), uses the foot when it lies between a and b (vec3_dot of the two end offsets < 0), else the nearer end; a segment shorter than the float epsilon (1.19e-7) in all axes gives a; stores the nearest point in out when out is not null and returns the distance (fsqrt_asm); nothing in the image calls it; part of vf4lib/libcore/src/fmath.c
+ * evidence: (p, out, a, b): distance from point p to segment a-b; projects p on the line (t = -(e.d)/(e.e) with d = a - p, e = b - a), uses the foot when it lies between a and b (vec3_dot of the two end offsets < 0), else the nearer end; a segment shorter than the float epsilon (1.19e-7) in all axes gives a; stores the nearest point in out when out is not null and returns the distance (fsqrt_asm); nothing in the image calls it; part of vf4lib/libcore/src/fmath.c; exercised 2026-11-12: called by the harness with segment (-1,0,0)-(1,0,0): p (0,3,0) gave 3 and nearest (0,0,0), p (4,4,0) 5 and (1,0,0), p (-4,4,0) 5 and (-1,0,0), p (0.5,0,2) with out 0 gave 2 and stored nothing; segment (2,0,0)-(2,0,0) with p (2,7,0) gave 7 and (2,0,0)
  * matched: source/vf4lib/libcore/src/fmath.c (tools/match/match.py)
  */
 float point_segment_distance(float *point,float *closest,float *seg_a,float *seg_b)
@@ -119,9 +119,9 @@ short atan2_s16(float y, float x)
 }
 
 /* 0x0c0f1c80  size 0x5c  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x64
- * evidence: (x): one-argument arc tangent as a signed 16-bit angle, returned as a short like atan2_s16 (matches either way; nothing calls it): atan_kernel(x) for |x| <= 1, else +-pi/2 - atan_kernel(1/x) (atan_consts[1] and [27]); scaled by 65536/2pi; nothing in the image calls it; part of vf4lib/libcore/src/fmath.c
+ * evidence: (x): one-argument arc tangent as a signed 16-bit angle, returned as a short like atan2_s16 (matches either way; nothing calls it): atan_kernel(x) for |x| <= 1, else +-pi/2 - atan_kernel(1/x) (atan_consts[1] and [27]); scaled by 65536/2pi; nothing in the image calls it; part of vf4lib/libcore/src/fmath.c; exercised 2026-11-12: called by the harness: 1.0 gave 8191, 0.5 4836, 2.0 11547, -2.0 -11547, -0.5 -4836 (atan x 65536/2pi, truncated)
  * matched: source/vf4lib/libcore/src/fmath.c (tools/match/match.py)
  */
 short atan_s16(float x)
@@ -166,8 +166,8 @@ float atan_kernel(float x)
 }
 
 /* 0x0c0f1d60  size 0x42  file by match with source
- * confidence: inferred
- * evidence: the same rational atan as atan_kernel, a second copy with the float constants; used only by atan2_radians; part of vf4lib/libcore/src/fmath.c
+ * confidence: exercised
+ * evidence: the same rational atan as atan_kernel, a second copy with the float constants; used only by atan2_radians; part of vf4lib/libcore/src/fmath.c; exercised 2026-11-12: called by the harness: 0.5 gave 0.4636476, 1.0 0.7853981, -0.25 -0.2449787
  * matched: source/vf4lib/libcore/src/fmath.c (tools/match/match.py)
  */
 float atan_kernel_copy(float x)
@@ -187,9 +187,9 @@ float atan_kernel_copy(float x)
 }
 
 /* 0x0c0f1dc0  size 0xc2  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x118
- * evidence: (y, x): the octant arc tangent of atan2_s16 returning float radians (0, +-1.5707964, 3.1415927 for near-zero divisors) through atan_kernel_copy; called by atan2_radians_to_s16; part of vf4lib/libcore/src/fmath.c
+ * evidence: (y, x): the octant arc tangent of atan2_s16 returning float radians (0, +-1.5707964, 3.1415927 for near-zero divisors) through atan_kernel_copy; called by atan2_radians_to_s16; part of vf4lib/libcore/src/fmath.c; exercised 2026-11-12: called by the harness as (y, x): (1,1) 0.7853981, (1,2) 0.4636476, (2,1) 1.1071488, (1,-1) 2.3561945, (-1,-1) -2.3561945, (1,0) 1.5707964, (-1,0) -1.5707964, (0,0) 0, (1e-8,5e-9) 1.5707964, (5e-9,-1e-8) 3.1415927, (0,-1) -3.1415927
  * matched: source/vf4lib/libcore/src/fmath.c (tools/match/match.py)
  */
 float atan2_radians(float y, float x)
@@ -224,8 +224,8 @@ float atan2_radians(float y, float x)
 }
 
 /* 0x0c0f1f00  size 0x22  file by match with source
- * confidence: inferred
- * evidence: (y, x): atan2_radians(y, x) * 10430.378 masked to 16 bits; the second column of "atan:%+11.1f=%04X/%04X/%04X" and timed as "f3Atan2" by trig_benchmark_draw, its only caller; part of vf4lib/libcore/src/fmath.c
+ * confidence: exercised
+ * evidence: (y, x): atan2_radians(y, x) * 10430.378 masked to 16 bits; the second column of "atan:%+11.1f=%04X/%04X/%04X" and timed as "f3Atan2" by trig_benchmark_draw, its only caller; part of vf4lib/libcore/src/fmath.c; exercised 2026-11-12: called by the harness as (y, x): (1,1) gave 0x1fff, (1,0) 0x4000, (-1,0) 0xc000, (0,-1) 0x8000, (1,2) 0x12e4
  * matched: source/vf4lib/libcore/src/fmath.c (tools/match/match.py)
  */
 uint atan2_radians_to_s16(float y, float x)
@@ -237,9 +237,9 @@ uint atan2_radians_to_s16(float y, float x)
 }
 
 /* 0x0c0f1f40  size 0x2b0  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x30e
- * evidence: debug screen comparing the game's trig routines with the library's: prints atan2_s16, atan2_radians_to_s16 and atan2_ang16 of (1, x) for the 41 values in trig_bench_inputs ("atan:%+11.1f=%04X/%04X/%04X"), sin_s16 against sin_ang16 for 32 angles ("sin:%04X=%+10.8f/%+10.8f"), then stopwatch_usec timings "dkAtan2", "f3Atan2", "nlAtan2", "dkSin", "nlSin", "dkCos", "nlCOs", "dkTan", "nlTan" (sin_s16, cos_s16, tan_s16 against sin_ang16, cos_ang16, tan_ang16) through text_cursor_to_cell and text_draw_formatted; nothing in the image calls it; part of vf4lib/libcore/src/fmath.c
+ * evidence: debug screen comparing the game's trig routines with the library's: prints atan2_s16, atan2_radians_to_s16 and atan2_ang16 of (1, x) for the 41 values in trig_bench_inputs ("atan:%+11.1f=%04X/%04X/%04X"), sin_s16 against sin_ang16 for 32 angles ("sin:%04X=%+10.8f/%+10.8f"), then stopwatch_usec timings "dkAtan2", "f3Atan2", "nlAtan2", "dkSin", "nlSin", "dkCos", "nlCOs", "dkTan", "nlTan" (sin_s16, cos_s16, tan_s16 against sin_ang16, cos_ang16, tan_ang16) through text_cursor_to_cell and text_draw_formatted; nothing in the image calls it; part of vf4lib/libcore/src/fmath.c; exercised 2026-11-12: called by the harness: text_cursor_to_cell(0, 2), (36, 2), (64, 48); 41 text_draw_formatted lines with the atan format, after atan2_s16, atan2_radians_to_s16 and atan2_ang16 of (1, x) for the trig_bench_inputs values in order (5.57136e8, ..., 10500, 10400, ...), 32 with the sin format and the nine timing formats dkAtan2 ... nlTan, with 18 stopwatch_usec calls and tan_s16 / tan_ang16 timed
  * matched: source/vf4lib/libcore/src/fmath.c (tools/match/match.py)
  */
 void trig_benchmark_draw(void)

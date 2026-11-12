@@ -7,8 +7,8 @@
 #include "vf4ft.h"
 
 /* 0x0c056960  size 0x7c  file by match with source
- * confidence: inferred
- * evidence: (socket, level, option, value, value length, slot record): builds a 0x60-byte block (tag word, socket, level, option, the board address of slot area +0x20, the value length, then the value bytes) and writes the header plus the value rounded up to 4 bytes to the slot's board parameter area with dimm_pio_write; only caller sock_set_option; part of NLASOCK
+ * confidence: exercised
+ * evidence: (socket, level, option, value, value length, slot record): builds a 0x60-byte block (tag word, socket, level, option, the board address of slot area +0x20, the value length, then the value bytes) and writes the header plus the value rounded up to 4 bytes to the slot's board parameter area with dimm_pio_write; only caller sock_set_option; part of NLASOCK; exercised 2026-11-12: called by the harness on slot 2 (op poked 0xe) with (2, 0xffff, 4, bytes 10 11 ..., 4): dimm_pio_write of 0x24 bytes {0xe, 2, 0xffff, 4, 0x0f802020, 4, 0, 0, 10 11 12 13} to 0x0f802000; with value length 6 it wrote 0x28 bytes with the 6 value bytes
  * same code as main.bin 0c124160 (ghidra/TransferFromMain.java)
  * matched: source/sdk/nlasock/set_option.c (tools/match/match.py)
  */

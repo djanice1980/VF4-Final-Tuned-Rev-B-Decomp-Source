@@ -115,8 +115,8 @@ void camera_proj_reapply(void)
 }
 
 /* 0x0c02b6a0  size 0x48  file by match with source
- * confidence: inferred
- * evidence: (block): saves the camera's 16-byte projection block (+0x44) in camera_proj_stack[camera_proj_depth++] (kept at most 15), then camera_proj_set(block); nothing in the image calls it; part of vf4lib/libbase/src/camera.c
+ * confidence: exercised
+ * evidence: (block): saves the camera's 16-byte projection block (+0x44) in camera_proj_stack[camera_proj_depth++] (kept at most 15), then camera_proj_set(block); nothing in the image calls it; part of vf4lib/libbase/src/camera.c; exercised 2026-11-12: called by the harness at camera_proj_depth 0 with a block {0.5, 200, 30, aspect} in a buffer: camera_proj_stack[0] became the old projection {0.1, 1000, 45, aspect}, the depth 1, and camera_proj_set(buffer) left near 0.5, far 200; with the depth poked to 15 stack[15] was written and the depth stayed 15
  * matched: source/vf4lib/libbase/src/camera.c (tools/match/match.py)
  */
 void camera_proj_push(float *proj)
@@ -134,9 +134,9 @@ void camera_proj_push(float *proj)
 }
 
 /* 0x0c02b700  size 0x36  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x40
- * evidence: restores camera_proj_stack[--camera_proj_depth] with camera_proj_set (depth kept at 0 when empty); the pair of camera_proj_push; nothing in the image calls it; part of vf4lib/libbase/src/camera.c
+ * evidence: restores camera_proj_stack[--camera_proj_depth] with camera_proj_set (depth kept at 0 when empty); the pair of camera_proj_push; nothing in the image calls it; part of vf4lib/libbase/src/camera.c; exercised 2026-11-12: called by the harness in one sandbox after camera_proj_push at depth 0: the depth went back to 0 and camera_proj_set(camera_proj_stack) restored near 0.1, far 1000, pers 45; a second pop at depth 0 left it 0 and called nothing
  * matched: source/vf4lib/libbase/src/camera.c (tools/match/match.py)
  */
 void camera_proj_pop(void)
@@ -603,9 +603,9 @@ void cam_mode_test(void)
 }
 
 /* 0x0c02c540  size 0xb6  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xbc
- * evidence: camera_mode_funcs[3], the "STAY" mode: the eye stays; the target follows rob cam_rob_no (+0x90) by 2 percent a frame once more than 0.8 away, or sits at the midpoint of both robs when cam_rob_no < 0; part of vf4lib/libbase/src/camera.c
+ * evidence: camera_mode_funcs[3], the "STAY" mode: the eye stays; the target follows rob cam_rob_no (+0x90) by 2 percent a frame once more than 0.8 away, or sits at the midpoint of both robs when cam_rob_no < 0; part of vf4lib/libbase/src/camera.c; exercised 2026-11-12: called by the harness with cam_rob_no poked 0: a target 10 to the side of rob 0 (x 10.468, rob x 0.468) moved to x 10.268 (2 percent) with y and z kept; a target 0.5 away stayed; with cam_rob_no 0xff the target became the midpoint of both robs (0.5043, 4.7716, 0.0975)
  * matched: source/vf4lib/libbase/src/camera.c (tools/match/match.py)
  */
 void cam_mode_stay(void)
@@ -638,8 +638,8 @@ void cam_mode_stay(void)
 }
 
 /* 0x0c02c620  size 0xc2  file by match with source
- * confidence: inferred
- * evidence: camera_mode_funcs[4], the "SAT" mode: target = rob cam_rob_no's position (+0x90) plus row +0x3f of cam_sat_offsets, height its +0xa0 + 1; eye = the row's second offset turned by the rob's yaw (+0xc) about its position, at the target height; part of vf4lib/libbase/src/camera.c
+ * confidence: exercised
+ * evidence: camera_mode_funcs[4], the "SAT" mode: target = rob cam_rob_no's position (+0x90) plus row +0x3f of cam_sat_offsets, height its +0xa0 + 1; eye = the row's second offset turned by the rob's yaw (+0xc) about its position, at the target height; part of vf4lib/libbase/src/camera.c; exercised 2026-11-12: called by the harness with cam_rob_no 0 and rob 0's yaw (+0xc) poked 0: row 0 gave target = rob position (0.468, _, 0.936) at height ground 4 + 1 = 5 and eye = position + (2.5, _, 0.5) at 5; row 1 eye = position + (3.5, _, 0.5); with the yaw poked 0x4000 the row-1 eye offset turned a quarter, to (-0.5, _, 3.5)
  * matched: source/vf4lib/libbase/src/camera.c (tools/match/match.py)
  */
 void cam_mode_sat(void)
@@ -890,9 +890,9 @@ void cam_mode_softimage(void)
 }
 
 /* 0x0c02cee0  size 0xbe  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xc4
- * evidence: (rob): starts a kind-1 (throw) camera animation on the rob: sic_rob_id = its id, cam_anim_index = (lcg_next15 % 120) * 2 plus 1 for the other facing (rob +0x318 bit 4, +0x20 bit 22, +0xcc order), the start time from the rob's +0x70 frame, flags | 0x81, camera mode SoftImage; nothing in the image calls it; part of vf4lib/libbase/src/camera.c
+ * evidence: (rob): starts a kind-1 (throw) camera animation on the rob: sic_rob_id = its id, cam_anim_index = (lcg_next15 % 120) * 2 plus 1 for the other facing (rob +0x318 bit 4, +0x20 bit 22, +0xcc order), the start time from the rob's +0x70 frame, flags | 0x81, camera mode SoftImage; nothing in the image calls it; part of vf4lib/libbase/src/camera.c; exercised 2026-11-12: called by the harness where lcg_next15 gives 31134 (54 mod 120): rob 0 gave sic_rob_id 0, kind 1, index 109, time (9 - 1) / 60 = 0.1333, flags 0x81, camera mode 5 (SoftImage); rob 1 gave id 1, index 109, time 0.3333; rob 1 with +0x318 bit 4 poked on gave index 108
  * matched: source/vf4lib/libbase/src/camera.c (tools/match/match.py)
  */
 void cam_throw_anim_start(rob_rec *rob)
@@ -1172,9 +1172,9 @@ void camera_shake_next_offset(cam_shake *shake)
 }
 
 /* 0x0c02d500  size 0x222  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x25c
- * evidence: camera_mode_funcs[6], the "SIC TEST" mode: plays the kind-1 (throw) animation picked by the debug value nagerare ("*NAGERARE", names like "AK_UKASHI") on rob sic_rob_id; padhit(1) restarts it, padhit(2) toggles a pause (sic_test_paused) during which padhit(4) steps a frame; loops with table flag 0x40; writes eye, target, roll and field of view, camera_angles_update; part of vf4lib/libbase/src/camera.c
+ * evidence: camera_mode_funcs[6], the "SIC TEST" mode: plays the kind-1 (throw) animation picked by the debug value nagerare ("*NAGERARE", names like "AK_UKASHI") on rob sic_rob_id; padhit(1) restarts it, padhit(2) toggles a pause (sic_test_paused) during which padhit(4) steps a frame; loops with table flag 0x40, else holds at the clip's end (no clip of cam_clips_nagerare has the flag); writes eye, target, roll and field of view, camera_angles_update; part of vf4lib/libbase/src/camera.c; exercised 2026-11-12: called by the harness with nagerare 0 (clip 0, 0.0167 to 1.5, flag 0x40 off), sic_rob_id 1 and no pad input: with sic_test_paused poked 1 nothing changed; unpaused it stepped and wrote eye, target and field of view (30), cam_anim_time 2.9833 being held at the clip's end 1.4833 and a poked 0.5 going to 0.5167
  * matched: source/vf4lib/libbase/src/camera.c (tools/match/match.py)
  */
 void cam_mode_sic_test(void)
@@ -1615,8 +1615,8 @@ void cam_mode_replay(void)
 }
 
 /* 0x0c02e300  size 0xb8  file by match with source
- * confidence: inferred
- * evidence: camera_mode_funcs[8], the "POINTSTAGE" mode: on flag 8 resets the record (+0x0-+0x2c and +0x58-+0x64 zero except +8 and the eye z +0x14 = 5.0, angles, +0x34, flags +0x30 = 0, +0x41 / +0x42 from the mode, the block at camera_proj_default, pers_req = pers, the shake) and does nothing otherwise; not in the function list (Ghidra missed the start: only the table at camera_mode_funcs[8] points at it; code 0x0C02E300-0x0C02E3B7, pool to 0x0C02E3C3); part of vf4lib/libbase/src/camera.c
+ * confidence: exercised
+ * evidence: camera_mode_funcs[8], the "POINTSTAGE" mode: on flag 8 resets the record (+0x0-+0x2c and +0x58-+0x64 zero except +8 and the eye z +0x14 = 5.0, angles, +0x34, flags +0x30 = 0, +0x41 / +0x42 from the mode, the block at camera_proj_default, pers_req = pers, the shake) and does nothing otherwise; not in the function list (Ghidra missed the start: only the table at camera_mode_funcs[8] points at it; code 0x0C02E300-0x0C02E3B7, pool to 0x0C02E3C3); part of vf4lib/libbase/src/camera.c; exercised 2026-11-12: called by the harness with camera flags (+0x30) poked 0x10 nothing changed; with flags 8 the record became +0x0-+0x2c zero except +8 and eye z 5.0, flags 0, the projection camera_proj_default {0.1, 1000, 45, aspect} and pers_req 45
  * matched: source/vf4lib/libbase/src/camera.c (tools/match/match.py)
  */
 void cam_mode_pointstage(void)

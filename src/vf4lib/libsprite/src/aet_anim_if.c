@@ -171,9 +171,9 @@ aet_layer * aet_comp_layer_find(aet_comp *comp, char *name)
 }
 
 /* 0x0c0e64c0  size 0xc0  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0xd4
- * evidence: (composition, name): the marker { frame, name } with that name among the markers of its layers (layer +0x84 count, +0x88 list), recursing into composition layers (type byte +0x3A == 1) like aet_comp_layer_find; 0 when not found; callers aet_layer_marker_find and aet_obj_marker_frame; part of vf4lib/libsprite/src/aet_anim_if.c
+ * evidence: (composition, name): the marker { frame, name } with that name among the markers of its layers (layer +0x84 count, +0x88 list), recursing into composition layers (type byte +0x3A == 1) like aet_comp_layer_find; 0 when not found; callers aet_layer_marker_find and aet_obj_marker_frame; part of vf4lib/libsprite/src/aet_anim_if.c; exercised 2026-11-12: called by the harness on the main composition of scene 0x1B0001 after aet_set_load(27), with markers planted in buffers (its layer: IN 300, OUT 400, DUP 250; the first layer of that layer's child composition: CHILD 220, DUP 230): "OUT" returned 0x0F00A008, "CHILD" 0x0F00A080 (found by the recursion), "DUP" the layer's own 0x0F00A010 and "NONE" 0
  * matched: source/vf4lib/libsprite/src/aet_anim_if.c (tools/match/match.py)
  */
 aet_marker * aet_comp_marker_find(aet_comp *comp, char *name)
@@ -286,8 +286,8 @@ void aet_track_relocate(aet_track *track, int base)
 }
 
 /* 0x0c0e6700  size 0x16  file by match with source
- * confidence: inferred
- * evidence: (marker, base): adds the base to the marker's name pointer +4 unless it is 0 (a byte-identical body to aet_track_relocate); only caller aet_layer_relocate; part of vf4lib/libsprite/src/aet_anim_if.c
+ * confidence: exercised
+ * evidence: (marker, base): adds the base to the marker's name pointer +4 unless it is 0 (a byte-identical body to aet_track_relocate); only caller aet_layer_relocate; part of vf4lib/libsprite/src/aet_anim_if.c; exercised 2026-11-12: called by the harness on { 1.0, 0x100 } with base 0x0C000000 the name word became 0x0C000100, and on { 2.0, 0 } it stayed 0; the frame words were untouched
  * matched: source/vf4lib/libsprite/src/aet_anim_if.c (tools/match/match.py)
  */
 void aet_marker_relocate(aet_marker *marker, int base)

@@ -77,8 +77,8 @@ int ext_devices_probe(void)
 }
 
 /* 0x0c1383a0  size 0xa4  file by match with source
- * confidence: inferred
- * evidence: undoes ext_devices_probe: disables again each bridge that was found, clears the G2 timeout flag and resets the results (ext_id10_high_code and ext_id10_low_code to -2, the rest to 0) and ext_probe_state; called by sys_wind_down; part of syExtChk; checked against reference material (not in this repo)
+ * confidence: exercised
+ * evidence: undoes ext_devices_probe: disables again each bridge that was found, clears the G2 timeout flag and resets the results (ext_id10_high_code and ext_id10_low_code to -2, the rest to 0) and ext_probe_state, and returns 0; when the probe has not run (ext_probe_state not -1) it does nothing and returns -1; called by sys_wind_down; part of syExtChk; checked against reference material (not in this repo); exercised 2026-11-12: called by the harness with ext_probe_state 0 it returned -1 and called nothing; with ext_probe_state poked -1, ext_bridge_800_found and ext_bridge_1800_found -1 and the other two bridges 0, it called ext_bridge_clear_reg14 and ext_bridge_hold_off for 0xa1000800 and then for 0xa1001800 only, then g2_timeout_flag_clear, left ext_probe_state 0, ext_id10_high_code and ext_id10_low_code -2 (poked 0x33 and 0x44) and the found words 0, and returned 0
  * matched: source/sdk/sy/syextchk.c (tools/match/match.py)
  */
 int ext_devices_release(void)
@@ -114,8 +114,8 @@ int ext_devices_release(void)
 }
 
 /* 0x0c1384a0  size 0x48  file by match with source
- * confidence: inferred
- * evidence: (kind 1-6): returns a status code, not a truth value: -2 before the probe has run (ext_probe_state not -1) or for another kind; else 0 when the device was found (the kind's found word is -1) and -1 when not; kinds: 1 = id10, 5 = id12, 2 / 3 / 4 / 6 = the bridges at 400 / 800 / 1400 / 1800; nothing in the image calls it (uncalled code, made a function 2026-11-09); between ext_devices_release and ext_id10_low_code_get, so by link order part of sdk/sy/syextchk.c
+ * confidence: exercised
+ * evidence: (kind 1-6): returns a status code, not a truth value: -2 before the probe has run (ext_probe_state not -1) or for another kind; else 0 when the device was found (the kind's found word is -1) and -1 when not; kinds: 1 = id10, 5 = id12, 2 / 3 / 4 / 6 = the bridges at 400 / 800 / 1400 / 1800; nothing in the image calls it (uncalled code, made a function 2026-11-09); between ext_devices_release and ext_id10_low_code_get, so by link order part of sdk/sy/syextchk.c; exercised 2026-11-12: called by the harness with ext_probe_state poked -1, ext_id10_found -1, ext_id12_found -1 and ext_bridge_800_found 0, kind 1 returned 0, kind 3 returned -1, kind 5 returned 0 and kind 7 returned -2; with ext_probe_state poked 0, kind 1 returned -2
  * matched: source/sdk/sy/syextchk.c (tools/match/match.py)
  */
 int ext_device_status(int kind)
@@ -135,8 +135,8 @@ int ext_device_status(int kind)
 }
 
 /* 0x0c138520  size 0xe  file by match with source
- * confidence: inferred
- * evidence: returns ext_id10_low_code; nothing in the image calls it (uncalled code, made a function 2026-11-09); between ext_device_status and ext_id10_high_code_get, so by link order part of sdk/sy/syextchk.c
+ * confidence: exercised
+ * evidence: returns ext_id10_low_code; nothing in the image calls it (uncalled code, made a function 2026-11-09); between ext_device_status and ext_id10_high_code_get, so by link order part of sdk/sy/syextchk.c; exercised 2026-11-12: called by the harness after ext_id10_low_code was poked to 0x1234 it returned 0x1234, and after a poke of 7 it returned 7
  * matched: source/sdk/sy/syextchk.c (tools/match/match.py)
  */
 int ext_id10_low_code_get(void)
@@ -145,8 +145,8 @@ int ext_id10_low_code_get(void)
 }
 
 /* 0x0c138540  size 0xe  file by match with source
- * confidence: inferred
- * evidence: returns ext_id10_high_code; nothing in the image calls it (uncalled code, made a function 2026-11-09); between ext_id10_low_code_get and g2_timeout_flag_clear, so by link order part of sdk/sy/syextchk.c
+ * confidence: exercised
+ * evidence: returns ext_id10_high_code; nothing in the image calls it (uncalled code, made a function 2026-11-09); between ext_id10_low_code_get and g2_timeout_flag_clear, so by link order part of sdk/sy/syextchk.c; exercised 2026-11-12: called by the harness after ext_id10_high_code was poked to 0x55aa it returned 0x55aa and after a poke of -3 it returned -3; after ext_devices_release (with ext_probe_state -1 and the code poked 0x33) it returned -2
  * matched: source/sdk/sy/syextchk.c (tools/match/match.py)
  */
 int ext_id10_high_code_get(void)
@@ -207,8 +207,8 @@ bool ext_bridge_signature_ok(uint bridge)
 }
 
 /* 0x0c138660  size 0x52  file by match with source
- * confidence: inferred
- * evidence: writes a zero word to the bridge register at +0x14 over the G2 bus (g2_cpu_copy_to_bus) with interrupts masked; returns 1 on success; part of syExtChk
+ * confidence: exercised
+ * evidence: writes a zero word to the bridge register at +0x14 over the G2 bus (g2_cpu_copy_to_bus) with interrupts masked; returns 1 on success; part of syExtChk; exercised 2026-11-12: called by the harness with 0xa1000800 it called g2_cpu_copy_to_bus(a stack word, 0xa1000814, 4, 1, 1, 1), which wrote 0 to a1000814, and returned 1 (the copy returned 0); called by ext_devices_release for 0xa1001800 it wrote 0 to a1001814
  * matched: source/sdk/sy/syextchk.c (tools/match/match.py)
  */
 int ext_bridge_clear_reg14(int bridge)
@@ -225,8 +225,8 @@ int ext_bridge_clear_reg14(int bridge)
 }
 
 /* 0x0c1386c0  size 0x5c  file by match with source
- * confidence: inferred
- * evidence: writes 0x5a00a500 with the address's bits 8-15 in bits 16-23 to the bridge control register at +0x18 over the G2 bus with interrupts masked (the same key with bit 0 set is what turns such a bridge on); returns 1 on success; part of syExtChk
+ * confidence: exercised
+ * evidence: writes 0x5a00a500 with the address's bits 8-15 in bits 16-23 to the bridge control register at +0x18 over the G2 bus with interrupts masked (the same key with bit 0 set is what turns such a bridge on); returns 1 on success; part of syExtChk; exercised 2026-11-12: called by the harness with 0xa1001400 it wrote 0x5a14a500 to a1001418 and with 0xa1000800 it wrote 0x5a08a500 to a1000818, each through g2_cpu_copy_to_bus(a stack word, bridge + 0x18, 4, 1, 1, 1), and returned 1 (the copy returned 0)
  * matched: source/sdk/sy/syextchk.c (tools/match/match.py)
  */
 int ext_bridge_hold_off(uint bridge)

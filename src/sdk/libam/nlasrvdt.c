@@ -55,8 +55,8 @@ void bios_helpers_copy(void)
 }
 
 /* 0x0c117680  size 0x20  file by match with source
- * confidence: inferred
- * evidence: (table): copies 0x1c00 words to 0xac018000 and points bios_helper_table there; nothing in the image calls it (uncalled code, made a function 2026-11-09); between bios_helpers_copy and bios_coin_config_check, so by link order part of sdk/libam/nlasrvdt.c
+ * confidence: exercised
+ * evidence: (table): copies 0x1c00 words to 0xac018000 and points bios_helper_table there; nothing in the image calls it (uncalled code, made a function 2026-11-09); between bios_helpers_copy and bios_coin_config_check, so by link order part of sdk/libam/nlasrvdt.c; exercised 2026-11-12: called by the harness with scratch memory holding 0x11111111, 0x22222222 at its start, 0x44444444 at +0x6FFC and 0x33333333 at +0x7000, and bios_helper_table poked to 0, it set bios_helper_table to 0xAC018000 and stored 0x11111111, 0x22222222 at 0x0C018000 and 0x44444444 at 0x0C01EFFC, and left 0x0C01F000 as it was (0x1C00 words)
  * matched: source/sdk/libam/nlasrvdt.c (tools/match/match.py)
  */
 void bios_helpers_install(uint *table)
@@ -85,8 +85,8 @@ int bios_coin_config_check(coin_settings_rec *settings)
 }
 
 /* 0x0c1176e0  size 0x1a  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlasrvdt.c: calls BIOS helper entry 0x14 with a coin setting number; returns 4 bytes that coin_config_from_args and settings_from_boot_id copy into the coin configuration
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlasrvdt.c: calls BIOS helper entry 0x14 with a coin setting number; returns the address of 4 rate bytes that coin_config_from_args and settings_from_boot_id copy into the coin configuration; exercised 2026-11-12: called by the harness after helper table word +0x14 was poked to bios_helper_get's address, it returned 0x0C018118 for 3 and 0x0C018100 for 0 (words 3 and 0 of the table): the setting is passed on and the entry's result returned; with the snapshot's entry (the harness's stand-in) it returned the address 0x0C018400
  * matched: source/sdk/libam/nlasrvdt.c (tools/match/match.py)
  */
 int bios_coin_setting(int setting)
@@ -188,8 +188,8 @@ int bios_helper_08(void)
 }
 
 /* 0x0c117860  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlasrvdt.c: calls BIOS helper entry 0x0c through its uncached address; nothing calls it
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlasrvdt.c: calls BIOS helper entry 0x0c through its uncached address; nothing calls it; exercised 2026-11-12: called by the harness it called 0xAC018118, helper table word +0x0C (0x0C018118) plus 0xA0000000; with that word poked to eeprom_save_max_size (0x0C117440) it jumped to 0xAC117440 and r0 came back 0x2A
  * matched: source/sdk/libam/nlasrvdt.c (tools/match/match.py)
  */
 void bios_helper_0c(void)
@@ -198,8 +198,8 @@ void bios_helper_0c(void)
 }
 
 /* 0x0c1178a0  size 0x20  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlasrvdt.c: calls BIOS helper entry 0x40 through its uncached address; nothing calls it
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlasrvdt.c: calls BIOS helper entry 0x40 through its uncached address; nothing calls it; exercised 2026-11-12: called by the harness it called 0xAC018180, helper table word +0x40 (0x0C018180) plus 0xA0000000; with that word poked to eeprom_save_max_size (0x0C117440) it called that routine through 0xAC117440 and r0 came back 0x2A
  * matched: source/sdk/libam/nlasrvdt.c (tools/match/match.py)
  */
 void bios_helper_40(void)
@@ -223,8 +223,8 @@ void bios_helper_44(void)
 }
 
 /* 0x0c117920  size 0x20  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlasrvdt.c: calls BIOS helper entry 0x48 through its uncached address; nothing calls it
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlasrvdt.c: calls BIOS helper entry 0x48 through its uncached address; nothing calls it; exercised 2026-11-12: called by the harness it called 0xAC018190, helper table word +0x48 (0x0C018190) plus 0xA0000000; with that word poked to eeprom_save_max_size (0x0C117440) it called that routine through 0xAC117440 and r0 came back 0x2A
  * matched: source/sdk/libam/nlasrvdt.c (tools/match/match.py)
  */
 void bios_helper_48(void)
@@ -234,8 +234,8 @@ void bios_helper_48(void)
 }
 
 /* 0x0c117960  size 0x26  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlasrvdt.c: calls BIOS helper entry 0x04 through its uncached address and returns 1, or returns 0 when the entry is empty; nothing calls it
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlasrvdt.c: calls BIOS helper entry 0x04 through its uncached address and returns 1, or returns 0 when the entry is empty; nothing calls it; exercised 2026-11-12: called by the harness it called 0xAC018108 (table word +4, 0x0C018108, plus 0xA0000000) and returned 1; with that word poked to 0 it called nothing and returned 0; poked to eeprom_save_max_size it called that routine and returned 1
  * matched: source/sdk/libam/nlasrvdt.c (tools/match/match.py)
  */
 int bios_helper_04(void)
@@ -250,8 +250,8 @@ int bios_helper_04(void)
 }
 
 /* 0x0c1179a0  size 0x16  file by match with source
- * confidence: inferred
- * evidence: (index): entry index of bios_helper_table; nothing in the image calls it (uncalled code, made a function 2026-11-09); between bios_helper_04 and bios_helper_4c, so by link order part of sdk/libam/nlasrvdt.c
+ * confidence: exercised
+ * evidence: (index): entry index of bios_helper_table; nothing in the image calls it (uncalled code, made a function 2026-11-09); between bios_helper_04 and bios_helper_4c, so by link order part of sdk/libam/nlasrvdt.c; exercised 2026-11-12: called by the harness with bios_helper_table 0xAC018000 (snapshot) it returned 0x0C018118 for 3, 0x0C018100 for 0 and 0 for 0x15, the words at 0x0C01800C, 0x0C018000 and 0x0C018054
  * matched: source/sdk/libam/nlasrvdt.c (tools/match/match.py)
  */
 int bios_helper_get(int index)
@@ -260,8 +260,8 @@ int bios_helper_get(int index)
 }
 
 /* 0x0c1179c0  size 0x20  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlasrvdt.c: calls BIOS helper entry 0x4c through its uncached address; nothing calls it
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlasrvdt.c: calls BIOS helper entry 0x4c through its uncached address; nothing calls it; exercised 2026-11-12: called by the harness it called 0xAC018198, helper table word +0x4C (0x0C018198) plus 0xA0000000; with that word poked to eeprom_save_max_size (0x0C117440) it called that routine through 0xAC117440 and r0 came back 0x2A
  * matched: source/sdk/libam/nlasrvdt.c (tools/match/match.py)
  */
 void bios_helper_4c(void)
@@ -270,8 +270,8 @@ void bios_helper_4c(void)
 }
 
 /* 0x0c117a00  size 0x1e  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlasrvdt.c: calls BIOS helper entry 0x30 through its uncached address; nothing calls it
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlasrvdt.c: calls BIOS helper entry 0x30 through its uncached address; nothing calls it; exercised 2026-11-12: called by the harness it called 0xAC018160, helper table word +0x30 (0x0C018160) plus 0xA0000000; with that word poked to eeprom_save_max_size (0x0C117440) it called that routine through 0xAC117440 and r0 came back 0x2A
  * matched: source/sdk/libam/nlasrvdt.c (tools/match/match.py)
  */
 void bios_helper_30(void)
@@ -295,8 +295,8 @@ int bios_helper_50(int arg)
 }
 
 /* 0x0c117a80  size 0x22  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlasrvdt.c: calls BIOS helper entry 0x54 when present, else returns 0; nothing calls it
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlasrvdt.c: calls BIOS helper entry 0x54 when present, else returns 0; nothing calls it; exercised 2026-11-12: called by the harness with helper table word +0x54 empty (snapshot) it returned 0 and called nothing; with the word poked to eeprom_save_max_size it returned 0x2A, and poked to bios_signature_found_get 1, the entry's result
  * matched: source/sdk/libam/nlasrvdt.c (tools/match/match.py)
  */
 int bios_helper_54(void)
@@ -323,8 +323,8 @@ void bios_helper_58(uint arg0, uint arg1)
 }
 
 /* 0x0c117b00  size 0x20  file by match with source
- * confidence: inferred
- * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlasrvdt.c: calls BIOS helper entry 0x5c when present; nothing calls it
+ * confidence: exercised
+ * evidence: libam (nlam Version 2.220830, Dec 14 2001, in the binary), file nlasrvdt.c: calls BIOS helper entry 0x5c when present; nothing calls it; exercised 2026-11-12: called by the harness with helper table word +0x5C empty (snapshot) and coin_input_held poked to 1, it called nothing and coin_input_held stayed 1; with the word poked to coin_input_release's address, coin_input_held went to 0
  * matched: source/sdk/libam/nlasrvdt.c (tools/match/match.py)
  */
 void bios_helper_5c(void)

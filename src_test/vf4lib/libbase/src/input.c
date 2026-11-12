@@ -303,8 +303,8 @@ void input_merged_update(void)
 }
 
 /* 0x0c026040  size 0x14  file by match with source
- * confidence: inferred
- * evidence: (n): 1 when n is 1 or 2, else 0; role unclear (input_merged_update tests jvs_board_count against the same two values); nothing in the image calls it (uncalled code, made a function 2026-11-09); between input_merged_update and input_merged_bit_pressed, so by link order part of vf4lib/libbase/src/input.c
+ * confidence: exercised
+ * evidence: (n): 1 when n is 1 or 2, else 0; role unclear (input_merged_update tests jvs_board_count against the same two values); nothing in the image calls it (uncalled code, made a function 2026-11-09); between input_merged_update and input_merged_bit_pressed, so by link order part of vf4lib/libbase/src/input.c; exercised 2026-11-12: called by the harness with 0, 1, 2, 3 and -1 it returned 0, 1, 1, 0 and 0
  * same code as main.bin 0c048ea0 (ghidra/TransferFromMain.java)
  * matched: source/vf4lib/libbase/src/input.c (tools/match/match.py)
  */
@@ -314,8 +314,8 @@ int input_is_1_or_2(int n)
 }
 
 /* 0x0c026060  size 0x16  file by match with source
- * confidence: inferred
- * evidence: (bit): that bit of the merged record's newly pressed word; the twin of input_merged_bit_held; nothing in the image calls it (uncalled code, made a function 2026-11-09); between input_is_1_or_2 and input_merged_bit_held, so by link order part of vf4lib/libbase/src/input.c
+ * confidence: exercised
+ * evidence: (bit): that bit of the merged record's newly pressed word; the twin of input_merged_bit_held; nothing in the image calls it (uncalled code, made a function 2026-11-09); between input_is_1_or_2 and input_merged_bit_held, so by link order part of vf4lib/libbase/src/input.c; exercised 2026-11-12: called by the harness with input_merged +0 (held) poked to 0x30 and +8 (newly pressed) to 0x05: bit 2 returned 4 and bit 4 returned 0 (set only in the held word)
  * same code as main.bin 0c048ec0 (ghidra/TransferFromMain.java)
  * matched: source/vf4lib/libbase/src/input.c (tools/match/match.py)
  */
@@ -325,8 +325,8 @@ uint input_merged_bit_pressed(uint bit)
 }
 
 /* 0x0c026080  size 0x16  file by match with source
- * confidence: inferred
- * evidence: (bit): the bit of the merged button word the block at input_merged; only caller switch_29_latch; part of vf4lib/libbase/src/input.c
+ * confidence: exercised
+ * evidence: (bit): that bit of the merged record's held word (input_merged +0, the twin of input_merged_bit_pressed's +8); only caller switch_29_latch; part of vf4lib/libbase/src/input.c; exercised 2026-11-12: called by the harness with input_merged +0 (held) poked to 0x30 and +8 (newly pressed) to 0x05: bit 4 returned 0x10 and bit 0 returned 0 (set only in the pressed word)
  * same code as main.bin 0c048ee0 (ghidra/TransferFromMain.java)
  * matched: source/vf4lib/libbase/src/input.c (tools/match/match.py)
  */

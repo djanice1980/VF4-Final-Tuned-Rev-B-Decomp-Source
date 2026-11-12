@@ -678,9 +678,10 @@ int ta_list_sizes_apply(int size0, int size1, int size2, int size3)
   return r;
 }
 
-void ta_list_sizes_set_up(void)
+int ta_list_sizes_set_up(int size0, int size1, int size2, int size3)
 {
-  if (holly_rev8_or_later == 1) ((int(*)())ta_list_sizes_apply)(); else ((int(*)())ta_list_sizes_set_up_old_holly)();
+  if (holly_rev8_or_later == 1) return ta_list_sizes_apply(size0,size1,size2,size3);
+  return ta_list_sizes_set_up_old_holly(size0,size1,size2,size3);
 }
 
 void render_config_flag20_off(void)

@@ -300,8 +300,8 @@ void tex_target_bg_plane_rewrite(tex_target_rec *target, int bank, uint color0, 
 }
 
 /* 0x0c127f80  size 0x66  file by match with source
- * confidence: inferred
- * evidence: (parameter base, link address, plane address, color): through the VRAM window 0xa5000000 writes a link word ((plane - base) >> 2 | 0x80200000) at the link address and at the plane address a fixed background plane (words 0xe0800000, 0x20800000, 0; vertices (0, 0), (0, 128), (256, 0) at depth 1e-10, all one color); returns the plane address + 0x3c; only caller bg_plane_and_region_array_write; part of an unidentified module (render to texture on top of KamuiTL, game-built, not network code)
+ * confidence: exercised
+ * evidence: (parameter base, link address, plane address, color): through the VRAM window 0xa5000000 writes a link word ((plane - base) >> 2 | 0x80200000) at the link address and at the plane address a fixed background plane (words 0xe0800000, 0x20800000, 0; vertices (0, 0), (0, 128), (256, 0) at depth 1e-10, all one color); returns the plane address + 0x3c; only caller bg_plane_and_region_array_write; part of an unidentified module (render to texture on top of KamuiTL, game-built, not network code); exercised 2026-11-12: called by the harness with (base 0x00300000, link 0x00300010, plane 0x00300400, color 0x00abcdef) it wrote 0x80200100 at a5300010 and from a5300400 0xe0800000, 0x20800000, 0, then (0, 0, 1e-10), (0, 128, 1e-10), (256, 0, 1e-10) each followed by 0x00abcdef, and returned 0x0030043c; with base 0x00100000, link 0x00200000 and plane 0x00200100 the link word was 0x80240040 and it returned 0x0020013c
  * matched: source/gfxlib/tex_render.c (tools/match/match.py)
  */
 int bg_plane_256x128_write(int param_base, uint link_addr, uint plane_addr, uint color)
@@ -331,8 +331,8 @@ int bg_plane_256x128_write(int param_base, uint link_addr, uint plane_addr, uint
 }
 
 /* 0x0c128020  size 0x64  file by match with source
- * confidence: inferred
- * evidence: (out link word, parameter base, plane address, color): as bg_plane_256x128_write with the link word stored through a normal pointer; returns the plane address + 0x3c; only caller cpu_ol_background_write; part of an unidentified module (render to texture on top of KamuiTL, game-built, not network code)
+ * confidence: exercised
+ * evidence: (out link word, parameter base, plane address, color): as bg_plane_256x128_write with the link word stored through a normal pointer; returns the plane address + 0x3c; only caller cpu_ol_background_write; part of an unidentified module (render to texture on top of KamuiTL, game-built, not network code); exercised 2026-11-12: called by the harness with (a buffer, base 0x00100000, plane 0x00200100, color 0x12345678) it stored 0x80240040 in the buffer, wrote from a5200100 0xe0800000, 0x20800000, 0, then (0, 0, 1e-10), (0, 128, 1e-10), (256, 0, 1e-10) each followed by 0x12345678, and returned 0x0020013c
  * matched: source/gfxlib/tex_render.c (tools/match/match.py)
  */
 int bg_plane_256x128_write_link_out(uint *link, int param_base, uint plane_addr, uint color)
@@ -361,8 +361,8 @@ int bg_plane_256x128_write_link_out(uint *link, int param_base, uint plane_addr,
 }
 
 /* 0x0c1280a0  size 0xa8  file by match with source
- * confidence: inferred
- * evidence: (VRAM address, tiles across, tiles down, object list address): writes a region array (after a flush entry when the library state flag +8 bit 7 is set) whose every tile has control y << 8 | x << 2 | 0x20000000 (bit 31 on the last), the first list word pointing at the one object list and the other four empty (0x80000000); returns the address after it; only caller bg_plane_and_region_array_write; part of an unidentified module (render to texture on top of KamuiTL, game-built, not network code)
+ * confidence: exercised
+ * evidence: (VRAM address, tiles across, tiles down, object list address): writes a region array (after a flush entry when the library state flag +8 bit 7 is set) whose every tile has control y << 8 | x << 2 | 0x20000000 (bit 31 on the last), the first list word pointing at the one object list and the other four empty (0x80000000); returns the address after it; only caller bg_plane_and_region_array_write; part of an unidentified module (render to texture on top of KamuiTL, game-built, not network code); exercised 2026-11-12: called by the harness with (0x00300000, 2, 2, 0x00123400) and gfx_state +8 0x8f as the snapshot has it, it wrote a flush entry (0x10000000, five 0x80000000) and then four 6-word tiles 0x20000000, 0x20000004, 0x20000100, 0xa0000104, each with 0x00123400 and four 0x80000000, returning 0x00300078; with +8 poked 0x0f, (0x00300000, 3, 1, 0x00555500) wrote no flush entry, tiles 0x20000000, 0x20000004, 0xa0000008 and returned 0x00300048
  * matched: source/gfxlib/tex_render.c (tools/match/match.py)
  */
 int region_array_one_list_write(int addr, uint tiles_x, uint tiles_y, uint list_addr)
@@ -398,8 +398,8 @@ int region_array_one_list_write(int addr, uint tiles_x, uint tiles_y, uint list_
 }
 
 /* 0x0c128160  size 0x54  file by match with source
- * confidence: inferred
- * evidence: (parameter base, link address, tiles across, tiles down, color): bg_plane_256x128_write at link + 8, the end-of-list word 0xf0000000 at link + 4, then region_array_one_list_write at (the plane end + 99) & 0xffffff9c (a mask that is not a power-of-two alignment) pointing every tile at the link; returns that address; both arms of its final test do the same; nothing in the image calls it; part of an unidentified module (render to texture on top of KamuiTL, game-built, not network code)
+ * confidence: exercised
+ * evidence: (parameter base, link address, tiles across, tiles down, color): bg_plane_256x128_write at link + 8, the end-of-list word 0xf0000000 at link + 4, then region_array_one_list_write at (the plane end + 99) & 0xffffff9c (a mask that is not a power-of-two alignment) pointing every tile at the link; returns that address; both arms of its final test do the same; nothing in the image calls it; part of an unidentified module (render to texture on top of KamuiTL, game-built, not network code); exercised 2026-11-12: called by the harness with (base 0x00100000, link 0x00200000, 2 across, 1 down, color 0x11223344) it wrote the link word 0x80240002 at a5200000, 0xf0000000 at a5200004 and the plane from a5200008 (bg_plane_256x128_write returned 0x00200044), then at 0x00200084 ((0x00200044 + 99) & 0xffffff9c) a flush entry and the tiles 0x20000000 and 0xa0000004 pointing at 0x00200000, and returned 0x00200084
  * matched: source/gfxlib/tex_render.c (tools/match/match.py)
  */
 uint bg_plane_and_region_array_write(uint param_base, uint link_addr, uint tiles_x, uint tiles_y, uint color)
@@ -518,9 +518,9 @@ void tex_render_start(void)
 }
 
 /* 0x0c1284a0  size 0x5a  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x5c
- * evidence: (no arguments): clears the library state's wait counter (+0x36c) and calls the state's wait hook (+0x268 with +0x26c) until the render state (+0x208) is 0; returns 1 when the counter passes the limit +0x224 first, else 0; nothing in the image calls it; part of an unidentified module (render to texture on top of KamuiTL, game-built, not network code)
+ * evidence: (no arguments): clears the library state's wait counter (+0x36c) and calls the state's wait hook (+0x268 with +0x26c) until the render state (+0x208) is 0; returns 1 when the counter passes the limit +0x224 first, else 0; nothing in the image calls it; part of an unidentified module (render to texture on top of KamuiTL, game-built, not network code); exercised 2026-11-12: called by the harness with render_busy (+0x208) 0 as the snapshot has it and +0x36c poked 5, it returned 0 at once with +0x36c 0; with render_busy poked 1 and the limit +0x224 1 as the snapshot has it (interrupts allowed), it called the hook (busy_wait_hook_noop) 337 times until the V-blank count reached 2 and returned 1, render_busy still 1
  * matched: source/gfxlib/tex_render.c (tools/match/match.py)
  */
 int tex_render_wait(void)
@@ -636,8 +636,8 @@ void pvr_scaler_regs_save(void)
 }
 
 /* 0x0c128700  size 0x2a  file by match with source
- * confidence: inferred
- * evidence: (no arguments): writes pvr_saved_reg_f4 and pvr_saved_reg_118 back to 0xf4 and 0x118 (pvr_reg_write_both); nothing in the image calls it; part of an unidentified module (render to texture on top of KamuiTL, game-built, not network code)
+ * confidence: exercised
+ * evidence: (no arguments): writes pvr_saved_reg_f4 and pvr_saved_reg_118 back to 0xf4 and 0x118 (pvr_reg_write_both); nothing in the image calls it; part of an unidentified module (render to texture on top of KamuiTL, game-built, not network code); exercised 2026-11-12: called by the harness with pvr_saved_reg_f4 poked 0x12345 and pvr_saved_reg_118 0x678 it called pvr_reg_write_both(0xf4, 0x12345) and (0x118, 0x678), and with 0xabc and 9 it called (0xf4, 0xabc) and (0x118, 9)
  * matched: source/gfxlib/tex_render.c (tools/match/match.py)
  */
 void pvr_scaler_regs_restore(void)
@@ -796,9 +796,9 @@ void bank_lists_store_to_ring(void)
 }
 
 /* 0x0c128a00  size 0x3e  file by match with source
- * confidence: inferred
+ * confidence: exercised
  * extent: 0x50
- * evidence: (list, out): reads one ELAN list of the bank being built: its segment count into out +0x10, and its head pair (count 0) or tail pair into out +0 / +4; nothing in the image calls it (uncalled code, made a function 2026-11-09); between bank_lists_store_to_ring and bank_list_tail_swap, so by link order part of gfxlib/tex_render.c
+ * evidence: (list, out): reads one ELAN list of the bank being built: its segment count into out +0x10, and its head pair (count 0) or tail pair into out +0 / +4; nothing in the image calls it (uncalled code, made a function 2026-11-09); between bank_lists_store_to_ring and bank_list_tail_swap, so by link order part of gfxlib/tex_render.c; exercised 2026-11-12: called by the harness with bank_build_index 3 as the snapshot has it, list 0 (count 0x68, head abfff000/0x80, tail aa00b160/0x120) filled out with aa00b160, 0x120 and 0x68 at +0x10, words +8 and +0xc untouched; list 1 with its count poked 0 gave its head pair abfff0c0, 0xa0 and 0
  * matched: source/gfxlib/tex_render.c (tools/match/match.py)
  */
 void bank_list_tail_read(int list, uint *piece)
@@ -819,8 +819,8 @@ void bank_list_tail_read(int list, uint *piece)
 }
 
 /* 0x0c128a60  size 0x58  file by match with source
- * confidence: inferred
- * evidence: (list, record): the counterpart of bank_list_tail_read: keeps the list's tail pair in record +8 / +0xc; when the counts differ, makes the record's pair and count the list's tail, then replaces the pair with the link read from the last 32-byte block (word +4 | 0xaa000000, word +0xc); record +0x10 = the count difference; nothing in the image calls it (uncalled code, made a function 2026-11-09); between bank_list_tail_read and bank_list_piece_append, so by link order part of gfxlib/tex_render.c
+ * confidence: exercised
+ * evidence: (list, record): the counterpart of bank_list_tail_read: keeps the list's tail pair in record +8 / +0xc; when the counts differ, makes the record's pair and count the list's tail, then replaces the pair with the link read from the last 32-byte block (word +4 | 0xaa000000, word +0xc); record +0x10 = the count difference; nothing in the image calls it (uncalled code, made a function 2026-11-09); between bank_list_tail_read and bank_list_piece_append, so by link order part of gfxlib/tex_render.c; exercised 2026-11-12: called by the harness on bank 3 list 0 (count 0x68, tail aa00b160/0x120) with the record {0x0f004000, 0x60, -, -, 0x68} it set +8/+0xc to aa00b160, 0x120 and +0x10 to 0 and left the list alone; with +0x10 0x6b and the words 5, 0x00123440, 6, 0x77 at 0x0f004040 it made the list's tail 0x0f004000/0x60 and count 0x6b and left the record 0xaa123440, 0x77, aa00b160, 0x120, 3
  * matched: source/gfxlib/tex_render.c (tools/match/match.py)
  */
 void bank_list_tail_swap(int list, uint *piece)
@@ -846,8 +846,8 @@ void bank_list_tail_swap(int list, uint *piece)
 }
 
 /* 0x0c128ae0  size 0x5a  file by match with source
- * confidence: inferred
- * evidence: (list, piece): when the piece's size (+0x10) is non-zero, links it into that list of the bank being built (list_seg_link_to from the list's head slot +0x10 while its count is 0, else from its tail +0x20), makes the piece's +8/+0xc the new tail and adds the size to the count; nothing in the image calls it; part of an unidentified module (render to texture on top of KamuiTL, game-built, not network code)
+ * confidence: exercised
+ * evidence: (list, piece): when the piece's size (+0x10) is non-zero, links it into that list of the bank being built (list_seg_link_to from the list's head slot +0x10 while its count is 0, else from its tail +0x20), makes the piece's +8/+0xc the new tail and adds the size to the count; nothing in the image calls it; part of an unidentified module (render to texture on top of KamuiTL, game-built, not network code); exercised 2026-11-12: called by the harness on bank 3, a piece with size (+0x10) 0 changed nothing; with size 2 and +8/+0xc 0x0f004000/0x40, list 1 with its count poked 0 got list_seg_link_to(its head slot 0c41e914, the piece), tail 0x0f004000/0x40 and count 2, and list 0 (count 0x68) got list_seg_link_to(its tail slot 0c41e8f0, the piece) and count 0x6a
  * matched: source/gfxlib/tex_render.c (tools/match/match.py)
  */
 void bank_list_piece_append(int list, uint *piece)
@@ -899,8 +899,8 @@ void ring_list_piece_append(int rec, int list, uint *piece)
 }
 
 /* 0x0c128be0  size 0x22  file by match with source
- * confidence: inferred
- * evidence: (ring record, list, address, size): ring_list_piece_append with the piece {address, size + 0x20}; callers bank_ring_add_slot_lists and bank_ring_add_capture; part of an unidentified module (render to texture on top of KamuiTL, game-built, not network code)
+ * confidence: exercised
+ * evidence: (ring record, list, address, size): ring_list_piece_append with the piece {address, size + 0x20}; callers bank_ring_add_slot_lists and bank_ring_add_capture; part of an unidentified module (render to texture on top of KamuiTL, game-built, not network code); exercised 2026-11-12: called by the harness on a zeroed ring record with list 2's head (+0x54) poked 0x0f005000/0x40, (2, 0x00123400, 0x100) linked from the head (link words 0x08000f00, 0x00123400, 0x09000000, 0x120 at 0x0f005020) and left tail 0x00123400/0x120, count 1; then (2, 0x00200000, 0x40) linked from that tail and left tail 0x00200000/0x60, count 2
  * matched: source/gfxlib/tex_render.c (tools/match/match.py)
  */
 void ring_list_block_append(uint rec, int list, uint addr, int size)
@@ -943,8 +943,8 @@ void bank_ring_open_next(void)
 }
 
 /* 0x0c128d20  size 0x13e  file by match with source
- * confidence: inferred
- * evidence: (record, ring slot 0-3): appends to a bank ring record every list the library stored in ring slot n (start at state +0x37c, size at +0x3cc, five lists of four slots) with ring_list_block_append; before the two modifier-volume lists (1 and 3), when the state word +0x440 is 1, rewrites bits 24-27 of the header at state +0x444 to the list number and appends that header block (+0x448 bytes) first; nothing in the image calls it; part of the unidentified game-built graphics library (render target and bank ring object, 0x0C1278A0-0x0C12911F)
+ * confidence: exercised
+ * evidence: (record, ring slot 0-3): appends to a bank ring record every list the library stored in ring slot n (start at state +0x37c, size at +0x3cc, five lists of four slots) with ring_list_block_append; before the two modifier-volume lists (1 and 3), when the state word +0x440 is 1, rewrites bits 24-27 of the header at state +0x444 to the list number and appends that header block (+0x448 bytes) first; nothing in the image calls it; part of the unidentified game-built graphics library (render target and bank ring object, 0x0C1278A0-0x0C12911F); exercised 2026-11-12: called by the harness on a ring record with heads planted, slot 1 appended the five lists of the snapshot's state (+0x37c, +0x3cc) as (0xab97c000, 0x160), (0xabb7c000, 0x160), (0xabbbc000, 0x1d80), (0xabc3c000, 0x160), (0xabc7c000, 0x160); slot 2 with size [2][2] poked 0, +0x440 1 and +0x444 a header 0xffffffff of 0x60 bytes skipped list 2, appended the header first to lists 1 and 3 (counts 2) and left it 0xf3ffffff
  * matched: source/gfxlib/tex_render.c (tools/match/match.py)
  */
 void bank_ring_add_slot_lists(uint rec, int slot)
@@ -975,8 +975,8 @@ void bank_ring_add_slot_lists(uint rec, int slot)
 }
 
 /* 0x0c128ea0  size 0x66  file by match with source
- * confidence: inferred
- * evidence: (record index, capture record of list_capture_begin form {mask, five addresses, five sizes}): appends each list segment of the capture with a nonzero size to bank ring record n (ring_list_block_append) and returns the mask of the lists added, each as bit i and bit 5 + i; nothing in the image calls it; part of the unidentified game-built graphics library (render target and bank ring object, 0x0C1278A0-0x0C12911F)
+ * confidence: exercised
+ * evidence: (record index, capture record of list_capture_begin form {mask, five addresses, five sizes}): appends each list segment of the capture with a nonzero size to bank ring record n (ring_list_block_append) and returns the mask of the lists added, each as bit i and bit 5 + i; nothing in the image calls it; part of the unidentified game-built graphics library (render target and bank ring object, 0x0C1278A0-0x0C12911F); exercised 2026-11-12: called by the harness with index 2 and a capture of addresses 0x00100000 + i x 0x1000 and sizes 0x40, 0, 0x80, 0, 0x20, it returned 0x2b5 (bits 0, 2, 4, 5, 7, 9) and left bank_ring record 2's lists 0, 2 and 4 with tails (0x00100000, 0x60), (0x00102000, 0xa0), (0x00104000, 0x40) and count 1, lists 1 and 3 untouched
  * matched: source/gfxlib/tex_render.c (tools/match/match.py)
  */
 uint bank_ring_add_capture(int index, int capture)
@@ -1057,8 +1057,8 @@ void bank_ring_replay(int index)
 }
 
 /* 0x0c1290e0  size 0x2c  file by match with source
- * confidence: inferred
- * evidence: (record index): keeps the index in bank_ring_last and releases the bank ring record's job queue at +0xcc (jobq_reset with 1); nothing in the image calls it; part of the unidentified game-built graphics library (render target and bank ring object, 0x0C1278A0-0x0C12911F)
+ * confidence: exercised
+ * evidence: (record index): keeps the index in bank_ring_last and releases the bank ring record's job queue at +0xcc (jobq_reset with 1); nothing in the image calls it; part of the unidentified game-built graphics library (render target and bank ring object, 0x0C1278A0-0x0C12911F); exercised 2026-11-12: called by the harness in one sandbox with index 2: bank_ring_last became 2 and it called jobq_reset(bank_ring+0x284, 1); with 5: bank_ring_last 5 and jobq_reset(bank_ring+0x518, 1), the +0xcc queue of records 0xdc bytes apart
  * matched: source/gfxlib/tex_render.c (tools/match/match.py)
  */
 void bank_ring_drop_jobs(int index)
