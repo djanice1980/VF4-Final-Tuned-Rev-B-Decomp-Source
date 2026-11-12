@@ -34,7 +34,7 @@ bytes.
 
 ## newlib 1.8.2
 
-`source/newlib/` (49 files): the C library routines the program takes
+`source/newlib/` (50 files): the C library routines the program takes
 from newlib 1.8.2. They are a reconstruction from the compiled program,
 not newlib's source text. newlib's notices for the files concerned:
 
@@ -66,7 +66,7 @@ not newlib's source text. newlib's notices for the files concerned:
 
 (`strtok_r.c` carries the same terms with the year 1988.)
 
-**The other 34 files (`libc/ctype/`, `libc/stdlib/`, `libc/string/`, `libc/time/`)**
+**The other 35 files (`libc/ctype/`, `libc/stdlib/`, `libc/string/`, `libc/time/`)**
 
     Copyright (c) 1994, 1997 Cygnus Solutions.
     All rights reserved.
@@ -82,6 +82,10 @@ not newlib's source text. newlib's notices for the files concerned:
     THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
     IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
     WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+
+(newlib's `libc/time/lcltime_r.c` carries no notice of its own: it says
+it is adapted from tzcode, maintained by Arthur David Olson, which is in
+the public domain.)
 
 The routines under `source/libc/` (the printf and scanf families, strtod,
 strtol, strtoul) are not newlib's; their origin is not identified, and

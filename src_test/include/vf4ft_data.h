@@ -5331,7 +5331,6 @@ extern undefined * PTR_DAT_0c05fd70; /* 0x0c05fd70 */
 extern undefined * PTR_DAT_0c05fd74; /* 0x0c05fd74 */
 extern undefined * PTR_DAT_0c05fd78; /* 0x0c05fd78 */
 extern undefined * PTR_tmu0_count_reg_0c05fd90; /* 0x0c05fd90 */
-extern undefined4 DAT_0c05fdf0; /* 0x0c05fdf0 */
 extern undefined * PTR_tmu1_oneshot_clocked_0c05fe54; /* 0x0c05fe54 */
 extern undefined * PTR_DAT_0c05ff04; /* 0x0c05ff04 */
 extern undefined * PTR_DAT_0c05ff08; /* 0x0c05ff08 */
@@ -7301,18 +7300,7 @@ extern undefined * PTR_memcpy_0c081a18; /* 0x0c081a18 */
 extern undefined * PTR_inflate_mask_0c081d68; /* 0x0c081d68 */
 extern undefined * PTR_s_invalid_distance_code_0c081d6c; /* 0x0c081d6c */
 extern undefined * PTR_strtol_0c081ff8; /* 0x0c081ff8 */
-extern undefined2 DAT_0c0821ca; /* 0x0c0821ca */
-extern undefined2 DAT_0c0821cc; /* 0x0c0821cc */
-extern undefined2 DAT_0c0821ce; /* 0x0c0821ce */
-extern undefined2 DAT_0c0821d0; /* 0x0c0821d0 */
-extern undefined4 DAT_0c0821d4; /* 0x0c0821d4 */
-extern undefined4 DAT_0c0821d8; /* 0x0c0821d8 */
-extern undefined4 DAT_0c0821dc; /* 0x0c0821dc */
 extern undefined * PTR_DAT_0c0821e0; /* 0x0c0821e0 */
-extern undefined4 DAT_0c0821e4; /* 0x0c0821e4 */
-extern undefined4 DAT_0c0821e8; /* 0x0c0821e8 */
-extern undefined4 DAT_0c0821ec; /* 0x0c0821ec */
-extern undefined4 DAT_0c0821f0; /* 0x0c0821f0 */
 extern undefined * PTR_DAT_0c0821f4; /* 0x0c0821f4 */
 extern undefined * PTR_DAT_0c0821f8; /* 0x0c0821f8 */
 extern undefined * PTR_memset_0c08225c; /* 0x0c08225c */

@@ -9,8 +9,60 @@
 /* 0x0c159300  size 0x1c2  file by match with source
  * confidence: named
  * extent: 0x1ca
- * evidence: newlib's libc/time/lcltime_r.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py); kept in source/asm as a listing although it is compiled code (a candidate for C source); it applies no time zone and sets tm_isdst to -1; observed live 2026-11-10: called by net_clock_now in the attract demo (frame 3256) with *timep = 0x6af344bd (day 20767, 16:22:21) and returned its res argument filled with sec 21, min 22, hour 16, mday 10, the plain breakdown of that count with no zone offset; tm_isdst lies past the 16 bytes read
- * matched: source/asm/0c159300.s (hand-written assembly, tools/match/match.py)
+ * evidence: newlib's libc/time/lcltime_r.c compiles to these bytes in 1.8.2, 1.9.0, 1.10.0 (GCC 3.2.3, -O1 -ml -m4-single-only; tools/match/find_in_game.py); source/newlib/libc/time/lcltime_r.c is written from the decompiled bytes and matches; it applies no time zone and sets tm_isdst to -1; observed live 2026-11-10: called by net_clock_now in the attract demo (frame 3256) with *timep = 0x6af344bd (day 20767, 16:22:21) and returned its res argument filled with sec 21, min 22, hour 16, mday 10, the plain breakdown of that count with no zone offset; tm_isdst lies past the 16 bytes read
+ * matched: source/newlib/libc/time/lcltime_r.c (tools/match/match.py)
  */
-tm * localtime_r(int *timep, tm *res);
+tm *localtime_r(int *timep, tm *res)
+{
+  long days, rem;
+  int y;
+  int yleap;
+  int *ip;
+
+  days = *timep / 86400;
+  rem = *timep % 86400;
+  while (rem < 0) {
+    rem += 86400;
+    --days;
+  }
+  while (rem >= 86400) {
+    rem -= 86400;
+    ++days;
+  }
+
+  res->tm_hour = rem / 3600;
+  rem %= 3600;
+  res->tm_min = rem / 60;
+  res->tm_sec = rem % 60;
+
+  if ((res->tm_wday = (4 + days) % 7) < 0)
+    res->tm_wday += 7;
+
+  y = 1970;
+  if (days >= 0) {
+    for (;;) {
+      yleap = LEAP(y);
+      if (days < year_lengths[yleap])
+        break;
+      y++;
+      days -= year_lengths[yleap];
+    }
+  }
+  else {
+    do {
+      --y;
+      yleap = LEAP(y);
+      days += year_lengths[yleap];
+    } while (days < 0);
+  }
+
+  res->tm_year = y - 1900;
+  res->tm_yday = days;
+  ip = mon_lengths[yleap];
+  for (res->tm_mon = 0; days >= ip[res->tm_mon]; ++res->tm_mon)
+    days -= ip[res->tm_mon];
+  res->tm_mday = days + 1;
+  res->tm_isdst = -1;
+  return res;
+}
 

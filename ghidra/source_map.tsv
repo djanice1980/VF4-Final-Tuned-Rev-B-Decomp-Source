@@ -5963,10 +5963,10 @@ address	name	size	file	evidence
 0c1357c0	proj_rebuild_rect_proj	62	sdk/naomi_library/projection.c	matched-source
 0c135820	mtx_premul_two	102	sdk/naomi_library/projection.c	matched-source
 0c135890	mtx_set_w_first	54	sdk/naomi_library/projection.c	matched-source
-0c1358e0	tmu0_free_run_start	48	sdk/sy/sytmr.c	matched-source
-0c135920	tmu0_elapsed_ticks	16	sdk/sy/sytmr.c	matched-source
-0c135940	ticks_between	14	sdk/sy/sytmr.c	matched-source
-0c135960	tmu0_ticks_to_usec	46	sdk/sy/sytmr.c	matched-source
+0c1358e0	tmu0_free_run_start	48	sdk/sy/sytmr0.c	matched-source
+0c135920	tmu0_elapsed_ticks	16	sdk/sy/sytmr0.c	matched-source
+0c135940	ticks_between	14	sdk/sy/sytmr0.c	matched-source
+0c135960	tmu0_ticks_to_usec	46	sdk/sy/sytmr0.c	matched-source
 0c1359a0	usec_to_tmu0_ticks	36	sdk/sy/sytmr.c	matched-source
 0c1359e0	tmu1_oneshot	20	sdk/sy/sytmr.c	matched-source
 0c135a00	tmu1_oneshot_clocked	154	sdk/sy/sytmr.c	matched-source

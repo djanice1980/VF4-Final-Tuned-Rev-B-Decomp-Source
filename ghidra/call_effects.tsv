@@ -42,7 +42,7 @@ function	name	convention	writes (scratch registers)
 0c0f5780	vec3_from_pitch_heading	__keeps_r6_r7_fr5_fr6_fr7_fr8_fr9_fr10_fr11	r1,r2,r3,r4,r5,fr1,fr2,fr3,fr4
 0c0f57c0	vec_to_local_into_alt	__keeps_r1_r2_r3_r6_r7_fr7_fr8_fr9_fr10_fr11	r4,r5,fr1,fr2,fr3,fr4,fr5,fr6
 0c0f57e0	vec_to_local_into	__keeps_r1_r2_r3_r5_r6_r7_fr7_fr8_fr9_fr10_fr11	r4,fr1,fr2,fr3,fr4,fr5,fr6
-0c0f5820	vec_to_local_regs_alt	__keeps_r1_r2_r3_r4_r5_r6_r7_fr4_fr5_fr6_fr7_fr8_fr9_fr10_fr11	fr1,fr2,fr3
+0c0f5820	vec_to_local_regs_alt	__keeps_r1_r2_r3_r4_r5_r6_r7_fr8_fr9_fr10_fr11	fr1,fr2,fr3,fr4,fr5,fr6,fr7
 0c0f5840	vec_to_local_regs	__keeps_r1_r2_r3_r4_r5_r6_r7	fr1,fr2,fr3,fr4,fr5,fr6,fr7,fr8,fr9,fr10,fr11
 0c0f5880	mtx_push_regs	__keeps_r4_r5	r1,r2,r3,r6,r7,fr1,fr2,fr3,fr4,fr5,fr6,fr7,fr8,fr9,fr10,fr11
 0c0f58c0	mtx_push_load_identity_regs	__keeps_r4_r5	r1,r2,r3,r6,r7,fr1,fr2,fr3,fr4,fr5,fr6,fr7,fr8,fr9,fr10,fr11
@@ -61,7 +61,7 @@ function	name	convention	writes (scratch registers)
 0c0fbe9a	normal_pack_bytes_copy	__keeps_r1_r3_r5_r6_r7_fr1_fr2_fr3_fr7_fr8_fr9_fr10_fr11	r2,r4,fr4,fr5,fr6
 0c1019e0	elan_matrix_cmds_write	__keeps_r2_r3_r5	r1,r4,r6,r7,fr1,fr2,fr3,fr4,fr5,fr6,fr7,fr8,fr9,fr10,fr11
 0c101aa0	elan_matrix_cmds_write_front	__keeps_r2_r3_r5	r1,r4,r6,r7,fr1,fr2,fr3,fr4,fr5,fr6,fr7,fr8,fr9,fr10,fr11
-0c104260	argb_strips_send	__keeps_r2_r3_r4_r5_r6_r7_fr1_fr2_fr3_fr4_fr5_fr6_fr7_fr8_fr9_fr10_fr11	r1
+0c104260	argb_strips_send	__keeps_r7_fr8_fr9_fr10_fr11	r1,r2,r3,r4,r5,r6,fr1,fr2,fr3,fr4,fr5,fr6,fr7
 0c10426a	argb_strips_send_from_hook	__keeps_r7	r1,r2,r3,r4,r5,r6,fr1,fr2,fr3,fr4,fr5,fr6,fr7,fr8,fr9,fr10,fr11
 0c104340	argb_strip_send	__keeps_r1_r7	r2,r3,r4,r5,r6,fr1,fr2,fr3,fr4,fr5,fr6,fr7,fr8,fr9,fr10,fr11
 0c104450	argb_tris_send	__keeps_r1_r7	r2,r3,r4,r5,r6,fr1,fr2,fr3,fr4,fr5,fr6,fr7,fr8,fr9,fr10,fr11
@@ -74,7 +74,7 @@ function	name	convention	writes (scratch registers)
 0c1049e0	argb_near_vertex_emit	__keeps_r3_r4_r7_fr6_fr7	r1,r2,r5,r6,fr1,fr2,fr3,fr4,fr5,fr8,fr9,fr10,fr11
 0c104b00	argb_tris_send_near_clip	__keeps_r7	r1,r2,r3,r4,r5,r6,fr1,fr2,fr3,fr4,fr5,fr6,fr7,fr8,fr9,fr10,fr11
 0c104c60	argb_tri_near_test	__keeps_r2_r3_r5_r6_r7_fr8_fr9_fr10_fr11	r1,r4,fr1,fr2,fr3,fr4,fr5,fr6,fr7
-0c104cf0	argb_offset_strips_send	__keeps_r2_r3_r4_r5_r6_r7_fr1_fr2_fr3_fr4_fr5_fr6_fr7_fr8_fr9_fr10_fr11	r1
+0c104cf0	argb_offset_strips_send	__keeps_r7_fr8_fr9_fr10_fr11	r1,r2,r3,r4,r5,r6,fr1,fr2,fr3,fr4,fr5,fr6,fr7
 0c104cfa	argb_offset_strips_send_from_hook	__keeps_r7	r1,r2,r3,r4,r5,r6,fr1,fr2,fr3,fr4,fr5,fr6,fr7,fr8,fr9,fr10,fr11
 0c104dd0	argb_offset_strip_send	__keeps_r1_r7	r2,r3,r4,r5,r6,fr1,fr2,fr3,fr4,fr5,fr6,fr7,fr8,fr9,fr10,fr11
 0c104ee0	argb_offset_tris_send	__keeps_r1_r7	r2,r3,r4,r5,r6,fr1,fr2,fr3,fr4,fr5,fr6,fr7,fr8,fr9,fr10,fr11

@@ -2201,7 +2201,7 @@ int __sdivsi3_i4(int dividend,int divisor); /* 0x0c081f40 */
 uint __udivsi3_i4(uint dividend,uint divisor); /* 0x0c081f58 */
 int __fixunssfsi(float value); /* 0x0c081fa0 */
 long atol(char *str); /* 0x0c081fe0 */
-tm * localtime_r(int *timep, tm *res); /* 0x0c082000 */
+tm *localtime_r(int *timep, tm *res); /* 0x0c082000 */
 uint align_up(uint x, uint a); /* 0x0c082200 */
 void block_init(heap_block *b, heap *h, uint units); /* 0x0c082220 */
 void set_guard(heap_block *b); /* 0x0c082240 */

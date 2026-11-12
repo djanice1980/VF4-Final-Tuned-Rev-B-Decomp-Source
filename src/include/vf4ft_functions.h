@@ -8255,7 +8255,7 @@ int __sdivsi3_i4(int dividend,int divisor); /* 0x0c159240 */
 uint __udivsi3_i4(uint dividend,uint divisor); /* 0x0c159258 */
 int __fixunssfsi(float value); /* 0x0c1592a0 */
 long atol(char *str); /* 0x0c1592e0 */
-tm * localtime_r(int *timep, tm *res); /* 0x0c159300 */
+tm *localtime_r(int *timep, tm *res); /* 0x0c159300 */
 void *memchr(const void *s, int c, size_t n); /* 0x0c159500 */
 int memcmp(const void *s1, const void *s2, size_t n); /* 0x0c1595c0 */
 #if defined(NOPROTO_memcpy)

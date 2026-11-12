@@ -10,7 +10,59 @@
  * confidence: inferred
  * extent: 0x1ca
  * evidence: (time pointer, struct tm out): the time-to-calendar conversion; the test.bin build of main.bin's localtime_r (0x0C159300), the same 0x1CA bytes of instructions; reads the tables at 0x0C08D1D8 and 0x0C08D238 (paired with main.bin's 0x0C218230 / 0x0C218290 through the literal pools); referenced by FUN_0c028fe0; part of newlib/libc/time/lcltime_r.c
- * matched: source/asm/0c159300.s (hand-written assembly, tools/match/match.py)
+ * matched: source/newlib/libc/time/lcltime_r.c (tools/match/match.py)
  */
-tm * localtime_r(int *timep, tm *res);
+tm *localtime_r(int *timep, tm *res)
+{
+  long days, rem;
+  int y;
+  int yleap;
+  int *ip;
+
+  days = *timep / 86400;
+  rem = *timep % 86400;
+  while (rem < 0) {
+    rem += 86400;
+    --days;
+  }
+  while (rem >= 86400) {
+    rem -= 86400;
+    ++days;
+  }
+
+  res->tm_hour = rem / 3600;
+  rem %= 3600;
+  res->tm_min = rem / 60;
+  res->tm_sec = rem % 60;
+
+  if ((res->tm_wday = (4 + days) % 7) < 0)
+    res->tm_wday += 7;
+
+  y = 1970;
+  if (days >= 0) {
+    for (;;) {
+      yleap = LEAP(y);
+      if (days < year_lengths[yleap])
+        break;
+      y++;
+      days -= year_lengths[yleap];
+    }
+  }
+  else {
+    do {
+      --y;
+      yleap = LEAP(y);
+      days += year_lengths[yleap];
+    } while (days < 0);
+  }
+
+  res->tm_year = y - 1900;
+  res->tm_yday = days;
+  ip = mon_lengths[yleap];
+  for (res->tm_mon = 0; days >= ip[res->tm_mon]; ++res->tm_mon)
+    days -= ip[res->tm_mon];
+  res->tm_mday = days + 1;
+  res->tm_isdst = -1;
+  return res;
+}
 

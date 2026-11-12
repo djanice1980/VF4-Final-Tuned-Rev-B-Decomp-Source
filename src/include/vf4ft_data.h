@@ -29186,11 +29186,6 @@ extern undefined LAB_ac020010; /* 0xac020010 */
 extern undefined4 DAT_ff000028; /* 0xff000028 */
 extern undefined4 DAT_ff000038; /* 0xff000038 */
 extern undefined4 DAT_ff00003c; /* 0xff00003c */
-extern undefined1 DAT_ffd80000; /* 0xffd80000 */
-extern undefined1 DAT_ffd80004; /* 0xffd80004 */
-extern undefined4 DAT_ffd80008; /* 0xffd80008 */
-extern undefined2 DAT_ffd80010; /* 0xffd80010 */
-extern undefined DAT_fffeae80; /* 0xfffeae80 */
 extern undefined DAT_fffffffd; /* 0xfffffffd */
 extern undefined DAT_fffffffe; /* 0xfffffffe */
 extern undefined4 _DAT_0c137284; /* 0x0c137284, accessed as undefined4 */

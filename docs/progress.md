@@ -8899,6 +8899,129 @@ A fresh clone was taken through the README's Reproduce steps (extract,
   asm_readable.py 210 of 210 files; check_private_names.py 52 near
   copies; prize_fly_draw rerun, matches.
 
+## 2026-11-12: fifth judged round: the routines the game never runs; the "exercised" level
+
+- **The level**: `exercised` sits between inferred and observed. The
+  game never enters the routine, so no log of a run can bear it out;
+  instead the VF4debug harness called it with inputs chosen from its
+  description, the expected results written down before the call, and
+  the results bore the description out. It tests the description
+  against the code, not how or whether the game would use the routine
+  (README, Annotation conventions). tools/observe_apply.py reads
+  ghidra/exercise_verdicts.tsv beside ghidra/live_verdicts.tsv; an
+  observed verdict outranks an exercised one; ExportSource writes
+  `confidence: exercised` from the row's sentence ("exercised DATE:
+  ..."); the status page has the level as its own column and segment.
+- **The round**: 1,886 routines in 30 batches (build/agents/exercised/,
+  BRIEF.md has the rules and the harness's quirks: a call restores the
+  whole CPU after it, so a routine that leaves its result in XMTRX
+  needs a driver; va_list is five words; floats go in as their bits).
+  The pilot batch x01 (C library math, character classes, the scanner,
+  zlib) was committed on 2026-11-10, the other 29 on 2026-11-12.
+- **Verdicts**: 1,572 exercised, 274 untested, 40 conflicts. Untested
+  means calling it shows nothing the description claims: empty
+  routines, constants, wrappers of one literal, routines whose
+  substance is a device's answer. src/ now has 1,530 routines at
+  `exercised`; the other exercised verdicts are on routines already
+  named or observed and leave them so.
+- **Conflicts**: all 40 corrected from what the calls showed, each with
+  "corrected 2026-11-12 from harness calls: ..." after it. Among them:
+  mtx_project_points reads 24-byte input records (the vertices of
+  light_vertex_single), not 16; lists_send_to_ta's switch is
+  mv_hdr_on; rom_crc_feed feeds signed bytes; attack_move_find steps
+  away from its second argument; url_is_power_on is an exact match.
+- **Text**: 193 more description and stale-name fixes from the judges'
+  notes, by exact text (build/agents/exercised/apply_round5.py).
+- **Faults of the original game**: 29 recorded "as the game has it",
+  among them model_list_compile's count store, the background-plane
+  loaders' copied vertex words, dither_argb8888_in_place never
+  dithering alpha, peer_start_put_table's short write and
+  pal_find_free_blocks. Two were read from the code, not run, and say
+  so.
+- **Declarations**: 20 returns and parameters the calls showed (asin,
+  floor, copysign, isnan, scalbn, sscanf_counted in the pilot;
+  ta_list_sizes_set_up, mtx_determinant, mtx_stack_drop,
+  mtx_rot_vec_to_vec, tmu2_ticks_between, now_seconds_get,
+  heap_realloc, realloc, strbuf_scanf, the line3d_quads wrappers,
+  item_has_88 and _83), each kept only if its file still matched
+  (build/agents/exercised/protos_try.py). script_op_62_move_if_opponent
+  is script_op_62_move_if_chara (it tests the rob's own character).
+- **Structural notes** (build/agents/exercised/notes_structural.tsv),
+  placed the same day: hand-written routines take full declarations in
+  their symbol rows instead of param_N guesses (mtx_add and
+  mtx_subtract take float *mtx; the four coli push-point forms take
+  (float *point, osage_coli_shape *shape); elan_matrix_cmds_write_front
+  names out and params); __movstrSI12_i4 takes (void *dst, void *src).
+  ghidra/known_functions.tsv is applied by `run.sh annotate`, so a
+  change there needs `run.sh all`, not the types-to-export passes.
+  frame_buffer_read_fifth takes void *out; pcm_header_field's channels
+  is a local, unset when the header's low two bits are 3 (it returns
+  what the register held, as the game has it), and matches as one.
+- **Ghidra stays at 12.1.2**: 12.2's DataTypeWriter (rewritten around a
+  dependency graph) does not count an array of structs as a dependency,
+  so vf4ft_types.h wrote aet_quad before aet_quad_vertex and no longer
+  compiled, and it wrote 31 by-value structs twice. Opening the project
+  in 12.2 also upgrades its database for good, so the project was
+  rebuilt from scratch with `ghidra/run.sh all` (3.5 minutes): src/
+  came out the same apart from this round's changes and two unused
+  unnamed externs. The language variant is a per-version user
+  extension: a new Ghidra needs ghidra/lang/install.sh again.
+  ApplyTypes.java removes stale types with dtm.remove(t), which both
+  versions have.
+- **For the harness's next milestone**:
+  build/agents/exercised/harness_requests.md.
+- **Checked**: main.bin 6,632 of 6,632; test.bin 121 of 121;
+  asm_readable.py 210 of 210 files; console.c 192 of 192;
+  check_private_names.py 52 near copies.
+
+## 2026-11-12: the last listings that were compiled code; convention lines checked against every listing; to_asm.py's faults
+
+- **Five listings are C now.** The four TMU0 routines
+  (tmu0_free_run_start, tmu0_elapsed_ticks, ticks_between,
+  tmu0_ticks_to_usec) match as plain C with the tree's flags plus
+  `-fno-omit-frame-pointer`: the frame-pointer prologue and epilogue with
+  no frame in use was that flag. The rest of sytmr.c matches without it,
+  so they were a file of their own: source/sdk/sy/sytmr0.c (file name
+  ours; known_files and known_files_test split at 0c1359a0 / 0c05fe00).
+  It is the only file in the tree that takes the flag. localtime_r is
+  source/newlib/libc/time/lcltime_r.c, written from the decompiled bytes
+  (not newlib's text) and matching with the tree's flags; THIRD-PARTY.md
+  says newlib's file carries no notice of its own (adapted from tzcode,
+  in the public domain). source/asm/ has 205 files, 359 routines.
+- **Convention lines against the listings**:
+  tools/match/asm_writes.py walks every hand-written routine's listing
+  from its entry (branches, delay slots, calls and tail branches, the
+  FPU state along each path: under fschg an fmov's even frN is a pair
+  and an odd one the other bank, after frchg the text's registers are
+  the caller's back bank) and lists each routine whose listing writes a
+  scratch register ghidra/call_effects.tsv says it keeps. Of the 96
+  routines whose Ghidra body is shorter than their listing, three were
+  wrong where it mattered, now rows in call_effects_overrides.tsv:
+  argb_strips_send and argb_offset_strips_send (four pushes that fall
+  into their _from_hook entry; Ghidra measured the 10 bytes and said
+  everything but r1 is kept) and vec_to_local_regs_alt (four
+  instructions that branch into vec_to_local_regs, which leaves the
+  point in fr4-fr6). The others were short by a pool or matched already.
+  Three override rows are narrower than the walk on purpose
+  (vec_to_local_into's r5 is stepped back; vertex_colour_group_send's
+  hook targets; _start never returns); the tool lists them apart and
+  exits 1 only for the rest.
+- **to_asm.py**: trace() walks on from a branch target that is also a
+  delay slot; region() takes in the instruction at a branch target equal
+  to the current end; a jmp or jsr through a register loaded with an
+  address inside the routine is followed; flow into another file's
+  routine (a tail call or a branch into it) leaves the routine instead
+  of refusing it, and another file's pool stays there (render() already
+  writes those loads as .word). Nothing is regenerated with it (the
+  listings are annotated by hand); tools/match/to_asm_selftest.py runs
+  its region and listing steps over every file in source/asm/: 180
+  spans the same as the file before, 188 after; the 13 short end in data
+  no instruction loads pc-relative, the 4 errors are files that start
+  with data.
+- **Checked**: main.bin 6,632 of 6,632; test.bin 121 of 121;
+  asm_readable.py 205 of 205 files; console.c 192 of 192;
+  check_private_names.py 52 near copies; asm_writes.py exit 0.
+
 ## Next
 
 In order of value per effort:
@@ -8909,16 +9032,19 @@ In order of value per effort:
    (2026-11-10). The ORIGINAL SHAPE audit is placed: 34 tags are left,
    26 corroborated and 8 assumed (build/agents/shapes/PLACED.md).
    The observed-live tier is in place (2026-11-10: 3,988 routines
-   observed, 235 named, of 6,632, after four judged rounds);
+   observed, 235 named, of 6,632, after four judged rounds), and the
+   exercised tier for code the game never runs (2026-11-12: 1,530
+   routines, 879 left inferred);
    build/agents/observed2/coverage_gaps.md,
-   build/agents/observed3/gaps3.md and
-   build/agents/observed4/harness_requests.md list what no scenario ran
+   build/agents/observed3/gaps3.md,
+   build/agents/observed4/harness_requests.md and
+   build/agents/exercised/harness_requests.md list what no scenario ran
    yet; 510 routines stay reached until the harness has scenarios for
-   them. 1,252 routines are code nothing refers to
-   and cannot be observed by running the game. Left here: the to_asm.py
-   faults; localtime_r and four tmu0 timer routines kept
-   as listings though they look compiled; about 25 hand-written routines
-   whose Ghidra body is cut short (convention lines from a partial body).
+   them. 1,252 routines are code nothing refers to: running the game
+   cannot observe them, so the most they can reach is exercised (274
+   routines stay untested by calls). The to_asm.py faults, the
+   compiled-looking listings and the convention lines of cut-short
+   bodies are closed (2026-11-12); nothing else is left here.
 2. **The gfx_state views that stay**: settled (2026-11-04, every kamui
    file rechecked). gfx_state is volatile as a whole, and the six
    plain-pointer views are the original code's own casts. Nothing is

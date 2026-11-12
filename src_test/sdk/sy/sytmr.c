@@ -6,37 +6,6 @@
  */
 #include "vf4ft.h"
 
-/* 0x0c05fd40  size 0x30  file by match with source
- * confidence: inferred
- * evidence: writes 0 to the timer unit's byte at 0xffd80000 (TOCR), stops TMU0 (TSTR 0xffd80004 bit 0), sets its control word to Pclk/64 (TCR0 = 2, one tick every 1.28 us), loads 0xffffffff into its constant and count registers and starts it again; called by both start-up sequences (sys_bring_up_all, sys_bring_up_vectors_timer); kept as an assembly listing, but it carries a frame-pointer prologue and epilogue with no frame in use, the shape of compiled code (a candidate for C source; compiler or flags not established); part of syTmr; checked against reference material (not in this repo)
- * same code as main.bin 0c1358e0 (ghidra/TransferFromMain.java)
- * matched: source/asm/0c1358e0.s (hand-written assembly, tools/match/match.py)
- */
-void tmu0_free_run_start(void);
-
-/* 0x0c05fd80  size 0x10  file by match with source
- * confidence: inferred
- * evidence: returns the TMU0 count (0xffd8000c) inverted, the ticks, counting up, since the count was last loaded with 0xffffffff (tmu0_free_run_start loads it at start-up and tmu0_restart_usec_scale, which the test program's boot calls after it, loads it again at the same rate); called by (a literal pool word holding its address) FUN_0c0305c0; the test.bin build of main.bin's tmu0_elapsed_ticks (0x0C135920), the same instructions apart from addresses; part of the test.bin copy of sdk/sy/sytmr.c (main.bin's object, ghidra/known_files.tsv)
- * matched: source/asm/0c135920.s (hand-written assembly, tools/match/match.py)
- */
-uint tmu0_elapsed_ticks(void);
-
-/* 0x0c05fda0  size 0xe  file by match with source
- * confidence: observed
- * evidence: (first count, second count): returns the second count minus the first (wrapping; the counts and the result are unsigned tick counts); used with TMU0 counts by naominet_ms_between and by tmu2_ticks_between; kept as an assembly listing, but it carries a frame-pointer prologue and epilogue with no frame in use, the shape of compiled code (a candidate for C source; compiler or flags not established); part of syTmr; checked against reference material (not in this repo); observed live 2026-11-10: in the harness scenario net_fail_auth_2 (vertical blank 2667), called by naominet_ms_between with 0x0211775d and 0x0211aa39, two successive returns of tmu0_elapsed_ticks (through naominet_ticks_now), it returned 13,020, the second minus the first (one 60 Hz frame of the timer model's ticks); in net_card_real_1 (vertical blank 7179), with the start and end ticks of a game, 0x0265e8a0 and 0x0592175b, it returned 53,227,195; all 35 fully recorded calls returned second minus first, and all 7,203 calls came from naominet_ms_between; the second count was never below the first, so the wrap did not run, and tmu2_ticks_between never called it
- * same code as main.bin 0c135940 (ghidra/TransferFromMain.java)
- * matched: source/asm/0c135940.s (hand-written assembly, tools/match/match.py)
- */
-uint ticks_between(uint first, uint second);
-
-/* 0x0c05fdc0  size 0x2e  file by match with source
- * confidence: observed
- * evidence: (ticks): the span in microseconds, unsigned (its low 32 bits): ticks * 128 / 100 done in two parts (a divide by 100 through the reciprocal 0x51eb851f, the remainder kept), i.e. 1.28 us a tick at the rate tmu0_free_run_start sets; naominet_ms_between converts its tick spans with it; kept as an assembly listing, but it carries a frame-pointer prologue and epilogue with no frame in use, the shape of compiled code (a candidate for C source; compiler or flags not established); part of syTmr; checked against reference material (not in this repo); observed live 2026-11-10: in the harness scenario net_fail_auth_2 (vertical blank 2667), called by naominet_ms_between with the 13,020 ticks ticks_between had just returned, it returned 16,665 (13,020 x 1.28 = 16,665.6, cut to an integer), and the registers it left show the two parts: the quotient by 100 (130) in r2, the remainder times 128 (2,560) in r4, that divided by 100 (25) in r1 and the reciprocal 0x51eb851f in r7, 130 x 128 + 25 = 16,665; in net_card_real_1 (vertical blank 7179) 53,227,195 ticks gave 68,130,809, which naominet_ms_between turned into 68,130 ms; all 33 fully recorded calls fit the same arithmetic; no count was large enough to overflow the result
- * same code as main.bin 0c135960 (ghidra/TransferFromMain.java)
- * matched: source/asm/0c135960.s (hand-written assembly, tools/match/match.py)
- */
-uint tmu0_ticks_to_usec(uint ticks);
-
 /* 0x0c05fe00  size 0x24  file by match with source
  * confidence: exercised
  * evidence: (microseconds): the TMU0 ticks for that span (1.28 us a tick), value x 100 / 128 without overflow ((v >> 7) x 100 + ((v & 0x7f) x 100 >> 7)); the inverse of tmu0_ticks_to_usec; nothing in the image calls it (uncalled code, made a function 2026-11-09); between tmu0_ticks_to_usec and tmu1_oneshot, so by link order part of sdk/sy/sytmr.c; exercised 2026-11-12: called by the harness with 1280 it returned 1000, with 1000 781, and with 0xffffffff 0xc7ffffff (3,355,443,199: no overflow)

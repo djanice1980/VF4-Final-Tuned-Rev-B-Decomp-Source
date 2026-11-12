@@ -53,7 +53,9 @@ python3 -I tools/dtpk.py work/assets work/sound   # sound banks to WAV at the dr
 The game was built with GCC 3.2.3 (`-O1 -ml -m4-single-only`, and
 `-fno-delayed-branch` for the game's own code and libam;
 `python3 -I tools/match/delay_slots.py --groups` maps which code is built
-which way). The matching tools add `-g` (tools/match/match.py's FLAGS):
+which way; the two files that took other flags, libgcc's `_fixunssfsi.c`
+with `-O2` and the TMU0 timer routines with `-fno-omit-frame-pointer`, name
+them in a `match-flags:` comment). The matching tools add `-g` (tools/match/match.py's FLAGS):
 it changes no instruction, and one function is plain C only with it. To
 build that compiler and check reconstructed C against the game:
 

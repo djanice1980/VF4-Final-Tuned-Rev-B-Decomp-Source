@@ -1516,10 +1516,10 @@ address	name	size	file	evidence
 0c05fc20	proj_rebuild_rect_proj	62	sdk/naomi_library/projection.c	matched-source
 0c05fc80	mtx_premul_two	102	sdk/naomi_library/projection.c	matched-source
 0c05fcf0	mtx_set_w_first	54	sdk/naomi_library/projection.c	matched-source
-0c05fd40	tmu0_free_run_start	48	sdk/sy/sytmr.c	matched-source
-0c05fd80	tmu0_elapsed_ticks	16	sdk/sy/sytmr.c	matched-source
-0c05fda0	ticks_between	14	sdk/sy/sytmr.c	matched-source
-0c05fdc0	tmu0_ticks_to_usec	46	sdk/sy/sytmr.c	matched-source
+0c05fd40	tmu0_free_run_start	48	sdk/sy/sytmr0.c	matched-source
+0c05fd80	tmu0_elapsed_ticks	16	sdk/sy/sytmr0.c	matched-source
+0c05fda0	ticks_between	14	sdk/sy/sytmr0.c	matched-source
+0c05fdc0	tmu0_ticks_to_usec	46	sdk/sy/sytmr0.c	matched-source
 0c05fe00	usec_to_tmu0_ticks	36	sdk/sy/sytmr.c	matched-source
 0c05fe40	tmu1_oneshot	20	sdk/sy/sytmr.c	matched-source
 0c05fe60	tmu1_oneshot_clocked	154	sdk/sy/sytmr.c	matched-source

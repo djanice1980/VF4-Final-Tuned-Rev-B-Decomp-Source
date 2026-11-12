@@ -24,7 +24,7 @@ game before it is written; then
 
 checks it as every source file is checked.
 """
-import os, re, struct, subprocess, sys, tempfile
+import bisect, os, re, struct, subprocess, sys, tempfile
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import program
@@ -57,12 +57,32 @@ def target(ops):
     return int(m.group(1), 16) if m else None
 
 
-def trace(lst, lo, hi, entries):
-    """(code addresses, {pool address: width}) reached from entries."""
-    code, pool, work = set(), {}, list(entries)
+def loaded_word(lst, pc, reg, word_at):
+    """The pool word a mov.l a few instructions before pc put in reg, or None."""
+    for back in range(2, 14, 2):
+        mn, ops = lst.get(pc - back, (None, ""))
+        if mn is None or mn in DELAYED:
+            return None
+        if mn == "mov.l" and ops.endswith("," + reg) and target(ops) is not None:
+            return word_at(target(ops))
+        if ops.endswith("," + reg):
+            return None  # reg set some other way
+    return None
+
+
+def trace(lst, lo, hi, entries, external=lambda a: False, word_at=None):
+    """(code addresses, {pool address: width}) reached from entries.
+
+    A walk may start at an address already counted as a delay slot (a branch
+    into the slot runs on past it); external(a) is true where another file's
+    routine is, and flow there leaves this routine (a tail call or a branch
+    into it) instead of being followed; with word_at, a jmp or jsr through a
+    register loaded from the pool with an address inside lo..hi is followed."""
+    code, pool, walked, work = set(), {}, set(), list(entries)
     while work:
         pc = work.pop()
-        while lo <= pc < hi and pc not in code and pc not in pool and pc in lst:
+        while lo <= pc < hi and pc not in walked and pc not in pool and pc in lst and not external(pc):
+            walked.add(pc)
             code.add(pc)
             mn, ops = lst[pc]
             t = target(ops)
@@ -70,6 +90,10 @@ def trace(lst, lo, hi, entries):
                 pool[t] = PCREL[mn]
             elif mn in ("bra", "bsr", "bt", "bf", "bt.s", "bf.s") and t is not None:
                 work.append(t)
+            elif mn in ("jmp", "jsr") and word_at is not None:
+                w = loaded_word(lst, pc, ops.strip().lstrip("@"), word_at)
+                if w is not None and lo <= w < hi:
+                    work.append(w)
             if mn in DELAYED:
                 code.add(pc + 2)
                 if pc + 2 in lst and lst[pc + 2][0] in PCREL and target(lst[pc + 2][1]) is not None:
@@ -233,14 +257,26 @@ def region(img, a, cands, matched):
     the pool words and branch targets it reaches past its end (hand-written
     routines share a pool placed after the last of them)."""
     hi = a + cands[a][0]
+    starts = sorted(set(matched) | set(cands))
+
+    def external(t):
+        """t is in another file's routine: the nearest function start at or
+        before it is a matched one past this routine's start."""
+        i = bisect.bisect_right(starts, t) - 1
+        return i >= 0 and starts[i] > a and starts[i] in matched
+
+    def word_at(p):
+        return struct.unpack_from("<I", img, p - BASE)[0] if BASE <= p < BASE + len(img) - 3 else None
+
     for _ in range(100):
         inside = [b for b in sorted(cands) if a <= b < hi]
         hi = max([hi] + [b + cands[b][0] for b in inside])
         lst = objdump(img[a - BASE:hi + 0x400 - BASE], a)
-        code, pool = trace(lst, a, hi + 0x400, inside)
-        far = [p + w for p, w in pool.items() if p + w > hi]
-        far += [t for pc in code if pc < hi and lst[pc][0] in ("bra", "bt", "bf", "bt.s", "bf.s")
-                for t in [target(lst[pc][1])] if t is not None and hi <= t < hi + 0x400]
+        code, pool = trace(lst, a, hi + 0x400, inside, external, word_at)
+        far = [p + w for p, w in pool.items() if p + w > hi and not external(p)]  # another file's pool stays there
+        # a branch target at or past the end: the instruction there is in the routine
+        far += [t + 2 for pc in code if pc < hi and lst[pc][0] in ("bra", "bt", "bf", "bt.s", "bf.s")
+                for t in [target(lst[pc][1])] if t is not None and hi <= t < hi + 0x400 and not external(t)]
         code_past = [pc for pc in code if pc >= hi]
         new = max(far + [pc + 2 for pc in code_past] + [hi])
         if new == hi:

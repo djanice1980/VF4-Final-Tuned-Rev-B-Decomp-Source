@@ -105,7 +105,7 @@ void vec_to_local_into(float *in, float *out);
 /* 0x0c0f5820  size 0x8  file by match with source
  * confidence: exercised
  * evidence: hand-written: an alternate entry of vec_to_local_regs that skips the subtraction of the matrix's translation: branches into its body at vec_to_local_regs+0xc; nothing in the image calls it (uncalled code, made a function 2026-11-09); between vec_to_local_into and vec_to_local_regs, so by link order part of vf4lib/libcore/src/fmath_asm.c; exercised 2026-11-12: called by the harness with the back FPU bank as the snapshot has it (axes X (0.20166, 0, 0.97946), Y (0, 1, 0), Z (-0.97946, 0, 0.20166), translation (-0.0961, -5, -3.94466)): the point (1, 2, 3) in fr4-fr6 came back as fr4-fr6 = (3.14003, 2, -0.37448) and (1, 2, 0.5) as (0.69139, 2, -0.87863), the axes' products without the translation taken off; the back bank was unchanged
- * convention: __keeps_r1_r2_r3_r4_r5_r6_r7_fr4_fr5_fr6_fr7_fr8_fr9_fr10_fr11 (AssignCallEffects)
+ * convention: __keeps_r1_r2_r3_r4_r5_r6_r7_fr8_fr9_fr10_fr11 (AssignCallEffects)
  * matched: source/asm/0c0f5820.s (hand-written assembly, tools/match/match.py)
  */
 undefined8 vec_to_local_regs_alt(float param_1,float param_2,float param_3);
