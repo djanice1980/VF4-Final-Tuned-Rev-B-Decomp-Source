@@ -9050,6 +9050,35 @@ A fresh clone was taken through the README's Reproduce steps (extract,
   asm_readable.py 205 of 205 files; check_private_names.py 52 near
   copies.
 
+## 2026-11-12: test.bin's last interrupt-entry routines and pool words named; the exercised level documented
+
+- **Three routines and four words of test.bin had no name.** Its copies
+  of sdk/sy/checker_vector.c and sdk/sy/exception_vectors.c
+  (0c0615c0-0c061a7f) are main.bin's 0c137160-0c13761f byte for byte
+  apart from ten pool words, each the same address moved by 0xd5ba0.
+  int_break_handler (0c0615c0; its address is in irq_hook_remove's
+  pool), irq_entry_via_firmware_alt (0c0616f8) and
+  context_save_dispatch_counted (0c0618d4) were not functions, and the
+  pool words int_nest_saved_sp, int_nest_stack, int_event_code and
+  int_entry_depth (0c061a68-0c061a74) had no names. Rows in
+  ghidra/symbols_test/sy_modules.tsv give them main.bin's names;
+  ghidra/source_map_test.tsv has 2,126 routines (3 more), and
+  `VF4FT_PROGRAM=test tools/match/match.py` on main.bin's 0c137160.s,
+  0c137258.s, 0c137298.s, 0c13729c.s and 0c137474.s matches all five
+  at test.bin's addresses. exception_entry's pool word for
+  int_event_code now has a name in test.bin too, so its relocation is
+  checked.
+- **src_test/ file headers** said every file was reconstructed from
+  main.bin; ExportSource.java now writes the program's own name.
+- **Docs**: docs/live_observation.md section 13 sets out the exercised
+  level's verdicts and rulings (they were only in a working brief
+  outside the repository), its status note no longer says the tools
+  have not met Flycast, and section 12 counts all four judged rounds.
+  README's exercised bullet points there.
+- **Checked**: main.bin 6,632 of 6,632; test.bin 121 of 121;
+  asm_readable.py 205 of 205 files; console.c 192 of 192;
+  check_private_names.py 52 near copies; asm_writes.py clean.
+
 ## Next
 
 In order of value per effort:

@@ -5455,24 +5455,21 @@ extern undefined * PTR_hblank_hook_put_0c0615a4; /* 0x0c0615a4 */
 extern undefined * PTR_irq_hook_heads_0c0615a8; /* 0x0c0615a8 */
 extern undefined * PTR_DAT_0c0615ac; /* 0x0c0615ac */
 extern undefined * PTR_DAT_0c0615b0; /* 0x0c0615b0 */
-extern undefined * PTR_LAB_0c0615b4; /* 0x0c0615b4 */
-extern undefined * PTR_DAT_0c0616a8; /* 0x0c0616a8 */
-extern undefined * PTR_DAT_0c0616ac; /* 0x0c0616ac */
-extern undefined * PTR_DAT_0c0616b0; /* 0x0c0616b0 */
+extern undefined * PTR_int_break_handler_0c0615b4; /* 0x0c0615b4 */
+extern undefined * PTR_int_entry_depth_0c0616a8; /* 0x0c0616a8 */
+extern undefined * PTR_int_nest_saved_sp_0c0616ac; /* 0x0c0616ac */
+extern undefined * PTR_int_nest_stack_0c0616b0; /* 0x0c0616b0 */
 extern undefined * PTR_address_checker_trap_0c0616b4; /* 0x0c0616b4 */
 extern undefined2 DAT_0c061734; /* 0x0c061734 */
-extern undefined * PTR_DAT_0c061738; /* 0x0c061738 */
+extern undefined * PTR_int_event_code_0c061738; /* 0x0c061738 */
 extern undefined4 DAT_0c06173c; /* 0x0c06173c */
 extern undefined4 DAT_0c061740; /* 0x0c061740 */
 extern undefined * PTR_context_save_entry_0c061744; /* 0x0c061744 */
 extern undefined2 DAT_0c06176a; /* 0x0c06176a */
 extern undefined4 DAT_0c06176c; /* 0x0c06176c */
 extern undefined * PTR_DAT_0c0618cc; /* 0x0c0618cc */
-extern undefined * PTR_DAT_0c0618d0; /* 0x0c0618d0 */
-extern undefined * PTR_DAT_0c061a64; /* 0x0c061a64 */
-extern undefined4 DAT_0c061a68; /* 0x0c061a68 */
-extern undefined4 DAT_0c061a70; /* 0x0c061a70 */
-extern undefined4 DAT_0c061a74; /* 0x0c061a74 */
+extern undefined * PTR_int_event_code_0c0618d0; /* 0x0c0618d0 */
+extern undefined * PTR_int_event_code_0c061a64; /* 0x0c061a64 */
 extern undefined * PTR_sysbus_regs_load_defaults_0c061abc; /* 0x0c061abc */
 extern undefined * PTR_startup_stack_mode_0c061ac0; /* 0x0c061ac0 */
 extern undefined * PTR_startup_irq_stack_0c061ac4; /* 0x0c061ac4 */
@@ -7441,6 +7438,7 @@ extern undefined * PTR_s_need_dictionary_0c099998; /* 0x0c099998 */
 extern undefined * PTR_s_stream_error_0c0999a8; /* 0x0c0999a8 */
 extern undefined * PTR_s_insufficient_memory_0c0999b0; /* 0x0c0999b0 */
 extern undefined * PTR_s_buffer_error_0c0999b4; /* 0x0c0999b4 */
+extern undefined LAB_ac000010; /* 0xac000010 */
 extern undefined4 DAT_ff000024; /* 0xff000024 */
 extern undefined4 DAT_ff000028; /* 0xff000028 */
 extern undefined4 DAT_ff000038; /* 0xff000038 */

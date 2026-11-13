@@ -1569,11 +1569,14 @@ address	name	size	file	evidence
 0c0612a0	hblank_hooks_run	48	sdk/sy/sychain.c	matched-source
 0c0612e0	holly_irq_dispatch	190	sdk/sy/sychain.c	matched-source
 0c0613e0	irq_hook_remove	326	sdk/sy/sychain.c	matched-source
+0c0615c0	int_break_handler	228	sdk/sy/checker_vector.c	matched-source
 0c0616b8	exception_entry	40	sdk/sy/exception_vectors.c	matched-source
+0c0616f8	irq_entry_via_firmware_alt	4	sdk/sy/exception_vectors.c	matched-source
 0c0616fc	irq_entry_via_firmware	56	sdk/sy/exception_vectors.c	matched-source
 0c06174c	firmware_note_and_return	30	sdk/sy/exception_vectors.c	matched-source
 0c061770	context_save_entry	6	sdk/sy/exception_vectors.c	matched-source
 0c061776	context_save_dispatch	336	sdk/sy/exception_vectors.c	matched-source
+0c0618d4	context_save_dispatch_counted	42	sdk/sy/exception_vectors.c	matched-source
 0c0618fe	context_save_dispatch_nested	350	sdk/sy/exception_vectors.c	matched-source
 0c061a80	sys_bring_up_all	56	sdk/sy/syhw.c	matched-source
 0c061ae0	sys_bring_up_vectors_timer	32	sdk/sy/syhw.c	matched-source

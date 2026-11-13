@@ -60,6 +60,22 @@ extern argb_clip_slot bump_clip_ring[4]; /* 0x0c047bf0 */
 
 extern uchar arctan_ang8_table[129]; /* 0x0c0585dc */
 
+/* name: inferred */
+/* evidence: a pool word inside context_save_dispatch_nested: the interrupted code's r15, kept by context_save_dispatch_counted on the first nesting level and reloaded on the last by context_save_dispatch_nested and int_break_handler; main.bin's int_nest_saved_sp (0x0C137608); part of the test.bin copy of sdk/sy/exception_vectors.c */
+extern uint int_nest_saved_sp; /* 0x0c061a68 */
+
+/* name: inferred */
+/* evidence: a pool word inside context_save_dispatch_nested: the stack context_save_dispatch_counted switches to on the first nesting level; int_break_handler tests it for 0; 0 in the image and nothing stores it; main.bin's int_nest_stack (0x0C13760C); part of the test.bin copy of sdk/sy/exception_vectors.c */
+extern uint int_nest_stack; /* 0x0c061a6c */
+
+/* name: inferred */
+/* evidence: a pool word inside context_save_dispatch_nested: the code of the exception or interrupt being handled; exception_entry stores the exception event register (0xff000024) in it, irq_entry_via_firmware the interrupt event register (0xff000028); context_save_dispatch and context_save_dispatch_nested read it to pick the handler and the way out; main.bin's int_event_code (0x0C137610); part of the test.bin copy of sdk/sy/exception_vectors.c */
+extern uint int_event_code; /* 0x0c061a70 */
+
+/* name: inferred */
+/* evidence: a pool word inside context_save_dispatch_nested: how many levels of the nested entry are active; context_save_dispatch_counted adds 1, context_save_dispatch_nested and int_break_handler subtract 1; main.bin's int_entry_depth (0x0C137614); part of the test.bin copy of sdk/sy/exception_vectors.c */
+extern uint int_entry_depth; /* 0x0c061a74 */
+
 extern undefined4 irq_private_stack_saved_sp; /* 0x0c065824 */
 
 extern undefined4 irq_private_stack_handler; /* 0x0c0658a8 */

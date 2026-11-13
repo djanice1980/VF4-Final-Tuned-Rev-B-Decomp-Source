@@ -16,7 +16,7 @@ made and judged) against each routine's name and description:
 
 A second kind of verdicts file (ghidra/exercise_verdicts.tsv) is for the
 routines the game never runs: the harness called them itself, with inputs
-a judge chose from the description (build/agents/exercised/BRIEF.md):
+a judge chose from the description (docs/live_observation.md, section 13):
 
   exercised  the results bore out what the description says the code
              does;

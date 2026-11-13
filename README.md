@@ -140,7 +140,8 @@ sure we are of it:
   description gave the results the description predicts
   (`exercised <date>: ...` says what went in and what came out). This
   tests the description against the code; it says nothing about how or
-  whether the game would use the routine.
+  whether the game would use the routine. See `docs/live_observation.md`,
+  section 13.
 - **inferred**: the name comes from analysis; the evidence is in the comment.
 - **placeholder**: `FUN_0c0a1234`-style, not yet understood.
 

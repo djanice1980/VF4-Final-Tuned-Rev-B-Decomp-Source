@@ -9,10 +9,11 @@ game mode, with which arguments, and what it returned.
   function and logs each call.
 - `tools/observe_summary.py` turns the logs into a digest per function.
 
-**Status of the tools (2026-11-10):** everything was tested against a
-stand-in for Flycast's GDB server (`build/agents/observe/`), not against
-Flycast itself. The first live run is step 5 below, a one-minute run on five
-functions; do that before the full run.
+**Status (2026-11-12):** the tools have been run against Flycast itself:
+the first judged run (2026-11-10, section 12) came from them. Rounds two
+to four came from the VF4debug harness, which logs in the same form, and
+round five tested the routines the game never runs (section 13). On a new
+setup, do the one-minute run of step 5 before the full run.
 
 Every command below is run from the repository unless it says otherwise:
 
@@ -591,7 +592,11 @@ judged by what it wrote. What it adds to watch for:
 The judging brief with all its rulings is
 `build/agents/observed2/BRIEF.md` (not in git; the rulings that matter
 are the ones above). The second run judged 2,185 routines: 1,626
-observed, 498 reached, 61 conflicts.
+observed, 498 reached, 61 conflicts. Rounds three and four (2026-11-10:
+the harness with card reader and network board models, then the reached
+routines against a fuller log) were judged the same way;
+`ghidra/live_verdicts.tsv` holds all four: 4,163 observed, 510 reached
+and 73 conflicts on record for 4,746 routines.
 
 Design notes, for whoever reads the logs:
 
@@ -611,3 +616,50 @@ Design notes, for whoever reads the logs:
   it is the routine the game rewrites a function entry with
   (`ta_input_finish`, at boot). When it is called, the observer first takes
   its own breakpoint out of the entry that is about to be rewritten.
+
+## 13. The "exercised" level: routines the game never runs
+
+About 1,900 routines can never be observed: nothing in the game calls
+them (library code linked in with the code that is used), or no scenario
+reaches them. For those, the VF4debug harness calls the routine itself,
+in a sandbox (a throwaway copy of the machine) taken from a snapshot in
+the middle of a fight, with inputs a judge chose from the routine's
+description. Each routine gets one of three verdicts:
+
+| Verdict | Meaning |
+|---|---|
+| exercised | results predicted from the description, written down before the call, came out as predicted, in a way they would not have had the description been wrong |
+| untested | no honest test could be made; the reason comes first (empty routine, literal wrapper, needs the hardware's answer, needs state the description does not define, does not return, a constant) |
+| conflict | the results contradict the description; it is corrected by hand, after reading the matched C |
+
+An exercised verdict needs either two or more input sets whose results
+differ as the description says (both sides of a threshold, a table at two
+indexes checked against the image's bytes, a setter then its getter with
+two values), or one specific computed result (a checksum of chosen bytes,
+a formatted string, a matrix product). The rulings that keep it honest:
+
+- inputs are the arguments, buffers the judge filled, the image's own
+  constants and tables, globals as the snapshot has them when the routine
+  only reads them, fields the description names, and state built by
+  calling the game's own routine for it in the same sandbox;
+- not inputs: state invented beyond what the description defines, a
+  hardware model's answer as the thing tested (what the routine writes to
+  a register, computed from the inputs, is fine), the last digits of a
+  float;
+- each sentence names what was planted;
+- a wrong prediction that was the judge's own error is left out, not
+  counted against the description;
+- a routine already `named` or `observed` keeps its level and gets the
+  sentence.
+
+The verdicts are kept in `ghidra/exercise_verdicts.tsv`;
+`tools/observe_apply.py` reads it beside `ghidra/live_verdicts.tsv`, an
+observed verdict outranking an exercised one, and appends
+`exercised <date>: ...` to the row's evidence. The level says the
+description holds against the running code; it says nothing about how or
+whether the game would use the routine.
+
+The fifth round (2026-11-12) judged 1,886 routines: 1,572 exercised, 274
+untested, 40 conflicts (all corrected). In `src/`, 1,530 routines are at
+`exercised`; the rest of the exercised verdicts fell on routines already
+named or observed.

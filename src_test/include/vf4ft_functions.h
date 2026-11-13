@@ -1694,11 +1694,14 @@ void vblank_in_hooks_run(void); /* 0x0c061260 */
 void hblank_hooks_run(void); /* 0x0c0612a0 */
 int holly_irq_dispatch(void); /* 0x0c0612e0 */
 void irq_hook_remove(int hook); /* 0x0c0613e0 */
+void int_break_handler(uint event); /* 0x0c0615c0 */
 void exception_entry(void); /* 0x0c0616b8 */
+void irq_entry_via_firmware_alt(void); /* 0x0c0616f8 */
 void irq_entry_via_firmware(void); /* 0x0c0616fc */
 void firmware_note_and_return(void); /* 0x0c06174c */
 void context_save_entry(void); /* 0x0c061770 */
 void context_save_dispatch(void); /* 0x0c061776 */
+void context_save_dispatch_counted(void); /* 0x0c0618d4 */
 void context_save_dispatch_nested(void); /* 0x0c0618fe */
 void sys_bring_up_all(void); /* 0x0c061a80 */
 void sys_bring_up_vectors_timer(void); /* 0x0c061ae0 */
