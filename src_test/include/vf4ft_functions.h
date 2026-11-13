@@ -1694,6 +1694,7 @@ void vblank_in_hooks_run(void); /* 0x0c061260 */
 void hblank_hooks_run(void); /* 0x0c0612a0 */
 int holly_irq_dispatch(void); /* 0x0c0612e0 */
 void irq_hook_remove(int hook); /* 0x0c0613e0 */
+void exception_entry(void); /* 0x0c0616b8 */
 void irq_entry_via_firmware(void); /* 0x0c0616fc */
 void firmware_note_and_return(void); /* 0x0c06174c */
 void context_save_entry(void); /* 0x0c061770 */
@@ -1835,6 +1836,14 @@ int slot5_hook_put(int fn, int arg); /* 0x0c06af40 */
 int yuv_done_hook_put(int fn, int arg); /* 0x0c06af80 */
 int busy_wait_hook_put(int fn, int arg); /* 0x0c06afc0 */
 int error_hook_put(int fn); /* 0x0c06b000 */
+void render_done_hook_noop(void); /* 0x0c06b040 */
+void vblank_hook_noop(void); /* 0x0c06b060 */
+void hblank_hook_noop(void); /* 0x0c06b080 */
+void surface_alloc_fail_hook_noop(void); /* 0x0c06b0a0 */
+void strip_hazard_hook_noop(void); /* 0x0c06b0c0 */
+void list_input_end_hook_noop(void); /* 0x0c06b0e0 */
+void yuv_done_hook_noop(void); /* 0x0c06b100 */
+void busy_wait_hook_noop(void); /* 0x0c06b120 */
 void border_color_by_code_hang(uint code); /* 0x0c06b140 */
 void fb_regs_reload_blanked(void); /* 0x0c06b1e0 */
 void vblank_tick_await_next(void); /* 0x0c06b260 */

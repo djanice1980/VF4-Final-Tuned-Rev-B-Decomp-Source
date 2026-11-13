@@ -6,6 +6,13 @@
  */
 #include "vf4ft.h"
 
+/* 0x0c0616b8  size 0x28  file by match with source
+ * confidence: inferred
+ * evidence: hand-written: five nops, then pushes r1, parks r0 in its own pool, stores the exception event code (0xff000024) in the event code word and jumps to context_save_entry; nothing in test.bin holds its address (nothing in the image calls it); the test.bin build of main.bin's exception_entry (0x0C137258), the same instructions apart from addresses (its pool words hold test.bin's event code word 0c061a70 and context_save_entry); part of the test.bin copy of sdk/sy/exception_vectors.c (main.bin's object, ghidra/known_files.tsv)
+ * matched: source/asm/0c137258.s (hand-written assembly, tools/match/match.py)
+ */
+void exception_entry(void);
+
 /* 0x0c0616fc  size 0x38  file by match with source
  * confidence: inferred
  * evidence: hand-written: calls the firmware at 0xac004000 with (0x200, 2), stores the interrupt event code (0xff000028) and jumps to context_save_entry; nothing in test.bin holds its address (nothing in the image calls it); the test.bin build of main.bin's irq_entry_via_firmware (0x0C13729C), the same instructions apart from addresses; part of the test.bin copy of sdk/sy/exception_vectors.c (main.bin's object, ghidra/known_files.tsv)
@@ -22,7 +29,7 @@ void firmware_note_and_return(void);
 
 /* 0x0c061770  size 0x6  file by match with source
  * confidence: inferred
- * evidence: hand-written: pops the r1 the entry pushed, pushes SSR and SPC and falls into context_save_dispatch; called by (a literal pool word holding its address) irq_entry_via_firmware, the pool word 0c0616ec of the exception entry at 0c0616b8 (not a function in the index; main.bin's exception_entry); the test.bin build of main.bin's context_save_entry (0x0C137310), the same instructions apart from addresses; part of the test.bin copy of sdk/sy/exception_vectors.c (main.bin's object, ghidra/known_files.tsv)
+ * evidence: hand-written: pops the r1 the entry pushed, pushes SSR and SPC and falls into context_save_dispatch; called by (a literal pool word holding its address) irq_entry_via_firmware, the pool word 0c0616ec of exception_entry; the test.bin build of main.bin's context_save_entry (0x0C137310), the same instructions apart from addresses; part of the test.bin copy of sdk/sy/exception_vectors.c (main.bin's object, ghidra/known_files.tsv)
  * matched: source/asm/0c137310.s (hand-written assembly, tools/match/match.py)
  */
 void context_save_entry(void);

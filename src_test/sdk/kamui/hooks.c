@@ -317,6 +317,86 @@ int error_hook_put(int fn)
   return 0;
 }
 
+/* 0x0c06b040  size 0xa  file by match with source
+ * confidence: inferred
+ * evidence: does nothing; the default handler of hook slot 0; called by (a literal pool word holding its address) hook_slots_defaults, the pool word 0c06ab40 inside hook_slot_default's body; the test.bin build of main.bin's render_done_hook_noop (0x0C141000), the same bytes; part of the test.bin copy of sdk/kamui/hooks.c (main.bin's object, ghidra/known_files.tsv)
+ * matched: source/sdk/kamui/hooks.c (tools/match/match.py)
+ */
+void render_done_hook_noop(void)
+{
+  return;
+}
+
+/* 0x0c06b060  size 0xa  file by match with source
+ * confidence: inferred
+ * evidence: does nothing; the default handler of hook slot 1; called by (a literal pool word holding its address) hook_slots_defaults, the pool word 0c06ab44 inside hook_slot_default's body; the test.bin build of main.bin's vblank_hook_noop (0x0C141020), the same bytes; part of the test.bin copy of sdk/kamui/hooks.c (main.bin's object, ghidra/known_files.tsv)
+ * matched: source/sdk/kamui/hooks.c (tools/match/match.py)
+ */
+void vblank_hook_noop(void)
+{
+  return;
+}
+
+/* 0x0c06b080  size 0xa  file by match with source
+ * confidence: inferred
+ * evidence: does nothing; the default handler of hook slot 2; called by (a literal pool word holding its address) hook_slots_defaults, the pool word 0c06ab48 inside hook_slot_default's body; the test.bin build of main.bin's hblank_hook_noop (0x0C141040), the same bytes; part of the test.bin copy of sdk/kamui/hooks.c (main.bin's object, ghidra/known_files.tsv)
+ * matched: source/sdk/kamui/hooks.c (tools/match/match.py)
+ */
+void hblank_hook_noop(void)
+{
+  return;
+}
+
+/* 0x0c06b0a0  size 0xa  file by match with source
+ * confidence: inferred
+ * evidence: does nothing; the default handler of hook slot 3; called by (a literal pool word holding its address) hook_slots_defaults, the pool word 0c06ab4c inside hook_slot_default's body; the test.bin build of main.bin's surface_alloc_fail_hook_noop (0x0C141060), the same bytes; part of the test.bin copy of sdk/kamui/hooks.c (main.bin's object, ghidra/known_files.tsv)
+ * matched: source/sdk/kamui/hooks.c (tools/match/match.py)
+ */
+void surface_alloc_fail_hook_noop(void)
+{
+  return;
+}
+
+/* 0x0c06b0c0  size 0xa  file by match with source
+ * confidence: inferred
+ * evidence: does nothing; the default handler of hook slot 4; called by (a literal pool word holding its address) hook_slots_defaults, the pool word 0c06ab50 inside hook_slot_default's body; the test.bin build of main.bin's strip_hazard_hook_noop (0x0C141080), the same bytes; part of the test.bin copy of sdk/kamui/hooks.c (main.bin's object, ghidra/known_files.tsv)
+ * matched: source/sdk/kamui/hooks.c (tools/match/match.py)
+ */
+void strip_hazard_hook_noop(void)
+{
+  return;
+}
+
+/* 0x0c06b0e0  size 0xa  file by match with source
+ * confidence: inferred
+ * evidence: does nothing; the default handler of hook slot 5; called by (a literal pool word holding its address) hook_slots_defaults, the pool word 0c06ab54 inside hook_slot_default's body; the test.bin build of main.bin's list_input_end_hook_noop (0x0C1410A0), the same bytes; part of the test.bin copy of sdk/kamui/hooks.c (main.bin's object, ghidra/known_files.tsv)
+ * matched: source/sdk/kamui/hooks.c (tools/match/match.py)
+ */
+void list_input_end_hook_noop(void)
+{
+  return;
+}
+
+/* 0x0c06b100  size 0xa  file by match with source
+ * confidence: inferred
+ * evidence: does nothing; the default handler of hook slot 6; called by (a literal pool word holding its address) hook_slots_defaults, the pool word 0c06ab58 inside hook_slot_default's body; the test.bin build of main.bin's yuv_done_hook_noop (0x0C1410C0), the same bytes; part of the test.bin copy of sdk/kamui/hooks.c (main.bin's object, ghidra/known_files.tsv)
+ * matched: source/sdk/kamui/hooks.c (tools/match/match.py)
+ */
+void yuv_done_hook_noop(void)
+{
+  return;
+}
+
+/* 0x0c06b120  size 0xa  file by match with source
+ * confidence: inferred
+ * evidence: does nothing; the default handler of hook slot 7; called by (a literal pool word holding its address) hook_slots_defaults, the pool word 0c06ab5c inside hook_slot_default's body; the test.bin build of main.bin's busy_wait_hook_noop (0x0C1410E0), the same bytes; part of the test.bin copy of sdk/kamui/hooks.c (main.bin's object, ghidra/known_files.tsv)
+ * matched: source/sdk/kamui/hooks.c (tools/match/match.py)
+ */
+void busy_wait_hook_noop(void)
+{
+  return;
+}
+
 /* 0x0c06b140  size 0x34  file by match with source
  * confidence: inferred
  * extent: 0x8c

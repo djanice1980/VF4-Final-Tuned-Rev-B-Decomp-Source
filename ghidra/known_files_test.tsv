@@ -104,7 +104,7 @@ start	end	file	evidence
 0c060420	0c060f5f	sdk/sy/sycache.c	test.bin copy (caches_reset_to_mode .. dcache_writeback_scan_hi, same size); includes the copy of dcache_tags_clear at 0c060940 the index does not list; "syCache Ver 2.01" at 0c08f94d
 0c060f60	0c0615bf	sdk/sy/sychain.c	test.bin copy (irq_hooks_clear .. irq_hook_remove); "syChain Ver 1.50am_am2c" at 0c08f97d
 0c0615c0	0c0616b7	sdk/sy/checker_vector.c	test.bin copy; its only routine, the break handler at 0c0615c0 (main.bin's int_break_handler, the same code), is not in the index; its pool word 0c0616b4 holds address_checker_trap
-0c0616b8	0c061a7f	sdk/sy/exception_vectors.c	test.bin copy (the exception entry at 0c0616b8, not in the index, then irq_entry_via_firmware .. context_save_dispatch_nested, same 0x3c8 bytes)
+0c0616b8	0c061a7f	sdk/sy/exception_vectors.c	test.bin copy (exception_entry .. context_save_dispatch_nested, same 0x3c8 bytes)
 0c061a80	0c061c7f	sdk/sy/syhw.c	test.bin copy (sys_bring_up_all .. sysbus_regs_load_defaults, same 0x200 bytes)
 0c061c80	0c0621bf	sdk/sy/syextchk.c	test.bin copy (ext_devices_probe .. ext_bridge_hold_off); "syExtChk Ver 2.04" at 0c08f9b5
 0c0621c0	0c0627df	sdk/sy/address_checker.c	test.bin copy (address_checker_trap and the serial routines); owns " --- ADDRESS CHECKER TRAP --- " (0c08f9e4), the register labels 0c08fa08-0c08fab0 and "Please, cancel the interrupt from ADRESS CHECKER." (0c08fb08)
@@ -117,7 +117,7 @@ start	end	file	evidence
 0c0675a0	0c068bff	sdk/kamui/strip_context.c	test.bin copy (uv_size_code .. strip_header_to_list and the uncalled per-field setters after it, which the index does not list: nothing between 0c068442 and 0c068c00)
 0c068c00	0c068eff	sdk/kamui/list_writes.c	test.bin copy (list_header_sq_write .. list_tile_clip_param_write)
 0c068f00	0c06a95f	sdk/kamui/list_buffers.c	test.bin copy (listbuf_lay_out_four .. render_drain); render_buffers_lay_out reads "HARDWARE" / "EnableTexture16MB" (0c08fbf8 / 0c08fc04)
-0c06a960	0c06b1df	sdk/kamui/hooks.c	test.bin copy (hook_slots_defaults .. border_color_by_code_hang; the do-nothing defaults 0c06b040-0c06b120 are not in the index)
+0c06a960	0c06b1df	sdk/kamui/hooks.c	test.bin copy (hook_slots_defaults .. border_color_by_code_hang, the do-nothing defaults render_done_hook_noop .. busy_wait_hook_noop at 0c06b040-0c06b120 among them)
 0c06b1e0	0c06b95f	sdk/kamui/display.c	test.bin copy (fb_regs_reload_blanked .. vo_start_offset_apply); "KAMUI" / "VideoMode" / "DisplayMode" / "AntiAlias" / "Dither" (0c08fc18-0c08fc44)
 0c06b960	0c06c19f	sdk/kamui/pvr_settings.c	test.bin copy (fb_w_ctrl_alpha_cutoff .. pvr_text_ctrl_stride_put)
 0c06c1a0	0c06e23f	sdk/kamui/texture_surfaces.c	test.bin copy (surface_set_up_and_place .. dither_argb8888_in_place); owns the .rodata size tables 0c08be30-0c08c01f (data rows)

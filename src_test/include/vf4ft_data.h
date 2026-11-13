@@ -5965,23 +5965,23 @@ extern undefined * PTR_setup_steps_done_0c06a810; /* 0x0c06a810 */
 extern undefined * PTR_setup_steps_done_0c06a830; /* 0x0c06a830 */
 extern undefined * PTR_gfx_state_0c06a93c; /* 0x0c06a93c */
 extern undefined * PTR_tile_split_word_0c06a940; /* 0x0c06a940 */
-extern undefined * PTR_LAB_0c06a9b4; /* 0x0c06a9b4 */
-extern undefined * PTR_LAB_0c06a9b8; /* 0x0c06a9b8 */
-extern undefined * PTR_LAB_0c06a9c0; /* 0x0c06a9c0 */
-extern undefined * PTR_LAB_0c06a9c4; /* 0x0c06a9c4 */
-extern undefined * PTR_LAB_0c06a9c8; /* 0x0c06a9c8 */
-extern undefined * PTR_LAB_0c06a9cc; /* 0x0c06a9cc */
-extern undefined * PTR_LAB_0c06a9d0; /* 0x0c06a9d0 */
-extern undefined * PTR_LAB_0c06a9d4; /* 0x0c06a9d4 */
+extern undefined * PTR_render_done_hook_noop_0c06a9b4; /* 0x0c06a9b4 */
+extern undefined * PTR_vblank_hook_noop_0c06a9b8; /* 0x0c06a9b8 */
+extern undefined * PTR_hblank_hook_noop_0c06a9c0; /* 0x0c06a9c0 */
+extern undefined * PTR_surface_alloc_fail_hook_noop_0c06a9c4; /* 0x0c06a9c4 */
+extern undefined * PTR_strip_hazard_hook_noop_0c06a9c8; /* 0x0c06a9c8 */
+extern undefined * PTR_list_input_end_hook_noop_0c06a9cc; /* 0x0c06a9cc */
+extern undefined * PTR_yuv_done_hook_noop_0c06a9d0; /* 0x0c06a9d0 */
+extern undefined * PTR_busy_wait_hook_noop_0c06a9d4; /* 0x0c06a9d4 */
 extern undefined * PTR_border_color_by_code_hang_0c06a9d8; /* 0x0c06a9d8 */
-extern undefined * PTR_LAB_0c06ab40; /* 0x0c06ab40 */
-extern undefined * PTR_LAB_0c06ab44; /* 0x0c06ab44 */
-extern undefined * PTR_LAB_0c06ab48; /* 0x0c06ab48 */
-extern undefined * PTR_LAB_0c06ab4c; /* 0x0c06ab4c */
-extern undefined * PTR_LAB_0c06ab50; /* 0x0c06ab50 */
-extern undefined * PTR_LAB_0c06ab54; /* 0x0c06ab54 */
-extern undefined * PTR_LAB_0c06ab58; /* 0x0c06ab58 */
-extern undefined * PTR_LAB_0c06ab5c; /* 0x0c06ab5c */
+extern undefined * PTR_render_done_hook_noop_0c06ab40; /* 0x0c06ab40 */
+extern undefined * PTR_vblank_hook_noop_0c06ab44; /* 0x0c06ab44 */
+extern undefined * PTR_hblank_hook_noop_0c06ab48; /* 0x0c06ab48 */
+extern undefined * PTR_surface_alloc_fail_hook_noop_0c06ab4c; /* 0x0c06ab4c */
+extern undefined * PTR_strip_hazard_hook_noop_0c06ab50; /* 0x0c06ab50 */
+extern undefined * PTR_list_input_end_hook_noop_0c06ab54; /* 0x0c06ab54 */
+extern undefined * PTR_yuv_done_hook_noop_0c06ab58; /* 0x0c06ab58 */
+extern undefined * PTR_busy_wait_hook_noop_0c06ab5c; /* 0x0c06ab5c */
 extern undefined * PTR_border_color_by_code_hang_0c06ab60; /* 0x0c06ab60 */
 extern undefined * PTR_hook_slot_default_0c06abe8; /* 0x0c06abe8 */
 extern undefined * PTR_lib_state_ptr_0c06ac20; /* 0x0c06ac20 */
@@ -7441,6 +7441,7 @@ extern undefined * PTR_s_need_dictionary_0c099998; /* 0x0c099998 */
 extern undefined * PTR_s_stream_error_0c0999a8; /* 0x0c0999a8 */
 extern undefined * PTR_s_insufficient_memory_0c0999b0; /* 0x0c0999b0 */
 extern undefined * PTR_s_buffer_error_0c0999b4; /* 0x0c0999b4 */
+extern undefined4 DAT_ff000024; /* 0xff000024 */
 extern undefined4 DAT_ff000028; /* 0xff000028 */
 extern undefined4 DAT_ff000038; /* 0xff000038 */
 extern undefined4 DAT_ff00003c; /* 0xff00003c */
@@ -7479,6 +7480,9 @@ extern undefined4 _DAT_0c045744; /* 0x0c045744, accessed as undefined4 */
 extern undefined4 _DAT_0c045748; /* 0x0c045748, accessed as undefined4 */
 extern undefined4 _DAT_0c04574c; /* 0x0c04574c, accessed as undefined4 */
 extern float _DAT_0c0585d4; /* 0x0c0585d4, accessed as float */
+extern undefined4 * _DAT_0c0616e0; /* 0x0c0616e0, accessed as undefined4 * */
+extern undefined4 _DAT_0c0616e4; /* 0x0c0616e4, accessed as undefined4 */
+extern undefined * _DAT_0c0616ec; /* 0x0c0616ec, accessed as undefined * */
 extern uint _DAT_0c0628e8; /* 0x0c0628e8, accessed as uint */
 extern undefined4 _DAT_0c0658a0; /* 0x0c0658a0, accessed as undefined4 */
 extern int _DAT_0c0658a4; /* 0x0c0658a4, accessed as int */

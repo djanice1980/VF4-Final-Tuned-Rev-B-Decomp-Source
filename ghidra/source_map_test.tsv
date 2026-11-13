@@ -1569,6 +1569,7 @@ address	name	size	file	evidence
 0c0612a0	hblank_hooks_run	48	sdk/sy/sychain.c	matched-source
 0c0612e0	holly_irq_dispatch	190	sdk/sy/sychain.c	matched-source
 0c0613e0	irq_hook_remove	326	sdk/sy/sychain.c	matched-source
+0c0616b8	exception_entry	40	sdk/sy/exception_vectors.c	matched-source
 0c0616fc	irq_entry_via_firmware	56	sdk/sy/exception_vectors.c	matched-source
 0c06174c	firmware_note_and_return	30	sdk/sy/exception_vectors.c	matched-source
 0c061770	context_save_entry	6	sdk/sy/exception_vectors.c	matched-source
@@ -1700,6 +1701,14 @@ address	name	size	file	evidence
 0c06af80	yuv_done_hook_put	30	sdk/kamui/hooks.c	matched-source
 0c06afc0	busy_wait_hook_put	30	sdk/kamui/hooks.c	matched-source
 0c06b000	error_hook_put	30	sdk/kamui/hooks.c	matched-source
+0c06b040	render_done_hook_noop	10	sdk/kamui/hooks.c	matched-source
+0c06b060	vblank_hook_noop	10	sdk/kamui/hooks.c	matched-source
+0c06b080	hblank_hook_noop	10	sdk/kamui/hooks.c	matched-source
+0c06b0a0	surface_alloc_fail_hook_noop	10	sdk/kamui/hooks.c	matched-source
+0c06b0c0	strip_hazard_hook_noop	10	sdk/kamui/hooks.c	matched-source
+0c06b0e0	list_input_end_hook_noop	10	sdk/kamui/hooks.c	matched-source
+0c06b100	yuv_done_hook_noop	10	sdk/kamui/hooks.c	matched-source
+0c06b120	busy_wait_hook_noop	10	sdk/kamui/hooks.c	matched-source
 0c06b140	border_color_by_code_hang	52	sdk/kamui/hooks.c	matched-source
 0c06b1e0	fb_regs_reload_blanked	96	sdk/kamui/display.c	matched-source
 0c06b260	vblank_tick_await_next	22	sdk/kamui/display.c	matched-source

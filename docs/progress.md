@@ -9022,6 +9022,34 @@ A fresh clone was taken through the README's Reproduce steps (extract,
   asm_readable.py 205 of 205 files; console.c 192 of 192;
   check_private_names.py 52 near copies; asm_writes.py exit 0.
 
+## 2026-11-12: test.bin's hook defaults and exception entry are functions
+
+- **Nine routines of test.bin had no function.** Its copy of
+  sdk/kamui/hooks.c holds main.bin's eight do-nothing hook defaults at
+  0c06b040 + 0x20 n, byte for byte main.bin's 0c141000 to 0c1410e0
+  (render_done_hook_noop .. busy_wait_hook_noop), and its copy of
+  sdk/sy/exception_vectors.c opens with main.bin's exception_entry at
+  0c0616b8, 0x44 bytes before irq_entry_via_firmware as in main.bin:
+  the same 40 bytes of code, its pool words holding test.bin's event
+  code word (0c061a70) and context_save_entry. TransferFromMain.java
+  could not pair them: the stubs are shorter than its 12-byte heads and
+  the same eight times over, and the exception entry has no rts. Rows
+  in ghidra/symbols_test/kamui.tsv and sy_modules.tsv make them
+  functions with main.bin's names; ghidra/source_map_test.tsv has 2,123
+  routines (9 more) and src_test/ takes their text from main.bin's
+  matched source (source/sdk/kamui/hooks.c, source/asm/0c137258.s).
+  `VF4FT_PROGRAM=test tools/match/match.py source/sdk/kamui/hooks.c
+  source/asm/0c137258.s` matches all 24 routines at test.bin's
+  addresses; the one relocation it cannot check is exception_entry's
+  pool word for int_event_code, which has no name in test.bin.
+- A static recompilation of the game (a companion project) found them
+  missing: its BIOS stand-in hooks busy_wait_hook_noop by name, and
+  without the name the test program's busy waits spun in its
+  interpreter.
+- **Checked**: main.bin 6,632 of 6,632; test.bin 121 of 121;
+  asm_readable.py 205 of 205 files; check_private_names.py 52 near
+  copies.
+
 ## Next
 
 In order of value per effort:
