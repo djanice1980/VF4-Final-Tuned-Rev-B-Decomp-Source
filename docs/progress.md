@@ -9042,10 +9042,6 @@ A fresh clone was taken through the README's Reproduce steps (extract,
   source/asm/0c137258.s` matches all 24 routines at test.bin's
   addresses; the one relocation it cannot check is exception_entry's
   pool word for int_event_code, which has no name in test.bin.
-- A static recompilation of the game (a companion project) found them
-  missing: its BIOS stand-in hooks busy_wait_hook_noop by name, and
-  without the name the test program's busy waits spun in its
-  interpreter.
 - **Checked**: main.bin 6,632 of 6,632; test.bin 121 of 121;
   asm_readable.py 205 of 205 files; check_private_names.py 52 near
   copies.
